@@ -67,7 +67,7 @@ const MainContainer = ({ username }) => {
   }, []);
 
   return (
-    <div>
+    <div id="main-container">
       <button onClick={() => setMenu(true)}>Menu</button>
       {!menu && <MenuContainer />}
       <h1>{`Welcome, ${username}`}</h1>
@@ -80,6 +80,8 @@ const MainContainer = ({ username }) => {
           defaultView={defaultView}
           setDefaultView={setDefaultView}
           setClickedPod={setClickedPod}
+          metric={metric}
+          setMetric={setMetric}
         />
       </div>
       <button onClick={() => setDefaultView(true)}>Reset to default</button>
