@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 
 const Pod = (props) => {
-  const { metric, pod, fetchInfo } = props;
+  const { metric, pod, fetchInfo, setClickedPod } = props;
   const [isShowing, setIsShowing] = useState(false);
 
   // function to normalize metric value and return rgb color
@@ -45,7 +45,8 @@ const Pod = (props) => {
 Pod.propTypes = {
   metric: PropTypes.string,
   pod: PropTypes.object,
-  fetchInfo: PropTypes.func
+  fetchInfo: PropTypes.func,
+  setClickedPod: PropTypes.func
 };
 
 export default Pod;
