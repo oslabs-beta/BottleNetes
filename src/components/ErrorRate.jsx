@@ -24,11 +24,28 @@ ChartJS.register(
 );
 
 const ErrorRate = ({ defaultView, clickedPod }) => {
-
+  const mode = {}
   // conditionally start fetch requests here
-  const fetchData = async (mode) => {
-    
+  const fetchData = async (query) => {
+    try {
+      const response = await fetch("http:/localhost:3000/errorrate", {
+        method: "POST",
+        header: { "Content-Type": "application/json" },
+        body: JSON.stringify(query),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setOverviewData(data);
+      } else {
+        const data = await response.json();
+        console.error(data);
+      }
+    } catch (error) {
+      console.log(error);
+      alert("There is an error with your request. Could not fetch data")
+    }
   }
+
 
   const options = {};
   const mockData = {
