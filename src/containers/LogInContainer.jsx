@@ -46,7 +46,7 @@ const LogInContainer = (props) => {
   };
 
   return (
-    <div id="loginContainer">
+    <div id="login-container">
       <h1>B o t t l e N e t e s</h1>
       <p>Logo here</p>
       <div id="loginDisplay">
