@@ -48,7 +48,7 @@ const MainContainer = ({ username }) => {
       }
     } catch (error) {
       console.error(error);
-      alert("Could not fetch data from the server");
+      alert("😿 Could not fetch data from the server. TryingToFetch default data");
     }
   };
   //Used to populate overview component
