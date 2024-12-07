@@ -11,17 +11,20 @@
  * }
  *
  * Example Requests:
- * 1. CPU usage over last 5 minutes:
+ * 1. average CPU usage over last 5 minutes per pod:
  *    {
  *      "type": "cpu",
- *      "time": "5m"
+ *      "time": "5m",
+ *     "aggregation": "avg",
+ *     "level": "pod"
  *    }
  *
- * 2. Maximum memory utilization over last hour:
+ * 2. Average memory utilization over last hour per pod:
  *    {
  *      "type": "memory",
  *      "time": "1h",
- *      "aggregation": "max"
+ *      "aggregation": "avg",
+ *      "level": "pod"
  *    }
  */
 
