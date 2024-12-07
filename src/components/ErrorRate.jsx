@@ -41,7 +41,7 @@ const ErrorRate = ({ defaultView, clickedPod }) => {
   // GENERIC FETCH REQUEST HELPER FUNCTION, REQUEST SENT IN BODY
   const fetchData = async (query) => {
     try {
-      const response = await fetch("http:/localhost:3000/errorrate", {
+      const response = await fetch("http://localhost:3000/errorrate", {
         method: "POST",
         header: { "Content-Type": "application/json" },
         body: JSON.stringify(query),
@@ -60,59 +60,37 @@ const ErrorRate = ({ defaultView, clickedPod }) => {
     }
   };
 
-  /* Example Requests:
-   * 1. CPU usage over last 5 minutes:
-   *    {
-   *      "type": "cpu",
-   *      "time": "5m"
-   *    }
-   *
-   * 2. Maximum memory utilization over last hour:
-   *    {
-   *      "type": "memory",
-   *      "time": "1h",
-   *      "aggregation": "max"
-   *    }
-   *
-   *  REQUEST BODY NEEDS
-   *  {
-   *   type: string,      // Required. Options: "cpu" | "memory"
-   *   time: string,      // Required. Format: "{number}s" | "{number}m" | "{number}h"
-   *                      // Examples: "15s", "5m", "1h"
-   *   aggregation: string //  Options: "avg" | "sum" | "max" | "min"
-   *      level: string       // Required. Options: "pod, namespace" | "namespace" | "pod" | "cluster"
-   *  }
-   */
-
-  // 3 queries for the node, 4 queries for pod
-  // query object needs to have t
-
-  // REPLACE NODE NAME WITH THE NAME OF THE NODE, PROBABLY NEED TO PROP DRILL
-  // FIND WAY TO INCLUDE TIME HERE SOMEHOW?
   const nodeQuery = {
     OOMKillsQuery:
-      'count(kubernetes_events{reason="FailedScheduling", message=~"node=\\"${NODE_NAME}\\""})',
+      'count(kubernetes_events{reason="FailedScheduling"}[1h])',
     evictionsQuery:
-      'count(kubernetes_events{reason="Evicted", message=~"node=\\"${NODE_NAME}\\""})',
+      'count(kubernetes_events{reason="Evicted"}[1h])',
     failedSchedulingQuery:
-      'count(kubernetes_events{reason="FailedScheduling", message=~"node=\\"${NODE_NAME}\\""})',
+      'count(kubernetes_events{reason="FailedScheduling"}[1h])',
+    totalErrorRate: "sum(rate(kubelet_runtime_operations_errors_total[1h]))",
   };
 
   // ADD QUERIES HERE TO BE PASSED INTO THE BACKEND?
-  const propQuery = {
-    restartCountQuery: "kube_pod_container_status_restarts_total{pod=\"POD NAME HERE\"}",
-    OOMKillsQuery: "kube_pod_container_status_terminated_reason{reason=\"OOMKilled\", pod=\"POD NAME HERE\"}",
-    readinessFailuresQuery: "sum(kube_pod_container_status_ready == 0{pod = \"POD NAME HERE\"}) by (pod, namespace)",
-    livenessFailuresQuery: "sum(kube_pod_container_status_liveness_probe_failed == 1{pod = \"POD NAME HERE\"}) by (pod, namespace)"
-  };
+  // const propQuery = {
+  // //   restartCountQuery:
+  // //     'kube_pod_container_status_restarts_total{pod="POD NAME HERE"}',
+  // //   OOMKillsQuery:
+  // //     'kube_pod_container_status_terminated_reason{reason="OOMKilled", pod="POD NAME HERE"}',
+  // //   readinessFailuresQuery:
+  // //     'sum(kube_pod_container_status_ready == 0{pod = "POD NAME HERE"}) by (pod, namespace)',
+  // //   livenessFailuresQuery:
+  // //     'sum(kube_pod_container_status_liveness_probe_failed == 1{pod = "POD NAME HERE"}) by (pod, namespace)',
+  // };
 
-  if (defaultView) {
-    fetchData(nodeQuery);
-    // SET NODE DATA STATE WITH QUERY RESULT
-  } else {
-    fetchData(propQuery);
-    // SET POD DATA STATE WITH QUERY RESULT
-  }
+  fetchData(nodeQuery);
+  
+  // if (defaultView) {
+  //   fetchData(nodeQuery);
+  //   // SET NODE DATA STATE WITH QUERY RESULT
+  // } else {
+  //   fetchData(propQuery);
+  //   // SET POD DATA STATE WITH QUERY RESULT
+  // }
 
   // TO TEST OUT GRAPH
   const options = {};
