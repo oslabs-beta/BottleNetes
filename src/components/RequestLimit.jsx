@@ -1,7 +1,7 @@
-import React from 'react';
-
-const RequestLimit = ({ defaultView, clickedPod }) => {
-  return;
-};
+const RequestLimit = () => {
+  return (
+    <div></div>
+  )
+}
 
 export default RequestLimit;

@@ -1,7 +1,7 @@
-import React from "react";
-
-const Metrics = ({ defaultView, clickedPod }) => {
-  return;
-};
+const Metrics = () => {
+  return(
+    <div></div>
+  )
+}
 
 export default Metrics;

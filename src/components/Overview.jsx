@@ -1,7 +1,7 @@
-import React from 'react';
+const Overview = () => {
+    return (
+        <div></div>
+    )
+}
 
-const Overview = (overviewData) => {
-  return;
-};
-
-export default Overview;
+export default Overview
