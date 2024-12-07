@@ -41,14 +41,14 @@ const ErrorRate = ({ defaultView, clickedPod }) => {
   // GENERIC FETCH REQUEST HELPER FUNCTION, REQUEST SENT IN BODY
   const fetchData = async (query) => {
     try {
+      console.log("attempting to fetch")
       const response = await fetch("http://localhost:3000/errorrate", {
         method: "POST",
-        header: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(query),
       });
       if (response.ok) {
         const data = await response.json();
-        // RETURN RAW DATA, FORMAT FOR STATE ELSEWHERE
         return data;
       } else {
         const data = await response.json();
@@ -56,15 +56,13 @@ const ErrorRate = ({ defaultView, clickedPod }) => {
       }
     } catch (error) {
       console.log(error);
-      alert("There is an error with your request. Could not fetch data");
+      // alert("There is an error with your request. Could not fetch data");
     }
   };
 
   const nodeQuery = {
-    OOMKillsQuery:
-      'count(kubernetes_events{reason="FailedScheduling"}[1h])',
-    evictionsQuery:
-      'count(kubernetes_events{reason="Evicted"}[1h])',
+    OOMKillsQuery: 'count(kubernetes_events{reason="OOMKilled"}[1h])',
+    evictionsQuery: 'count(kubernetes_events{reason="Evicted"}[1h])',
     failedSchedulingQuery:
       'count(kubernetes_events{reason="FailedScheduling"}[1h])',
     totalErrorRate: "sum(rate(kubelet_runtime_operations_errors_total[1h]))",
@@ -81,16 +79,9 @@ const ErrorRate = ({ defaultView, clickedPod }) => {
   // //   livenessFailuresQuery:
   // //     'sum(kube_pod_container_status_liveness_probe_failed == 1{pod = "POD NAME HERE"}) by (pod, namespace)',
   // };
-
+  // console.log(nodeQuery)
   fetchData(nodeQuery);
   
-  // if (defaultView) {
-  //   fetchData(nodeQuery);
-  //   // SET NODE DATA STATE WITH QUERY RESULT
-  // } else {
-  //   fetchData(propQuery);
-  //   // SET POD DATA STATE WITH QUERY RESULT
-  // }
 
   // TO TEST OUT GRAPH
   const options = {};

@@ -72,17 +72,17 @@ const MainContainer = ({ username }) => {
       {!menu && <MenuContainer />}
       <h1>{`Welcome, ${username}`}</h1>
       <div /*grid*/>
-        <Overview overviewData={overviewData} />
-        <RequestLimit defaultView={defaultView} clickedPod={clickedPod} />
+        {/* <Overview overviewData={overviewData} />
+        <RequestLimit defaultView={defaultView} clickedPod={clickedPod} /> */}
         <ErrorRate defaultView={defaultView} clickedPod={clickedPod} />
-        <Metrics defaultView={defaultView} clickedPod={clickedPod} />
+        {/* <Metrics defaultView={defaultView} clickedPod={clickedPod} />
         <PodGrid
           defaultView={defaultView}
           setDefaultView={setDefaultView}
           setClickedPod={setClickedPod}
           metric={metric}
           setMetric={setMetric}
-        />
+        /> */}
       </div>
       <button onClick={() => setDefaultView(true)}>Reset to default</button>
       <button>Ask AI</button>

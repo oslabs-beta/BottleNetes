@@ -3,13 +3,13 @@
 1. download istio by running the following command
 
 ```bash
-curl -L https://istio.io/downloadIstio | sh -\n
+curl -L https://istio.io/downloadIstio | sh -
 ```
 
 2. add istio to your environment path by running the following command
 
 ```bash
-export PATH=$PWD/istio-1.24.1/bin:$PATH\n
+export PATH=$PWD/istio-1.24.1/bin:$PATH
 ```
 
 - make sure the version number matches the one you downloaded
@@ -17,7 +17,7 @@ export PATH=$PWD/istio-1.24.1/bin:$PATH\n
 3. install the istio
 
 ```bash
-istioctl install --set profile=demo -y\n
+istioctl install --set profile=demo -y
 ```
 
 - here, we are using the demo profile, which is suitable for learning and includes add-ons like Prometheus and Grafana.
@@ -25,7 +25,7 @@ istioctl install --set profile=demo -y\n
 4. Enable the automatic sidecar injection by istio by running the following command
 
 ```bash
-kubectl label namespace default istio-injection=enabled\n
+kubectl label namespace default istio-injection=enabled --overwrite=true
 ```
 
 - here, we enable the automatic sidecar injection in the default namespace (usually this is the one we use for our deployment unless otherwise specified).
@@ -242,20 +242,20 @@ kubectl apply -f gateway.yaml
 kubectl apply -f virtualservice.yaml
 ```
 
-4. Port forward local port 8080 to port 80 on the istio ingress gateway service.
+4. Port forward local port 8081 to port 80 on the istio ingress gateway service.
 
 ```bash
-kubectl port-forward svc/istio-ingressgateway -n istio-system 8080:80
+kubectl port-forward svc/istio-ingressgateway -n istio-system 8081:80
 ```
 
 - keep this terminal open and running while we generate fake external traffic.
-- Now, if we send a request to localhost:8080, it would be forwarded to the istio ingress gateway service running on port 80,
+- Now, if we send a request to localhost:8081, it would be forwarded to the istio ingress gateway service running on port 80,
   which in turn will forward the request to the worker pod inside the k8s cluster.
 
 5. Test the gateway by running the following command in another terminal:
 
 ```bash
-curl -v http://localhost:8080/
+curl -v http://localhost:8081/
 ```
 
 - You should see the response from the worker pod.
@@ -305,10 +305,10 @@ curl -v http://localhost:8080/
 6. Now, let's generate some fake external traffic to test the latency metrics.
 
    ```bash
-   for i in {1..50}; do curl http://localhost:8080/
+   for i in {1..50}; do curl http://localhost:8081/
    ```
 
-   - This command will send 50 same requests to the localhost:8080. You can change the number of requests as you like.
+   - This command will send 50 same requests to the localhost:8081. You can change the number of requests as you like.
    - To the pod's point of view, these requests are coming from the outside world (external to the k8s cluster), even though we only send them from our terminal.
 
 ## Check the latency metrics in Prometheus
@@ -328,9 +328,30 @@ curl -v http://localhost:8080/
 
 a. calculate the average latency per pod using the sum and count metrics.
 
+For inbound traffic:
+
 ```sql
 sum(rate(istio_request_duration_milliseconds_sum{reporter="destination"}[1h])) by (pod) /
 sum(rate(istio_request_duration_milliseconds_count{reporter="destination"}[1h])) by (pod)
+```
+
+For outbound traffic:
+
+```sql
+sum(rate(istio_request_duration_milliseconds_sum{reporter="source"}[1h])) by (pod) /
+sum(rate(istio_request_duration_milliseconds_count{reporter="source"}[1h])) by (pod)
+```
+
+For combined traffic (inbound + outbound) latency:
+
+```sql
+(
+  sum(rate(istio_request_duration_milliseconds_sum{reporter="destination"}[1h])) by (pod) +
+  sum(rate(istio_request_duration_milliseconds_sum{reporter="source"}[1h])) by (pod)
+) / (
+  sum(rate(istio_request_duration_milliseconds_count{reporter="destination"}[1h])) by (pod) +
+  sum(rate(istio_request_duration_milliseconds_count{reporter="source"}[1h])) by (pod)
+)
 ```
 
 - sum(rate(istio_request_duration_milliseconds_sum{...}[1h])): Total request duration over the last 1 hr.
@@ -353,6 +374,28 @@ histogram_quantile(
 - histogram_quantile(0.99, ...): Calculates the 99th percentile latency.
 - sum(rate(...[1h])): Computes the rate of requests over the last 1 hr.
 - istio_request_duration_milliseconds_bucket{reporter="destination"}: Filters to use metrics reported by the server-side proxy.
+
+c. Total Number of Requests in the Last Hour:
+
+- inbound traffic:
+
+```sql
+sum(increase(istio_request_duration_milliseconds_count{reporter="destination"}[1h])) by (pod)
+```
+
+- outbound traffic:
+
+```sql
+sum(increase(istio_request_duration_milliseconds_count{reporter="source"}[1h])) by (pod)
+```
+
+- inbound + outbound traffic:
+
+```sql
+sum(increase(istio_request_duration_milliseconds_count{reporter="destination"}[1h])) by (pod)
++
+sum(increase(istio_request_duration_milliseconds_count{reporter="source"}[1h])) by (pod)
+```
 
 Notes:
 
