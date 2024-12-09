@@ -83,6 +83,12 @@ const ErrorRate = ({ defaultView, clickedPod }) => {
   fetchData(nodeQuery);
   
 
+
+
+
+
+  
+
   // TO TEST OUT GRAPH
   const options = {};
   const mockData = {
