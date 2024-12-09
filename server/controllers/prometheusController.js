@@ -19,3 +19,10 @@ export const runPromQLQuery = async (req, res, next) => {
     });
   }
 };
+
+// historical data
+// GET /api/v1/query_range?
+//   query=sum(rate(container_cpu_usage_seconds_total[5m])) by (pod)&
+//   start=2023-10-01T00:00:00Z&
+//   end=2023-10-01T01:00:00Z&
+//   step=30s
