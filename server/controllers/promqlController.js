@@ -29,10 +29,10 @@
  */
 
 const parseTime = (time) => {
-  const timeRegex = /^(\d+)(s|m|h)$/;
+  const timeRegex = /^(\d+)(s|m|h|d)$/;
   const match = time.match(timeRegex);
   if (!match) {
-    throw new Error("Invalid time format. Use format: {number}s|m|h");
+    throw new Error("Invalid time format. Use format: {number}s|m|h|d");
   }
   return time;
 };
