@@ -61,10 +61,10 @@ const ErrorRate = ({ defaultView, clickedPod }) => {
   };
 
   const nodeQuery = {
-    OOMKillsQuery: 'count(kubernetes_events{reason="OOMKilled"}[1h])',
-    evictionsQuery: 'count(kubernetes_events{reason="Evicted"}[1h])',
+    OOMKillsQuery: 'increase(kubernetes_events{reason="OOMKilled"}[1h])',
+    evictionsQuery: 'increase(kubernetes_events{reason="Evicted"}[1h])',
     failedSchedulingQuery:
-      'count(kubernetes_events{reason="FailedScheduling"}[1h])',
+      'increase(kubernetes_events{reason="FailedScheduling"}[1h])',
     totalErrorRate: "sum(rate(kubelet_runtime_operations_errors_total[1h]))",
   };
 
