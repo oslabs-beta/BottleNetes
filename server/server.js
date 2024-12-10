@@ -11,6 +11,7 @@ import {
   generateLatencyQuery,
   queryForLatency,
 } from "./controllers/latencyController.js";
+
 const app = express();
 
 app.use(express.json());
