@@ -18,7 +18,7 @@ const MainContainer = ({ username }) => {
   const [menu, setMenu] = useState(false);
 
   // Default metric set to latency
-  const [metric, setMetric] = useState("latency");
+  // const [metric, setMetric] = useState("latency");
 
   // Determines if the graphs display node data or pod specific data
   const [defaultView, setDefaultView] = useState(true);
@@ -30,7 +30,7 @@ const MainContainer = ({ username }) => {
   const [clickedPod, setClickedPod] = useState("");
 
   // Data of selected pod
-  const [podData, setPodData] = useState([]);
+  // const [podData, setPodData] = useState([]);
 
   // Data of all pods
   const [allData, setAllData] = useState({
@@ -87,6 +87,8 @@ const MainContainer = ({ username }) => {
       clearInterval(intervalID);
     };
   }, []);
+
+  // all pods state array
 
 
 
