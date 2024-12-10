@@ -28,7 +28,11 @@ app.post("/errorrate", generateErrorQuery, queryForErrors, (req, res) => {
   res.status(200).json(res.locals.data);
 });
 
-app.use((err, req, res, next) => {
+app.post("/errorrate", generateErrorQuery, queryForErrors, (req, res) => {
+  res.status(200).json(res.locals.data);
+});
+
+app.use((err, _req, res, _next) => {
   const defaultErr = {
     log: "Express error handler caught unknown middleware error",
     status: 500,
