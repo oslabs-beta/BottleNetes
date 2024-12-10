@@ -23,44 +23,9 @@ ChartJS.register(
   Legend,
 );
 
-const Latency = ({ defaultView, clickedPod }) => {
-  // STATE TO STORE NODE DATA
-  // const [nodeData, setNodeData] = useState({
-  //   peakLatency: [],
-  //   inboundLatency: [],
-  //   outboundLatency:[]
-  // });
-  // STATE TO STORE POD DATA
-  const [podData, setPodData] = useState({
-    peakLatency: [],
-    inboundLatency: [],
-    outboundLatency:[]
-  });
-
-  // GENERIC FETCH REQUEST HELPER FUNCTION, REQUEST SENT IN BODY
-  const fetchData = async (query) => {
-    try {
-      const response = await fetch("http://localhost:3000/latency", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(query),
-      });
-      if (response.ok && response != null) {
-        console.log(response)
-        const data = await response.json();
-        return data;
-      } else {
-        const data = await response.json();
-        console.error(data);
-      }
-    } catch (error) {
-      console.log(error);
-      // alert("There is an error with your request. Could not fetch data");
-    }
-  };
-
-
-
+const Latency = ({ defaultView, clickedPod, podData, setPodData, allData }) => {
+  const nodeLatency = allData.latency;
+  const podLatency = allData.latency;
 
   // TO TEST OUT GRAPH
   const options = {};
@@ -90,9 +55,15 @@ const Latency = ({ defaultView, clickedPod }) => {
     ],
   };
 
+
+  // Render node data if default view is true, pod data otherwise
   return (
     <div>
-      <Line options={options} data={mockData} />;
+      {defaultView ? (
+        <Line options={options} data={mockData} />
+      ) : (
+        <Line options={options} data={mockData} />
+      )}
     </div>
   );
 };

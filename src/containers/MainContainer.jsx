@@ -32,18 +32,25 @@ const MainContainer = ({ username }) => {
   // Data of selected pod
   const [podData, setPodData] = useState([]);
 
+  // Data of all pods
+  const [allData, setAllData] = useState({
+    status: null,
+    requestLimits: null,
+    latency: null
+  });
+
   //helper function
-  const fetchData = async (method, endpoint, body) => {
+  const fetchData = async (method, endpoint, body = null) => {
     try {
-      const response = await fetch(url + endpoint, {
+      const request = {
         method: method,
-        header: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+        header: { "Content-Type": "application/json" }
+      }
+      if (body) request.body = JSON.stringify(body);
+      const response = await fetch(url + endpoint, request);
 
       if (response.ok) {
-        const data = await response.json();
-        setOverviewData(data);
+        return await response.json();
       } else {
         const data = await response.json();
         console.error(data);
@@ -54,20 +61,34 @@ const MainContainer = ({ username }) => {
       // alert("😿 Could not fetch data from the server. TryingToFetch default data");
     }
   };
-  //Used to populate overview component
+
+  // Populate all pod status and pods request limit
+  // Run big fetch once every 30 seconds
   useEffect(() => {
-    const body = {
-      type: "cpu",
-      time: "1d",
-      aggregation: "avg",
-      level: "node",
-    };
-    fetchData("POST", "query", body);
-    const intervalID = setInterval(fetchData, 30000);
+    const bigFetch = async () => {
+      try {
+        const status = fetchData("GET", "api/all-pods-status");
+        const requestLimits = fetchData("GET", "api/all-pods-request-limit");
+        // CHECK ENDPOINT WITH FUNAN
+        const latency = fetchData("GET", "api/all-pods-latency");
+        setAllData({
+          status: status,
+          requestLimits: requestLimits,
+          latency: latency
+        });
+      } catch (error) {
+          console.error("Error fetching initial data:", error);
+      }
+    }
+    bigFetch();
+
+    const intervalID = setInterval(bigFetch, 30000);
     return () => {
       clearInterval(intervalID);
     };
   }, []);
+
+
 
   return (
     <div id="main-container">
@@ -87,6 +108,7 @@ const MainContainer = ({ username }) => {
           clickedPod={clickedPod}
           podData={podData}
           setPodData={setPodData}
+          allData={allData}
         />
         <Metrics
           defaultView={defaultView}
