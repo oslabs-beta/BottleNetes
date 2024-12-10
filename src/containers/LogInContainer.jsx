@@ -46,8 +46,6 @@ const LogInContainer = (props) => {
     }
   };
 
-  
-
   return (
     <div
       id="login-container"
@@ -99,17 +97,17 @@ const LogInContainer = (props) => {
         <div id="button-container" className="flex justify-around">
           <button
             className="hover:border-3 active:border-3 rounded-lg border-2 border-slate-600 bg-slate-700 px-5 py-2 text-slate-300 hover:border-slate-500 hover:bg-slate-600 hover:text-slate-200 active:border-slate-700 active:bg-slate-800 active:text-slate-400"
-            type="submit"
+            type="button"
             id="login-button"
-            onSubmit={handleLogIn}
+            onClick={handleLogIn}
           >
             Log In
           </button>
           <button
             className="hover:border-3 active:border-3 rounded-lg border-2 border-slate-600 bg-slate-700 px-5 py-2 text-slate-300 hover:border-slate-500 hover:bg-slate-600 hover:text-slate-200 active:border-slate-700 active:bg-slate-800 active:text-slate-400"
-            type="submit"
+            type="button"
             id="signup-button"
-            onSubmit={() => handleRedirect("signup")}
+            onClick={() => handleRedirect("signup")}
           >
             Sign Up
           </button>
@@ -117,9 +115,9 @@ const LogInContainer = (props) => {
         <br />
         <button
           className="text-slate-300 hover:text-slate-200 active:text-slate-400"
-          type="submit"
+          type="button"
           id="retrieve-button"
-          onSubmit={() => handleRedirect("forgotpassword")}
+          onClick={() => handleRedirect("forgotpassword")}
         >
           Forgot your Password?
         </button>

@@ -1,30 +1,3 @@
-/**
- * API Documentation for /query endpoint
- *
- * Request Body Schema:
- * {
- *   type: string,      // Required. Options: "cpu" | "memory"
- *   time: string,      // Required. Format: "{number}s" | "{number}m" | "{number}h"
- *                      // Examples: "15s", "5m", "1h"
- *   aggregation: string //  Options: "avg" | "sum" | "max" | "min"
- *      level: string       // Required. Options: "pod, namespace" | "namespace" | "pod" | "cluster"
- * }
- *
- * Example Requests:
- * 1. CPU usage over last 5 minutes:
- *    {
- *      "type": "cpu",
- *      "time": "5m"
- *    }
- *
- * 2. Maximum memory utilization over last hour:
- *    {
- *      "type": "memory",
- *      "time": "1h",
- *      "aggregation": "max"
- *    }
- */
-
 const parseTime = (time) => {
   const timeRegex = /^(\d+)(s|m|h|d)$/;
   const match = time.match(timeRegex);
@@ -34,55 +7,31 @@ const parseTime = (time) => {
   return time;
 };
 
-const getCPUQuery = (timeWindow, aggregationType, level) => {
-  return `
-    ${aggregationType}(rate(container_cpu_usage_seconds_total[${timeWindow}])) by (${level}) /
-    sum(kube_pod_container_resource_requests{resource="cpu"}) by (${level}) * 100
-  `;
+export const generateAllPodsStatusQuery = async (req, res, next) => {
+  const query1 = "kube_pod_status_phase == 1";
+  const query2 = "kube_pod_status_ready == 1";
+  const query3 = "kube_pod_container_info";
+  const query4 = "kube_pod_container_status_restarts_total";
+  const query5 = "kube_pod_info == 1";
+  res.locals.queries = [query1, query2, query3, query4, query5];
+  return next();
 };
 
-const getMemoryQuery = (timeWindow, aggregationType, level) => {
-  return `
-    ${aggregationType}(avg_over_time(container_memory_usage_bytes[${timeWindow}])) by (${level}) /
-    sum(kube_pod_container_resource_requests{resource="memory"}) by (${level}) * 100
-  `;
-};
-
-export const generateQuery = async (req, res, next) => {
-  if (!req.body.type || !req.body.time || !req.body.level) {
-    return next({
-      log: "Error in generateQuery middleware",
-      status: 400,
-      message: { err: "Invalid request, not enough data are provided" },
-    });
-  }
-
-  const { type, time, aggregation, level } = req.body;
-
-  try {
-    const timeWindow = parseTime(time);
-
-    switch (type) {
-      case "cpu":
-        res.locals.query = getCPUQuery(timeWindow, aggregation, level);
-        break;
-      case "memory":
-        res.locals.query = getMemoryQuery(timeWindow, aggregation, level);
-        break;
-      default:
-        return next({
-          log: "Error in generateQuery middleware",
-          status: 400,
-          message: { err: "Invalid request type" },
-        });
-    }
-    console.log("Query generated:", res.locals.query);
-    return next();
-  } catch (error) {
-    return next({
-      log: `Error generating query: ${error}`,
-      status: 400,
-      message: { err: error.message },
-    });
-  }
+export const generateAllPodsRequestLimitQuery = async (req, res, next) => {
+  const query1 = `kube_pod_container_resource_requests{resource="cpu"}`;
+  const query2 = `kube_pod_container_resource_requests{resource="memory"}`;
+  const query3 = `kube_pod_container_resource_limits{resource="cpu"}`;
+  const query4 = `kube_pod_container_resource_limits{resource="memory"}`;
+  const query5 = `
+  ( sum by (pod)(kube_pod_container_resource_requests{resource="cpu"}) )
+  /
+  ( sum by (pod)(kube_pod_container_resource_limits{resource="cpu"}) )
+  * 100`;
+  const query6 = `
+  ( sum by (pod)(kube_pod_container_resource_requests{resource="memory"}) )
+  /
+  ( sum by (pod)(kube_pod_container_resource_limits{resource="memory"}) )
+  * 100`;
+  res.locals.queries = [query1, query2, query3, query4, query5, query6];
+  return next();
 };
