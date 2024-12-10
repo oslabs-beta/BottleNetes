@@ -1,0 +1,39 @@
+/* Overview.css */
+/* Overview.css */
+.overview-container {
+    padding: 2rem;
+    min-height: 100vh;
+    background: #111827;
+    color: white;
+  }
+  
+  .overview-title {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 2rem;
+  }
+  
+  .overview-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+  
+  .overview-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+  }
+  
+  .overview-message {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #cbd5e1;
+  }
+  
+  .overview-error {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #f87171;
+  }
+  
