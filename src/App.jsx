@@ -3,18 +3,15 @@ import LogInContainer from "./containers/LogInContainer";
 import MainContainer from "./containers/MainContainer";
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(true);
+  const [loggedIn, setLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
 
   return (
     <div id="app">
       {!loggedIn ? (
         <LogInContainer
           username={username}
-          password={password}
           setUsername={setUsername}
-          setPassword={setPassword}
           setLoggedIn={setLoggedIn}
         />
       ) : (

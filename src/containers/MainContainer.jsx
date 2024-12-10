@@ -29,6 +29,9 @@ const MainContainer = ({ username }) => {
   // Which pod has been clicked
   const [clickedPod, setClickedPod] = useState("");
 
+  // Data of selected pod
+  const [podData, setPodData] = useState([]);
+
   //helper function
   const fetchData = async (method, endpoint, body) => {
     try {
@@ -48,7 +51,9 @@ const MainContainer = ({ username }) => {
       }
     } catch (error) {
       console.error(error);
-      alert("😿 Could not fetch data from the server. TryingToFetch default data");
+      alert(
+        "😿 Could not fetch data from the server. TryingToFetch default data",
+      );
     }
   };
   //Used to populate overview component
@@ -73,15 +78,32 @@ const MainContainer = ({ username }) => {
       <h1>{`Welcome, ${username}`}</h1>
       <div /*grid*/>
         <Overview overviewData={overviewData} />
-        <RequestLimit defaultView={defaultView} clickedPod={clickedPod} />
-        <ErrorRate defaultView={defaultView} clickedPod={clickedPod} />
-        <Metrics defaultView={defaultView} clickedPod={clickedPod} />
+        <RequestLimit
+          defaultView={defaultView}
+          clickedPod={clickedPod}
+          podData={podData}
+          setPodData={setPodData}
+        />
+        <ErrorRate
+          defaultView={defaultView}
+          clickedPod={clickedPod}
+          podData={podData}
+          setPodData={setPodData}
+        />
+        <Metrics
+          defaultView={defaultView}
+          clickedPod={clickedPod}
+          podData={podData}
+          setPodData={setPodData}
+        />
         <PodGrid
           defaultView={defaultView}
           setDefaultView={setDefaultView}
           setClickedPod={setClickedPod}
           metric={metric}
           setMetric={setMetric}
+          podData={podData}
+          setPodData={setPodData}
         />
       </div>
       <button onClick={() => setDefaultView(true)}>Reset to default</button>
