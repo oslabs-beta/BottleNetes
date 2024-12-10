@@ -1,15 +1,23 @@
 import fetch from "node-fetch";
 
-export const runPromQLQuery = async (req, res, next) => {
+export const runSinglePromQLQuery = async (req, res, next) => {
   const queryStr = res.locals.query;
-  const url = `http://localhost:9090/api/v1/query?query=${encodeURIComponent(
-    queryStr,
-  )}`;
+  let queryUrl;
+  if (res.locals.isHistorical) {
+    queryUrl = `http://localhost:9090/api/v1/query_range?query=${encodeURIComponent(
+      queryStr,
+    )}&start=${res.locals.timeStart}&end=${res.locals.timeEnd}&step=${res.locals.timeStep}`;
+  } else {
+    queryUrl = `http://localhost:9090/api/v1/query?query=${encodeURIComponent(
+      queryStr,
+    )}`;
+  }
+
   try {
-    const response = await fetch(url);
+    const response = await fetch(queryUrl);
     const data = await response.json();
     res.locals.data = data.data.result;
-    console.log("url", url);
+    console.log("queryUrl", queryUrl);
     return next();
   } catch (error) {
     return next({
@@ -18,6 +26,43 @@ export const runPromQLQuery = async (req, res, next) => {
       message: { err: "An error occurred" },
     });
   }
+};
+
+export const runMultiplePromQLQueries = async (req, res, next) => {
+  const queryStrArr = res.locals.queries;
+  const queryUrlArr = [];
+
+  for (const queryStr of queryStrArr) {
+    let queryUrl;
+    if (res.locals.isHistorical) {
+      queryUrl = `http://localhost:9090/api/v1/query_range?query=${encodeURIComponent(
+        queryStr,
+      )}&start=${res.locals.timeStart}&end=${res.locals.timeEnd}&step=${res.locals.timeStep}`;
+    } else {
+      queryUrl = `http://localhost:9090/api/v1/query?query=${encodeURIComponent(
+        queryStr,
+      )}`;
+    }
+    queryUrlArr.push(queryUrl);
+  }
+  console.log("queryUrlArr: ", queryUrlArr);
+
+  res.locals.data = [];
+  for (const queryUrl of queryUrlArr) {
+    try {
+      const response = await fetch(queryUrl);
+      const data = await response.json();
+      res.locals.data.push(data.data.result);
+      console.log("\nfetched data from query url: ", queryUrl);
+    } catch (error) {
+      return next({
+        log: "Error in runMultiplePromQLQueries middleware" + error,
+        status: 500,
+        message: { err: "An error occurred" },
+      });
+    }
+  }
+  return next();
 };
 
 // historical data (use query_range)
