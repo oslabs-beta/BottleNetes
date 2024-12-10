@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 import MenuContainer from "./MenuContainer";
 import Overview from "../components/Overview";
-import ErrorRate from "../components/ErrorRate";
+import Latency from "../components/Latency";
 import Metrics from "../components/Metrics";
 import PodGrid from "../components/PodGrid";
 import RequestLimit from "../components/RequestLimit";
@@ -82,7 +82,7 @@ const MainContainer = ({ username }) => {
           podData={podData}
           setPodData={setPodData}
         />
-        <ErrorRate
+        <Latency
           defaultView={defaultView}
           clickedPod={clickedPod}
           podData={podData}
