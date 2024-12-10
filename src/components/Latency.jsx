@@ -23,30 +23,30 @@ ChartJS.register(
   Legend,
 );
 
-const ErrorRate = ({ defaultView, clickedPod }) => {
+const Latency = ({ defaultView, clickedPod }) => {
   // STATE TO STORE NODE DATA
-  const [nodeData, setNodeData] = useState({
-    OOMKills: 0,
-    evictions: 0,
-    failedScheduling: 0,
-  });
-  // STATE TO STORE POD DATA
-  // const [podData, setPodData] = useState({
-  //   restartCount: 0,
-  //   OOMKills: 0,
-  //   readinessFailures: 0,
-  //   livenessFailures: 0,
+  // const [nodeData, setNodeData] = useState({
+  //   peakLatency: [],
+  //   inboundLatency: [],
+  //   outboundLatency:[]
   // });
+  // STATE TO STORE POD DATA
+  const [podData, setPodData] = useState({
+    peakLatency: [],
+    inboundLatency: [],
+    outboundLatency:[]
+  });
 
   // GENERIC FETCH REQUEST HELPER FUNCTION, REQUEST SENT IN BODY
   const fetchData = async (query) => {
     try {
-      const response = await fetch("http://localhost:3000/errorrate", {
+      const response = await fetch("http://localhost:3000/latency", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(query),
       });
-      if (response.ok) {
+      if (response.ok && response != null) {
+        console.log(response)
         const data = await response.json();
         return data;
       } else {
@@ -59,29 +59,21 @@ const ErrorRate = ({ defaultView, clickedPod }) => {
     }
   };
 
-  const nodeQuery = {
-    OOMKillsQuery: 'increase(kubernetes_events{reason="OOMKilled"}[1h])',
-    evictionsQuery: 'increase(kubernetes_events{reason="Evicted"}[1h])',
-    failedSchedulingQuery:
-      'increase(kubernetes_events{reason="FailedScheduling"}[1h])',
-    totalErrorRate: "sum(rate(kubelet_runtime_operations_errors_total[1h]))",
-  };
 
 
     // Use Effect to run fetch requests every time default view is toggled 
     // or a different pod is clicked into
     useEffect(() => {
       const getData = async () => {
-        if (defaultView) {
-          // need to cleaar and set intervals to get live data?
-          console.log("DEFAULT VIEW IS TRUE, FETCHING NODE DATA");
-          const queryResult = await fetchData(nodeQuery);
-          setNodeData(queryResult);
-          console.log("DONE FETCHING NODE DATA: ", queryResult);
-        }
-        else {
-          console.log("DEFAULT VIEW IS FALSE")
-        }
+        // NEED TO: add a conditional here to see if fetching node or pod data
+        // if (defaultView) {
+          console.log("FETCHING POD DATA");
+          const queryResult = await fetchData(podQuery);
+          console.log("DONE FETCHING DATA: ", queryResult);
+        // }
+        // else {
+        //   console.log("DEFAULT VIEW IS FALSE")
+        // }
       }
       getData();
     }, [defaultView, clickedPod]);
@@ -89,23 +81,13 @@ const ErrorRate = ({ defaultView, clickedPod }) => {
 
 
   // ADD QUERIES HERE TO BE PASSED INTO THE BACKEND?
-  // const propQuery = {
-  // //   restartCountQuery:
-  // //     'kube_pod_container_status_restarts_total{pod="POD NAME HERE"}',
-  // //   OOMKillsQuery:
-  // //     'kube_pod_container_status_terminated_reason{reason="OOMKilled", pod="POD NAME HERE"}',
-  // //   readinessFailuresQuery:
-  // //     'sum(kube_pod_container_status_ready == 0{pod = "POD NAME HERE"}) by (pod, namespace)',
-  // //   livenessFailuresQuery:
-  // //     'sum(kube_pod_container_status_liveness_probe_failed == 1{pod = "POD NAME HERE"}) by (pod, namespace)',
-  // };
-  // console.log(nodeQuery)
+  const podQuery = {
+    inboundLatency: "sum(rate(istio_request_duration_milliseconds_sum{reporter=\"destination\"}[1h])) by (pod) /sum(rate(istio_request_duration_milliseconds_count{reporter=\"destination\"}[1h])) by (pod)",
+    outboundLatency: "sum(rate(istio_request_duration_milliseconds_sum{reporter=\"source\"}[1h])) by (pod) /sum(rate(istio_request_duration_milliseconds_count{reporter=\"source\"}[1h])) by (pod)",
+    peakLatency: "histogram_quantile(0.99,sum(rate(istio_request_duration_milliseconds_bucket{reporter=\"destination\"}[1h])) by (le, pod))",
+  };
+
   
-
-
-
-
-
 
 
   // TO TEST OUT GRAPH
@@ -143,4 +125,4 @@ const ErrorRate = ({ defaultView, clickedPod }) => {
   );
 };
 
-export default ErrorRate;
+export default Latency;

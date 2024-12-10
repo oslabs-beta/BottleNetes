@@ -1,38 +1,36 @@
 import fetch from "node-fetch";
-import moment from "moment";
+// import moment from "moment";
 
-export const generateErrorQuery = (req, res, next) => {
-  console.log("GENERATE ERROR MIDDLEWARE");
+export const generateLatencyQuery = (req, res, next) => {
+  console.log("1. GENERATE ERROR MIDDLEWARE");
   const query = req.body;
   const queriesArr = {};
-  const endTime = moment().toISOString();
-  const startTime = moment().subtract(12, "hours").toISOString();
-  // console.log(query)
-  // console.log("about to enter for loop")
+  // const endTime = moment().toISOString();
+  // const startTime = moment().subtract(12, "hours").toISOString();
+  // CONVERT TIME TO UNIT TIME INSTEAD OF ISO!!
   for (let key in query) {
     queriesArr[key] =
-      `http://localhost:9090/api/v1/query_range?query=${encodeURIComponent(query[key])}&start=${encodeURIComponent(startTime)}&end=${encodeURIComponent(endTime)}&step=3600s`;
+      // `http://localhost:9090/api/v1/query_range?query=${encodeURIComponent(query[key])}&start=${encodeURIComponent(startTime)}&end=${encodeURIComponent(endTime)}&step=3600s`;
+      `http://localhost:9090/api/v1/query?query=${encodeURIComponent(query[key])}`;
   }
-
-  // console.log("exited for loop")
   res.locals.errorRateQueries = queriesArr;
   // console.log(res.locals.errorRateQueries);
-  console.log("DONE WITH GENERATE ERROR MIDDLEWARE");
+  console.log("2. DONE WITH GENERATE ERROR MIDDLEWARE");
   return next();
 };
 
-export const queryForErrors = async (req, res, next) => {
-  console.log("QUERY FOR ERRORS MIDDLEWARE");
+export const queryForLatency = async (req, res, next) => {
+  console.log("3. QUERY FOR ERRORS MIDDLEWARE");
   const { errorRateQueries } = res.locals;
-  const queryResults = {};
+  // const queryResults = {};
   for (const key in errorRateQueries) {
     try {
-      // query
-      console.log(key);
       const response = await fetch(errorRateQueries[key]);
       const data = await response.json();
-      queryResults[key] = data;
       console.log(data.data.result);
+      // NEED TO: add results tp queryResults object
+      // queryResults[key] = data;
+      
     } catch (error) {
       const newErr = {
         message: "Error querying prometheus with: ",
@@ -43,7 +41,8 @@ export const queryForErrors = async (req, res, next) => {
       return next(newErr);
     }
   }
-  console.log("DONE QUERYING PROMETHEUS");
+  // NEED TO: add data to res.locals
+  console.log("4. DONE QUERYING PROMETHEUS");
   return next();
 };
 

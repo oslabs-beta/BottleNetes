@@ -5,7 +5,10 @@ import cookieParser from "cookie-parser";
 
 import { runPromQLQuery } from "./controllers/prometheusController.js";
 import { generateQuery } from "./controllers/promqlController.js";
-import { generateErrorQuery, queryForErrors } from "./controllers/errorRateController.js"
+import {
+  generateLatencyQuery,
+  queryForLatency,
+} from "./controllers/latencyController.js";
 const app = express();
 
 app.use(express.json());
@@ -24,13 +27,10 @@ app.post("/query", generateQuery, runPromQLQuery, (req, res) => {
   res.status(200).json(res.locals.data);
 });
 
-app.post("/errorrate", generateErrorQuery, queryForErrors, (req, res) => {
+app.post("/latency", generateLatencyQuery, queryForLatency, (req, res) => {
   res.status(200).json(res.locals.data);
 });
 
-app.post("/errorrate", generateErrorQuery, queryForErrors, (req, res) => {
-  res.status(200).json(res.locals.data);
-});
 
 app.use((err, _req, res, _next) => {
   const defaultErr = {
