@@ -22,8 +22,7 @@ ChartJS.register(
   Legend,
 );
 
-const RequestLimit = ({ clickedPod }) => {
-  const [podData, setPodData] = useState([]);
+const RequestLimit = ({ defaultView, clickedPod, podData, setPodData }) => {
 
   useEffect(() => {
     const fetchInfo = async () => {
@@ -72,7 +71,7 @@ const RequestLimit = ({ clickedPod }) => {
   };
 
   let data;
-  if (podData) {
+  if (podData.length) {
     data = {
       // basic stuff mostly taken from chartjs docs, I think it will need to be changed
       labels: podData.labels,
@@ -100,7 +99,10 @@ const RequestLimit = ({ clickedPod }) => {
 };
 
 RequestLimit.propTypes = {
+  defaultView: PropTypes.bool,
   clickedPod: PropTypes.string,
+  setPodData: PropTypes.func,
+  podData: PropTypes.array,
 };
 
 export default RequestLimit;

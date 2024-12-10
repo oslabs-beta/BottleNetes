@@ -3,12 +3,10 @@ import { useEffect, useState } from "react";
 import Pod from "./Pod";
 
 const PodGrid = (props) => {
-  const { setClickedPod, metric, setMetric } =
+  const { setClickedPod, metric, setMetric, podData, setPodData } =
     props;
   // Placeholder for actual url
   const url = "http://localhost:3000";
-  // State to hold all pod data
-  const [podData, setPodData] = useState([]);
 
   // Function to fetch pod data from server
   const fetchInfo = async (type, time, level) => {
@@ -105,6 +103,8 @@ PodGrid.propTypes = {
   setClickedPod: PropTypes.func,
   metric: PropTypes.string,
   setMetric: PropTypes.func,
+  podData: PropTypes.array,
+  setPodData: PropTypes.func
 };
 
 export default PodGrid;
