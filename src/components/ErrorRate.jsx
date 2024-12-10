@@ -25,11 +25,11 @@ ChartJS.register(
 
 const ErrorRate = ({ defaultView, clickedPod }) => {
   // STATE TO STORE NODE DATA
-  // const [nodeData, setNodeData] = useState({
-  //   OOMKills: 0,
-  //   evictions: 0,
-  //   failedScheduling: 0,
-  // });
+  const [nodeData, setNodeData] = useState({
+    OOMKills: 0,
+    evictions: 0,
+    failedScheduling: 0,
+  });
   // STATE TO STORE POD DATA
   // const [podData, setPodData] = useState({
   //   restartCount: 0,
@@ -41,7 +41,6 @@ const ErrorRate = ({ defaultView, clickedPod }) => {
   // GENERIC FETCH REQUEST HELPER FUNCTION, REQUEST SENT IN BODY
   const fetchData = async (query) => {
     try {
-      console.log("attempting to fetch")
       const response = await fetch("http://localhost:3000/errorrate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -68,6 +67,27 @@ const ErrorRate = ({ defaultView, clickedPod }) => {
     totalErrorRate: "sum(rate(kubelet_runtime_operations_errors_total[1h]))",
   };
 
+
+    // Use Effect to run fetch requests every time default view is toggled 
+    // or a different pod is clicked into
+    useEffect(() => {
+      const getData = async () => {
+        if (defaultView) {
+          // need to cleaar and set intervals to get live data?
+          console.log("DEFAULT VIEW IS TRUE, FETCHING NODE DATA");
+          const queryResult = await fetchData(nodeQuery);
+          setNodeData(queryResult);
+          console.log("DONE FETCHING NODE DATA: ", queryResult);
+        }
+        else {
+          console.log("DEFAULT VIEW IS FALSE")
+        }
+      }
+      getData();
+    }, [defaultView, clickedPod]);
+
+
+
   // ADD QUERIES HERE TO BE PASSED INTO THE BACKEND?
   // const propQuery = {
   // //   restartCountQuery:
@@ -80,14 +100,13 @@ const ErrorRate = ({ defaultView, clickedPod }) => {
   // //     'sum(kube_pod_container_status_liveness_probe_failed == 1{pod = "POD NAME HERE"}) by (pod, namespace)',
   // };
   // console.log(nodeQuery)
-  fetchData(nodeQuery);
   
 
 
 
 
 
-  
+
 
   // TO TEST OUT GRAPH
   const options = {};
@@ -106,12 +125,12 @@ const ErrorRate = ({ defaultView, clickedPod }) => {
       },
       {
         label: "Example 3",
-        data: [10, 50, 60],
+        data: [10, 80, 60],
         borderColor: "red",
       },
       {
         label: "Example 4",
-        data: [10, 50, 60],
+        data: [10, 0, 60],
         borderColor: "red",
       },
     ],
