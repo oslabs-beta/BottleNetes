@@ -1,0 +1,153 @@
+/* Main Overview Container */
+.overview-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  background: #1e293b;
+  border-radius: 12px;
+  color: white;
+  margin-bottom: 2rem;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  gap: 2rem;
+}
+
+/* Cluster Name as a Thin Line */
+.thin-line {
+  width: 100%;
+  padding: 0.5rem 2rem;
+  background: linear-gradient(135deg, #3b82f6, #1e40af);
+  text-align: center;
+  border-radius: 8px;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.dynamic-text {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  font-size: 1.25rem;
+  font-weight: bold;
+}
+
+/* Metrics Row */
+.overview-metrics-row {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+/* Metric Cards */
+.overview-card {
+  padding: 1.5rem 2rem;
+  width: 200px;
+  min-height: 150px;
+  text-align: center;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Card Titles and Values */
+.overview-card h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.overview-value {
+  font-size: 1.75rem;
+  font-weight: 800;
+  transition: all 0.3s ease;
+}
+
+/* Error and Loading Messages */
+.overview-message,
+.overview-error {
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.overview-error {
+  color: #f87171;
+}
+
+/* Animations */
+
+/* Fade-In Effect */
+.fade-in {
+  animation: fadeIn 0.8s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Blinking Loading Text */
+.blinking {
+  animation: blinkingText 1.5s infinite;
+}
+
+@keyframes blinkingText {
+  0% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.3;
+  }
+}
+
+/* Pulse Effect on Update */
+.pulse {
+  animation: pulseUpdate 0.3s ease-out;
+}
+
+@keyframes pulseUpdate {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Unique Background Colors for Metrics */
+.overview-nodes {
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);  /* Bright Blue */
+}
+
+.overview-pods {
+  background: linear-gradient(135deg, #1e3a8a, #4338ca);  /* Deep Indigo */
+}
+
+.overview-containers {
+  background: linear-gradient(135deg, #3730a3, #312e81);  /* Violet */
+}
+
+/* Cluster Name as a Thin Line */
+.thin-line {
+  width: 100%;
+  padding: 0.5rem 2rem;
+  background: linear-gradient(135deg, #3b82f6, #1e40af);  /* Light Blue */
+  text-align: center;
+  border-radius: 8px;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+
