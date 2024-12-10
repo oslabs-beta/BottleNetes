@@ -2,7 +2,6 @@ import fetch from "node-fetch";
 // import moment from "moment";
 
 export const generateLatencyQuery = (req, res, next) => {
-  console.log("1. GENERATE ERROR MIDDLEWARE");
   const query = req.body;
   const queriesArr = {};
   // const endTime = moment().toISOString();

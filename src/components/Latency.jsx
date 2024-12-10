@@ -61,34 +61,6 @@ const Latency = ({ defaultView, clickedPod }) => {
 
 
 
-    // Use Effect to run fetch requests every time default view is toggled 
-    // or a different pod is clicked into
-    useEffect(() => {
-      const getData = async () => {
-        // NEED TO: add a conditional here to see if fetching node or pod data
-        // if (defaultView) {
-          console.log("FETCHING POD DATA");
-          const queryResult = await fetchData(podQuery);
-          console.log("DONE FETCHING DATA: ", queryResult);
-        // }
-        // else {
-        //   console.log("DEFAULT VIEW IS FALSE")
-        // }
-      }
-      getData();
-    }, [defaultView, clickedPod]);
-
-
-
-  // ADD QUERIES HERE TO BE PASSED INTO THE BACKEND?
-  const podQuery = {
-    inboundLatency: "sum(rate(istio_request_duration_milliseconds_sum{reporter=\"destination\"}[1h])) by (pod) /sum(rate(istio_request_duration_milliseconds_count{reporter=\"destination\"}[1h])) by (pod)",
-    outboundLatency: "sum(rate(istio_request_duration_milliseconds_sum{reporter=\"source\"}[1h])) by (pod) /sum(rate(istio_request_duration_milliseconds_count{reporter=\"source\"}[1h])) by (pod)",
-    peakLatency: "histogram_quantile(0.99,sum(rate(istio_request_duration_milliseconds_bucket{reporter=\"destination\"}[1h])) by (le, pod))",
-  };
-
-  
-
 
   // TO TEST OUT GRAPH
   const options = {};
