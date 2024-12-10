@@ -47,13 +47,11 @@ const MainContainer = ({ username }) => {
       } else {
         const data = await response.json();
         console.error(data);
-        alert(response.statusText);
+        // alert(response.statusText);
       }
     } catch (error) {
       console.error(error);
-      alert(
-        "😿 Could not fetch data from the server. TryingToFetch default data",
-      );
+      // alert("😿 Could not fetch data from the server. TryingToFetch default data");
     }
   };
   //Used to populate overview component

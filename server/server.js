@@ -5,14 +5,30 @@ import cookieParser from "cookie-parser";
 
 import { runPromQLQuery } from "./controllers/prometheusController.js";
 import { generateQuery } from "./controllers/promqlController.js";
-
+import { generateErrorQuery, queryForErrors } from "./controllers/errorRateController.js"
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173'); 
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  next();
+});
+
 app.post("/query", generateQuery, runPromQLQuery, (req, res) => {
+  res.status(200).json(res.locals.data);
+});
+
+app.post("/errorrate", generateErrorQuery, queryForErrors, (req, res) => {
+  res.status(200).json(res.locals.data);
+});
+
+app.post("/errorrate", generateErrorQuery, queryForErrors, (req, res) => {
   res.status(200).json(res.locals.data);
 });
 
