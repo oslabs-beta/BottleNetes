@@ -12,19 +12,19 @@ import RequestLimit from "../components/RequestLimit";
 // const [podData, setPodData] = useState({});
 
 const MainContainer = ({ username }) => {
-  const url = "http:/localhost:3000/";
+  const url = "http://localhost:3000/";
 
   // State for when the menu button is clicked
   const [menu, setMenu] = useState(false);
 
   // Default metric set to latency
-  const [metric, setMetric] = useState("latency");
+  // const [metric, setMetric] = useState("latency");
 
   // Determines if the graphs display node data or pod specific data
   const [defaultView, setDefaultView] = useState(true);
 
   // Overview data to be displayed at the very top
-  const [overviewData, setOverviewData] = useState({});
+  // const [overviewData, setOverviewData] = useState({});
 
   // Which pod has been clicked
   const [clickedPod, setClickedPod] = useState("");
@@ -32,38 +32,68 @@ const MainContainer = ({ username }) => {
   // Data of selected pod
   const [podData, setPodData] = useState([]);
 
-  //helper function
-  const fetchData = async (method, endpoint, body) => {
-    try {
-      const response = await fetch(url + endpoint, {
-        method: method,
-        header: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+  // Data of all pods
+  const [allData, setAllData] = useState({
+    podsStatuses: null,
+    requestLimits: null,
+    latency: null,
+    allNodes: null,
+  });
 
-      if (response.ok) {
-        const data = await response.json();
-        setOverviewData(data);
-      } else {
-        const data = await response.json();
-        console.error(data);
-        // alert(response.statusText);
-      }
+  const [isLoading, setIsLoading] = useState(true);
+
+  //helper function
+  const fetchData = async (method, endpoint, body = null) => {
+    try {
+      const request = {
+        method: method,
+        headers: { "Content-Type": "application/json" },
+      };
+      if (body) request.body = JSON.stringify(body);
+      const response = await fetch(url + endpoint, request);
+
+      return await response.json();
     } catch (error) {
-      console.error(error);
-      // alert("😿 Could not fetch data from the server. TryingToFetch default data");
+      console.error("Fetch error:", error);
+      return null;
     }
   };
-  //Used to populate overview component
+
+  // Populate all pod status and pods request limit
+  // Run big fetch once every 30 seconds
   useEffect(() => {
-    const body = {
-      type: "cpu",
-      time: "1d",
-      aggregation: "avg",
-      level: "node",
+    const bigFetch = async () => {
+      setIsLoading(true);
+      try {
+        const [status, requestLimits] = await Promise.all([
+          fetchData("GET", "api/all-pods-status"),
+          fetchData("GET", "api/all-pods-request-limit"),
+        ]);
+
+        const fakeNodeData = {
+          allNodes: [
+            {
+              nodeName: "Minikube",
+              clusterName: "Minikube",
+            },
+          ],
+        };
+
+        setAllData({
+          podsStatuses: status || null,
+          requestLimits: requestLimits || null,
+          // latency: null,
+          allNodes: fakeNodeData,
+        });
+      } catch (error) {
+        console.error("Error fetching initial data:", error);
+      } finally {
+        setIsLoading(false);
+      }
     };
-    fetchData("POST", "query", body);
-    const intervalID = setInterval(fetchData, 30000);
+    bigFetch();
+
+    const intervalID = setInterval(bigFetch, 30000);
     return () => {
       clearInterval(intervalID);
     };
@@ -75,8 +105,12 @@ const MainContainer = ({ username }) => {
       {!menu && <MenuContainer />}
       <h1>{`Welcome, ${username}`}</h1>
       <div /*grid*/>
-        <Overview overviewData={overviewData} />
-        <RequestLimit
+        <Overview
+          podsStatuses={allData.podsStatuses}
+          allNodes={allData.allNodes}
+          isLoading={isLoading}
+        />
+        {/* <RequestLimit
           defaultView={defaultView}
           clickedPod={clickedPod}
           podData={podData}
@@ -87,6 +121,7 @@ const MainContainer = ({ username }) => {
           clickedPod={clickedPod}
           podData={podData}
           setPodData={setPodData}
+          allData={allData}
         />
         <Metrics
           defaultView={defaultView}
@@ -102,7 +137,7 @@ const MainContainer = ({ username }) => {
           setMetric={setMetric}
           podData={podData}
           setPodData={setPodData}
-        />
+        /> */}
       </div>
       <button onClick={() => setDefaultView(true)}>Reset to default</button>
       <button>Ask AI</button>

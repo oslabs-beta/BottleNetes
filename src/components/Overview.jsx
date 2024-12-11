@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Overview.css";
 
-const Overview = () => {
+const Overview = ({ podsStatuses, allNodes, isLoading }) => {
   const [overview, setOverview] = useState({
     clusterName: "Loading...",
     nodes: 0,
@@ -9,33 +9,21 @@ const Overview = () => {
     containers: 0,
   });
 
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchMetrics = async () => {
-      try {
-        setLoading(true);
-        console.log("🏃💨 Fetching data...");
+    try {
+      console.log("🏃💨 Fetching data to overview component");
 
-        /** ---------------------- COMMENTED OUT API CALLS ---------------------- **/
-        /*
-        const podsResponse = await fetch("http://localhost:3000/api/all-pods-status");
-        if (!podsResponse.ok) throw new Error("❌ Failed to fetch pod data");
-
-        const podsData = await podsResponse.json();
-        const podCount = podsData.allPodsStatus.length;
-        const containerCount = podsData.allPodsStatus.reduce(
+      if (!isLoading && podsStatuses?.allPodsStatus && allNodes?.allNodes) {
+        const podCount = podsStatuses.allPodsStatus.length;
+        const containerCount = podsStatuses.allPodsStatus.reduce(
           (acc, pod) => acc + pod.containerCount,
-          0
+          0,
         );
-        const clusterName = podsData.allPodsStatus[0]?.clusterName || "Unknown";
-
-        const nodesResponse = await fetch("http://localhost:3000/api/all-nodes");
-        if (!nodesResponse.ok) throw new Error("❌ Failed to fetch node data");
-
-        const nodesData = await nodesResponse.json();
-        const nodeCount = nodesData.allNodes.length;
+        const clusterName =
+          allNodes.allNodes[0]?.clusterName || "Unknown Cluster Name";
+        const nodeCount = allNodes.allNodes.length;
 
         setOverview({
           clusterName,
@@ -43,33 +31,20 @@ const Overview = () => {
           pods: podCount,
           containers: containerCount,
         });
-        */
-
-        /** ---------------------- FAKE DATA ---------------------- **/
-        setTimeout(() => {
-          setOverview({
-            clusterName: "Dynamic-Cluster-Name-001",
-            nodes: 5,
-            pods: 12,
-            containers: 25,
-          });
-          console.log("✅ Data successfully loaded!");
-          setLoading(false);
-        }, 1000);
-      } catch (err) {
-        console.error("😵 Error fetching metrics:", err);
-        setError(err.message || "An unknown error occurred.");
-        setLoading(false);
+        console.log("✅ Data successfully loaded to overview component!");
       }
-    };
+    } catch (err) {
+      console.error("😵 Error fetching metrics:", err);
+      setError(err.message || "An unknown error occurred.");
+    }
+  }, [isLoading, podsStatuses, allNodes]);
 
-    fetchMetrics();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="overview-container fade-in">
-        <p className="overview-message blinking">⏳ Loading Cluster Overview...</p>
+        <p className="overview-message blinking">
+          ⏳ Loading Cluster Overview...
+        </p>
       </div>
     );
   }
@@ -85,13 +60,13 @@ const Overview = () => {
   return (
     <div className="overview-container fade-in">
       <div className="overview-cluster thin-line">
-        <h2 style={{ fontWeight: 600 }}>Cluster Name</h2> 
+        <h2 style={{ fontWeight: 600 }}>Cluster Name</h2>
         <p className="overview-value dynamic-text">{overview.clusterName}</p>
       </div>
 
       <div className="overview-metrics-row">
         <div className="overview-card overview-nodes">
-          <h2>No. of Nodes</h2>
+          <h2>No. of Node</h2>
           <p className="overview-value">{overview.nodes}</p>
         </div>
 
