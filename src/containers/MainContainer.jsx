@@ -34,9 +34,10 @@ const MainContainer = ({ username }) => {
 
   // Data of all pods
   const [allData, setAllData] = useState({
-    status: null,
+    allPodsStatus: null,
     requestLimits: null,
-    latency: null
+    latency: null,
+    allNodes: null
   });
 
   //helper function
@@ -71,10 +72,12 @@ const MainContainer = ({ username }) => {
         const requestLimits = fetchData("GET", "api/all-pods-request-limit");
         // CHECK ENDPOINT WITH FUNAN
         const latency = fetchData("GET", "api/all-pods-latency");
+        const allNodes = fetchData("GET", "api/all-nodes");
         setAllData({
-          status: status,
+          allPodsStatus: status,
           requestLimits: requestLimits,
-          latency: latency
+          latency: latency,
+          allNodes: allNodes
         });
       } catch (error) {
           console.error("Error fetching initial data:", error);
@@ -98,7 +101,7 @@ const MainContainer = ({ username }) => {
       {!menu && <MenuContainer />}
       <h1>{`Welcome, ${username}`}</h1>
       <div /*grid*/>
-        <Overview overviewData={overviewData} />
+        <Overview allPodsStatus={allData.allPodsStatus} allNodes={allData.allPodsStatus} />
         <RequestLimit
           defaultView={defaultView}
           clickedPod={clickedPod}

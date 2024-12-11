@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Overview.css";
 
-const Overview = () => {
+const Overview = ({ allPodsStatus, allNodes }) => {
   const [overview, setOverview] = useState({
     clusterName: "Loading...",
     nodes: 0,
@@ -69,7 +69,9 @@ const Overview = () => {
   if (loading) {
     return (
       <div className="overview-container fade-in">
-        <p className="overview-message blinking">⏳ Loading Cluster Overview...</p>
+        <p className="overview-message blinking">
+          ⏳ Loading Cluster Overview...
+        </p>
       </div>
     );
   }
@@ -85,7 +87,7 @@ const Overview = () => {
   return (
     <div className="overview-container fade-in">
       <div className="overview-cluster thin-line">
-        <h2 style={{ fontWeight: 600 }}>Cluster Name</h2> 
+        <h2 style={{ fontWeight: 600 }}>Cluster Name</h2>
         <p className="overview-value dynamic-text">{overview.clusterName}</p>
       </div>
 
