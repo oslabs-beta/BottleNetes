@@ -19,7 +19,7 @@ const Overview = ({ allPodsStatus, allNodes }) => {
         console.log("🏃💨 Fetching data...");
 
         /** ---------------------- COMMENTED OUT API CALLS ---------------------- **/
-        /*
+      
         const podsResponse = await fetch("http://localhost:3000/api/all-pods-status");
         if (!podsResponse.ok) throw new Error("❌ Failed to fetch pod data");
 
@@ -43,7 +43,6 @@ const Overview = ({ allPodsStatus, allNodes }) => {
           pods: podCount,
           containers: containerCount,
         });
-        */
 
         /** ---------------------- FAKE DATA ---------------------- **/
         setTimeout(() => {
