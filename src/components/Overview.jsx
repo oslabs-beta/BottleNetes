@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Overview.css";
 
-const Overview = ({ allPodsStatus, allNodes }) => {
+const Overview = ({ podsStatuses, allNodes }) => {
   const [overview, setOverview] = useState({
     clusterName: "Loading...",
     nodes: 0,
@@ -13,56 +13,37 @@ const Overview = ({ allPodsStatus, allNodes }) => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchMetrics = async () => {
-      try {
-        setLoading(true);
-        console.log("🏃💨 Fetching data...");
+    try {
+      setLoading(true);
+      console.log("🏃💨 Fetching data...");
 
-        /** ---------------------- COMMENTED OUT API CALLS ---------------------- **/
-      
-        const podsResponse = await fetch("http://localhost:3000/api/all-pods-status");
-        if (!podsResponse.ok) throw new Error("❌ Failed to fetch pod data");
-
-        const podsData = await podsResponse.json();
-        const podCount = podsData.allPodsStatus.length;
-        const containerCount = podsData.allPodsStatus.reduce(
+      if (podsStatuses.allPodsStatus && allNodes.allNodes) {
+        const podCount = podsStatuses.allPodsStatus.length;
+        const containerCount = podsStatuses.allPodsStatus.reduce(
           (acc, pod) => acc + pod.containerCount,
-          0
+          0,
         );
-        const clusterName = podsData.allPodsStatus[0]?.clusterName || "Unknown";
+        const clusterName = "MiniKube";
+        // Need to populate cluster name here, currently hard coded- COME BACK TO
+        const nodeCount = allNodes.allNodes.length;
+        // podsStatuses.allPodsStatus[0]?.clusterName || "Unknown";
 
-        const nodesResponse = await fetch("http://localhost:3000/api/all-nodes");
-        if (!nodesResponse.ok) throw new Error("❌ Failed to fetch node data");
-
-        const nodesData = await nodesResponse.json();
-        const nodeCount = nodesData.allNodes.length;
-
-        setOverview({
-          clusterName,
-          nodes: nodeCount,
-          pods: podCount,
-          containers: containerCount,
-        });
-
-        /** ---------------------- FAKE DATA ---------------------- **/
         setTimeout(() => {
           setOverview({
-            clusterName: "Dynamic-Cluster-Name-001",
-            nodes: 5,
-            pods: 12,
-            containers: 25,
+            clusterName: clusterName,
+            nodes: nodeCount,
+            pods: podCount,
+            containers: containerCount,
           });
           console.log("✅ Data successfully loaded!");
           setLoading(false);
-        }, 1000);
-      } catch (err) {
-        console.error("😵 Error fetching metrics:", err);
-        setError(err.message || "An unknown error occurred.");
-        setLoading(false);
+        }, 3000);
       }
-    };
-
-    fetchMetrics();
+    } catch (err) {
+      console.error("😵 Error fetching metrics:", err);
+      setError(err.message || "An unknown error occurred.");
+      setLoading(false);
+    }
   }, []);
 
   if (loading) {

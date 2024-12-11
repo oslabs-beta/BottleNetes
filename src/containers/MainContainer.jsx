@@ -24,7 +24,7 @@ const MainContainer = ({ username }) => {
   const [defaultView, setDefaultView] = useState(true);
 
   // Overview data to be displayed at the very top
-  const [overviewData, setOverviewData] = useState({});
+  // const [overviewData, setOverviewData] = useState({});
 
   // Which pod has been clicked
   const [clickedPod, setClickedPod] = useState("");
@@ -34,7 +34,7 @@ const MainContainer = ({ username }) => {
 
   // Data of all pods
   const [allData, setAllData] = useState({
-    allPodsStatus: null,
+    podsStatuses: null,
     requestLimits: null,
     latency: null,
     allNodes: null
@@ -71,13 +71,26 @@ const MainContainer = ({ username }) => {
         const status = fetchData("GET", "api/all-pods-status");
         const requestLimits = fetchData("GET", "api/all-pods-request-limit");
         // CHECK ENDPOINT WITH FUNAN
-        const latency = fetchData("GET", "api/all-pods-latency");
-        const allNodes = fetchData("GET", "api/all-nodes");
+        // const latency = fetchData("GET", "api/all-pods-latency");
+        // const allNodes = fetchData("GET", "api/all-nodes");
+        // fake data used, to be replaced with the above
+        const fakeNodeData = 
+        {
+          "allNodes": [
+            {
+            "nodeName": "Minikube",
+            "clusterName": "Minikube"
+            }
+          ]
+        }
+        // const allNodes = fakeNodeData;
+        
         setAllData({
-          allPodsStatus: status,
+          podsStatuses: status,
           requestLimits: requestLimits,
-          latency: latency,
-          allNodes: allNodes
+          // latency: latency,
+          // allNodes: allNodes,
+          allNodes: fakeNodeData
         });
       } catch (error) {
           console.error("Error fetching initial data:", error);
@@ -101,7 +114,10 @@ const MainContainer = ({ username }) => {
       {!menu && <MenuContainer />}
       <h1>{`Welcome, ${username}`}</h1>
       <div /*grid*/>
-        <Overview allPodsStatus={allData.allPodsStatus} allNodes={allData.allPodsStatus} />
+        <Overview
+          podsStatuses={allData.podsStatuses}
+          allNodes={allData.allNodes}
+        />
         <RequestLimit
           defaultView={defaultView}
           clickedPod={clickedPod}
