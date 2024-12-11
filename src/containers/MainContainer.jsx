@@ -33,12 +33,7 @@ const MainContainer = ({ username }) => {
   const [podData, setPodData] = useState([]);
 
   // Data of all pods
-  const [allData, setAllData] = useState({
-    podsStatuses: null,
-    requestLimits: null,
-    latency: null,
-    allNodes: null,
-  });
+  const [allData, setAllData] = useState({});
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -64,11 +59,43 @@ const MainContainer = ({ username }) => {
   useEffect(() => {
     const bigFetch = async () => {
       setIsLoading(true);
+
+      console.log("Fetching data...");
+
+      const bodyResourceUsageOnevalueCPU = {
+        "type": "cpu",
+        "time": "1m",
+        "level": "pod"
+      };
+
+      const bodyResourceUsageOnevalueMemory = {
+        "type": "memory",
+        "time": "1m",
+        "level": "pod"
+      };
+
+      const bodyResourceUsageHistoricalCPU = {
+        "type": "cpu",
+        "timeEnd": Math.floor(Date.now() / 1000).toString(),
+        "timeStart": (Math.floor(Date.now() / 1000) - 86400).toString(),
+        "timeStep": "3600",
+        "level": "pod"
+      };
+
+      const bodyResourceUsageHistoricalMemory = {
+        "type": "memory",
+        "timeEnd": Math.floor(Date.now() / 1000).toString(),
+        "timeStart": (Math.floor(Date.now() / 1000) - 86400).toString(),
+        "timeStep": "3600",
+        "level": "pod"
+      };
+
+      const bodyLatencyAppRequestOneValue = {
+        "time": "1m",
+        "level": "pod",
+      };
+
       try {
-        const [status, requestLimits] = await Promise.all([
-          fetchData("GET", "api/all-pods-status"),
-          fetchData("GET", "api/all-pods-request-limit"),
-        ]);
 
         const fakeNodeData = {
           allNodes: [
@@ -78,12 +105,55 @@ const MainContainer = ({ username }) => {
             },
           ],
         };
+        
+        const [
+          status,
+          requestLimits,
+          cpuUsageOneValue,
+          memoryUsageOneValue,
+          cpuUsageHistorical,
+          memoryUsageHistorical,
+          latencyAppRequestOneValue,
+        ] = await Promise.all([
+          fetchData("GET", "api/all-pods-status"),
+          fetchData("GET", "api/all-pods-request-limit"),
+          // fetchData("GET", "api/allnodes") CURRENTLY POPULATED WITH FAKE DATA
+          fetchData(
+            "POST",
+            "api/resource-usage-onevalue",
+            bodyResourceUsageOnevalueCPU,
+          ),
+          fetchData(
+            "POST",
+            "api/resource-usage-onevalue",
+            bodyResourceUsageOnevalueMemory,
+          ),
+          fetchData(
+            "POST",
+            "api/resource-usage-historical",
+            bodyResourceUsageHistoricalCPU,
+          ),
+          fetchData(
+            "POST",
+            "api/resource-usage-historical",
+            bodyResourceUsageHistoricalMemory,
+          ),
+          fetchData(
+            "POST",
+            "api/latency-app-request-onevalue",
+            bodyLatencyAppRequestOneValue,
+          ),
+        ]);
 
         setAllData({
           podsStatuses: status || null,
           requestLimits: requestLimits || null,
-          // latency: null,
           allNodes: fakeNodeData,
+          cpuUsageOneValue: cpuUsageOneValue || null,
+          memoryUsageOneValue: memoryUsageOneValue || null,
+          cpuUsageHistorical: cpuUsageHistorical || null,
+          memoryUsageHistorical: memoryUsageHistorical || null,
+          latencyAppRequestOneValue: latencyAppRequestOneValue || null,
         });
       } catch (error) {
         console.error("Error fetching initial data:", error);
@@ -110,34 +180,32 @@ const MainContainer = ({ username }) => {
           allNodes={allData.allNodes}
           isLoading={isLoading}
         />
-        {/* <RequestLimit
+        <RequestLimit
           defaultView={defaultView}
           clickedPod={clickedPod}
-          podData={podData}
-          setPodData={setPodData}
+          requestLimits={allData.requestLimits}
         />
         <Latency
           defaultView={defaultView}
           clickedPod={clickedPod}
-          podData={podData}
-          setPodData={setPodData}
-          allData={allData}
+          latencyAppRequestOneValue={allData.latencyAppRequestOneValue}
         />
         <Metrics
           defaultView={defaultView}
           clickedPod={clickedPod}
-          podData={podData}
-          setPodData={setPodData}
+          cpuUsageHistorical={allData.cpuUsageHistorical}
+          memoryUsageHistorical={allData.memoryUsageHistorical}
         />
         <PodGrid
           defaultView={defaultView}
           setDefaultView={setDefaultView}
           setClickedPod={setClickedPod}
-          metric={metric}
-          setMetric={setMetric}
-          podData={podData}
-          setPodData={setPodData}
-        /> */}
+          podStatuses={allData.podStatuses}
+          requestLimits={allData.requestLimits}
+          cpuUsageOneValue={allData.cpuUsageOneValue}
+          memoryUsageOneValue={allData.memoryUsageOneValue}
+          latencyAppRequestOneValue={allData.latencyAppRequestOneValue}
+        />
       </div>
       <button onClick={() => setDefaultView(true)}>Reset to default</button>
       <button>Ask AI</button>
