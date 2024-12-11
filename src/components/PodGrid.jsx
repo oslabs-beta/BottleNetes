@@ -3,69 +3,67 @@ import { useEffect, useState } from "react";
 import Pod from "./Pod";
 
 const PodGrid = (props) => {
-  const { setClickedPod, metric, setMetric, podData, setPodData } =
-    props;
-  // Placeholder for actual url
-  const url = "http://localhost:3000";
+  const {
+    defaultView,
+    setDefaultView,
+    setClickedPod,
+    podStatuses,
+    requestLimits,
+    cpuUsageOneValue,
+    memoryUsageOneValue,
+    latencyAppRequestOneValue,
+  } = props;
 
-  // Function to fetch pod data from server
-  const fetchInfo = async (type, time, level) => {
-    const body = {
-      type,
-      time,
-      aggregation: "avg",
-      level,
-    };
-    try {
-      const response = await fetch(url + "query", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
+  // As buttons are clicked, displayedData state will be updated to hold the correct information
+  // const [displayedData, setDisplayedData] = useState([]);
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-        const mappedData = data.map((el) => [el.metric, el.value]);
-        setPodData(mappedData);
-        /*
-          Data Structure:
-          el: {
-            metric: { pod }
-            value: [num (max?), str (value?)]
-          }
-          */
-      } else {
-        const data = await response.json();
-        console.error(data);
-        alert("😭 Failed to fetch data. Response is not OK!");
-      }
-    } catch (error) {
-      console.error(error);
-      alert("😿 Error while fetching data from the server");
+  const [selectedMetric, setSelectedMetric] = useState("");
+
+  // Loop over pod statuses and populate podList with pod names
+  const podList = [];
+  for (const pod of podStatuses.allPodsStatus) {
+    podList.push({ podName: pod.podName, selectedMetric: "" });
+  }
+
+  podList.forEach((pod) => {
+    // Search for the same pod by pod name in resourceUsageOneValue array of objects
+    const cpuData = cpuUsageOneValue.resourceUsageOneValue.find(
+      (item) => item.name === pod.podName,
+    );
+    if (cpuData) {
+      // If there is a match (there should be one), add cpu data to the pod object
+      pod.cpuUsageOneValue = cpuData.usageRelativeToRequest;
     }
-  };
 
-  // Will fetch data from the server, rendering default metrics, refresh every 30s and re-render everytime metric changes 
+    const memoryData = memoryUsageOneValue.resourceUsageOneValue.find(
+      (item) => item.name === pod.podName,
+    );
+    if (memoryData) {
+      pod.memoryUsageOneValue = memoryData.usageRelativeToRequest;
+    }
+
+    const latencyData = latencyAppRequestOneValue.resourceUsageOneValue.find(
+      (item) => item.name === pod.podName,
+    );
+    if (memoryData) {
+      pod.latencyAppRequestOneValue = latencyData.usageRelativeToRequest;
+    }
+
+  });
+
+  // Will update the data to be displayed every time user selects another metric
   useEffect(() => {
-    fetchInfo(metric, "1h", "pod");
-    const intervalID = setInterval(() => fetchInfo(metric, "1h", "pod"), 30000);
-    return () => {
-      clearInterval(intervalID);
-    };
-  }, [metric]);
-
-
-  // Function to update metric
-  const handleMetricChange = (newMetric) => {
-    setMetric(newMetric);
-  };
+    podList.forEach((pod) => {
+      pod.selectedMetric = selectedMetric;
+    });
+  }, [selectedMetric]);
 
   return (
     <div id="pod-grid">
       {/* Render the grid of pods as a list */}
       <ul id="pod-list">
-        {podData.map((pod, index) => (
+        {/* conditionally render everything? */}
+        {podList.map((pod, index) => (
           <li key={index}>
             <Pod
               metric={metric}
@@ -79,19 +77,19 @@ const PodGrid = (props) => {
       </ul>
       {/* Render the change metric buttons */}
       <div>
-        <button onClick={() => handleMetricChange("cpu")}>
+        <button onClick={() => setSelectedMetric("cpu")}>
           {"CPU Usage (%)"}{" "}
         </button>
-        <button onClick={() => handleMetricChange("ram")}>
+        <button onClick={() => setSelectedMetric("memory")}>
           {"RAM Usage (%)"}
         </button>
-        <button onClick={() => handleMetricChange("disk")}>
+        <button onClick={() => setSelectedMetric("disk")}>
           {"Disk Usage (%)"}
         </button>
-        <button onClick={() => handleMetricChange("errorRate")}>
+        <button onClick={() => setSelectedMetric("errorRate")}>
           {"Error Rate (%)"}
         </button>
-        <button onClick={() => handleMetricChange("latency")}>
+        <button onClick={() => setSelectedMetric("latency")}>
           {"Latency(ms)"}
         </button>
       </div>
@@ -104,7 +102,7 @@ PodGrid.propTypes = {
   metric: PropTypes.string,
   setMetric: PropTypes.func,
   podData: PropTypes.array,
-  setPodData: PropTypes.func
+  setPodData: PropTypes.func,
 };
 
 export default PodGrid;
