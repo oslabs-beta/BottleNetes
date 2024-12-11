@@ -1,16 +1,15 @@
-// import path from "path";
 import express from "express";
 // import cors from "cors";
 import cookieParser from "cookie-parser";
 
 import apiRouter from "./routes/api.js";
 
-import { runPromQLQuery } from "./controllers/prometheusController.js";
-import { generateQuery } from "./controllers/promqlController.js";
-import {
-  generateLatencyQuery,
-  queryForLatency,
-} from "./controllers/latencyController.js";
+// import { runPromQLQuery } from "./controllers/prometheusController.js";
+// import { generateQuery } from "./controllers/promqlController.js";
+// import {
+//   generateLatencyQuery,
+//   queryForLatency,
+// } from "./controllers/latencyController.js";
 
 const app = express();
 
@@ -34,14 +33,13 @@ app.use("/api", apiRouter);
 // app.post("/errorrate", generateErrorQuery, queryForErrors, (req, res) => {
 //   res.status(200).json(res.locals.data);
 // });
-app.post("/query", generateQuery, runPromQLQuery, (req, res) => {
-  res.status(200).json(res.locals.data);
-});
+// app.post("/query", generateQuery, runPromQLQuery, (req, res) => {
+//   res.status(200).json(res.locals.data);
+// });
 
-app.post("/latency", generateLatencyQuery, queryForLatency, (req, res) => {
-  res.status(200).json(res.locals.data);
-});
-
+// app.post("/latency", generateLatencyQuery, queryForLatency, (req, res) => {
+//   res.status(200).json(res.locals.data);
+// });
 
 app.use((err, _req, res, _next) => {
   const defaultErr = {
