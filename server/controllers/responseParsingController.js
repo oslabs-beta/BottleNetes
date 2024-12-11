@@ -21,8 +21,8 @@ export const parseResponseAllPodsStatus = (req, res, next) => {
       // Default values
       nodeName: "node name not configured",
       clusterName: "cluster name not configured",
-      restartCount: "cannot fetch restart count",
-      containerCount: "cannot fetch container count",
+      restartCount: 0,
+      containerCount: 0,
       containers: [],
       readiness: "cannot fetch readiness",
       podIp: "cannot fetch pod ip",

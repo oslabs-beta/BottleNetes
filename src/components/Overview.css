@@ -128,26 +128,24 @@
 
 /* Unique Background Colors for Metrics */
 .overview-nodes {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);  /* Bright Blue */
+  background: linear-gradient(135deg, #2563eb, #1d4ed8); /* Bright Blue */
 }
 
 .overview-pods {
-  background: linear-gradient(135deg, #1e3a8a, #4338ca);  /* Deep Indigo */
+  background: linear-gradient(135deg, #1e3a8a, #4338ca); /* Deep Indigo */
 }
 
 .overview-containers {
-  background: linear-gradient(135deg, #3730a3, #312e81);  /* Violet */
+  background: linear-gradient(135deg, #3730a3, #312e81); /* Violet */
 }
 
 /* Cluster Name as a Thin Line */
 .thin-line {
   width: 100%;
   padding: 0.5rem 2rem;
-  background: linear-gradient(135deg, #3b82f6, #1e40af);  /* Light Blue */
+  background: linear-gradient(135deg, #3b82f6, #1e40af); /* Light Blue */
   text-align: center;
   border-radius: 8px;
   color: white;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
-
-
