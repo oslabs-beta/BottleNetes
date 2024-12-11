@@ -62,6 +62,7 @@ const PodGrid = (props) => {
     <div id="pod-grid">
       {/* Render the grid of pods as a list */}
       <ul id="pod-list">
+        {/* conditionally render everything? */}
         {podList.map((pod, index) => (
           <li key={index}>
             <Pod
