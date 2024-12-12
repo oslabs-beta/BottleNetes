@@ -10,7 +10,7 @@ import PodGrid from "../components/PodGrid";
 import RequestLimit from "../components/RequestLimit";
 
 const MainContainer = ({ username }) => {
-  console.log("main container rendering")
+  console.log("main container rendering");
   const url = "http://localhost:3000/";
 
   // State for when the menu button is clicked
@@ -39,6 +39,8 @@ const MainContainer = ({ username }) => {
 
   const [isLoading, setIsLoading] = useState(true);
 
+  const [selectedMetric, setSelectedMetric] = useState("cpu");
+
   //helper function
   const fetchData = async (method, endpoint, body = null) => {
     try {
@@ -65,40 +67,46 @@ const MainContainer = ({ username }) => {
       console.log("Fetching data...");
 
       const bodyResourceUsageOnevalueCPU = {
-        "type": "cpu",
-        "time": "1m",
-        "level": "pod"
+        type: "cpu",
+        time: "1m",
+        level: "pod",
       };
 
       const bodyResourceUsageOnevalueMemory = {
-        "type": "memory",
-        "time": "1m",
-        "level": "pod"
+        type: "memory",
+        time: "1m",
+        level: "pod",
       };
 
       const bodyResourceUsageHistoricalCPU = {
-        "type": "cpu",
-        "timeEnd": Math.floor(Date.now() / 1000).toString(),
-        "timeStart": (Math.floor(Date.now() / 1000) - 86400).toString(),
-        "timeStep": "3600",
-        "level": "pod"
+        type: "cpu",
+        timeEnd: Math.floor(Date.now() / 1000).toString(),
+        timeStart: (Math.floor(Date.now() / 1000) - 86400).toString(),
+        timeStep: "3600",
+        level: "pod",
       };
 
       const bodyResourceUsageHistoricalMemory = {
-        "type": "memory",
-        "timeEnd": Math.floor(Date.now() / 1000).toString(),
-        "timeStart": (Math.floor(Date.now() / 1000) - 86400).toString(),
-        "timeStep": "3600",
-        "level": "pod"
+        type: "memory",
+        timeEnd: Math.floor(Date.now() / 1000).toString(),
+        timeStart: (Math.floor(Date.now() / 1000) - 86400).toString(),
+        timeStep: "3600",
+        level: "pod",
       };
 
       const bodyLatencyAppRequestOneValue = {
-        "time": "1m",
-        "level": "pod",
+        time: "1m",
+        level: "pod",
+      };
+
+      const bodyLatencyAppRequestHistorical = {
+        timeEnd: Math.floor(Date.now() / 1000).toString(),
+        timeStart: (Math.floor(Date.now() / 1000) - 86400).toString(),
+        timeStep: "3600",
+        level: "pod",
       };
 
       try {
-
         const fakeNodeData = {
           allNodes: [
             {
@@ -107,7 +115,7 @@ const MainContainer = ({ username }) => {
             },
           ],
         };
-        
+
         const [
           status,
           requestLimits,
@@ -116,6 +124,7 @@ const MainContainer = ({ username }) => {
           cpuUsageHistorical,
           memoryUsageHistorical,
           latencyAppRequestOneValue,
+          latencyAppRequestHistorical,
         ] = await Promise.all([
           fetchData("GET", "api/all-pods-status"),
           fetchData("GET", "api/all-pods-request-limit"),
@@ -145,6 +154,11 @@ const MainContainer = ({ username }) => {
             "api/latency-app-request-onevalue",
             bodyLatencyAppRequestOneValue,
           ),
+          fetchData(
+            "POST",
+            "api/latency-app-request-historical",
+            bodyLatencyAppRequestHistorical,
+          ),
         ]);
         // console.log( "DATA FROM BACKEND",
         //   status,
@@ -162,6 +176,7 @@ const MainContainer = ({ username }) => {
           cpuUsageHistorical: cpuUsageHistorical || [],
           memoryUsageHistorical: memoryUsageHistorical || [],
           latencyAppRequestOneValue: latencyAppRequestOneValue || [],
+          latencyAppRequestHistorical: latencyAppRequestHistorical || [],
         });
       } catch (error) {
         console.error("Error fetching initial data:", error);
@@ -171,59 +186,15 @@ const MainContainer = ({ username }) => {
     };
     bigFetch();
 
-    const intervalID = setInterval(bigFetch, 5000);
+    const intervalID = setInterval(bigFetch, 30000);
     return () => {
       clearInterval(intervalID);
     };
   }, []);
 
-
   useEffect(() => {
-    console.log("All data: ", allData) 
-  }, [allData])
-
-  // return (
-  //   <div id="main-container">
-  //     <button onClick={() => setMenu(true)}>Menu</button>
-  //     {!menu && <MenuContainer />}
-  //     <h1>{`Welcome, ${username}`}</h1>
-  //     <div /*grid*/>
-  //       <Overview
-  //         podsStatuses={allData.podsStatuses}
-  //         allNodes={allData.allNodes}
-  //         isLoading={isLoading}
-  //       />
-  //       {/* <RequestLimit
-  //         defaultView={defaultView}
-  //         clickedPod={clickedPod}
-  //         requestLimits={allData.requestLimits}
-  //       />
-  //       <Latency
-  //         defaultView={defaultView}
-  //         clickedPod={clickedPod}
-  //         latencyAppRequestOneValue={allData.latencyAppRequestOneValue}
-  //       />
-  //       <Metrics
-  //         defaultView={defaultView}
-  //         clickedPod={clickedPod}
-  //         cpuUsageHistorical={allData.cpuUsageHistorical}
-  //         memoryUsageHistorical={allData.memoryUsageHistorical}
-  //       />  */}
-  //       <PodGrid
-  //         defaultView={defaultView}
-  //         setDefaultView={setDefaultView}
-  //         setClickedPod={setClickedPod}
-  //         podStatuses={allData.podsStatuses}
-  //         requestLimits={allData.requestLimits}
-  //         cpuUsageOneValue={allData.cpuUsageOneValue}
-  //         memoryUsageOneValue={allData.memoryUsageOneValue}
-  //         latencyAppRequestOneValue={allData.latencyAppRequestOneValue}
-  //       />
-  //     </div>
-  //     <button onClick={() => setDefaultView(true)}>Reset to default</button>
-  //     <button>Ask AI</button>
-  //   </div>
-  // );
+    console.log("All data: ", allData);
+  }, [allData]);
 
   return (
     <div>
@@ -271,7 +242,7 @@ const MainContainer = ({ username }) => {
       </header>
       <div className="bg-custom-gradient">
         <div className="border-b-2 border-slate-300 p-10">
-          <Overview 
+          <Overview
             podsStatuses={allData.podsStatuses}
             allNodes={allData.allNodes}
             isLoading={isLoading}
@@ -283,28 +254,8 @@ const MainContainer = ({ username }) => {
         >
           {/*Arrange components in columns for a larger screen, and stack vertically if the screen is smaller*/}
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 xl:grid-cols-4">
-            <div className="relative flex-auto rounded-3xl bg-slate-100 p-4 xl:col-span-2">
-              <h2 className="text-center text-2xl font-semibold text-slate-900">
-                Request Rate vs. Limit
-              </h2>
-              {/* <RequestLimit
-                defaultView={defaultView}
-                clickedPod={clickedPod}
-              /> */}
-            </div>
-            <div className="rounded-3xl bg-slate-100 p-4 xl:col-span-2">
-              <h2 className="text-center text-2xl font-semibold text-slate-900">
-                Latency
-              </h2>
-              {/* <Latency defaultView={defaultView} clickedPod={clickedPod} /> */}
-            </div>
-            <div className="max-h-[41%] rounded-3xl bg-slate-100 p-4 xl:col-span-2">
-              <h2 className="text-center text-2xl font-semibold text-slate-900">
-                Additional Metrics
-              </h2>
-              {/* <Metrics defaultView={defaultView} clickedPod={clickedPod} /> */}
-            </div>
-            <div className="flex max-h-[41%] flex-col rounded-3xl bg-slate-100 p-4 xl:col-span-2">
+            {/* Pod Grid */}
+            <div className="flex max-h-[100%] flex-col rounded-3xl bg-slate-100 p-4 xl:col-span-2">
               <h2 className="text-center text-2xl font-bold text-blue-600">
                 Select Pod
               </h2>
@@ -312,26 +263,74 @@ const MainContainer = ({ username }) => {
                 defaultView={defaultView}
                 setDefaultView={setDefaultView}
                 setClickedPod={setClickedPod}
+                selectedMetric={selectedMetric}
+                setSelectedMetric={setSelectedMetric}
                 podStatuses={allData.podsStatuses}
-                requestLimits={allData.requestLimits}
                 cpuUsageOneValue={allData.cpuUsageOneValue}
                 memoryUsageOneValue={allData.memoryUsageOneValue}
                 latencyAppRequestOneValue={allData.latencyAppRequestOneValue}
               />
             </div>
-            <div className="mt-4 flex justify-end">
-              <button onClick={() => setDefaultView(true)}>
+
+            {/* Historical Tracing */}
+            <div className="max-h-[100%] rounded-3xl bg-slate-100 p-4 xl:col-span-2">
+              <h2 className="text-center text-2xl font-semibold text-slate-900">
+                Historical Tracing
+              </h2>
+              <Metrics
+                defaultView={defaultView}
+                clickedPod={clickedPod}
+                cpuUsageHistorical={allData.cpuUsageHistorical}
+                memoryUsageHistorical={allData.memoryUsageHistorical}
+              />
+            </div>
+
+            {/* Request vs. Limit */}
+            <div className="relative flex-auto rounded-3xl bg-slate-100 p-4 xl:col-span-2">
+              <h2 className="text-center text-2xl font-semibold text-slate-900">
+                Request vs. Limit
+              </h2>
+              <RequestLimit
+                defaultView={defaultView}
+                clickedPod={clickedPod}
+                selectedMetric={selectedMetric}
+                requestLimits={allData.requestLimits}
+              />
+            </div>
+
+            {/* Latency */}
+            <div className="rounded-3xl bg-slate-100 p-4 xl:col-span-2">
+              <h2 className="text-center text-2xl font-semibold text-slate-900">
+                Latency
+              </h2>
+              <Latency
+                defaultView={defaultView}
+                clickedPod={clickedPod}
+                latencyAppRequestHistorical={
+                  allData.latencyAppRequestHistorical
+                }
+              />
+            </div>
+
+            <div className="mt-4 flex justify-end gap-4">
+              <button
+                onClick={() => {
+                  setDefaultView(true);
+                  setSelectedMetric("cpu");
+                }}
+                className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter"
+              >
                 Reset to default
               </button>
-              <button>Ask AI</button>
+              <button className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter">
+                Ask AI
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
   );
-
-
 };
 
 MainContainer.propTypes = {

@@ -24,78 +24,147 @@ ChartJS.register(
   Legend,
 );
 
-const RequestLimit = ({ defaultView, clickedPod, podData, setPodData }) => {
-
-  useEffect(() => {
-    const fetchInfo = async () => {
-      try {
-        const response = await fetch(`http://localhost:3000/something`);
-        if (response.ok) {
-          const data = await response.json();
-          setPodData({
-            requestRate: data.requestRate,
-            requestLimit: data.requestLimit,
-            timeStamp: data.timeStamp,
-            // Placeholder data for request rate, request limit, and timestamps?
-          });
-        } else {
-          const data = await response.json();
-          console.error(data);
-          alert("😭 RequestLimit failed to fetch data. Response is not OK!");
-        }
-      } catch (error) {
-        console.error(error);
-        alert("😿 Error in RequestLimit while fetching data from the server");
-      }
-    };
-    fetchInfo();
-  }, [clickedPod]);
+const RequestLimit = ({
+  defaultView,
+  clickedPod,
+  selectedMetric,
+  requestLimits,
+}) => {
+  const podList = requestLimits?.allPodsRequestLimit.map((pod) => ({
+    podName: pod.podName,
+    cpuRequest: pod.cpuRequest,
+    memoryRequest: pod.memoryRequest,
+    cpuLimit: pod.cpuLimit,
+    memoryLimit: pod.memoryLimit,
+    cpuRequestLimitRatio: pod.cpuRequestLimitRatio,
+    memoryRequestLimitRatio: pod.memoryRequestLimitRatio,
+  }));
 
   const options = {
+    indexAxis: "y", // maybe making it horizontal?
     responsive: true,
+    maintainAspectRatio: false,
     scales: {
       x: {
-        stacked: true,
+        stacked: false,
+        grid: { color: "transparent" },
+        ticks: {
+          color: "#1e293b",
+          font: {
+            size: 14,
+          },
+        },
+        title: {
+          display: true,
+          text: selectedMetric === "cpu" ? "CPU (cores)" : "Memory (MB)",
+          color: "#1e293b",
+          font: { size: 14 },
+        },
       },
       y: {
         stacked: false,
+        grid: { color: "transparent" },
+        ticks: {
+          color: "#1e293b",
+          font: {
+            size: 14,
+          },
+        },
       },
     },
     plugins: {
       legend: {
         position: "bottom",
+        labels: {
+          color: "#1e293b",
+          font: {
+            size: 15,
+          },
+        },
       },
       title: {
-        display: true,
-        text: `Request Limit for Pod ${clickedPod}`,
+        display: false,
+        text: `Request Limit for pod`,
+        font: {
+          size: 20,
+        },
+      },
+      tooltip: {
+        padding: 16,
+        bodyFont: {
+          size: 16,
+          color: "#cbd5e1",
+        },
+        titleFont: {
+          size: 16,
+          color: "#cbd5e1",
+        },
+        backgroundColor: "#020617",
+        caretSize: 10,
       },
     },
+    barThickness: 20, // Control bar thickness
+    barPercentage: 0.8, // Control bar width
+    categoryPercentage: 0.9, // Control spacing between bar groups
   };
 
-  let data;
-  if (podData.length) {
-    data = {
-      // basic stuff mostly taken from chartjs docs, I think it will need to be changed
-      labels: podData.labels,
-      datasets: [
-        {
-          label: "Request Rate",
-          data: podData.requestRate,
-          backgroundColor: "rgba(102, 255, 141, 0.8)" //placeholder
-        },
-        {
-          label: "Request Limit",
-          data: podData.request,
-          backgroundColor: "rgba(255, 104, 112, 0.8)",
-          borderRadius: 50
-        },
-      ],
-    };
-  } else data = null;
+  const formatMemoryToMB = (memoryInBytes) => {
+    return memoryInBytes / (1024 * 1024);
+  };
+  let limitDataToUse = [];
+  let requestDataToUse = [];
+  if (podList.length > 0) {
+    switch (selectedMetric) {
+      case "cpu":
+        limitDataToUse = podList.map((pod) => pod.cpuLimit);
+        requestDataToUse = podList.map((pod) => pod.cpuRequest);
+        break;
+      case "memory":
+        limitDataToUse = podList.map((pod) =>
+          formatMemoryToMB(pod.memoryLimit),
+        );
+        requestDataToUse = podList.map((pod) =>
+          formatMemoryToMB(pod.memoryRequest),
+        );
+        break;
+      case "latency":
+        break;
+      default:
+        limitDataToUse = podList.map((pod) => pod.cpuLimit);
+        requestDataToUse = podList.map((pod) => pod.cpuRequest);
+    }
+  }
+
+  // Use empty data if no pod list or create data from pods
+  const data = {
+    labels: podList.map((pod) => pod.podName),
+    datasets: [
+      {
+        label: "Requested Resources",
+        data: requestDataToUse,
+        backgroundColor: "rgba(191, 219, 254, 1)",
+        borderRadius: 5,
+        maxBarThickness: 20,
+      },
+      {
+        label: "Resource Limits",
+        data: limitDataToUse,
+        backgroundColor: "rgba(59, 130, 246, 1)",
+        borderRadius: 5,
+        maxBarThickness: 20,
+      },
+    ],
+  };
 
   return (
-    <div className='bg-zinc-800'>
-      <Bar options={options} data={data} />
+    <div className="min-h-[400px] w-full p-4">
+      {podList.length > 0 ? (
+        <Bar options={options} data={data} />
+      ) : (
+        <div className="flex h-full items-center justify-center">
+          <p className="text-slate-900">No data available</p>
+        </div>
+      )}
     </div>
   );
 };
@@ -103,8 +172,8 @@ const RequestLimit = ({ defaultView, clickedPod, podData, setPodData }) => {
 RequestLimit.propTypes = {
   defaultView: PropTypes.bool,
   clickedPod: PropTypes.string,
-  setPodData: PropTypes.func,
-  podData: PropTypes.array,
+  selectedMetric: PropTypes.string,
+  requestLimits: PropTypes.object,
 };
 
 export default RequestLimit;
