@@ -9,12 +9,15 @@ import path from "path";
 
 import { connectDB } from "./db/db.js";
 import sequelize from "./db/db.js";
-import { runPromQLQuery } from "./controllers/prometheusController.js";
-import { generateQuery } from "./controllers/promqlController.js";
-import {
-  generateErrorQuery,
-  queryForErrors,
-} from "./controllers/errorRateController.js";
+import apiRouter from "./routes/api.js";
+
+// import { runPromQLQuery } from "./controllers/prometheusController.js";
+// import { generateQuery } from "./controllers/promqlController.js";
+// import {
+//   generateLatencyQuery,
+//   queryForLatency,
+// } from "./controllers/latencyController.js";
+
 import cookieController from './controllers/cookieController.js';
 
 // Config path for usability in ES Module
@@ -66,6 +69,7 @@ connectDB();
 // Routers
 app.use("/signin", signinRouter);
 app.use("/signup", signupRouter);
+app.use("/api", apiRouter);
 
 // Serves static files
 app.use(express.static(path.resolve(__dirname, "../index.html")));
@@ -77,13 +81,17 @@ app.get('/', (_req, res) => {
   return res.status(200).sendFile(path.resolve(__dirname, '../index.html'));
 });
 
-app.post("/query", generateQuery, runPromQLQuery, (_req, res) => {
-  return res.status(200).json(res.locals.data);
-});
+// app.post("/query", generateQuery, runPromQLQuery, (_req, res) => {
+//   return res.status(200).json(res.locals.data);
+// });
 
-app.post("/errorrate", generateErrorQuery, queryForErrors, (_req, res) => {
-  return res.status(200).json(res.locals.data);
-});
+// app.post("/errorrate", generateErrorQuery, queryForErrors, (req, res) => {
+//   res.status(200).json(res.locals.data);
+// });
+
+// app.post("/latency", generateLatencyQuery, queryForLatency, (req, res) => {
+//   res.status(200).json(res.locals.data);
+// });
 
 // Catch All Route
 app.use("*", (_req, res) => {

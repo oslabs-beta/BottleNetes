@@ -1,88 +1,129 @@
-/**
- * API Documentation for /query endpoint
- *
- * Request Body Schema:
- * {
- *   type: string,      // Required. Options: "cpu" | "memory"
- *   time: string,      // Required. Format: "{number}s" | "{number}m" | "{number}h"
- *                      // Examples: "15s", "5m", "1h"
- *   aggregation: string //  Options: "avg" | "sum" | "max" | "min"
- *      level: string       // Required. Options: "pod, namespace" | "namespace" | "pod" | "cluster"
- * }
- *
- * Example Requests:
- * 1. CPU usage over last 5 minutes:
- *    {
- *      "type": "cpu",
- *      "time": "5m"
- *    }
- *
- * 2. Maximum memory utilization over last hour:
- *    {
- *      "type": "memory",
- *      "time": "1h",
- *      "aggregation": "max"
- *    }
- */
-
-const parseTime = (time) => {
-  const timeRegex = /^(\d+)(s|m|h|d)$/;
-  const match = time.match(timeRegex);
-  if (!match) {
-    throw new Error("Invalid time format. Use format: {number}s|m|h|d");
-  }
-  return time;
+export const generateQueryAllPodsStatus = async (req, res, next) => {
+  const query1 = "kube_pod_status_phase == 1";
+  const query2 = "kube_pod_status_ready == 1";
+  const query3 = "kube_pod_container_info";
+  const query4 = "kube_pod_container_status_restarts_total";
+  const query5 = "kube_pod_info == 1";
+  res.locals.queries = [query1, query2, query3, query4, query5];
+  return next();
 };
 
-const getCPUQuery = (timeWindow, aggregationType, level) => {
-  return `
-    ${aggregationType}(rate(container_cpu_usage_seconds_total[${timeWindow}])) by (${level}) /
-    sum(kube_pod_container_resource_requests{resource="cpu"}) by (${level}) * 100
+export const generateQueryAllPodsRequestLimit = async (req, res, next) => {
+  const query1 = `kube_pod_container_resource_requests{resource="cpu"}`;
+  const query2 = `kube_pod_container_resource_requests{resource="memory"}`;
+  const query3 = `kube_pod_container_resource_limits{resource="cpu"}`;
+  const query4 = `kube_pod_container_resource_limits{resource="memory"}`;
+  const query5 = `
+  ( sum by (pod)(kube_pod_container_resource_requests{resource="cpu"}) )
+  /
+  ( sum by (pod)(kube_pod_container_resource_limits{resource="cpu"}) )
+  * 100`;
+  const query6 = `
+  ( sum by (pod)(kube_pod_container_resource_requests{resource="memory"}) )
+  /
+  ( sum by (pod)(kube_pod_container_resource_limits{resource="memory"}) )
+  * 100`;
+  res.locals.queries = [query1, query2, query3, query4, query5, query6];
+  return next();
+};
+
+export const generateQueryResourceUsage = async (req, res, next) => {
+  const { type, timeWindow, level } = res.locals;
+
+  if (type === "memory") {
+    const relativeQuery = `
+      ( sum by (${level})(avg_over_time(container_memory_usage_bytes[${timeWindow}])) )
+      /
+      ( sum by (${level})(kube_pod_container_resource_requests{resource="memory"}) )
+      * 100
+    `;
+
+    const absoluteQuery = `
+      sum by (${level})(avg_over_time(container_memory_usage_bytes[${timeWindow}]))
+    `;
+
+    res.locals.queries = [relativeQuery, absoluteQuery];
+  }
+
+  if (type === "cpu") {
+    const relativeQuery = `
+      ( sum by (${level}) (rate(container_cpu_usage_seconds_total[${timeWindow}])) )
+      /
+      ( sum by (${level}) (kube_pod_container_resource_requests{resource="cpu"}) )
+      * 100
+    `;
+
+    const absoluteQuery = `
+      sum by (${level}) (rate(container_cpu_usage_seconds_total[${timeWindow}]))
+    `;
+
+    res.locals.queries = [relativeQuery, absoluteQuery];
+  }
+
+  return next();
+};
+
+export const generateQueryLatencyAppRequest = async (req, res, next) => {
+  const { timeWindow, level } = res.locals;
+
+  // Total Number of Requests (inbound + outbound traffic) per pod
+  const query1 = `
+    sum by (${level}) (increase(istio_request_duration_milliseconds_count{reporter="destination"}[${timeWindow}]))
+    +
+    sum by (${level}) (increase(istio_request_duration_milliseconds_count{reporter="source"}[${timeWindow}]))
   `;
-};
-
-const getMemoryQuery = (timeWindow, aggregationType, level) => {
-  return `
-    ${aggregationType}(avg_over_time(container_memory_usage_bytes[${timeWindow}])) by (${level}) /
-    sum(kube_pod_container_resource_requests{resource="memory"}) by (${level}) * 100
+  // inbound request latency
+  const query2 = `
+    sum by (${level}) (rate(istio_request_duration_milliseconds_sum{reporter="destination"}[${timeWindow}]))
+    /
+    sum by (${level}) (rate(istio_request_duration_milliseconds_count{reporter="destination"}[${timeWindow}]))
   `;
-};
 
-export const generateQuery = async (req, res, next) => {
-  if (!req.body.type || !req.body.time || !req.body.level) {
-    return next({
-      log: "Error in generateQuery middleware",
-      status: 400,
-      message: { err: "Invalid request, not enough data are provided" },
-    });
-  }
+  // outbound request latency
+  const query3 = `
+    sum by (${level}) (rate(istio_request_duration_milliseconds_sum{reporter="source"}[${timeWindow}]))
+    /
+    sum by (${level}) (rate(istio_request_duration_milliseconds_count{reporter="source"}[${timeWindow}]))
+  `;
 
-  const { type, time, aggregation, level } = req.body;
+  // inbound + outbound request latency
+  const query4 = `
+    (
+      sum by (${level}) (rate(istio_request_duration_milliseconds_sum{reporter="destination"}[${timeWindow}]))
+      +
+      sum by (${level}) (rate(istio_request_duration_milliseconds_sum{reporter="source"}[${timeWindow}]))
+    ) / (
+      sum by (${level}) (rate(istio_request_duration_milliseconds_count{reporter="destination"}[${timeWindow}]))
+      +
+      sum by (${level}) (rate(istio_request_duration_milliseconds_count{reporter="source"}[${timeWindow}]))
+    )
+  `;
 
-  try {
-    const timeWindow = parseTime(time);
+  // 99th percentile peak latency for inbound requests
+  const query5 = `
+    histogram_quantile(
+      0.99,
+      sum(
+        rate(
+          istio_request_duration_milliseconds_bucket{reporter="destination"}[${timeWindow}]
+        )
+      ) by (le, ${level})
+    )
+  `;
 
-    switch (type) {
-      case "cpu":
-        res.locals.query = getCPUQuery(timeWindow, aggregation, level);
-        break;
-      case "memory":
-        res.locals.query = getMemoryQuery(timeWindow, aggregation, level);
-        break;
-      default:
-        return next({
-          log: "Error in generateQuery middleware",
-          status: 400,
-          message: { err: "Invalid request type" },
-        });
-    }
-    console.log("Query generated:", res.locals.query);
-    return next();
-  } catch (error) {
-    return next({
-      log: `Error generating query: ${error}`,
-      status: 400,
-      message: { err: error.message },
-    });
-  }
+  // 99th percentile peak latency for outbound requests
+  const query6 = `
+    histogram_quantile(
+      0.99,
+      sum(
+        rate(
+          istio_request_duration_milliseconds_bucket{reporter="source"}[${timeWindow}]
+        )
+      ) by (le, ${level})
+    )
+  `;
+
+  res.locals.queries = [query1, query2, query3, query4, query5, query6];
+
+  return next();
 };

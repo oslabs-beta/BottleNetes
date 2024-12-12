@@ -16,7 +16,7 @@ const LogInContainer = (props) => {
     const response = await fetch(url + "signin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      credentials: 'include',
+      credentials: "include",
       body: JSON.stringify(credential),
     });
 
@@ -92,20 +92,18 @@ const LogInContainer = (props) => {
         </form>
         <br />
         <div id="button-container" className="flex justify-around">
-          {/* <a href="/dashboard"> */}
           <button
             className="hover:border-3 active:border-3 rounded-lg border-2 border-slate-600 bg-slate-700 px-5 py-2 text-slate-300 hover:border-slate-500 hover:bg-slate-600 hover:text-slate-200 active:border-slate-700 active:bg-slate-800 active:text-slate-400"
-            type="submit"
+            type="button"
             id="login-button"
             onClick={handleLogIn}
           >
             Log In
           </button>
-          {/* </a> */}
           <a href="/signup">
             <button
               className="hover:border-3 active:border-3 rounded-lg border-2 border-slate-600 bg-slate-700 px-5 py-2 text-slate-300 hover:border-slate-500 hover:bg-slate-600 hover:text-slate-200 active:border-slate-700 active:bg-slate-800 active:text-slate-400"
-              type="submit"
+              type="button"
               id="signup-button"
               onClick={() => handleRedirect("signup")}
             >
@@ -116,9 +114,9 @@ const LogInContainer = (props) => {
         <br />
         <button
           className="text-slate-300 hover:text-slate-200 active:text-slate-400"
-          type="submit"
+          type="button"
           id="retrieve-button"
-          onSubmit={() => handleRedirect("forgotpassword")}
+          onClick={() => handleRedirect("forgotpassword")}
         >
           Forgot your Password?
         </button>
