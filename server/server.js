@@ -9,7 +9,7 @@ import path from "path";
 
 import { connectDB } from "./db/db.js";
 import sequelize from "./db/db.js";
-import apiRouter from "./routes/api.js";
+import apiRouter from "./routes/apiRouter.js";
 
 // import { runPromQLQuery } from "./controllers/prometheusController.js";
 // import { generateQuery } from "./controllers/promqlController.js";

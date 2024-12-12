@@ -13,6 +13,8 @@ signinRouter.post(
       return res.status(200).send({
         success: true,
         message: 'Login Successful!',
+        id: res.locals.id,
+        username: res.locals.username
         // redirectUrl: '/dashboard',
         // userData: {
           // id: res.locals.id

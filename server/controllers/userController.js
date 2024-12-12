@@ -68,6 +68,7 @@ userController.verifyUser = async (req, res, next) => {
         console.log("🥳 Password Matched!");
         res.locals.validated = isMatch;
         res.locals.id = credentials.dataValues.id;
+        res.locals.username = credentials.dataValues.username;
         return next();
       } else {
         console.log("🤔 Wrong Password!");

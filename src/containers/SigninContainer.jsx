@@ -23,7 +23,10 @@ const LogInContainer = (props) => {
     const data = await response.json();
     console.log(data);
 
-    if (response.ok) setLoggedIn(true);
+    if (response.ok) {
+      setLoggedIn(true);
+      setUsername(data.username);
+    }
     else alert("Unable to fetch data");
   };
 

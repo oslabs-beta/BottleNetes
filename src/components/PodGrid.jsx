@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Pod from "./Pod";
 
 // const PodGrid = (props) => {
@@ -239,19 +240,19 @@ const PodGrid = ({
       <div className="flex w-1/4 min-w-[203px] max-w-[250px] flex-col justify-start gap-4 p-4">
         <button
           onClick={() => setSelectedMetric("cpu")}
-          className="rounded-2xl bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] px-4 py-2 py-5 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter"
+          className="rounded-2xl bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] px-4 py-5 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter"
         >
           CPU Usage (%)
         </button>
         <button
           onClick={() => setSelectedMetric("memory")}
-          className="rounded-2xl bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] px-4 py-2 py-5 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter"
+          className="rounded-2xl bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] px-4 py-5 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter"
         >
           Mem. Usage (%)
         </button>
         <button
           onClick={() => setSelectedMetric("latency")}
-          className="rounded-2xl bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] px-4 py-2 py-5 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter"
+          className="rounded-2xl bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] px-4 py-5 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter"
         >
           Latency (ms)
         </button>

@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import PropTypes from "prop-types";
 import { Line } from "react-chartjs-2";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -12,7 +13,6 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { data } from 'autoprefixer';
 
 ChartJS.register(
   CategoryScale,
@@ -25,7 +25,7 @@ ChartJS.register(
   Legend,
 );
 
-const Metrics = ({ defaultView, clickedPod, podData, setPodData }) => {
+const Metrics = ({ clickedPod, podData, setPodData }) => {
   useEffect(() => {
     const fetchInfo = async () => {
       try {

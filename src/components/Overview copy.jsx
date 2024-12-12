@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from "react";
-import "./Overview.css";
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
+import PropTypes from 'prop-types';
+import { useState, useEffect } from "react";
+import "../Overview.css";
 
 const Overview = ({ podsStatuses, allNodes, isLoading }) => {
   const [overview, setOverview] = useState({
