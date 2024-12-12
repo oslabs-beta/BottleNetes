@@ -1,46 +1,36 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
-import { Hexagon } from "lucide-react";
+import { useState } from 'react';
+import { Hexagon } from 'lucide-react';
 
-const LogInContainer = (props) => {
-  const url = "http://localhost:3000/";
+const SignupContainer = () => {
+  const url = 'http://localhost:3000/';
 
-  const { username, setUsername, setLoggedIn } = props;
-  const [password, setPassword] = useState("");
-  const credential = { username, password };
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
 
-  const handleLogIn = async (e) => {
-    console.log(`🔄 Sending request to ${url}signin`);
-    e.preventDefault();
-
-    const response = await fetch(url + "signin", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: 'include',
-      body: JSON.stringify(credential),
-    });
-
-    const data = await response.json();
-    console.log(data);
-
-    if (response.ok) setLoggedIn(true);
-    else alert("Unable to fetch data");
-  };
-
-  const handleRedirect = async (endpoint) => {
-    console.log(`🔄 Sending request to ${url + endpoint}`);
+  const handleSignup = async () => {
+    const newUserCredential = { username, password, email };
+    console.log(`🔄 Sending request to ${url}signup`);
 
     try {
-      const response = await fetch(url + endpoint);
+      const response = await fetch(url + 'signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newUserCredential)
+      });
+      
       const data = await response.json();
       console.log(data);
 
-      if (!response.ok) alert("Unable to redirect to requested page");
+      if (response.ok) {
+        console.log('😛 New user successfully created!');
+        alert('Succesfully created a new account.');
+      } else alert('Something is wrong... Please try again later.');
     } catch (error) {
-      console.error(`😳 Redirect failed: ${error}`);
-      alert("Please try again later...");
+      console.log(`🤬 Failed to fetch data: ${error}`);
+      alert('Failed to fetch data');
     }
-  };
+  }
 
   return (
     <div
@@ -89,48 +79,32 @@ const LogInContainer = (props) => {
             onChange={(e) => setPassword(e.target.value)}
             className="rounded-md bg-slate-900 p-1 px-10 text-center text-slate-300 focus:bg-slate-800"
           />
+          <input
+            type="email"
+            placeholder="Email Address"
+            id="email"
+            value={email}
+            autoComplete='email'
+            onChange={(e) => setEmail(e.target.value)}
+            className="rounded-md bg-slate-900 p-1 px-10 text-center text-slate-300 focus:bg-slate-800"
+          />
         </form>
         <br />
-        <div id="button-container" className="flex justify-around">
-          {/* <a href="/dashboard"> */}
+        <div id="button-container" className="flex justify-center align-middle">
+        <a href='/'>
           <button
             className="hover:border-3 active:border-3 rounded-lg border-2 border-slate-600 bg-slate-700 px-5 py-2 text-slate-300 hover:border-slate-500 hover:bg-slate-600 hover:text-slate-200 active:border-slate-700 active:bg-slate-800 active:text-slate-400"
             type="submit"
             id="login-button"
-            onClick={handleLogIn}
+            onClick={handleSignup}
           >
-            Log In
+            Sign Up
           </button>
-          {/* </a> */}
-          <a href="/signup">
-            <button
-              className="hover:border-3 active:border-3 rounded-lg border-2 border-slate-600 bg-slate-700 px-5 py-2 text-slate-300 hover:border-slate-500 hover:bg-slate-600 hover:text-slate-200 active:border-slate-700 active:bg-slate-800 active:text-slate-400"
-              type="submit"
-              id="signup-button"
-              onClick={() => handleRedirect("signup")}
-            >
-              Sign Up
-            </button>
-          </a>
+        </a>
         </div>
-        <br />
-        <button
-          className="text-slate-300 hover:text-slate-200 active:text-slate-400"
-          type="submit"
-          id="retrieve-button"
-          onSubmit={() => handleRedirect("forgotpassword")}
-        >
-          Forgot your Password?
-        </button>
       </div>
     </div>
   );
 };
 
-LogInContainer.propTypes = {
-  username: PropTypes.string,
-  setUsername: PropTypes.func,
-  setLoggedIn: PropTypes.func,
-};
-
-export default LogInContainer;
+export default SignupContainer;

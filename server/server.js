@@ -1,23 +1,30 @@
 /* eslint-disable no-unused-vars */
 import express from "express";
 import cookieParser from "cookie-parser";
-import sequelize, { connectDB } from "./db/db.js";
-import process from "node:process";
 import cors from "cors";
+import process from "node:process";
 import session from "express-session";
 import dotenv from "dotenv";
+import path from "path";
 
+import { connectDB } from "./db/db.js";
+import sequelize from "./db/db.js";
 import { runPromQLQuery } from "./controllers/prometheusController.js";
 import { generateQuery } from "./controllers/promqlController.js";
 import {
   generateErrorQuery,
   queryForErrors,
 } from "./controllers/errorRateController.js";
-import userController from "./controllers/userController.js";
+import cookieController from './controllers/cookieController.js';
+
+// Config path for usability in ES Module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Import Routers
-import signupRouter from './routes/signupRouter.js';
-import signinRouter from './routes/signinRouter.js';
+import signupRouter from "./routes/signupRouter.js";
+import signinRouter from "./routes/signinRouter.js";
+import { fileURLToPath } from "node:url";
 
 // Allow the use of process.env
 dotenv.config();
@@ -47,21 +54,6 @@ app.use((_req, res, next) => {
   return next();
 });
 
-// Session Configuration
-app.use(
-  session({
-    secret: process.env.SECRET_SESSION_KEY,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      secure: process.env.NODE_ENV === "production",
-      maxAge: 24 * 60 * 60 * 1000, // Cookie stays for 24hrs
-      sameSite: "lax",
-      httpOnly: true,
-    },
-  }),
-);
-
 // Connect to PORT 3000
 const PORT = 3000;
 const server = app.listen(PORT, () =>
@@ -72,8 +64,18 @@ const server = app.listen(PORT, () =>
 connectDB();
 
 // Routers
-app.use('/signin', signinRouter);
-app.use('/signup', signupRouter);
+app.use("/signin", signinRouter);
+app.use("/signup", signupRouter);
+
+// Serves static files
+app.use(express.static(path.resolve(__dirname, "../index.html")));
+app.use(express.static(path.resolve(__dirname, "../signup.html")));
+app.use(express.static(path.resolve(__dirname, "./")));
+app.use(express.static(path.resolve(__dirname, "../src/")));
+
+app.get('/', (_req, res) => {
+  return res.status(200).sendFile(path.resolve(__dirname, '../index.html'));
+});
 
 app.post("/query", generateQuery, runPromQLQuery, (_req, res) => {
   return res.status(200).json(res.locals.data);
@@ -110,7 +112,7 @@ const gracefulShutDown = async () => {
     server.close(() => {
       console.log(`💃🏻 Server has been shutted down gracefully!`);
       process.exitCode = 0;
-    })
+    });
   } catch (error) {
     console.error(
       `😭 Unable to gracefully shut down the server. Force exiting... - ${error}`,
