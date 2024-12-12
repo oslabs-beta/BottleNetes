@@ -1,34 +1,23 @@
 /* Main Overview Container */
 .overview-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  padding: 2rem;
-  background: #1e293b;
+  justify-content: center;
+  padding: 0rem;
   border-radius: 12px;
-  color: white;
-  margin-bottom: 2rem;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  color: #e2e8f0;
+  margin-bottom: 0;
   gap: 2rem;
-}
-
-/* Cluster Name as a Thin Line */
-.thin-line {
-  width: 100%;
-  padding: 0.5rem 2rem;
-  background: linear-gradient(135deg, #3b82f6, #1e40af);
-  text-align: center;
-  border-radius: 8px;
-  color: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .dynamic-text {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  font-size: 1.25rem;
+  font-size: 1rem;
   font-weight: bold;
+  color: #2563eb;
 }
 
 /* Metrics Row */
@@ -40,13 +29,10 @@
 
 /* Metric Cards */
 .overview-card {
-  padding: 1.5rem 2rem;
-  width: 200px;
-  min-height: 150px;
+  padding: 1rem 1.5rem;
   text-align: center;
-  border-radius: 12px;
+  border-radius: 20px;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -129,23 +115,30 @@
 /* Unique Background Colors for Metrics */
 .overview-nodes {
   background: linear-gradient(135deg, #2563eb, #1d4ed8); /* Bright Blue */
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 
+              0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .overview-pods {
   background: linear-gradient(135deg, #1e3a8a, #4338ca); /* Deep Indigo */
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 
+              0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .overview-containers {
   background: linear-gradient(135deg, #3730a3, #312e81); /* Violet */
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 
+              0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 /* Cluster Name as a Thin Line */
 .thin-line {
-  width: 100%;
-  padding: 0.5rem 2rem;
-  background: linear-gradient(135deg, #3b82f6, #1e40af); /* Light Blue */
+  width: 30%;
+  padding: 1rem 1rem;
+  background: transparent; /* Light Blue */
   text-align: center;
-  border-radius: 8px;
-  color: white;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  border-radius: 20px;
+  border: 4px solid #2563eb;
+  color: #2563eb;
+  
 }
