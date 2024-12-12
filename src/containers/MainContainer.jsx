@@ -9,6 +9,7 @@ import PodGrid from "../components/PodGrid";
 import RequestLimit from "../components/RequestLimit";
 
 const MainContainer = ({ username }) => {
+  console.log("main container rendering")
   const url = "http://localhost:3000/";
 
   // State for when the menu button is clicked
@@ -169,7 +170,7 @@ const MainContainer = ({ username }) => {
     };
     bigFetch();
 
-    const intervalID = setInterval(bigFetch, 30000);
+    const intervalID = setInterval(bigFetch, 5000);
     return () => {
       clearInterval(intervalID);
     };
@@ -307,12 +308,6 @@ const MainContainer = ({ username }) => {
                 Select Pod
               </h2>
               <PodGrid
-                // defaultView={defaultView}
-                // setDefaultView={setDefaultView}
-                // setClickedPod={setClickedPod}
-                // metric={metric}
-                // setMetric={setMetric}
-
                 defaultView={defaultView}
                 setDefaultView={setDefaultView}
                 setClickedPod={setClickedPod}

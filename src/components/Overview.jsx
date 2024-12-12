@@ -66,7 +66,7 @@ const Overview = ({ podsStatuses, allNodes, isLoading }) => {
 
       <div className="overview-metrics-row">
         <div className="overview-card overview-nodes">
-          <h2>No. of Node</h2>
+          <h2>No. of Nodes</h2>
           <p className="overview-value">{overview.nodes}</p>
         </div>
 
