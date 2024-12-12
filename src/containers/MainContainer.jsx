@@ -8,23 +8,14 @@ import Metrics from "../components/Metrics";
 import PodGrid from "../components/PodGrid";
 import RequestLimit from "../components/RequestLimit";
 
-// Pod level data to be displayed, updates when user clicks into pod
-// const [podData, setPodData] = useState({});
-
 const MainContainer = ({ username }) => {
   const url = "http://localhost:3000/";
 
   // State for when the menu button is clicked
   const [menu, setMenu] = useState(false);
 
-  // Default metric set to latency
-  // const [metric, setMetric] = useState("latency");
-
   // Determines if the graphs display node data or pod specific data
   const [defaultView, setDefaultView] = useState(true);
-
-  // Overview data to be displayed at the very top
-  // const [overviewData, setOverviewData] = useState({});
 
   // Which pod has been clicked
   const [clickedPod, setClickedPod] = useState("");
@@ -33,7 +24,16 @@ const MainContainer = ({ username }) => {
   const [podData, setPodData] = useState([]);
 
   // Data of all pods
-  const [allData, setAllData] = useState({});
+  const [allData, setAllData] = useState({
+    podsStatuses: { podsStatuses: [] },
+    requestLimits: { allPodsRequestLimit: [] },
+    allNodes: { allNodes: [] },
+    cpuUsageOneValue: { resourceUsageOneValue: [] },
+    memoryUsageOneValue: { resourceUsageOneValue: [] },
+    cpuUsageHistorical: null,
+    memoryUsageHistorical: null,
+    latencyAppRequestOneValue: { latencyAppRequestOneValue: [] },
+  });
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -144,16 +144,22 @@ const MainContainer = ({ username }) => {
             bodyLatencyAppRequestOneValue,
           ),
         ]);
-
+        // console.log( "DATA FROM BACKEND",
+        //   status,
+        //   requestLimits,
+        //   cpuUsageOneValue,
+        //   memoryUsageOneValue,
+        //   cpuUsageHistorical,
+        // );
         setAllData({
-          podsStatuses: status || null,
-          requestLimits: requestLimits || null,
+          podsStatuses: status || [],
+          requestLimits: requestLimits || [],
           allNodes: fakeNodeData,
-          cpuUsageOneValue: cpuUsageOneValue || null,
-          memoryUsageOneValue: memoryUsageOneValue || null,
-          cpuUsageHistorical: cpuUsageHistorical || null,
-          memoryUsageHistorical: memoryUsageHistorical || null,
-          latencyAppRequestOneValue: latencyAppRequestOneValue || null,
+          cpuUsageOneValue: cpuUsageOneValue || [],
+          memoryUsageOneValue: memoryUsageOneValue || [],
+          cpuUsageHistorical: cpuUsageHistorical || [],
+          memoryUsageHistorical: memoryUsageHistorical || [],
+          latencyAppRequestOneValue: latencyAppRequestOneValue || [],
         });
       } catch (error) {
         console.error("Error fetching initial data:", error);
@@ -169,6 +175,11 @@ const MainContainer = ({ username }) => {
     };
   }, []);
 
+
+  useEffect(() => {
+    console.log("All data: ", allData) 
+  }, [allData])
+
   return (
     <div id="main-container">
       <button onClick={() => setMenu(true)}>Menu</button>
@@ -180,7 +191,7 @@ const MainContainer = ({ username }) => {
           allNodes={allData.allNodes}
           isLoading={isLoading}
         />
-        <RequestLimit
+        {/* <RequestLimit
           defaultView={defaultView}
           clickedPod={clickedPod}
           requestLimits={allData.requestLimits}
@@ -195,12 +206,12 @@ const MainContainer = ({ username }) => {
           clickedPod={clickedPod}
           cpuUsageHistorical={allData.cpuUsageHistorical}
           memoryUsageHistorical={allData.memoryUsageHistorical}
-        />
+        />  */}
         <PodGrid
           defaultView={defaultView}
           setDefaultView={setDefaultView}
           setClickedPod={setClickedPod}
-          podStatuses={allData.podStatuses}
+          podStatuses={allData.podsStatuses}
           requestLimits={allData.requestLimits}
           cpuUsageOneValue={allData.cpuUsageOneValue}
           memoryUsageOneValue={allData.memoryUsageOneValue}

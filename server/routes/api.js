@@ -6,6 +6,7 @@ import {
   parseRequestResourceUsageOneValue,
   parseRequestResourceUsageHistorical,
   parseRequestLatencyAppRequestOneValue,
+  parseRequestLatencyAppRequestHistorical,
 } from "../controllers/requestParsingController.js";
 
 import {
@@ -26,6 +27,7 @@ import {
   parseResponseResourceUsageOneValue,
   parseResponseResourceUsageHistorical,
   parseResponseLatencyAppRequestOneValue,
+  parseResponseLatencyAppRequestHistorical,
 } from "../controllers/responseParsingController.js";
 
 const router = express.Router();
@@ -80,6 +82,17 @@ router.post(
   generateQueryLatencyAppRequest,
   runMultiplePromQLQueries,
   parseResponseLatencyAppRequestOneValue,
+  (_req, res) => {
+    res.status(200).json(res.locals.parsedData);
+  },
+);
+
+router.post(
+  "/latency-app-request-historical",
+  parseRequestLatencyAppRequestHistorical,
+  generateQueryLatencyAppRequest,
+  runMultiplePromQLQueries,
+  parseResponseLatencyAppRequestHistorical,
   (_req, res) => {
     res.status(200).json(res.locals.parsedData);
   },

@@ -235,13 +235,13 @@ export const parseResponseLatencyAppRequestOneValue = (req, res, next) => {
     peakOutboundData,
   ] = res.locals.data;
 
-  console.log("Raw data from Prometheus:");
-  console.log("Number of requests:", numRequestsData);
-  console.log("Inbound latency:", inboundLatencyData);
-  console.log("Outbound latency:", outboundLatencyData);
-  console.log("Combined latency:", combinedLatencyData);
-  console.log("Peak inbound:", peakInboundData);
-  console.log("Peak outbound:", peakOutboundData);
+  // console.log("Raw data from Prometheus:");
+  // console.log("Number of requests:", numRequestsData);
+  // console.log("Inbound latency:", inboundLatencyData);
+  // console.log("Outbound latency:", outboundLatencyData);
+  // console.log("Combined latency:", combinedLatencyData);
+  // console.log("Peak inbound:", peakInboundData);
+  // console.log("Peak outbound:", peakOutboundData);
 
   const resultObj = {};
 
@@ -311,9 +311,87 @@ export const parseResponseLatencyAppRequestOneValue = (req, res, next) => {
     }
   });
 
-  console.log("Final processed data:", Object.values(resultObj));
+  // console.log("Final processed data:", Object.values(resultObj));
   res.locals.parsedData = {
     latencyAppRequestOneValue: Object.values(resultObj),
+  };
+
+  return next();
+};
+
+export const parseResponseLatencyAppRequestHistorical = (req, res, next) => {
+  const [
+    inboundLatencyData,
+    outboundLatencyData,
+    combinedLatencyData,
+    peakInboundData,
+    peakOutboundData,
+  ] = res.locals.data;
+
+  const resultObj = {};
+
+  inboundLatencyData.forEach((item) => {
+    const name = item.metric[res.locals.level];
+    if (!resultObj[name]) {
+      resultObj[name] = {
+        name,
+        timestampsUnix: [],
+        timestampsReadable: [],
+        avgInboundLatency: [],
+        avgOutboundLatency: [],
+        avgCombinedLatency: [],
+        peakInboundLatency: [],
+        peakOutboundLatency: [],
+      };
+    }
+
+    item.values.forEach(([timestamp, value]) => {
+      resultObj[name].timestampsUnix.push(timestamp.toString());
+      resultObj[name].timestampsReadable.push(
+        new Date(timestamp * 1000).toISOString(),
+      );
+      resultObj[name].avgInboundLatency.push(Number(value));
+    });
+  });
+
+  outboundLatencyData.forEach((item) => {
+    const name = item.metric[res.locals.level];
+    if (resultObj[name]) {
+      item.values.forEach(([, value], index) => {
+        resultObj[name].avgOutboundLatency[index] = Number(value);
+      });
+    }
+  });
+
+  combinedLatencyData.forEach((item) => {
+    const name = item.metric[res.locals.level];
+    if (resultObj[name]) {
+      item.values.forEach(([, value], index) => {
+        resultObj[name].avgCombinedLatency[index] = Number(value);
+      });
+    }
+  });
+
+  peakInboundData.forEach((item) => {
+    const name = item.metric[res.locals.level];
+    if (resultObj[name]) {
+      item.values.forEach(([, value], index) => {
+        resultObj[name].peakInboundLatency[index] = Number(value);
+      });
+    }
+  });
+
+  peakOutboundData.forEach((item) => {
+    const name = item.metric[res.locals.level];
+    if (resultObj[name]) {
+      item.values.forEach(([, value], index) => {
+        resultObj[name].peakOutboundLatency[index] = Number(value);
+      });
+    }
+  });
+
+  res.locals.parsedData = {
+    latencyAppRequestHistorical: Object.values(resultObj),
   };
 
   return next();
