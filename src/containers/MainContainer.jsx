@@ -9,6 +9,7 @@ import PodGrid from "../components/PodGrid";
 import RequestLimit from "../components/RequestLimit";
 
 const MainContainer = ({ username }) => {
+  console.log("main container rendering")
   const url = "http://localhost:3000/";
 
   // State for when the menu button is clicked
@@ -169,7 +170,7 @@ const MainContainer = ({ username }) => {
     };
     bigFetch();
 
-    const intervalID = setInterval(bigFetch, 30000);
+    const intervalID = setInterval(bigFetch, 5000);
     return () => {
       clearInterval(intervalID);
     };
@@ -180,48 +181,156 @@ const MainContainer = ({ username }) => {
     console.log("All data: ", allData) 
   }, [allData])
 
+  // return (
+  //   <div id="main-container">
+  //     <button onClick={() => setMenu(true)}>Menu</button>
+  //     {!menu && <MenuContainer />}
+  //     <h1>{`Welcome, ${username}`}</h1>
+  //     <div /*grid*/>
+  //       <Overview
+  //         podsStatuses={allData.podsStatuses}
+  //         allNodes={allData.allNodes}
+  //         isLoading={isLoading}
+  //       />
+  //       {/* <RequestLimit
+  //         defaultView={defaultView}
+  //         clickedPod={clickedPod}
+  //         requestLimits={allData.requestLimits}
+  //       />
+  //       <Latency
+  //         defaultView={defaultView}
+  //         clickedPod={clickedPod}
+  //         latencyAppRequestOneValue={allData.latencyAppRequestOneValue}
+  //       />
+  //       <Metrics
+  //         defaultView={defaultView}
+  //         clickedPod={clickedPod}
+  //         cpuUsageHistorical={allData.cpuUsageHistorical}
+  //         memoryUsageHistorical={allData.memoryUsageHistorical}
+  //       />  */}
+  //       <PodGrid
+  //         defaultView={defaultView}
+  //         setDefaultView={setDefaultView}
+  //         setClickedPod={setClickedPod}
+  //         podStatuses={allData.podsStatuses}
+  //         requestLimits={allData.requestLimits}
+  //         cpuUsageOneValue={allData.cpuUsageOneValue}
+  //         memoryUsageOneValue={allData.memoryUsageOneValue}
+  //         latencyAppRequestOneValue={allData.latencyAppRequestOneValue}
+  //       />
+  //     </div>
+  //     <button onClick={() => setDefaultView(true)}>Reset to default</button>
+  //     <button>Ask AI</button>
+  //   </div>
+  // );
+
   return (
-    <div id="main-container">
-      <button onClick={() => setMenu(true)}>Menu</button>
-      {!menu && <MenuContainer />}
-      <h1>{`Welcome, ${username}`}</h1>
-      <div /*grid*/>
-        <Overview
-          podsStatuses={allData.podsStatuses}
-          allNodes={allData.allNodes}
-          isLoading={isLoading}
-        />
-        {/* <RequestLimit
-          defaultView={defaultView}
-          clickedPod={clickedPod}
-          requestLimits={allData.requestLimits}
-        />
-        <Latency
-          defaultView={defaultView}
-          clickedPod={clickedPod}
-          latencyAppRequestOneValue={allData.latencyAppRequestOneValue}
-        />
-        <Metrics
-          defaultView={defaultView}
-          clickedPod={clickedPod}
-          cpuUsageHistorical={allData.cpuUsageHistorical}
-          memoryUsageHistorical={allData.memoryUsageHistorical}
-        />  */}
-        <PodGrid
-          defaultView={defaultView}
-          setDefaultView={setDefaultView}
-          setClickedPod={setClickedPod}
-          podStatuses={allData.podsStatuses}
-          requestLimits={allData.requestLimits}
-          cpuUsageOneValue={allData.cpuUsageOneValue}
-          memoryUsageOneValue={allData.memoryUsageOneValue}
-          latencyAppRequestOneValue={allData.latencyAppRequestOneValue}
-        />
+    <div>
+      <header className="header sticky top-0 z-50 flex flex-col items-center justify-between gap-4 border-b-2 border-slate-600 bg-slate-950 py-4 sm:flex-row">
+        <div id="leftside" className="flex items-center">
+          <div className="flex items-center gap-0 px-5">
+            <button
+              onClick={() => setMenu(true)}
+              className="group inline-flex h-12 w-12 items-center justify-center rounded border-2 border-slate-500 bg-slate-950 text-center text-slate-300"
+            >
+              <span className="sr-only">Menu</span>
+              <svg
+                className="pointer-events-none h-6 w-6 fill-current"
+                viewBox="0 0 16 16"
+              >
+                <rect
+                  className="origin-center -translate-y-[5px] translate-x-[7px]"
+                  y="7"
+                  width="9"
+                  height="2"
+                ></rect>
+                <rect
+                  className="origin-center"
+                  y="7"
+                  width="16"
+                  height="2"
+                ></rect>
+                <rect
+                  className="origin-center translate-y-[5px]"
+                  y="7"
+                  width="9"
+                  height="2"
+                ></rect>
+              </svg>
+            </button>
+            {!menu && <MenuContainer />}
+          </div>
+          <h1 className="bg-gradient-to-bl from-blue-500 to-blue-600 bg-clip-text px-5 font-sans text-5xl font-bold text-transparent transition duration-300 hover:scale-105">
+            BottleNetes
+          </h1>
+        </div>
+        <div className="flex items-center space-x-4">
+          <h1 className="mr-5 px-5 text-2xl font-semibold text-slate-300">{`Welcome, ${username}`}</h1>
+        </div>
+      </header>
+      <div className="bg-custom-gradient">
+        <div className="border-b-2 border-slate-300 p-10">
+          <Overview 
+            podsStatuses={allData.podsStatuses}
+            allNodes={allData.allNodes}
+            isLoading={isLoading}
+          />
+        </div>
+        <div
+          id="main-container"
+          className="flex min-h-screen flex-col gap-4 p-6 text-slate-100"
+        >
+          {/*Arrange components in columns for a larger screen, and stack vertically if the screen is smaller*/}
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 xl:grid-cols-4">
+            <div className="relative flex-auto rounded-3xl bg-slate-100 p-4 xl:col-span-2">
+              <h2 className="text-center text-2xl font-semibold text-slate-900">
+                Request Rate vs. Limit
+              </h2>
+              {/* <RequestLimit
+                defaultView={defaultView}
+                clickedPod={clickedPod}
+              /> */}
+            </div>
+            <div className="rounded-3xl bg-slate-100 p-4 xl:col-span-2">
+              <h2 className="text-center text-2xl font-semibold text-slate-900">
+                Latency
+              </h2>
+              {/* <Latency defaultView={defaultView} clickedPod={clickedPod} /> */}
+            </div>
+            <div className="max-h-[41%] rounded-3xl bg-slate-100 p-4 xl:col-span-2">
+              <h2 className="text-center text-2xl font-semibold text-slate-900">
+                Additional Metrics
+              </h2>
+              {/* <Metrics defaultView={defaultView} clickedPod={clickedPod} /> */}
+            </div>
+            <div className="flex max-h-[41%] flex-col rounded-3xl bg-slate-100 p-4 xl:col-span-2">
+              <h2 className="text-center text-2xl font-bold text-blue-600">
+                Select Pod
+              </h2>
+              <PodGrid
+                defaultView={defaultView}
+                setDefaultView={setDefaultView}
+                setClickedPod={setClickedPod}
+                podStatuses={allData.podsStatuses}
+                requestLimits={allData.requestLimits}
+                cpuUsageOneValue={allData.cpuUsageOneValue}
+                memoryUsageOneValue={allData.memoryUsageOneValue}
+                latencyAppRequestOneValue={allData.latencyAppRequestOneValue}
+              />
+            </div>
+            <div className="mt-4 flex justify-end">
+              <button onClick={() => setDefaultView(true)}>
+                Reset to default
+              </button>
+              <button>Ask AI</button>
+            </div>
+          </div>
+        </div>
       </div>
-      <button onClick={() => setDefaultView(true)}>Reset to default</button>
-      <button>Ask AI</button>
     </div>
   );
+
+
 };
 
 MainContainer.propTypes = {
