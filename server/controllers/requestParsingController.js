@@ -141,3 +141,49 @@ export const parseRequestLatencyAppRequestOneValue = (req, res, next) => {
   res.locals.level = level;
   return next();
 };
+
+export const parseRequestLatencyAppRequestHistorical = (req, res, next) => {
+  if (
+    !req.body.timeStart ||
+    !req.body.timeEnd ||
+    !req.body.timeStep ||
+    !req.body.level
+  ) {
+    return next({
+      log: "Error in parseRequestLatencyAppRequestHistorical middleware",
+      status: 400,
+      message: { err: "Missing required parameters" },
+    });
+  }
+
+  if (
+    !req.body.timeStart.match(/^\d+(\.\d{1,3})?$/) ||
+    !req.body.timeEnd.match(/^\d+(\.\d{1,3})?$/) ||
+    !req.body.timeStep.match(/^\d+$/)
+  ) {
+    return next({
+      log: "Error in parseRequestLatencyAppRequestHistorical middleware",
+      status: 400,
+      message: { err: "Invalid time format. Use unix timestamp" },
+    });
+  }
+
+  if (!isValidLevel(req.body.level)) {
+    return next({
+      log: "Error in parseRequestLatencyAppRequestHistorical middleware",
+      status: 400,
+      message: {
+        err: "Invalid level, must be pod, namespace, node, or cluster",
+      },
+    });
+  }
+
+  res.locals.isHistorical = true;
+  const { timeStart, timeEnd, timeStep, level } = req.body;
+  res.locals.timeStart = timeStart;
+  res.locals.timeEnd = timeEnd;
+  res.locals.timeStep = timeStep;
+  res.locals.level = level;
+  res.locals.timeWindow = timeStep + "s";
+  return next();
+};
