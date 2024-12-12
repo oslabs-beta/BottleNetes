@@ -1,5 +1,5 @@
 import { useState } from "react";
-import LogInContainer from "./containers/LogInContainer";
+import SigninContainer from "./containers/SigninContainer";
 import MainContainer from "./containers/MainContainer";
 
 function App() {
@@ -9,7 +9,7 @@ function App() {
   return (
     <div id="app">
       {!loggedIn ? (
-        <LogInContainer
+        <SigninContainer
           username={username}
           setUsername={setUsername}
           setLoggedIn={setLoggedIn}

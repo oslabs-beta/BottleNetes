@@ -1,33 +1,30 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { Hexagon } from "lucide-react";
-import "../styles.css";
+// import "../styles.css";
 
 const LogInContainer = (props) => {
   const url = "http://localhost:3000/";
+
   const { username, setUsername, setLoggedIn } = props;
   const [password, setPassword] = useState("");
+  const credential = { username, password };
 
   const handleLogIn = async () => {
-    const credential = { username, password };
+    const response = await fetch(url + "signin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(credential),
+    });
 
-    try {
-      const response = await fetch(url + "login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(credential),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-        setLoggedIn(true);
-      } else {
-        alert("Unable to send request");
-      }
-    } catch (error) {
-      console.error(`🤔 Log in failed: ${error}`);
-      alert("Unable to log in. Please check your credential.");
+    if (response.ok) {
+      const data = await response.json();
+      console.log(data);
+      setLoggedIn(true);
+    } else {
+      const data = await response.json();
+      console.log(data);
+      alert("Unable to fetch data");
     }
   };
 
@@ -38,6 +35,8 @@ const LogInContainer = (props) => {
         const data = await response.json();
         console.log(data);
       } else {
+        const data = await response.json();
+        console.log(data);
         alert("Unable to redirect to requested page");
       }
     } catch (error) {
@@ -45,8 +44,6 @@ const LogInContainer = (props) => {
       alert("Please try again later...");
     }
   };
-
-  
 
   return (
     <div
@@ -62,12 +59,12 @@ const LogInContainer = (props) => {
         </a>
       </h1>
       <Hexagon
-        className="slow-spin -mb-64 size-64"
+        className="animate-slow-spin -mb-64 size-64"
         color="rgb(14, 116, 144)"
         strokeWidth={0.5}
       />
       <Hexagon
-        className="slow-spin -mb-64 size-64 opacity-35"
+        className="animate-slow-spin -mb-64 size-64 opacity-35"
         color="rgb(8 145 178)"
         strokeWidth={1}
       />
@@ -83,6 +80,7 @@ const LogInContainer = (props) => {
             placeholder="Username"
             id="username"
             value={username}
+            autoComplete="username"
             onChange={(e) => setUsername(e.target.value)}
             className="rounded-md bg-slate-900 p-1 px-10 text-center text-slate-300 focus:bg-slate-800"
           />
@@ -101,7 +99,7 @@ const LogInContainer = (props) => {
             className="hover:border-3 active:border-3 rounded-lg border-2 border-slate-600 bg-slate-700 px-5 py-2 text-slate-300 hover:border-slate-500 hover:bg-slate-600 hover:text-slate-200 active:border-slate-700 active:bg-slate-800 active:text-slate-400"
             type="submit"
             id="login-button"
-            onSubmit={handleLogIn}
+            onClick={handleLogIn}
           >
             Log In
           </button>
@@ -109,7 +107,7 @@ const LogInContainer = (props) => {
             className="hover:border-3 active:border-3 rounded-lg border-2 border-slate-600 bg-slate-700 px-5 py-2 text-slate-300 hover:border-slate-500 hover:bg-slate-600 hover:text-slate-200 active:border-slate-700 active:bg-slate-800 active:text-slate-400"
             type="submit"
             id="signup-button"
-            onSubmit={() => handleRedirect("signup")}
+            onClick={() => handleRedirect("signup")}
           >
             Sign Up
           </button>
