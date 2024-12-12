@@ -82,18 +82,23 @@ const PodGrid = ({
         (obj) => obj.name === pod.podName
       );
       podObj.cpuData = cpuData?.usageRelativeToRequest;
+      podObj.value = cpuData?.usageRelativeToRequest;
     }
     if (selectedMetric === "memory") {
       const memoryData = memoryUsageOneValue?.resourceUsageOneValue?.find(
         (obj) => obj.name === pod.podName
       );
       podObj.memoryData = memoryData?.usageRelativeToRequest;
+      podObj.value = memoryData?.usageRelativeToRequest;
     }
     if (selectedMetric === "latency") {
       const latencyData = latencyAppRequestOneValue?.latencyAppRequestOneValue?.find(
         (obj) => obj.name === pod.podName
       );
       podObj.latencyData = latencyData?.avgCombinedLatency;
+      podObj.latencyData = latencyData?.avgCombinedLatency;
+
+
     }
 
     return podObj;
@@ -137,12 +142,11 @@ const PodGrid = ({
       {/* Render the grid of pods as a list */}
       <ul id="pod-list">
         {podList.map((pod, index) => (
-          <li key={index} 
-          style={{ backgroundColor: pod.color }}
-          >
+          <li key={index} >
             <Pod               
               pod={pod}
               type="button" 
+              selectedMetric={selectedMetric}
               onClick={() => {
                 setClickedPod(pod.podName);
                 setDefaultView(false);
