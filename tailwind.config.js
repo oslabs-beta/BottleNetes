@@ -1,25 +1,7 @@
-// /** @type {import('tailwindcss').Config} */
-// export default {
-//   content: ["./index.html", "signup.html", "./src/**/*.{js,ts,jsx,tsx}"],
-//   theme: {
-//     extend: {
-//       keyframes: {
-//         textColorAnimation: {
-//           "0%": { backgroundPosition: "0% 50%" },
-//           "100%": { backgroundPosition: "100 50%" },
-//         },
-//       },
-//       animation: {
-//         textColorAnimation: "textColorAnimation 3s linear infinite",
-//       },
-//     },
-//   },
-//   plugins: [],
-// };
-
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ["./index.html", "signup.html", "./src/**/*.{js,ts,jsx,tsx,html}"],
+  darkMode: 'class',
+  content: ["./index.html", "./signup.html", "./src/**/*.{js,ts,jsx,tsx,html}"],
   theme: {
     extend: {
       screens: {
@@ -36,13 +18,30 @@ export default {
           "linear-gradient(225deg, #e2e8f0 35%, #dbeafe 50%, #ede9fe 65%, #e2e8f0)",
       },
       keyframes: {
+        colorChange: {
+          "0%": {
+            textShadow: "0 0 10px rgb(21, 94, 117)",
+            color: "rgb(21, 94, 117)",
+          },
+          "50%": {
+            textShadow: "0 0 10px rgb(8, 145, 178)",
+            color: "rgb(8, 145, 178)",
+          },
+          "100%": {
+            textShadow: "0 0 10px rgb(21, 94, 117)",
+            color: "rgb(21, 94, 117)",
+          },
+        },
         textColorAnimation: {
           "0%": { backgroundPosition: "0% 50%" },
           "100%": { backgroundPosition: "100 50%" },
         },
       },
+
       animation: {
+        "text-color-animation": "colorChange 5s linear infinite",
         textColorAnimation: "textColorAnimation 3s linear infinite",
+        "slow-spin": "spin 20s linear infinite",
       },
       fontFamily: {
         sans: ["Inter", "sans-serif"],

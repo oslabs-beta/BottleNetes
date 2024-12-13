@@ -1,5 +1,6 @@
+/* eslint-disable no-unused-vars */
 import PropTypes from "prop-types";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Pod from "./Pod";
 
 const PodGrid = ({
