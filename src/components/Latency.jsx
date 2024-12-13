@@ -48,7 +48,6 @@ const Latency = ({ defaultView, clickedPod, latencyAppRequestHistorical }) => {
       },
     );
   
-  console.log("latenct data: ", latencyAppRequestHistorical);
 
   if (defaultView) {
     const PodCount =
