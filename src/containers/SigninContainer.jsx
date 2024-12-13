@@ -1,48 +1,47 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { Hexagon } from "lucide-react";
-import "../styles.css";
 
 const LogInContainer = (props) => {
   const url = "http://localhost:3000/";
+
   const { username, setUsername, setLoggedIn } = props;
   const [password, setPassword] = useState("");
+  const credential = { username, password };
 
-  const handleLogIn = async () => {
-    const credential = { username, password };
+  const handleLogIn = async (e) => {
+    console.log(`🔄 Sending request to ${url}signin`);
+    e.preventDefault();
 
-    try {
-      const response = await fetch(url + "login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(credential),
-      });
+    const response = await fetch(url + "signin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
+      body: JSON.stringify(credential),
+    });
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-        setLoggedIn(true);
-      } else {
-        alert("Unable to send request");
-      }
-    } catch (error) {
-      console.error(`🤔 Log in failed: ${error}`);
-      alert("Unable to log in. Please check your credential.");
+    const data = await response.json();
+    console.log(data);
+
+    if (response.ok) {
+      setLoggedIn(true);
+      setUsername(data.username);
     }
+    else alert("Unable to fetch data");
   };
 
   const handleRedirect = async (endpoint) => {
+    console.log(`🔄 Sending request to ${url + endpoint}`);
+
     try {
       const response = await fetch(url + endpoint);
-      if (response.ok) {
-        const data = await response.json();
-        console.log(data);
-      } else {
-        alert("Unable to redirect to requested page");
-      }
+      const data = await response.json();
+      console.log(data);
+
+      if (!response.ok) alert("Unable to redirect to requested page");
     } catch (error) {
       console.error(`😳 Redirect failed: ${error}`);
-      alert("Please try again later...");
+      // alert("Please try again later...");
     }
   };
 
@@ -51,7 +50,7 @@ const LogInContainer = (props) => {
       id="login-container"
       className="flex h-screen w-screen flex-col items-center justify-center bg-gradient-to-bl from-slate-950 from-10% via-slate-800 via-70% to-cyan-950 to-90% text-center align-middle font-mono"
     >
-      <h1 className="text-color-animation font-sans text-7xl font-black transition duration-300 hover:scale-105">
+      <h1 className="animate-text-color-animation font-sans text-7xl font-black transition duration-300 hover:scale-105">
         <a
           href="https://github.com/oslabs-beta/BottleNetes"
           title="Visit our GitHub"
@@ -60,12 +59,12 @@ const LogInContainer = (props) => {
         </a>
       </h1>
       <Hexagon
-        className="slow-spin -mb-64 size-64"
+        className="-mb-64 size-64 animate-slow-spin"
         color="rgb(14, 116, 144)"
         strokeWidth={0.5}
       />
       <Hexagon
-        className="slow-spin -mb-64 size-64 opacity-35"
+        className="-mb-64 size-64 animate-slow-spin opacity-35"
         color="rgb(8 145 178)"
         strokeWidth={1}
       />
@@ -81,6 +80,7 @@ const LogInContainer = (props) => {
             placeholder="Username"
             id="username"
             value={username}
+            autoComplete="username"
             onChange={(e) => setUsername(e.target.value)}
             className="rounded-md bg-slate-900 p-1 px-10 text-center text-slate-300 focus:bg-slate-800"
           />
@@ -103,14 +103,16 @@ const LogInContainer = (props) => {
           >
             Log In
           </button>
-          <button
-            className="hover:border-3 active:border-3 rounded-lg border-2 border-slate-600 bg-slate-700 px-5 py-2 text-slate-300 hover:border-slate-500 hover:bg-slate-600 hover:text-slate-200 active:border-slate-700 active:bg-slate-800 active:text-slate-400"
-            type="button"
-            id="signup-button"
-            onClick={() => handleRedirect("signup")}
-          >
-            Sign Up
-          </button>
+          <a href="/signup">
+            <button
+              className="hover:border-3 active:border-3 rounded-lg border-2 border-slate-600 bg-slate-700 px-5 py-2 text-slate-300 hover:border-slate-500 hover:bg-slate-600 hover:text-slate-200 active:border-slate-700 active:bg-slate-800 active:text-slate-400"
+              type="button"
+              id="signup-button"
+              onClick={() => handleRedirect("signup")}
+            >
+              Sign Up
+            </button>
+          </a>
         </div>
         <br />
         <button
