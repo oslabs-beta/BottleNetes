@@ -25,7 +25,11 @@ ChartJS.register(
 
 const Latency = ({ defaultView, clickedPod, latencyAppRequestHistorical }) => {
   // Check if we have data first
-  if (!latencyAppRequestHistorical?.latencyAppRequestHistorical) {
+  if (
+    !latencyAppRequestHistorical?.latencyAppRequestHistorical ||
+    !latencyAppRequestHistorical?.latencyAppRequestHistorical[0]
+      .timestampsReadable
+  ) {
     return <div>Loading...</div>;
   }
 
@@ -47,7 +51,6 @@ const Latency = ({ defaultView, clickedPod, latencyAppRequestHistorical }) => {
         });
       },
     );
-  
 
   if (defaultView) {
     const PodCount =
@@ -198,7 +201,7 @@ const Latency = ({ defaultView, clickedPod, latencyAppRequestHistorical }) => {
     ],
   };
 
-  console.log("latency data:", );
+  console.log("latency data:");
 
   return (
     <div className="min-h-[400px] w-full rounded p-4">

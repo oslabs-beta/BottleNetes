@@ -5,7 +5,7 @@ echo "This script will set up a local Kubernetes cluster using minikube, install
 echo "It may take a few minutes. Please be patient.⏳⌛"
 
 echo -e "\033[0;34m
-
+                 |==|
                   ||
                   ||
                   ||
@@ -32,45 +32,62 @@ echo -e "\033[0;34m
 
 #########################################
 echo "-----------------------------------------"
-echo "Step 1 🏗️🔧 Installing minikube, kubectl, and helm..."
-brew install minikube
-brew install kubectl
-brew install helm
-echo "✅ Installation complete."
-
-#########################################
+echo "Initial Setup Choice"
 echo "-----------------------------------------"
-echo "Step 2 🔄 Deleting and restarting minikube..."
-minikube delete
-minikube start
-echo "✅ Minikube restarted."
+echo "Do you want to skip installing prerequisite packages? (y/n): "
+read -r choice
 
-#########################################
-echo "-----------------------------------------"
-echo "Step 3 🔭📈 Setting up Prometheus..."
-helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-helm repo add stable https://charts.helm.sh/stable
-helm repo update
-helm install prometheus prometheus-community/kube-prometheus-stack
-echo "✅ Prometheus setup complete."
+if [ "$choice" = "y" ]; then
+    echo "✅ You chose to skip installing prerequisite packages. Bypassing installation in step 1 - 6, jumping to step 7..."
+elif [ "$choice" = "n" ]; then
+    echo "🔄 You chose to install prerequisite packages. Starting installation..."
 
-#########################################
-echo "-----------------------------------------"
-echo "Step 4 🌐⛵ Downloading Istio..."
-curl -L https://istio.io/downloadIstio | sh -
-echo "✅ Istio downloaded."
+    #########################################
+    echo "-----------------------------------------"
+    echo "Step 1 🏗️🔧 Installing minikube, kubectl, and helm..."
+    brew install minikube
+    brew install kubectl
+    brew install helm
+    echo "✅ Installation complete."
 
-#########################################
-echo "-----------------------------------------"
-echo "Step 5 ➕🌐 Adding Istio to PATH..."
-export PATH=$PWD/istio-1.24.1/bin:$PATH
-echo "✅ Istio added to PATH."
+    #########################################
+    echo "-----------------------------------------"
+    echo "Step 2 🔄 Deleting and restarting minikube..."
+    minikube delete
+    minikube start
+    echo "✅ Minikube restarted."
 
-#########################################
-echo "-----------------------------------------"
-echo "Step 6 🏗️⛵ Installing Istio..."
-istioctl install --set profile=demo -y
-echo "✅ Istio installation complete."
+    #########################################
+    echo "-----------------------------------------"
+    echo "Step 3 🔭📈 Setting up Prometheus..."
+    helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+    helm repo add stable https://charts.helm.sh/stable
+    helm repo update
+    helm install prometheus prometheus-community/kube-prometheus-stack
+    echo "✅ Prometheus setup complete."
+
+    #########################################
+    echo "-----------------------------------------"
+    echo "Step 4 🌐⛵ Downloading Istio..."
+    curl -L https://istio.io/downloadIstio | sh -
+    echo "✅ Istio downloaded."
+
+    #########################################
+    echo "-----------------------------------------"
+    echo "Step 5 ➕🌐 Adding Istio to PATH..."
+    export PATH=$PWD/istio-1.24.1/bin:$PATH
+    echo "✅ Istio added to PATH."
+
+    #########################################
+    echo "-----------------------------------------"
+    echo "Step 6 🏗️⛵ Installing Istio..."
+    istioctl install --set profile=demo -y
+    echo "✅ Istio installation complete."
+
+else
+    echo "❌ Invalid input. Please run the script again and enter 'y' or 'n'."
+    exit 1
+fi
 
 #########################################
 echo "-----------------------------------------"
@@ -104,6 +121,7 @@ echo "Step 9 🏷️🍶 Labeling pods for Prometheus scraping..."
 kubectl label pods --all istio-prometheus-scrape=true
 echo "✅ Pods labeled."
 
+# Function to kill processes on a specified port
 kill_port_processes() {
     PORT=$1
     if lsof -t -i:"$PORT" > /dev/null 2>&1; then
@@ -144,22 +162,38 @@ echo "✅ Display complete."
 echo "-----------------------------------------"
 echo "Step 14 🌐👀 Opening the frontend service in the default browser..."
 open http://localhost:8080
-echo "✅ Browser opened. You can now interact with the app."
+echo "✅ Browser opened. You can now interact with the demo app."
 
 #########################################
 echo "-----------------------------------------"
 echo "Step 15 🤖🌐⚡ Would you like to add some fake external traffic to test latency?"
 echo "Enter y (yes) or n (no): "
-read choice
+read -r traffic_choice
 
-if [ "$choice" = "y" ]; then
+if [ "$traffic_choice" = "y" ]; then
     echo "🚃🚃🚃 Generating external traffic... 🚃🚃🚃"
     for i in {1..50}; do
         curl http://localhost:8081/ > /dev/null 2>&1
     done
     echo "✅ Traffic generation complete!"
-else
+elif [ "$traffic_choice" = "n" ]; then
     echo "👋 No external traffic generated. Happy testing!🤟"
+else
+    echo "❌ Invalid input. Skipping traffic generation."
 fi
+
+#########################################
+echo "-----------------------------------------"
+echo "Step 16 🎉🎉🎉 All set up completed. Let's run the bottlenetes!"
+
+kill_port_processes 3000
+kill_port_processes 5173
+npm start
+
+#########################################
+echo "-----------------------------------------"
+echo "Step 1417 🌐👀 Opening the frontend service in the default browser..."
+open http://localhost:5173
+echo "✅ Browser opened. You can now view the bottlenetes dashboard."
 
 echo "🎉 Script execution finished."
