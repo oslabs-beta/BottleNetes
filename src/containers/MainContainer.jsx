@@ -25,6 +25,16 @@ const MainContainer = ({ username }) => {
   // Data of selected pod
   const [podData, setPodData] = useState([]);
 
+   // Function to reset views and clear selected pod
+   const resetView = () => {
+    setDefaultView(true); 
+    // Reset to default view
+    setClickedPod("");   
+    // Clear selected pod
+    setSelectedMetric("cpu"); 
+    // Reset metric selection
+  };
+
   // Data of all pods
   const [allData, setAllData] = useState({
     podsStatuses: { podsStatuses: [] },
@@ -323,18 +333,10 @@ const MainContainer = ({ username }) => {
             </div>
 
             <div className="mt-4 flex justify-end gap-4">
+               {/* Reset Button with Reset Function */}
               <button
-                 onClick={() => {
-                  // Resets the view
-                  setDefaultView(true);   
-                  
-                  // Clears the selected pod
-                  setClickedPod(""); 
-                  
-                  // Resets the metric selection
-                  setSelectedMetric("cpu");
-                }}
-                className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter"
+              onClick= {resetView}
+              className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter"
               >
                 Reset to default
               </button>
