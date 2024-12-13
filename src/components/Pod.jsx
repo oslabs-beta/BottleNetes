@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 
 const Pod = ({ pod, selectedMetric, onClick }) => {
-  console.log("pod", pod);
+  // console.log("pod", pod);
   const [isShowing, setIsShowing] = useState(false);
 
   const color = (value, minVal = 0, maxVal = 100) => {
@@ -74,7 +74,7 @@ const Pod = ({ pod, selectedMetric, onClick }) => {
               Service: <span className="font-normal">{pod.service}</span>
             </p>
             <p className="font-semibold">
-              Active:{" "}
+              Ready?:{" "}
               <span className="font-normal">
                 {pod.readiness ? "Yes" : "No"}
               </span>

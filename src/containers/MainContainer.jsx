@@ -67,13 +67,13 @@ const MainContainer = ({ username }) => {
 
       const bodyResourceUsageOnevalueCPU = {
         type: "cpu",
-        time: "1m",
-        level: "pod",
+        time: "1h",
+        level: "node",
       };
 
       const bodyResourceUsageOnevalueMemory = {
         type: "memory",
-        time: "1m",
+        time: "1h",
         level: "pod",
       };
 
@@ -81,7 +81,7 @@ const MainContainer = ({ username }) => {
         type: "cpu",
         timeEnd: Math.floor(Date.now() / 1000).toString(),
         timeStart: (Math.floor(Date.now() / 1000) - 86400).toString(),
-        timeStep: "3600",
+        timeStep: "60",
         level: "pod",
       };
 
@@ -89,20 +89,20 @@ const MainContainer = ({ username }) => {
         type: "memory",
         timeEnd: Math.floor(Date.now() / 1000).toString(),
         timeStart: (Math.floor(Date.now() / 1000) - 86400).toString(),
-        timeStep: "3600",
+        timeStep: "60",
         level: "pod",
       };
 
       const bodyLatencyAppRequestOneValue = {
-        time: "1m",
+        time: "1h",
         level: "pod",
       };
 
       const bodyLatencyAppRequestHistorical = {
         timeEnd: Math.floor(Date.now() / 1000).toString(),
         timeStart: (Math.floor(Date.now() / 1000) - 86400).toString(),
-        timeStep: "3600",
-        level: "pod",
+        timeStep: "60",
+        level: "node",
       };
 
       try {
@@ -185,7 +185,7 @@ const MainContainer = ({ username }) => {
     };
     bigFetch();
 
-    const intervalID = setInterval(bigFetch, 30000);
+    const intervalID = setInterval(bigFetch, 10000);
     return () => {
       clearInterval(intervalID);
     };
@@ -300,7 +300,7 @@ const MainContainer = ({ username }) => {
             {/* Latency */}
             <div className="rounded-3xl bg-slate-100 p-4 xl:col-span-2">
               <h2 className="text-center text-2xl font-semibold text-slate-900">
-                Latency
+                Request Latency
               </h2>
               <Latency
                 defaultView={defaultView}

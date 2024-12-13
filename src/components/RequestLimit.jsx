@@ -109,6 +109,7 @@ const RequestLimit = ({
   const formatMemoryToMB = (memoryInBytes) => {
     return memoryInBytes / (1024 * 1024);
   };
+
   let limitDataToUse = [];
   let requestDataToUse = [];
   if (podList.length > 0) {
