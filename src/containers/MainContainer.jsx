@@ -324,8 +324,14 @@ const MainContainer = ({ username }) => {
 
             <div className="mt-4 flex justify-end gap-4">
               <button
-                onClick={() => {
-                  setDefaultView(true);
+                 onClick={() => {
+                  // Resets the view
+                  setDefaultView(true);   
+                  
+                  // Clears the selected pod
+                  setClickedPod(""); 
+                  
+                  // Resets the metric selection
                   setSelectedMetric("cpu");
                 }}
                 className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter"

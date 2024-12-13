@@ -35,18 +35,18 @@ const Latency = ({ defaultView, clickedPod, latencyAppRequestHistorical }) => {
   let peakLatencyOutboundAtEachTimestamp = [];
   let peakLatencyInboundAtEachTimestamp = [];
 
-  timeStamps =
-    latencyAppRequestHistorical.latencyAppRequestHistorical[0].timestampsReadable.map(
-      (timestamp) => {
-        const date = new Date(timestamp);
-        return date.toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false,
-        });
-      },
-    );
+  // timeStamps =
+  //   latencyAppRequestHistorical.latencyAppRequestHistorical[0].timestampsReadable.map(
+  //     (timestamp) => {
+  //       const date = new Date(timestamp);
+  //       return date.toLocaleTimeString([], {
+  //         hour: "2-digit",
+  //         minute: "2-digit",
+  //         second: "2-digit",
+  //         hour12: false,
+  //       });
+  //     },
+  //   );
 
   if (defaultView) {
     const PodCount =
