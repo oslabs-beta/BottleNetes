@@ -11,15 +11,6 @@ import { connectDB } from "./db/db.js";
 import sequelize from "./db/db.js";
 import apiRouter from "./routes/apiRouter.js";
 
-// import { runPromQLQuery } from "./controllers/prometheusController.js";
-// import { generateQuery } from "./controllers/promqlController.js";
-// import {
-//   generateLatencyQuery,
-//   queryForLatency,
-// } from "./controllers/latencyController.js";
-
-import cookieController from './controllers/cookieController.js';
-
 // Config path for usability in ES Module
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

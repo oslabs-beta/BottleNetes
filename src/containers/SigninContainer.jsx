@@ -41,7 +41,7 @@ const LogInContainer = (props) => {
       if (!response.ok) alert("Unable to redirect to requested page");
     } catch (error) {
       console.error(`😳 Redirect failed: ${error}`);
-      alert("Please try again later...");
+      // alert("Please try again later...");
     }
   };
 
