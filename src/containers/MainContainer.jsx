@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 
 import MenuContainer from "./MenuContainer";
 import Overview from "../components/Overview";
+import PodNameDisplay from "../components/PodNameDisplay";
 import Latency from "../components/Latency";
 import Metrics from "../components/Metrics";
 import PodGrid from "../components/PodGrid";
@@ -18,11 +19,21 @@ const MainContainer = ({ username }) => {
   // Determines if the graphs display node data or pod specific data
   const [defaultView, setDefaultView] = useState(true);
 
-  // Which pod has been clicked
+  // Which pod has been clicked-  manage selected pod
   const [clickedPod, setClickedPod] = useState("");
 
   // Data of selected pod
   const [podData, setPodData] = useState([]);
+
+   // Function to reset views and clear selected pod
+   const resetView = () => {
+    setDefaultView(true); 
+    // Reset to default view
+    setClickedPod("");   
+    // Clear selected pod
+    setSelectedMetric("cpu"); 
+    // Reset metric selection
+  };
 
   // Data of all pods
   const [allData, setAllData] = useState({
@@ -241,18 +252,28 @@ const MainContainer = ({ username }) => {
       </header>
       <div className="bg-custom-gradient">
         <div className="border-b-2 border-slate-300 p-10">
+         
+         {/* Overview Display */}
           <Overview
             podsStatuses={allData.podsStatuses}
             allNodes={allData.allNodes}
             isLoading={isLoading}
           />
         </div>
+        
+        {/* PodNameDisplay */}
+        <div>
+         <PodNameDisplay clickedPod={clickedPod} />
+        </div>
+        
+        {/* main container */}
         <div
           id="main-container"
           className="flex min-h-screen flex-col gap-4 p-6 text-slate-100"
         >
           {/*Arrange components in columns for a larger screen, and stack vertically if the screen is smaller*/}
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 xl:grid-cols-4">
+            
             {/* Pod Grid */}
             <div className="flex max-h-[100%] flex-col rounded-3xl bg-slate-100 p-4 xl:col-span-2">
               <h2 className="text-center text-2xl font-bold text-blue-600">
@@ -312,12 +333,10 @@ const MainContainer = ({ username }) => {
             </div>
 
             <div className="mt-4 flex justify-end gap-4">
+               {/* Reset Button with Reset Function */}
               <button
-                onClick={() => {
-                  setDefaultView(true);
-                  setSelectedMetric("cpu");
-                }}
-                className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter"
+              onClick= {resetView}
+              className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter"
               >
                 Reset to default
               </button>
