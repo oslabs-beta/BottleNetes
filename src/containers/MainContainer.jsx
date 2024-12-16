@@ -79,7 +79,7 @@ const MainContainer = ({ username }) => {
       const bodyResourceUsageOnevalueCPU = {
         type: "cpu",
         time: "1h",
-        level: "node",
+        level: "pod",
       };
 
       const bodyResourceUsageOnevalueMemory = {
