@@ -201,7 +201,7 @@ const Latency = ({ defaultView, clickedPod, latencyAppRequestHistorical }) => {
     ],
   };
 
-  console.log("latency data:");
+  // console.log("latency data:");
 
   return (
     <div className="min-h-[400px] w-full rounded p-4">

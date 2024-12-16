@@ -212,19 +212,18 @@ const MainContainer = ({ username }) => {
   }, [allData]);
 
   // Function to ask AI for analysis and recommendations
-  const askAi = async() => {
+  const askAi = async () => {
+    console.log(aiVisibility);
     // Change visibility state
-    setAiVisibility(!aiVisibility)
+    setAiVisibility(!aiVisibility);
     const body = allData;
     // Get AI response
-    const response = await fetchData("POST", "api/askAi", body);
-    const parsedResponse = await response.json();
-    // Data is being stored in aiResponse, check with router
-    const { aiResponse } = parsedResponse;
-    setAiContent(aiResponse);
-  }
-
-
+    // const response = await fetchData("POST", "api/askAi", body);
+    // const parsedResponse = await response.json();
+    // // Data is being stored in aiResponse, check with router
+    // const { aiResponse } = parsedResponse;
+    // setAiContent(aiResponse);
+  };
 
   return (
     <div>
@@ -354,21 +353,31 @@ const MainContainer = ({ username }) => {
             </div>
           </div>
         </div>
-        {/* Reset to default and Ask AI buttons*/}
-        <div className="flex justify-between mx-6 pb-5 ">
-          {/* Reset Button with Reset Function */}
-          <button
-            onClick={resetView}
-            className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter"
-          >
-            Reset to default
-          </button>
-          <button
-            className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter"
-            onClick={askAi}
-          >
-            Ask AI
-          </button>
+
+        <div className="relative mx-6">
+          {/* Conditionally render AI suggestion window */}
+          {aiVisibility && (
+            <div className="absolute bottom-[100%] right-0 mb-3 w-72 rounded-lg border-2 border-blue-600 bg-white p-4 shadow-lg">
+              <p>AI stuff here</p>
+            </div>
+          )}
+
+          {/* Reset to default and Ask AI buttons*/}
+          <div className="flex justify-between pb-5">
+            {/* Reset Button with Reset Function */}
+            <button
+              onClick={resetView}
+              className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter"
+            >
+              Reset to default
+            </button>
+            <button
+              className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter"
+              onClick={askAi}
+            >
+              Ask AI
+            </button>
+          </div>
         </div>
       </div>
     </div>
