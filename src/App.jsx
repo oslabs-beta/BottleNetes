@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -11,9 +11,6 @@ import SigninContainer from "./containers/SigninContainer";
 import MainContainer from "./containers/MainContainer";
 
 function App() {
-  // const [loggedIn, setLoggedIn] = useState(false);
-  // const [username, setUsername] = useState("");
-
   const { isSignedIn, loading, signIn, signOut, setLoading } = useStore();
 
   useEffect(() => {
@@ -43,15 +40,6 @@ function App() {
 
   return (
     <div id="app">
-      {/* {!loggedIn ? (
-        <SigninContainer
-          username={username}
-          setUsername={setUsername}
-          setLoggedIn={setLoggedIn}
-        />
-      ) : (
-        <MainContainer username={username} />
-      )} */}
       <Router>
         <Routes>
           <Route
