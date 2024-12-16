@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -18,6 +19,7 @@ const __dirname = path.dirname(__filename);
 import signupRouter from "./routes/signupRouter.js";
 import signinRouter from "./routes/signinRouter.js";
 import apiRouter from "./routes/apiRouter.js";
+import oAuthRouter from './routes/oAuthRouter.js';
 
 // Allow the use of process.env
 dotenv.config();
@@ -36,36 +38,6 @@ app.use(
     credentials: true, // Important for cookies/session
   }),
 );
-
-// app.use((req, res, next) => {
-//   console.log('allowing cors');
-//   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
-//   res.setHeader(
-//     'Access-Control-Allow-Methods',
-//     'GET, POST, PUT, DELETE, OPTIONS'
-//   );
-//   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-//   res.setHeader('Access-Control-Allow-Credentials', 'true');
-//   return next();
-// });
-
-app.use((req, res, next) => {
-  const allowedOrigins = ['http://localhost:3000', 'http://localhost:5173'];
-  const origin = req.headers.origin;
-  if (allowedOrigins.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
-  }
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.header(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept, Authorization'
-  );
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(204);
-  }
-  return next();
-});
 
 // Connect to PORT 3000
 const PORT = 3000;
@@ -86,6 +58,7 @@ app.get("/oauth/github", (_req, res) => {
 app.use("/signin", signinRouter);
 app.use("/signup", signupRouter);
 app.use("/api", apiRouter);
+app.use("/oAuth", oAuthRouter);
 
 // Serves static files
 app.use(express.static(path.resolve(__dirname, "../index.html")));

@@ -1,7 +1,6 @@
 import express from "express";
 import userController from "../controllers/userController.js";
 import cookieController from "../controllers/cookieController.js";
-import oAuthController from '../controllers/oAuthController.js';
 
 const signinRouter = express.Router();
 
@@ -19,23 +18,10 @@ signinRouter.post(
   },
 );
 
-signinRouter.get("/checkSignin", cookieController.verifyCookie, (req, res) => {
+signinRouter.get("/checkSignin", cookieController.verifyCookie, (_req, res) => {
   return res.status(200).send({
     signedIn: res.locals.signedIn,
     user: res.locals.decoded,
-  });
-});
-
-signinRouter.get(
-  "/github",
-  oAuthController.getTemporaryCode,
-  oAuthController.requestToken,
-  oAuthController.getGithubUsername,
-  cookieController.createCookie, // createNewUser?
-  (_req, res) => {
-    return res.status(200).send({
-    signedIn: res.locals.signedIn,
-    user: res.locals.username,
   });
 });
 

@@ -2,6 +2,7 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import { Hexagon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+
 import useStore from "../store";
 
 const LogInContainer = () => {
@@ -120,12 +121,10 @@ const LogInContainer = () => {
           </a>
         </div>
         <div id="oauth-button">
-          {/* <button type='button' id='github' onClick={() => handleRedirect("signin/github")}>GitHub</button> */}
           <button
-          className='text-white'
+            className="text-white"
             type="button"
             id="github"
-            onClick={() => (handleRedirect('oauth/github/'))}
           >
             GitHub
           </button>

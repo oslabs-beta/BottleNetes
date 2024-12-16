@@ -52,7 +52,6 @@ function App() {
             path="/dashboard"
             element={isSignedIn ? <MainContainer /> : <Navigate to="/" />}
           />
-          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Router>
     </div>

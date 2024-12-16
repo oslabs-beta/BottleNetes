@@ -16,48 +16,32 @@ cookieController.createCookie = async (req, res, next) => {
 
   try {
     let { username } = await req.body;
-    
-    // If the user signed in with OAuth
-    if (!username) {
-      username = res.locals.username;
-      console.log('😛 Logging in using OAuth...')
-      const cookie = await res.cookie("ssid", res.locals.ssid, {
+
+    const foundUserID = await Users.findOne({
+      where: { username },
+      attributes: ["id"],
+    });
+
+    if (foundUserID) {
+      const token = genToken(foundUserID.dataValues.id);
+      const cookie = await res.cookie("jwt", token, {
         httpOnly: true, // Prevent access via JS
         secure: process.env.NODE_ENV === "production", // Only send over HTTPS in production,
         sameSite: "strict", // Protect against CSRF
         maxAge: 24 * 60 * 60 * 1000, // 1 day in ms
       });
-      console.log('🍪 Set up cookies using OAuth');
+      console.log(`🍪 Filling up the cookie basket...`);
       res.locals.cookie = cookie;
-      res.locals.signedIn = true;
+      // console.log(res.locals.cookie.req.cookies.ssid);
+      res.locals.id = foundUserID.dataValues.id;
+      // console.log(res.locals.id);
       return next();
     } else {
-      const foundUserID = await Users.findOne({
-        where: { username },
-        attributes: ["id"],
+      return next({
+        log: `🤨 Could not find user. Cookie will not be created`,
+        status: 401,
+        message: "Error occurred while retrieving cookies...",
       });
-
-      if (foundUserID) {
-        const token = genToken(foundUserID.dataValues.id);
-        const cookie = await res.cookie("jwt", token, {
-          httpOnly: true, // Prevent access via JS
-          secure: process.env.NODE_ENV === "production", // Only send over HTTPS in production,
-          sameSite: "strict", // Protect against CSRF
-          maxAge: 24 * 60 * 60 * 1000, // 1 day in ms
-        });
-        console.log(`🍪 Filling up the cookie basket...`);
-        res.locals.cookie = cookie;
-        // console.log(res.locals.cookie.req.cookies.ssid);
-        res.locals.id = foundUserID.dataValues.id;
-        // console.log(res.locals.id);
-        return next();
-      } else {
-        return next({
-          log: `🤨 Could not find user. Cookie will not be created`,
-          status: 401,
-          message: "Error occurred while retrieving cookies...",
-        });
-      }
     }
   } catch (error) {
     return next({
