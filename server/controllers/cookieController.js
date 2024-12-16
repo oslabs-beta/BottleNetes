@@ -1,4 +1,12 @@
+/* eslint-disable no-undef */
+import jwt from "jsonwebtoken";
+import { SECRET_KEY } from "../../utils/jwtUtils.js";
+import dotenv from 'dotenv';
+
 import Users from "../models/UserModel.js";
+import genToken from "../../utils/jwtUtils.js";
+
+dotenv.config();
 
 const cookieController = {};
 
@@ -14,10 +22,12 @@ cookieController.createCookie = async (req, res, next) => {
     });
 
     if (foundUserID) {
-      const cookie = await res.cookie("ssid", foundUserID.dataValues.id, {
-        httpOnly: true,
-        sameSite: 'Lax',
-        expires: new Date(Date.now() + 3600000), // Cookie expires in 1hr
+      const token = genToken(foundUserID.dataValues.id);
+      const cookie = await res.cookie("jwt", token, {
+        httpOnly: true, // Prevent access via JS
+        secure: process.env.NODE_ENV === "production", // Only send over HTTPS in production,
+        sameSite: "strict", // Protect against CSRF
+        maxAge: 24 * 60 * 60 * 1000, // 1 day in ms
       });
       console.log(`🍪 Filling up the cookie basket...`);
       res.locals.cookie = cookie;
@@ -42,22 +52,26 @@ cookieController.createCookie = async (req, res, next) => {
 };
 
 // Verify the cookie with their id to make sure they are the correct signed in user
-// NOT CURRENTLY IN USE
 cookieController.verifyCookie = async (req, res, next) => {
   console.log(`🍪🤔 Running verifyCookie middleware...`);
 
   try {
-    const cookie = await req.cookies;
+    const token = await req.cookies.jwt;
     // Check if the cookie ssid matches the user id
-    if (cookie.ssid === res.locals.id) {
-      console.log(`🍪 Verified session. Proceeds...`);
-      res.locals.verifiedCookie = true;
+    if (token) {
+      const decoded = jwt.verify(token, SECRET_KEY);
+      res.locals.decoded = decoded;
+      console.log(`🍪 Verified session. Enjoy your dashboard!`);
+      res.locals.signedIn = true;
       return next();
       // If they're not match, redirect them to the sign in page
     } else {
-      console.log(`🍪🤨 Stop being sus. Not a match!`);
-      res.locals.verifiedCookie = false;
-      return next();
+      res.locals.signedIn = false;
+      return next({
+        log: "🥲 Auth token is missing",
+        status: 401,
+        message: "Token not found",
+      });
     }
   } catch (error) {
     return next({

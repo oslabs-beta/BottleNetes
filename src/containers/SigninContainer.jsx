@@ -1,12 +1,16 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { Hexagon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import useStore from '../store';
 
-const LogInContainer = (props) => {
+const LogInContainer = () => {
   const url = "http://localhost:3000/";
 
-  const { username, setUsername, setLoggedIn } = props;
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const signIn = useStore((state) => state.signIn);
   const credential = { username, password };
 
   const handleLogIn = async (e) => {
@@ -24,10 +28,10 @@ const LogInContainer = (props) => {
     console.log(data);
 
     if (response.ok) {
-      setLoggedIn(true);
       setUsername(data.username);
-    }
-    else alert("Unable to fetch data");
+      signIn();
+      navigate("/dashboard");
+    } else alert("Unable to fetch data");
   };
 
   const handleRedirect = async (endpoint) => {
