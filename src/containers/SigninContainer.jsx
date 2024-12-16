@@ -2,7 +2,7 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import { Hexagon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import useStore from '../store';
+import useStore from "../store";
 
 const LogInContainer = () => {
   const url = "http://localhost:3000/";
@@ -38,14 +38,15 @@ const LogInContainer = () => {
     console.log(`🔄 Sending request to ${url + endpoint}`);
 
     try {
-      const response = await fetch(url + endpoint);
+      const response = await fetch(url + endpoint, {
+        credentials: "include",
+      });
       const data = await response.json();
       console.log(data);
 
       if (!response.ok) alert("Unable to redirect to requested page");
     } catch (error) {
       console.error(`😳 Redirect failed: ${error}`);
-      // alert("Please try again later...");
     }
   };
 
@@ -117,6 +118,17 @@ const LogInContainer = () => {
               Sign Up
             </button>
           </a>
+        </div>
+        <div id="oauth-button">
+          {/* <button type='button' id='github' onClick={() => handleRedirect("signin/github")}>GitHub</button> */}
+          <button
+          className='text-white'
+            type="button"
+            id="github"
+            onClick={() => (handleRedirect('oauth/github/'))}
+          >
+            GitHub
+          </button>
         </div>
         <br />
         <button
