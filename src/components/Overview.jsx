@@ -16,7 +16,7 @@ const Overview = ({ podsStatuses, allNodes, isLoading }) => {
 
   useEffect(() => {
     try {
-      console.log("🏃💨 Fetching data to overview component");
+      // console.log("🏃💨 Fetching data to overview component");
 
       if (!isLoading && podsStatuses?.allPodsStatus && allNodes?.allNodes) {
         const podCount = podsStatuses.allPodsStatus.length;

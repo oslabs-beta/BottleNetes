@@ -9,7 +9,7 @@ const Pod = ({ pod, selectedMetric, onClick }) => {
   const color = (value, minVal = 0, maxVal = 100) => {
     const normalizedValue = (value - minVal) / (maxVal - minVal);
     const r = 238 - Math.floor(normalizedValue * 204);
-    console.log("red value: ", r);
+    // console.log("red value: ", r);
     if (r) return `rgb(${r}, 197, 94)`;
     else
       return `#E0E0E0
@@ -33,8 +33,8 @@ const Pod = ({ pod, selectedMetric, onClick }) => {
     }
   }
   // console.log(pod.color);
-  console.log("cpu", pod.cpuData);
-  console.log("color", pod.color);
+  // console.log("cpu", pod.cpuData);
+  // console.log("color", pod.color);
 
   const buttonStyle =
     // "relative m-0.5 aspect-square rounded-xl border-blue-600 brightness-90 transition hover:border-[5px] hover:filter"

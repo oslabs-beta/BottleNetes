@@ -58,7 +58,7 @@ const PodGrid = ({
   });
   // }, [selectedMetric, podStatuses])
 
-  console.log("PODLIST from grid", podList);
+  // console.log("PODLIST from grid", podList);
 
   const buttonArray = [];
   for (let i = 1; i < podList.length; i++) {

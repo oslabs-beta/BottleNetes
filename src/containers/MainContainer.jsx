@@ -10,7 +10,6 @@ import PodGrid from "../components/PodGrid";
 import RequestLimit from "../components/RequestLimit";
 
 const MainContainer = ({ username }) => {
-  console.log("main container rendering");
   const url = "http://localhost:3000/";
 
   // State for when the menu button is clicked
@@ -21,6 +20,12 @@ const MainContainer = ({ username }) => {
 
   // Which pod has been clicked-  manage selected pod
   const [clickedPod, setClickedPod] = useState("");
+
+  // AI popup window visibility
+  const [aiVisibility, setAiVisibility] = useState(false);
+
+  // AI popup window contents
+  const [aiContent, setAiContent] = useState(null);
 
   // Data of selected pod
   // const [podData, setPodData] = useState([]);
@@ -196,7 +201,7 @@ const MainContainer = ({ username }) => {
     };
     bigFetch();
 
-    const intervalID = setInterval(bigFetch, 5000);
+    const intervalID = setInterval(bigFetch, 10000);
     return () => {
       clearInterval(intervalID);
     };
@@ -206,10 +211,26 @@ const MainContainer = ({ username }) => {
     console.log("All data: ", allData);
   }, [allData]);
 
+  // Function to ask AI for analysis and recommendations
+  const askAi = async() => {
+    // Change visibility state
+    setAiVisibility(!aiVisibility)
+    const body = allData;
+    // Get AI response
+    const response = await fetchData("POST", "api/askAi", body);
+    const parsedResponse = await response.json();
+    // Data is being stored in aiResponse, check with router
+    const { aiResponse } = parsedResponse;
+    setAiContent(aiResponse);
+  }
+
+
+
   return (
     <div>
       <header className="header sticky top-0 z-50 flex flex-col items-center justify-between gap-4 border-b-2 border-slate-600 bg-slate-950 py-4 sm:flex-row">
         <div id="leftside" className="flex items-center">
+          {/* Menu drop down */}
           <div className="flex items-center gap-0 px-5">
             <button
               onClick={() => setMenu(true)}
@@ -242,10 +263,12 @@ const MainContainer = ({ username }) => {
             </button>
             {!menu && <MenuContainer />}
           </div>
+          {/* Title */}
           <h1 className="bg-gradient-to-bl from-blue-500 to-blue-600 bg-clip-text px-5 font-sans text-5xl font-bold text-transparent transition duration-300 hover:scale-105">
             BottleNetes
           </h1>
         </div>
+        {/* Welcome text */}
         <div className="flex items-center space-x-4">
           <h1 className="mr-5 px-5 text-2xl font-semibold text-slate-300">{`Welcome, ${username}`}</h1>
         </div>
@@ -260,12 +283,12 @@ const MainContainer = ({ username }) => {
           />
         </div>
 
-        {/* PodNameDisplay */}
+        {/* Pod Name Display */}
         <div>
           <PodNameDisplay clickedPod={clickedPod} />
         </div>
 
-        {/* main container */}
+        {/* Main Container */}
         <div
           id="main-container"
           className="flex min-h-screen flex-col gap-4 p-6 text-slate-100"
@@ -329,20 +352,23 @@ const MainContainer = ({ username }) => {
                 }
               />
             </div>
-
-            <div className="mt-4 flex justify-end gap-4">
-              {/* Reset Button with Reset Function */}
-              <button
-                onClick={resetView}
-                className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter"
-              >
-                Reset to default
-              </button>
-              <button className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter">
-                Ask AI
-              </button>
-            </div>
           </div>
+        </div>
+        {/* Reset to default and Ask AI buttons*/}
+        <div className="flex justify-between mx-6 pb-5 ">
+          {/* Reset Button with Reset Function */}
+          <button
+            onClick={resetView}
+            className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter"
+          >
+            Reset to default
+          </button>
+          <button
+            className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter"
+            onClick={askAi}
+          >
+            Ask AI
+          </button>
         </div>
       </div>
     </div>

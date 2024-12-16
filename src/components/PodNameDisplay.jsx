@@ -1,6 +1,6 @@
 // PodNameDisplay.jsx
 import PropTypes from "prop-types";
-import "./Overview.css";
+import "../Overview.css";
 
 const PodNameDisplay = ({ clickedPod }) => {
   if (!clickedPod) return null;
