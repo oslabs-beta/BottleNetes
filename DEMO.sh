@@ -20,9 +20,9 @@ echo -e "\033[0;34m
              |          |
              |     ______
              |    /      \\
-             |   |  \\| // |
+             |   |  \\\\| //|
              |   | -- K --|
-             |   |  //|\\  |
+             |   |  //|\\\\ |
              |    \\______/
              |          |
              |          |
@@ -160,13 +160,7 @@ echo "✅ Display complete."
 
 #########################################
 echo "-----------------------------------------"
-echo "Step 14 🌐👀 Opening the frontend service in the default browser..."
-open http://localhost:8080
-echo "✅ Browser opened. You can now interact with the demo app."
-
-#########################################
-echo "-----------------------------------------"
-echo "Step 15 🤖🌐⚡ Would you like to add some fake external traffic to test latency?"
+echo "Step 14 🤖🌐⚡ Would you like to add some fake external traffic to test latency?"
 echo "Enter y (yes) or n (no): "
 read -r traffic_choice
 
@@ -184,16 +178,18 @@ fi
 
 #########################################
 echo "-----------------------------------------"
-echo "Step 16 🎉🎉🎉 All set up completed. Let's run the bottlenetes!"
+echo "Step 15 🎉🎉🎉 All set up completed. Let's run the bottlenetes!"
 
 kill_port_processes 3000
 kill_port_processes 5173
-npm start
+osascript -e 'tell application "Terminal" to do script "kill -9 $(lsof -t -i:3000); kill -9 $(lsof -t -i:8081)"'
+npm install
 
-#########################################
-echo "-----------------------------------------"
-echo "Step 1417 🌐👀 Opening the frontend service in the default browser..."
-open http://localhost:5173
-echo "✅ Browser opened. You can now view the bottlenetes dashboard."
+echo "🌐👀 Opening the frontend service in the default browser..."
+osascript -e 'tell application "Terminal" to do script "open http://localhost:8080"'
+echo "✅ Browser opened. You can now interact with the demo app."
+
+npm start
+echo "✅ Browser opened. You can now log in and view the bottlenetes dashboard."
 
 echo "🎉 Script execution finished."
