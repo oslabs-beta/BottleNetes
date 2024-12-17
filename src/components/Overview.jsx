@@ -45,7 +45,7 @@ const Overview = ({ podsStatuses, allNodes, isLoading }) => {
   if (isLoading) {
     return (
       <div className="overview-container fade-in">
-        <p className="overview-message blinking p-10">
+        <p className="overview-message blinking p-[41px]">
           ⏳ Loading Cluster Overview...
         </p>
       </div>

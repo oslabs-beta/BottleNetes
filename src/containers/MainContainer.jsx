@@ -196,7 +196,7 @@ const MainContainer = ({ username }) => {
     };
     bigFetch();
 
-    const intervalID = setInterval(bigFetch, 30000);
+    const intervalID = setInterval(bigFetch, 10000);
     return () => {
       clearInterval(intervalID);
     };
@@ -251,7 +251,7 @@ const MainContainer = ({ username }) => {
         </div>
       </header>
       <div className="bg-custom-gradient">
-        <div className="border-b-2 border-slate-300 p-10">
+        <div className="border-b-2 border-slate-300 p-6">
           {/* Overview Display */}
           <Overview
             podsStatuses={allData.podsStatuses}
@@ -268,7 +268,7 @@ const MainContainer = ({ username }) => {
         {/* main container */}
         <div
           id="main-container"
-          className="flex min-h-screen flex-col gap-4 p-6 text-slate-100"
+          className="flex min-h-screen flex-col gap-4 p-6 mt-2 text-slate-100"
         >
           {/*Arrange components in columns for a larger screen, and stack vertically if the screen is smaller*/}
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 xl:grid-cols-4">

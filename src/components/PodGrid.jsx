@@ -95,44 +95,44 @@ const PodGrid = ({
     "grid gap-[2px] mr-2 mt-1 grid-cols-5 overflow-visible md:grid-cols-7 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 3xl:grid-cols-9 relative z-20";
   return (
     <div className="isolation:isolate flex h-full overflow-visible">
-      <div className="flex w-1/4 min-w-[207px] max-w-[250px] mt-1 flex-col justify-start gap-4 p-4">
-          <button
-            onClick={() => setSelectedMetric("cpu")}
-            className={`rounded-2xl px-4 py-2 py-5 text-lg font-semibold transition-colors duration-200 ${
-              selectedMetric === "cpu"
-                ? " bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] text-slate-100 border-2 border-[#2563eb] hover:brightness-90"
-                : "bg-gradient-to-r from-slate-200 to-slate-100 text-slate-500 border-2 border-slate-100 hover:brightness-90"
-            }`}
-          >
-            CPU Usage (%)
-          </button>
-          <button
-            onClick={() => setSelectedMetric("memory")}
-            className={`rounded-2xl px-4 py-2 py-5 text-lg font-semibold transition-colors duration-200 ${
-              selectedMetric === "memory"
-                ? "bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] text-slate-100 border-2 border-[#2563eb] hover:brightness-90"
-                : "bg-gradient-to-r from-slate-200 to-slate-100 text-slate-500 border-2 border-slate-100 hover:brightness-90"
-            }`}
-          >
-            Mem. Usage (%)
-          </button>
-          <button
-            onClick={() => setSelectedMetric("latency")}
-            className={`rounded-2xl px-4 py-2 py-5 text-lg font-semibold transition-colors duration-200 ${
-              selectedMetric === "latency"
-                ? "bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] text-slate-100 border-2 border-[#2563eb] hover:brightness-90"
-                : "bg-gradient-to-r from-slate-200 to-slate-100 text-slate-500 border-2 border-slate-100 transition hover:brightness-90"
-            }`}
-          >
-            Latency (ms)
-          </button>
-          <button
-            onClick={resetView}
-            className={`rounded-2xl px-4 py-2 py-5 text-lg font-semibold transition-colors duration-200 bg-slate-100 text-blue-600 border-4 border-blue-600 transition hover:brightness-90`}
-          >
-            Reset
-          </button>
-        </div>
+      <div className="mt-1 flex w-1/4 min-w-[207px] max-w-[250px] flex-col justify-start gap-4 p-4">
+        <button
+          onClick={() => setSelectedMetric("cpu")}
+          className={`rounded-2xl px-4 py-2 py-5 text-lg font-semibold transition-colors duration-200 ${
+            selectedMetric === "cpu"
+              ? "border-2 border-[#2563eb] bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] text-slate-100 hover:brightness-90"
+              : "border-2 border-slate-100 bg-gradient-to-r from-slate-200 to-slate-100 text-slate-500 hover:brightness-90"
+          }`}
+        >
+          CPU Usage (%)
+        </button>
+        <button
+          onClick={() => setSelectedMetric("memory")}
+          className={`rounded-2xl px-4 py-2 py-5 text-lg font-semibold transition-colors duration-200 ${
+            selectedMetric === "memory"
+              ? "border-2 border-[#2563eb] bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] text-slate-100 hover:brightness-90"
+              : "border-2 border-slate-100 bg-gradient-to-r from-slate-200 to-slate-100 text-slate-500 hover:brightness-90"
+          }`}
+        >
+          Mem. Usage (%)
+        </button>
+        <button
+          onClick={() => setSelectedMetric("latency")}
+          className={`rounded-2xl px-4 py-2 py-5 text-lg font-semibold transition-colors duration-200 ${
+            selectedMetric === "latency"
+              ? "border-2 border-[#2563eb] bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] text-slate-100 hover:brightness-90"
+              : "border-2 border-slate-100 bg-gradient-to-r from-slate-200 to-slate-100 text-slate-500 transition hover:brightness-90"
+          }`}
+        >
+          Latency (ms)
+        </button>
+        <button
+          onClick={resetView}
+          className={`rounded-2xl border-4 border-blue-600 bg-slate-100 px-4 py-2 py-5 text-lg font-semibold text-blue-600 transition transition-colors duration-200 hover:brightness-90`}
+        >
+          Reset
+        </button>
+      </div>
       <div className="relative z-10 w-3/4 overflow-auto overflow-visible p-4">
         <div id="pod-grid" className={gridStyle}>
           {buttonArray}
@@ -151,13 +151,13 @@ const PodGrid = ({
             </span>
           </div>
         </div> */}
-
       </div>
     </div>
   );
 };
 
 PodGrid.propTypes = {
+  clickedPod: PropTypes.string,
   setClickedPod: PropTypes.func,
   metric: PropTypes.string,
   setMetric: PropTypes.func,
