@@ -28,7 +28,7 @@ const Latency = ({ defaultView, clickedPod, latencyAppRequestHistorical }) => {
   if (
     !latencyAppRequestHistorical?.latencyAppRequestHistorical ||
     !latencyAppRequestHistorical?.latencyAppRequestHistorical[0]
-      .timestampsReadable
+      ?.timestampsReadable
   ) {
     return <div>Loading...</div>;
   }

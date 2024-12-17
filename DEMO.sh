@@ -4,8 +4,49 @@ echo "🍾🍾🍾Welcome to Bottlenetes!🍾🍾🍾"
 echo "This script will set up a local Kubernetes cluster using minikube, install Prometheus and Istio, and deploy a demo application."
 echo "It may take a few minutes. Please be patient.⏳⌛"
 
-echo -e "\033[0;34m
-                 |==|
+# echo -e "\033[0;34m
+#                  |==|
+#                   ||
+#                   ||
+#                   ||
+#                   ||
+#                  /  \\
+#                 /    \\
+#                /      \\
+#               /        \\
+#              |          |
+#              |bottlenetes
+#              |          |
+#              |          |
+#              |  ______  |
+#              | /      \\ |
+#              ||  \\\\\\|// ||
+#              || -- K --||
+#              ||  //|\\\\\\ ||
+#              | \\______/ |
+#              |          |
+#              |          |
+#               \\        /
+#                \\______/
+# \033[0m"
+
+echo -e "\033[0;32m
+                   ~
+                  ( )
+                 (   )
+                  ( )
+                  ||
+           (\033[1;31m✿\033[0;32m)----( )----(\033[1;31m✿\033[0;32m)
+                 (   )
+                  ( )
+                  ||
+                  ||
+           (\033[1;31m✿\033[0;32m)----( )----(\033[1;31m✿\033[0;32m)
+                  ||
+\033[1;35m                 (\033[1;31m✿✿\033[1;35m)\033[0;32m
+                  ||
+                  ||
+\033[1;34m                 |==|
                   ||
                   ||
                   ||
@@ -15,19 +56,22 @@ echo -e "\033[0;34m
                /      \\
               /        \\
              |          |
-             |bottlenetes
+             |\033[1;36mbottlenetes\033[1;34m
              |          |
              |          |
-             |     ______
-             |    /      \\
-             |   |  \\| // |
-             |   | -- K --|
-             |   |  //|\\  |
-             |    \\______/
+             |  ______  |
+             | /      \\ |
+             ||  \\\\\\|// ||
+             || -- K --||
+             ||  //|\\\\\\ ||
+             | \\______/ |
              |          |
              |          |
               \\        /
                \\______/
+
+\033[0;33m             ============\033[0m
+
 \033[0m"
 
 #########################################
@@ -160,13 +204,7 @@ echo "✅ Display complete."
 
 #########################################
 echo "-----------------------------------------"
-echo "Step 14 🌐👀 Opening the frontend service in the default browser..."
-open http://localhost:8080
-echo "✅ Browser opened. You can now interact with the demo app."
-
-#########################################
-echo "-----------------------------------------"
-echo "Step 15 🤖🌐⚡ Would you like to add some fake external traffic to test latency?"
+echo "Step 14 🤖🌐⚡ Would you like to add some fake external traffic to test latency?"
 echo "Enter y (yes) or n (no): "
 read -r traffic_choice
 
@@ -184,16 +222,18 @@ fi
 
 #########################################
 echo "-----------------------------------------"
-echo "Step 16 🎉🎉🎉 All set up completed. Let's run the bottlenetes!"
+echo "Step 15 🎉🎉🎉 All set up completed. Let's run the bottlenetes!"
 
 kill_port_processes 3000
 kill_port_processes 5173
-npm start
+osascript -e 'tell application "Terminal" to do script "kill -9 $(lsof -t -i:3000); kill -9 $(lsof -t -i:8081)"'
+npm install
 
-#########################################
-echo "-----------------------------------------"
-echo "Step 1417 🌐👀 Opening the frontend service in the default browser..."
-open http://localhost:5173
-echo "✅ Browser opened. You can now view the bottlenetes dashboard."
+echo "🌐👀 Opening the frontend service in the default browser..."
+osascript -e 'tell application "Terminal" to do script "open http://localhost:8080"'
+echo "✅ Browser opened. You can now interact with the demo app."
+
+npm start
+echo "✅ Browser opened. You can now log in and view the bottlenetes dashboard."
 
 echo "🎉 Script execution finished."
