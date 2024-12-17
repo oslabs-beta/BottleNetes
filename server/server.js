@@ -68,7 +68,7 @@ connectDB();
 app.use("/signin", signinRouter);
 app.use("/signup", signupRouter);
 app.use("/api", apiRouter);
-app.use('/api', askAiRouter);
+app.use('/ai', askAiRouter);
 
 // Serves static files
 app.use('/index', express.static(path.resolve(__dirname, "../index.html")));

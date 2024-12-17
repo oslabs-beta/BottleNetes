@@ -45,7 +45,7 @@ export const runMultiplePromQLQueries = async (req, res, next) => {
     }
     queryUrlArr.push(queryUrl);
   }
-  console.log("queryUrlArr: ", queryUrlArr);
+  // console.log("queryUrlArr: ", queryUrlArr);
 
   res.locals.data = [];
   for (const queryUrl of queryUrlArr) {
@@ -53,7 +53,7 @@ export const runMultiplePromQLQueries = async (req, res, next) => {
       const response = await fetch(queryUrl);
       const data = await response.json();
       res.locals.data.push(data.data.result);
-      console.log("\nfetched data from query url: ", queryUrl);
+      // console.log("\nfetched data from query url: ", queryUrl);
     } catch (error) {
       return next({
         log: "Error in runMultiplePromQLQueries middleware" + error,

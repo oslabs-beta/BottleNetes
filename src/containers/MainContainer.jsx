@@ -216,13 +216,13 @@ const MainContainer = ({ username }) => {
     console.log(aiVisibility);
     // Change visibility state
     setAiVisibility(!aiVisibility);
+    setAiContent(null);
     const body = allData;
     // Get AI response
-    // const response = await fetchData("POST", "api/askAi", body);
-    // const parsedResponse = await response.json();
-    // // Data is being stored in aiResponse, check with router
-    // const { aiResponse } = parsedResponse;
-    // setAiContent(aiResponse);
+    const response = await fetchData("POST", "ai/askAi", body);
+    const { analysis } = response;
+    console.log(analysis)
+    setAiContent(analysis);
   };
 
   return (
@@ -356,12 +356,11 @@ const MainContainer = ({ username }) => {
 
         <div className="relative mx-6">
           {/* Conditionally render AI suggestion window */}
-          {aiVisibility && (
-            <div className="absolute bottom-[100%] right-0 mb-3 w-72 rounded-lg border-2 border-blue-600 bg-white p-4 shadow-lg">
-              <p>AI stuff here</p>
-            </div>
-          )}
-
+          {aiVisibility && aiContent !== null && (
+              <div className="absolute bottom-[100%] right-0 mb-3 w-72 rounded-lg border-2 border-blue-600 bg-white p-4 shadow-lg">
+                <p>{aiContent}</p>
+              </div>
+            )}
           {/* Reset to default and Ask AI buttons*/}
           <div className="flex justify-between pb-5">
             {/* Reset Button with Reset Function */}
