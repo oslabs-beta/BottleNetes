@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -47,11 +48,6 @@ const server = app.listen(PORT, () =>
 // Connect to DB
 connectDB();
 
-app.get("/oauth/github", (_req, res) => {
-  const githubUrl = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${process.env.GITHUB_CALLBACK_URL}`;
-  return res.redirect(302, githubUrl);
-});
-
 // Routers
 app.use("/signin", signinRouter);
 app.use("/signup", signupRouter);
@@ -67,6 +63,7 @@ app.use(express.static(path.resolve(__dirname, "../src/")));
 const clientID = process.env.GITHUB_CLIENT_ID;
 const redirectUri = process.env.GITHUB_REDIRECT_URI;
 
+// GitHub OAuth, redirect to the callback route
 app.get("/github", (_req, res) => {
   const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientID}&redirect_uri=${redirectUri}`;
   console.log(redirectUri);

@@ -9,6 +9,8 @@ import {
 import useStore from "./store.jsx";
 import SigninContainer from "./containers/SigninContainer";
 import MainContainer from "./containers/MainContainer";
+import CallbackHandler from "./CallbackHandler.jsx";
+import ProtectedRoute from "./ProtectedRoute.jsx";
 
 function App() {
   const { isSignedIn, loading, signIn, signOut, setLoading } = useStore();
@@ -36,7 +38,7 @@ function App() {
     checkSigninStatus();
   }, [signIn, signOut, setLoading]);
 
-  if (loading) return <div>Loading...</div>
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div id="app">
@@ -49,8 +51,18 @@ function App() {
             }
           />
           <Route
+            path="/oauth/callback"
+            element={
+              isSignedIn ? <Navigate to="/dashboard" /> : <CallbackHandler />
+            }
+          />
+          <Route
             path="/dashboard"
-            element={isSignedIn ? <MainContainer /> : <Navigate to="/" />}
+            element={
+              <ProtectedRoute isSignedIn={isSignedIn}>
+                <MainContainer />
+              </ProtectedRoute>
+            }
           />
         </Routes>
       </Router>

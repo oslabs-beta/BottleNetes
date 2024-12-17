@@ -15,6 +15,22 @@ cookieController.createCookie = async (req, res, next) => {
   console.log("🍪 Running createCookie middleware...");
 
   try {
+    // If authenticated by OAuth then run this block
+    if (res.locals.authenticated) {
+      const token = genToken(res.locals.access_token);
+    
+      const cookie = await res.cookie('jwt', token, {
+        httpOnly: true, // Prevent access via JS
+        secure: process.env.NODE_ENV === "production", // Only send over HTTPS in production,
+        sameSite: "strict", // Protect against CSRF
+        maxAge: 24 * 60 * 60 * 1000, // 1 day in ms
+      });
+    
+      res.locals.cookie = await cookie;
+      res.locals.signedIn = true;
+      return next();
+    }
+
     let { username } = await req.body;
 
     const foundUserID = await Users.findOne({
@@ -24,12 +40,14 @@ cookieController.createCookie = async (req, res, next) => {
 
     if (foundUserID) {
       const token = genToken(foundUserID.dataValues.id);
+      
       const cookie = await res.cookie("jwt", token, {
         httpOnly: true, // Prevent access via JS
         secure: process.env.NODE_ENV === "production", // Only send over HTTPS in production,
         sameSite: "strict", // Protect against CSRF
         maxAge: 24 * 60 * 60 * 1000, // 1 day in ms
       });
+      
       console.log(`🍪 Filling up the cookie basket...`);
       res.locals.cookie = cookie;
       // console.log(res.locals.cookie.req.cookies.ssid);
@@ -60,6 +78,7 @@ cookieController.verifyCookie = async (req, res, next) => {
     const token = await req.cookies.jwt;
     // Check if the cookie ssid matches the user id
     if (token) {
+      console.log('line 63');
       const decoded = jwt.verify(token, SECRET_KEY);
       res.locals.decoded = decoded;
       console.log(`🍪 Verified session. Enjoy your dashboard!`);

@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 
 import oAuthGitHubController from "../controllers/oAuthGitHubController.js";
-
+import cookieController from "../controllers/cookieController.js";
 dotenv.config();
 
 const oAuthRouter = express.Router();
@@ -12,13 +12,10 @@ oAuthRouter.get(
   oAuthGitHubController.getTemporaryCode,
   oAuthGitHubController.requestToken,
   oAuthGitHubController.getGithubUsername,
+  // oAuthGitHubController.genJWT,
+  cookieController.createCookie,
   (_req, res) => {
-    return res.status(200).json({
-      success: true,
-      username: res.locals.username,
-      user: res.locals.user,
-      token: res.locals.token,
-    });
+    return res.redirect("/dashboard");
   },
 );
 

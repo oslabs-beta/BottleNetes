@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import PropTypes from "prop-types";
 import { Hexagon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-import useStore from "../store";
+import useStore from "../store.jsx";
 
 const LogInContainer = () => {
   const url = "http://localhost:3000/";
