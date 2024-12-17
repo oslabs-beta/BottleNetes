@@ -92,7 +92,7 @@ const PodGrid = ({
 
       <div className="flex items-center space-x-4">
         {/* Vertical gradient bar */}
-        <div className="relative flex flex-col items-center">
+        {/* <div className="relative flex flex-col items-center">
           <div className="relative h-40 w-4 rounded-full bg-gradient-to-b from-red-500 via-yellow-300 to-green-400">
             <span className="absolute top-0 -mt-5 text-xs text-slate-900">
               100%
@@ -101,27 +101,36 @@ const PodGrid = ({
               0%
             </span>
           </div>
-        </div>
+        </div> */}
 
-        <div className="flex w-1/4 min-w-[203px] max-w-[250px] flex-col justify-start gap-4 p-4">
-          <p className="text-lg font-semibold text-slate-600">
-            now showing: {selectedMetric}
-          </p>
+        <div className="flex w-1/4 min-w-[207px] max-w-[250px] flex-col justify-start gap-4 p-4">
           <button
             onClick={() => setSelectedMetric("cpu")}
-            className="rounded-2xl bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] px-4 py-2 py-5 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter"
+            className={`rounded-2xl px-4 py-2 py-5 text-lg font-semibold transition-colors duration-200 ${
+              selectedMetric === "cpu"
+                ? "bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] text-slate-100 border-2 border-[#2563eb] hover:brightness-90"
+                : "bg-gradient-to-r from-slate-200 to-slate-100 text-slate-500 border-2 border-slate-100 hover:brightness-90"
+            }`}
           >
             CPU Usage (%)
           </button>
           <button
             onClick={() => setSelectedMetric("memory")}
-            className="rounded-2xl bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] px-4 py-2 py-5 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter"
+            className={`rounded-2xl px-4 py-2 py-5 text-lg font-semibold transition-colors duration-200 ${
+              selectedMetric === "memory"
+                ? "bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] text-slate-100 border-2 border-[#2563eb] hover:brightness-90"
+                : "bg-gradient-to-r from-slate-200 to-slate-100 text-slate-500 border-2 border-slate-100 hover:brightness-90"
+            }`}
           >
             Mem. Usage (%)
           </button>
           <button
             onClick={() => setSelectedMetric("latency")}
-            className="rounded-2xl bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] px-4 py-2 py-5 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter"
+            className={`rounded-2xl px-4 py-2 py-5 text-lg font-semibold transition-colors duration-200 ${
+              selectedMetric === "latency"
+                ? "bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] text-slate-100 border-2 border-[#2563eb] hover:brightness-90"
+                : "bg-gradient-to-r from-slate-200 to-slate-100 text-slate-500 border-2 border-slate-100 transition hover:brightness-90"
+            }`}
           >
             Latency (ms)
           </button>

@@ -79,7 +79,7 @@ const MainContainer = ({ username }) => {
       const bodyResourceUsageOnevalueCPU = {
         type: "cpu",
         time: "1h",
-        level: "node",
+        level: "pod",
       };
 
       const bodyResourceUsageOnevalueMemory = {
@@ -196,7 +196,7 @@ const MainContainer = ({ username }) => {
     };
     bigFetch();
 
-    const intervalID = setInterval(bigFetch, 5000);
+    const intervalID = setInterval(bigFetch, 30000);
     return () => {
       clearInterval(intervalID);
     };

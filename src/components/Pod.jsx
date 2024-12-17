@@ -38,7 +38,7 @@ const Pod = ({ pod, selectedMetric, onClick }) => {
 
   const buttonStyle =
     // "relative m-0.5 aspect-square rounded-xl border-blue-600 brightness-90 transition hover:border-[5px] hover:filter"
-    `relative aspect-square rounded-xl border-blue-600 brightness-90 transition hover:border-[5px] hover:filter ${isShowing ? "z-[9999]" : "z-0"}`;
+    `m-[0.5px] relative aspect-square rounded-xl border-blue-600 brightness-90 transition hover:border-[5px] hover:filter ${isShowing ? "z-[9999]" : "z-0"}`;
 
   const hoverStyle =
     // "pointer-events-none absolute z-[99999] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white/80 p-2 text-sm text-slate-900/90 opacity-0 transition-opacity duration-700 ease-in-out group-hover:opacity-100 shadow-xl";

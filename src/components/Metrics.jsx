@@ -172,7 +172,7 @@ const Metrics = ({
       {
         label: "RAM Usage (% of requested)",
         data: MemoryUsageAtEachTimestamp,
-        borderColor: "rgb(147, 51, 234)",
+        borderColor: "#3730a3",
         tension: 0.4,
       },
     ],

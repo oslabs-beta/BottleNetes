@@ -1,9 +1,8 @@
 // PodNameDisplay.jsx
 import PropTypes from "prop-types";
-import "./Overview.css";
+import "../Overview.css";
 
 const PodNameDisplay = ({ clickedPod }) => {
-  if (!clickedPod) return null;
 
   return (
     <div
@@ -15,14 +14,14 @@ const PodNameDisplay = ({ clickedPod }) => {
         style={{
           background: "linear-gradient(135deg, #0f172a, #1e40af)",
           width: "100%",
-          color: "#ffffff",
+          color: "#e2e8f0",
         }}
       >
-        <h2 className="dynamic-text" style={{ color: "#ffffff" }}>
-          Selected Pod
+        <h2 className="dynamic-text text-slate-100" style={{ color: "#e2e8f0" }}>
+          Showing data for:
         </h2>
-        <p className="overview-value dynamic-text" style={{ color: "#ffffff" }}>
-          {clickedPod}
+        <p className="overview-value dynamic-text text-slate-100" style={{ color: "#e2e8f0" }}>
+          {clickedPod ? clickedPod : "Node Averages"}
         </p>
       </div>
     </div>
