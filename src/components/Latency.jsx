@@ -117,13 +117,16 @@ const Latency = ({ defaultView, clickedPod, latencyAppRequestHistorical }) => {
 
   const options = {
     responsive: true,
+    interaction: {
+      mode: "nearest",
+      intersect: false,
+    },
     maintainAspectRatio: false,
     scales: {
       x: {
         stacked: false,
         grid: {
-          color: "rgba(30, 41, 59, 0.1)",
-          drawBorder: false,
+          display: false,
         },
         ticks: {
           color: "#1e293b",
@@ -135,8 +138,7 @@ const Latency = ({ defaultView, clickedPod, latencyAppRequestHistorical }) => {
       y: {
         stacked: false,
         grid: {
-          color: "rgba(30, 41, 59, 0.1)",
-          drawBorder: false,
+          display: false,
         },
         ticks: {
           color: "#1e293b",

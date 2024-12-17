@@ -106,13 +106,16 @@ const Metrics = ({
 
   const options = {
     responsive: true,
+    interaction: {
+      mode: "nearest",
+      intersect: false,
+    },
     maintainAspectRatio: false,
     scales: {
       x: {
         stacked: false,
         grid: {
-          color: "rgba(30, 41, 59, 0.1)",
-          drawBorder: false,
+          display: false,
         },
         ticks: {
           color: "#1e293b",
@@ -124,8 +127,7 @@ const Metrics = ({
       y: {
         stacked: false,
         grid: {
-          color: "rgba(30, 41, 59, 0.1)",
-          drawBorder: false,
+          display: false,
         },
         ticks: {
           color: "#1e293b",
@@ -136,12 +138,30 @@ const Metrics = ({
         },
       },
     },
+    elements: {
+      point: {
+        radius: 0,
+        hoverRadius: 6,
+      },
+    },
     plugins: {
       legend: {
         position: "bottom",
         labels: {
           color: "#1e293b",
           font: { size: 15 },
+        },
+      },
+      crosshair: {
+        line: {
+          color: "#2563eb", // Crosshair color
+          width: 1,         // Crosshair line width
+        },
+        sync: {
+          enabled: false, // Disable syncing with other charts
+        },
+        zoom: {
+          enabled: false, // Disable zooming for simplicity
         },
       },
       tooltip: {
