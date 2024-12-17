@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -19,7 +18,7 @@ const __dirname = path.dirname(__filename);
 import signupRouter from "./routes/signupRouter.js";
 import signinRouter from "./routes/signinRouter.js";
 import apiRouter from "./routes/apiRouter.js";
-import oAuthRouter from './routes/oAuthRouter.js';
+import oAuthRouter from "./routes/oAuthRouter.js";
 
 // Allow the use of process.env
 dotenv.config();
@@ -53,18 +52,26 @@ app.get("/oauth/github", (_req, res) => {
   return res.redirect(302, githubUrl);
 });
 
-
 // Routers
 app.use("/signin", signinRouter);
 app.use("/signup", signupRouter);
 app.use("/api", apiRouter);
-app.use("/oAuth", oAuthRouter);
+app.use("/oauth", oAuthRouter);
 
 // Serves static files
 app.use(express.static(path.resolve(__dirname, "../index.html")));
 app.use(express.static(path.resolve(__dirname, "../signup.html")));
 app.use(express.static(path.resolve(__dirname, "./")));
 app.use(express.static(path.resolve(__dirname, "../src/")));
+
+const clientID = process.env.GITHUB_CLIENT_ID;
+const redirectUri = process.env.GITHUB_REDIRECT_URI;
+
+app.get("/github", (_req, res) => {
+  const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientID}&redirect_uri=${redirectUri}`;
+  console.log(redirectUri);
+  return res.redirect(githubAuthUrl);
+});
 
 app.get("/", (_req, res) => {
   return res.status(200).sendFile(path.resolve(__dirname, "../index.html"));

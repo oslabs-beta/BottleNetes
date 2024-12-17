@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Hexagon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -49,6 +49,10 @@ const LogInContainer = () => {
     } catch (error) {
       console.error(`😳 Redirect failed: ${error}`);
     }
+  };
+
+  const initiateGitHubOAuth = () => {
+    window.location.href = "http://localhost:3000/github";
   };
 
   return (
@@ -125,6 +129,7 @@ const LogInContainer = () => {
             className="text-white"
             type="button"
             id="github"
+            onClick={initiateGitHubOAuth}
           >
             GitHub
           </button>
