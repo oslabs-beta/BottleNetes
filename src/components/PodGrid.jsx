@@ -6,6 +6,7 @@ import Pod from "./Pod";
 const PodGrid = ({
   defaultView,
   setDefaultView,
+  clickedPod,
   setClickedPod,
   selectedMetric,
   setSelectedMetric,
@@ -71,6 +72,7 @@ const PodGrid = ({
         pod={podObj}
         type="button"
         selectedMetric={selectedMetric}
+        isClicked={clickedPod === podObj.podName}
         onClick={() => {
           setClickedPod(podObj.podName);
           setDefaultView(false);
@@ -79,36 +81,26 @@ const PodGrid = ({
     );
   }
 
+  const resetView = () => {
+    setDefaultView(true);
+    // Reset to default view
+    setClickedPod("");
+    // Clear selected pod
+    setSelectedMetric("cpu");
+    // Reset metric selection
+  };
+
   const gridStyle =
     // "grid h-screen grid-cols-5 gap-0 overflow-scroll md:grid-cols-7 lg:grid-cols-4 xl:grid-cols-5 xl-2xl:grid-cols-7 3xl:grid-cols-9";
-    "grid gap-[2px] grid-cols-5 overflow-visible md:grid-cols-7 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 3xl:grid-cols-9 relative z-20";
+    "grid gap-[2px] mr-2 mt-1 grid-cols-5 overflow-visible md:grid-cols-7 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 3xl:grid-cols-9 relative z-20";
   return (
     <div className="isolation:isolate flex h-full overflow-visible">
-      <div className="relative z-10 w-3/4 overflow-auto overflow-visible p-4">
-        <div id="pod-grid" className={gridStyle}>
-          {buttonArray}
-        </div>
-      </div>
-
-      <div className="flex items-center space-x-4">
-        {/* Vertical gradient bar */}
-        {/* <div className="relative flex flex-col items-center">
-          <div className="relative h-40 w-4 rounded-full bg-gradient-to-b from-red-500 via-yellow-300 to-green-400">
-            <span className="absolute top-0 -mt-5 text-xs text-slate-900">
-              100%
-            </span>
-            <span className="absolute bottom-0 -mb-5 text-xs text-slate-900">
-              0%
-            </span>
-          </div>
-        </div> */}
-
-        <div className="flex w-1/4 min-w-[207px] max-w-[250px] flex-col justify-start gap-4 p-4">
+      <div className="flex w-1/4 min-w-[207px] max-w-[250px] mt-1 flex-col justify-start gap-4 p-4">
           <button
             onClick={() => setSelectedMetric("cpu")}
             className={`rounded-2xl px-4 py-2 py-5 text-lg font-semibold transition-colors duration-200 ${
               selectedMetric === "cpu"
-                ? "bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] text-slate-100 border-2 border-[#2563eb] hover:brightness-90"
+                ? " bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] text-slate-100 border-2 border-[#2563eb] hover:brightness-90"
                 : "bg-gradient-to-r from-slate-200 to-slate-100 text-slate-500 border-2 border-slate-100 hover:brightness-90"
             }`}
           >
@@ -134,7 +126,32 @@ const PodGrid = ({
           >
             Latency (ms)
           </button>
+          <button
+            onClick={resetView}
+            className={`rounded-2xl px-4 py-2 py-5 text-lg font-semibold transition-colors duration-200 bg-slate-100 text-blue-600 border-4 border-blue-600 transition hover:brightness-90`}
+          >
+            Reset
+          </button>
         </div>
+      <div className="relative z-10 w-3/4 overflow-auto overflow-visible p-4">
+        <div id="pod-grid" className={gridStyle}>
+          {buttonArray}
+        </div>
+      </div>
+
+      <div className="flex items-center space-x-4">
+        {/* Vertical gradient bar */}
+        {/* <div className="relative flex flex-col items-center">
+          <div className="relative h-40 w-4 rounded-full bg-gradient-to-b from-red-500 via-yellow-300 to-green-400">
+            <span className="absolute top-0 -mt-5 text-xs text-slate-900">
+              100%
+            </span>
+            <span className="absolute bottom-0 -mb-5 text-xs text-slate-900">
+              0%
+            </span>
+          </div>
+        </div> */}
+
       </div>
     </div>
   );

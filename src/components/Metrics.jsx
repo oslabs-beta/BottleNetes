@@ -12,7 +12,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { use } from "react";
+
 
 ChartJS.register(
   CategoryScale,
@@ -152,18 +152,6 @@ const Metrics = ({
           font: { size: 15 },
         },
       },
-      crosshair: {
-        line: {
-          color: "#2563eb", // Crosshair color
-          width: 1,         // Crosshair line width
-        },
-        sync: {
-          enabled: false, // Disable syncing with other charts
-        },
-        zoom: {
-          enabled: false, // Disable zooming for simplicity
-        },
-      },
       tooltip: {
         padding: 16,
         bodyFont: {
@@ -187,12 +175,14 @@ const Metrics = ({
         label: "CPU Usage (% of requested)",
         data: CpuUsageAtEachTimestamp,
         borderColor: "rgb(59, 130, 246)",
+        backgroundColor: "rgb(59, 130, 246)",
         tension: 0.4,
       },
       {
         label: "RAM Usage (% of requested)",
         data: MemoryUsageAtEachTimestamp,
         borderColor: "#3730a3",
+        backgroundColor: "#3730a3",
         tension: 0.4,
       },
     ],

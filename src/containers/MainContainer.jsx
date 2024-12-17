@@ -261,7 +261,7 @@ const MainContainer = ({ username }) => {
         </div>
 
         {/* PodNameDisplay */}
-        <div>
+        <div className="border-b-2 border-slate-300">
           <PodNameDisplay clickedPod={clickedPod} />
         </div>
 
@@ -273,13 +273,14 @@ const MainContainer = ({ username }) => {
           {/*Arrange components in columns for a larger screen, and stack vertically if the screen is smaller*/}
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 xl:grid-cols-4">
             {/* Pod Grid */}
-            <div className="flex max-h-[100%] flex-col rounded-3xl bg-slate-100 p-4 xl:col-span-2">
-              <h2 className="text-center text-2xl font-bold text-blue-600">
+            <div className="flex max-h-[100%] flex-col bg-slate-100 border-4 border-slate-400 rounded-3xl p-4 xl:col-span-2">
+              <h2 className="text-center text-2xl font-bold text-slate-900">
                 Select Pod
               </h2>
               <PodGrid
                 defaultView={defaultView}
                 setDefaultView={setDefaultView}
+                clickedPod={clickedPod}
                 setClickedPod={setClickedPod}
                 selectedMetric={selectedMetric}
                 setSelectedMetric={setSelectedMetric}

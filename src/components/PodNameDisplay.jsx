@@ -7,7 +7,6 @@ const PodNameDisplay = ({ clickedPod }) => {
   return (
     <div
       className="overview-container fade-in"
-      style={{ backgroundColor: "#1e293b" }}
     >
       <div
         className="overview-card overview-pods slow-spin"
@@ -15,13 +14,15 @@ const PodNameDisplay = ({ clickedPod }) => {
           background: "linear-gradient(135deg, #0f172a, #1e40af)",
           width: "100%",
           color: "#e2e8f0",
+          borderRadius: 0,
+          boxShadow: "none", 
         }}
       >
         <h2 className="dynamic-text text-slate-100" style={{ color: "#e2e8f0" }}>
-          Showing data for:
+          {clickedPod ? "Selected Pod" : "No Pod Selected"}
         </h2>
         <p className="overview-value dynamic-text text-slate-100" style={{ color: "#e2e8f0" }}>
-          {clickedPod ? clickedPod : "Node Averages"}
+          {clickedPod ? clickedPod : "Displaying Node Averages"}
         </p>
       </div>
     </div>

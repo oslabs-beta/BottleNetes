@@ -149,6 +149,12 @@ const Latency = ({ defaultView, clickedPod, latencyAppRequestHistorical }) => {
         },
       },
     },
+    elements: {
+      point: {
+        radius: 0,
+        hoverRadius: 6,
+      },
+    },
     plugins: {
       legend: {
         position: "bottom",
@@ -180,24 +186,28 @@ const Latency = ({ defaultView, clickedPod, latencyAppRequestHistorical }) => {
         label: "Average Latency of Inbound Requests",
         data: avgLatencyInboundAtEachTimestamp,
         borderColor: "rgb(59, 130, 246, 0.8)",
+        backgroundColor: "rgb(59, 130, 246, 0.8)",
         tension: 0.4,
       },
       {
         label: "Average Latency of Outbound Requests",
         data: avgLatencyOutboundAtEachTimestamp,
-        borderColor: "rgb(147, 51, 170, 0.8)",
+        borderColor: "#3730a3",
+        backgroundColor: "#3730a3",
         tension: 0.4,
       },
       {
         label: "Peak Latency of Inbound Requests",
         data: peakLatencyInboundAtEachTimestamp,
         borderColor: "rgb(170, 50, 56, 0.8)",
+        backgroundColor: "rgb(170, 50, 56, 0.8)",
         tension: 0.4,
       },
       {
         label: "Peak Latency of Outbound Requests",
         data: peakLatencyOutboundAtEachTimestamp,
         borderColor: "rgb(20, 175, 74, 0.8)",
+        backgroundColor: "rgb(20, 175, 74, 0.8)",
         tension: 0.4,
       },
     ],
