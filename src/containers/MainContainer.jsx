@@ -196,7 +196,7 @@ const MainContainer = ({ username }) => {
     };
     bigFetch();
 
-    const intervalID = setInterval(bigFetch, 10000);
+    const intervalID = setInterval(bigFetch, 30000);
     return () => {
       clearInterval(intervalID);
     };
