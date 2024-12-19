@@ -214,7 +214,6 @@ const MainContainer = ({ username }) => {
   // Function to ask AI for analysis and recommendations
   const askAi = async () => {
     console.log(aiVisibility);
-    // Change visibility state
     setAiVisibility(!aiVisibility);
     setAiContent(null);
     const body = allData;
