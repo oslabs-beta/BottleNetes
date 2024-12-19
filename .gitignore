@@ -25,3 +25,10 @@ istio-1.24.1
 *.njsproj
 *.sln
 *.sw?
+
+istio-*/*
+istio-*/
+istio-*
+istio-*/**/*
+istio-1.24.1
+istio-1.24.1/*
