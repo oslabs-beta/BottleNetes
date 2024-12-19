@@ -8,6 +8,7 @@ import Latency from "../components/Latency";
 import Metrics from "../components/Metrics";
 import PodGrid from "../components/PodGrid";
 import RequestLimit from "../components/RequestLimit";
+import TestMode from "../test-components/TestMode";
 
 const MainContainer = ({ username }) => {
   console.log("main container rendering");
@@ -246,6 +247,7 @@ const MainContainer = ({ username }) => {
             BottleNetes
           </h1>
         </div>
+        <TestMode />
         <div className="flex items-center space-x-4">
           <h1 className="mr-5 px-5 text-2xl font-semibold text-slate-300">{`Welcome, ${username}`}</h1>
         </div>

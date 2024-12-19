@@ -19,15 +19,14 @@ export default function App() {
   }, [darkMode]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-white text-black dark:bg-gray-900 dark:text-white">
+    <div className="flex items-left justify-center bg-transparent text-black dark:text-white">
       <div className="text-center">
-        <h1 className="text-2xl font-bold">Toggle Dark Mode</h1>
-        <p className="mt-2">Current mode: {darkMode ? "Dark" : "Light"}</p>
+        
 
         {/* Toggle Switch */}
         <div
           className={`mt-4 flex h-8 w-14 cursor-pointer items-center rounded-full p-1 ${
-            darkMode ? "bg-gray-700" : "bg-gray-300"
+            darkMode ? "bg-slate-700" : "bg-slate-300"
           }`}
           onClick={() => setDarkMode(!darkMode)}
         >
