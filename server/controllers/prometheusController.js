@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 
-export const runSinglePromQLQuery = async (req, res, next) => {
+export const runSinglePromQLQuery = async (_req, res, next) => {
   const queryStr = res.locals.query;
   let queryUrl;
   if (res.locals.isHistorical) {
@@ -28,7 +28,7 @@ export const runSinglePromQLQuery = async (req, res, next) => {
   }
 };
 
-export const runMultiplePromQLQueries = async (req, res, next) => {
+export const runMultiplePromQLQueries = async (_req, res, next) => {
   const queryStrArr = res.locals.queries;
   const queryUrlArr = [];
 

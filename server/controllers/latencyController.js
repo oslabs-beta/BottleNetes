@@ -15,7 +15,7 @@ export const generateLatencyQuery = (req, res, next) => {
   return next();
 };
 
-export const queryForLatency = async (req, res, next) => {
+export const queryForLatency = async (_req, res, next) => {
   const { errorRateQueries } = res.locals;
   // const queryResults = {};
   for (const key in errorRateQueries) {

@@ -98,7 +98,7 @@ const PodGrid = ({
       <div className="mt-1 flex w-1/4 min-w-[207px] max-w-[250px] flex-col justify-start gap-4 p-4">
         <button
           onClick={() => setSelectedMetric("cpu")}
-          className={`rounded-2xl px-4 py-2 py-5 text-lg font-semibold transition-colors duration-200 ${
+          className={`rounded-2xl px-4 py-5 text-lg font-semibold transition-colors duration-200 ${
             selectedMetric === "cpu"
               ? "border-2 border-[#2563eb] bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] text-slate-100 hover:brightness-90"
               : "border-2 border-slate-100 bg-gradient-to-r from-slate-200 to-slate-100 text-slate-500 hover:brightness-90"
@@ -108,7 +108,7 @@ const PodGrid = ({
         </button>
         <button
           onClick={() => setSelectedMetric("memory")}
-          className={`rounded-2xl px-4 py-2 py-5 text-lg font-semibold transition-colors duration-200 ${
+          className={`rounded-2xl px-4 py-5 text-lg font-semibold transition-colors duration-200 ${
             selectedMetric === "memory"
               ? "border-2 border-[#2563eb] bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] text-slate-100 hover:brightness-90"
               : "border-2 border-slate-100 bg-gradient-to-r from-slate-200 to-slate-100 text-slate-500 hover:brightness-90"
@@ -118,7 +118,7 @@ const PodGrid = ({
         </button>
         <button
           onClick={() => setSelectedMetric("latency")}
-          className={`rounded-2xl px-4 py-2 py-5 text-lg font-semibold transition-colors duration-200 ${
+          className={`rounded-2xl px-4 py-5 text-lg font-semibold transition-colors duration-200 ${
             selectedMetric === "latency"
               ? "border-2 border-[#2563eb] bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] text-slate-100 hover:brightness-90"
               : "border-2 border-slate-100 bg-gradient-to-r from-slate-200 to-slate-100 text-slate-500 transition hover:brightness-90"
@@ -128,12 +128,12 @@ const PodGrid = ({
         </button>
         <button
           onClick={resetView}
-          className={`rounded-2xl border-4 border-blue-600 bg-slate-100 px-4 py-2 py-5 text-lg font-semibold text-blue-600 transition transition-colors duration-200 hover:brightness-90`}
+          className={`rounded-2xl border-4 border-blue-600 bg-slate-100 px-4 py-5 text-lg font-semibold text-blue-600 transition-colors duration-200 hover:brightness-90`}
         >
           Reset
         </button>
       </div>
-      <div className="relative z-10 w-3/4 overflow-auto overflow-visible p-4">
+      <div className="relative z-10 w-3/4 overflow-visible p-4">
         <div id="pod-grid" className={gridStyle}>
           {buttonArray}
         </div>

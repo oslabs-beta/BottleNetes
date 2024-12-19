@@ -72,18 +72,6 @@ app.get('/', (_req, res) => {
   return res.status(200).sendFile(path.resolve(__dirname, '../index.html'));
 });
 
-// app.post("/query", generateQuery, runPromQLQuery, (_req, res) => {
-//   return res.status(200).json(res.locals.data);
-// });
-
-// app.post("/errorrate", generateErrorQuery, queryForErrors, (req, res) => {
-//   res.status(200).json(res.locals.data);
-// });
-
-// app.post("/latency", generateLatencyQuery, queryForLatency, (req, res) => {
-//   res.status(200).json(res.locals.data);
-// });
-
 // Catch All Route
 app.use("*", (_req, res) => {
   return res.sendStatus(404);
