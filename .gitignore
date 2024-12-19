@@ -13,6 +13,7 @@ dist-ssr
 *.local
 *.env
 *.sql
+istio-1.24.1
 
 # Editor directories and files
 .vscode/*
@@ -24,3 +25,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+istio-*/*
+istio-*/
+istio-*
+istio-*/**/*
+istio-1.24.1
+istio-1.24.1/*

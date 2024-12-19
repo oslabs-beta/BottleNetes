@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite",
     "server": "nodemon server/server.js",
-    "start": "concurrently \"vite\" \"nodemon server/server.js\"",
+    "start": "concurrently \"nodemon server/server.js\" \"vite\" \"open http://localhost:5173\"",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
@@ -34,7 +34,8 @@
     "react-dom": "^18.3.1",
     "react-icons": "^5.4.0",
     "react-router-dom": "^7.0.2",
-    "sequelize": "^6.37.5"
+    "sequelize": "^6.37.5",
+    "wait-on": "^8.0.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",

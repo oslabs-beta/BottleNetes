@@ -28,7 +28,7 @@ const Latency = ({ defaultView, clickedPod, latencyAppRequestHistorical }) => {
   if (
     !latencyAppRequestHistorical?.latencyAppRequestHistorical ||
     !latencyAppRequestHistorical?.latencyAppRequestHistorical[0]
-      .timestampsReadable
+      ?.timestampsReadable
   ) {
     return <div>Loading...</div>;
   }
@@ -117,13 +117,16 @@ const Latency = ({ defaultView, clickedPod, latencyAppRequestHistorical }) => {
 
   const options = {
     responsive: true,
+    interaction: {
+      mode: "nearest",
+      intersect: false,
+    },
     maintainAspectRatio: false,
     scales: {
       x: {
         stacked: false,
         grid: {
-          color: "rgba(30, 41, 59, 0.1)",
-          drawBorder: false,
+          display: false,
         },
         ticks: {
           color: "#1e293b",
@@ -135,8 +138,7 @@ const Latency = ({ defaultView, clickedPod, latencyAppRequestHistorical }) => {
       y: {
         stacked: false,
         grid: {
-          color: "rgba(30, 41, 59, 0.1)",
-          drawBorder: false,
+          display: false,
         },
         ticks: {
           color: "#1e293b",
@@ -145,6 +147,12 @@ const Latency = ({ defaultView, clickedPod, latencyAppRequestHistorical }) => {
             return value + "ms";
           },
         },
+      },
+    },
+    elements: {
+      point: {
+        radius: 0,
+        hoverRadius: 6,
       },
     },
     plugins: {
@@ -178,24 +186,28 @@ const Latency = ({ defaultView, clickedPod, latencyAppRequestHistorical }) => {
         label: "Average Latency of Inbound Requests",
         data: avgLatencyInboundAtEachTimestamp,
         borderColor: "rgb(59, 130, 246, 0.8)",
+        backgroundColor: "rgb(59, 130, 246, 0.8)",
         tension: 0.4,
       },
       {
         label: "Average Latency of Outbound Requests",
         data: avgLatencyOutboundAtEachTimestamp,
-        borderColor: "rgb(147, 51, 170, 0.8)",
+        borderColor: "#3730a3",
+        backgroundColor: "#3730a3",
         tension: 0.4,
       },
       {
         label: "Peak Latency of Inbound Requests",
         data: peakLatencyInboundAtEachTimestamp,
         borderColor: "rgb(170, 50, 56, 0.8)",
+        backgroundColor: "rgb(170, 50, 56, 0.8)",
         tension: 0.4,
       },
       {
         label: "Peak Latency of Outbound Requests",
         data: peakLatencyOutboundAtEachTimestamp,
         borderColor: "rgb(20, 175, 74, 0.8)",
+        backgroundColor: "rgb(20, 175, 74, 0.8)",
         tension: 0.4,
       },
     ],
