@@ -3,13 +3,13 @@ import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import process from "node:process";
-import session from "express-session";
 import dotenv from "dotenv";
 import path from "path";
+import { fileURLToPath } from "node:url";
 
 import { connectDB } from "./db/db.js";
 import sequelize from "./db/db.js";
-import apiRouter from "./routes/apiRouter.js";
+import userController from "./controllers/userController.js";
 
 // Config path for usability in ES Module
 const __filename = fileURLToPath(import.meta.url);
@@ -18,7 +18,8 @@ const __dirname = path.dirname(__filename);
 // Import Routers
 import signupRouter from "./routes/signupRouter.js";
 import signinRouter from "./routes/signinRouter.js";
-import { fileURLToPath } from "node:url";
+import apiRouter from "./routes/apiRouter.js";
+import oAuthRouter from "./routes/oAuthRouter.js";
 
 // Allow the use of process.env
 dotenv.config();
@@ -32,21 +33,11 @@ app.use(cookieParser());
 // CORS stuffs
 app.use(
   cors({
-    origin: "http://localhost:5173", //Front-end PORT
+    origin: ["http://localhost:5173", "http://localhost:3000"], //Front-end PORT
+    methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true, // Important for cookies/session
   }),
 );
-
-app.use((_req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "http://localhost:5173");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.setHeader(
-    "Access-Control-Allow-Methods",
-    "GET, POST, PUT, DELETE, OPTIONS",
-  );
-  res.setHeader("Access-Control-Allow-Credentials", "true");
-  return next();
-});
 
 // Connect to PORT 3000
 const PORT = 3000;
@@ -61,6 +52,7 @@ connectDB();
 app.use("/signin", signinRouter);
 app.use("/signup", signupRouter);
 app.use("/api", apiRouter);
+app.use("/oauth", oAuthRouter);
 
 // Serves static files
 app.use(express.static(path.resolve(__dirname, "../index.html")));
@@ -68,8 +60,22 @@ app.use(express.static(path.resolve(__dirname, "../signup.html")));
 app.use(express.static(path.resolve(__dirname, "./")));
 app.use(express.static(path.resolve(__dirname, "../src/")));
 
-app.get('/', (_req, res) => {
-  return res.status(200).sendFile(path.resolve(__dirname, '../index.html'));
+const clientID = process.env.GITHUB_CLIENT_ID;
+const redirectUri = process.env.GITHUB_REDIRECT_URI;
+
+// GitHub OAuth, redirect to the callback route
+app.get("/github", (_req, res) => {
+  const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientID}&redirect_uri=${redirectUri}`;
+  console.log(redirectUri);
+  return res.redirect(githubAuthUrl);
+});
+
+app.get("/dashboard", userController.verifySignedIn, (req, res) => {
+  return res.status(200).json(`Welcome to your dashboard, ${req.user.userId}`);
+});
+
+app.get("/", (_req, res) => {
+  return res.status(200).sendFile(path.resolve(__dirname, "../index.html"));
 });
 
 // Catch All Route

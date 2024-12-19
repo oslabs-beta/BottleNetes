@@ -1,5 +1,8 @@
 import Users from "../models/UserModel.js";
 import bcrypt from "bcrypt";
+import jwt from 'jsonwebtoken';
+
+import { SECRET_KEY } from '../../utils/jwtUtils.js';
 
 const userController = {};
 
@@ -67,8 +70,7 @@ userController.verifyUser = async (req, res, next) => {
       if (isMatch) {
         console.log("🥳 Password Matched!");
         res.locals.validated = isMatch;
-        res.locals.id = credentials.dataValues.id;
-        res.locals.username = credentials.dataValues.username;
+        res.locals.username = await credentials.dataValues.username;
         return next();
       } else {
         console.log("🤔 Wrong Password!");
@@ -95,5 +97,29 @@ userController.verifyUser = async (req, res, next) => {
     });
   }
 };
+
+userController.verifySignedIn = async (req, _res, next) => {
+  console.log('🥴 Now running verifySignedIn middleware...');
+  
+  try {
+    const token = await req.cookies.jwt;
+    if (!token) {
+      return next({
+        log: '🥲 Unauthorized: No token provided',
+        status: 401,
+        message: 'Unauthorized: No token provided'
+      });
+    };
+    const decoded = jwt.verify(token, SECRET_KEY);
+    req.user = decoded;
+    return next();
+  } catch (error) {
+    return next({
+      log: `🥸 Error occurred in verifySignedIn middleware: ${error}`,
+      status: 500,
+      message: 'An error occurred while verifying if the user signed in'
+    })
+  }
+}
 
 export default userController;
