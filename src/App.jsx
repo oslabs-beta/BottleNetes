@@ -1,15 +1,18 @@
 import { useState } from "react";
 import SigninContainer from "./containers/SigninContainer";
 import MainContainer from "./containers/MainContainer";
+import { useEffect } from "react";
+
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
 
   // // If you need to set a default username for testing, use useEffect
-  // useEffect(() => {
-  //   setUsername("zoe");
-  // }, []); // Empty dependency array means this runs once on mount
+  useEffect(() => {
+    setUsername("zoe");
+    setLoggedIn(true)
+  }, []); // Empty dependency array means this runs once on mount
 
   return (
     <div id="app">
