@@ -247,13 +247,13 @@ const MainContainer = ({ username }) => {
             BottleNetes
           </h1>
         </div>
+        <div className="flex items-center space-x-[50px]">
         <TestMode />
-        <div className="flex items-center space-x-4">
           <h1 className="mr-5 px-5 text-2xl font-semibold text-slate-300">{`Welcome, ${username}`}</h1>
         </div>
       </header>
-      <div className="bg-custom-gradient">
-        <div className="border-b-2 border-slate-300 p-6">
+      <div className="bg-custom-gradient dark:bg-custom-gradient-dark">
+        <div className="border-b-2 border-slate-300 p-6 dark:border-slate-600">
           {/* Overview Display */}
           <Overview
             podsStatuses={allData.podsStatuses}
@@ -263,7 +263,7 @@ const MainContainer = ({ username }) => {
         </div>
 
         {/* PodNameDisplay */}
-        <div className="border-b-2 border-slate-300">
+        <div className="border-b-2 border-slate-300 dark:border-slate-600">
           <PodNameDisplay clickedPod={clickedPod} />
         </div>
 
@@ -275,8 +275,8 @@ const MainContainer = ({ username }) => {
           {/*Arrange components in columns for a larger screen, and stack vertically if the screen is smaller*/}
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 xl:grid-cols-4">
             {/* Pod Grid */}
-            <div className="flex max-h-[100%] flex-col bg-slate-100 border-4 border-slate-400 rounded-3xl p-4 xl:col-span-2">
-              <h2 className="text-center text-2xl font-bold text-slate-900">
+            <div className="flex max-h-[100%] flex-col bg-slate-100 border-4 border-slate-400 rounded-3xl p-4 xl:col-span-2 dark:bg-transparent dark:shadow-custom-lg dark:border-2 dark:border-slate-600">
+              <h2 className="text-center text-2xl font-bold text-slate-900 dark:text-slate-300">
                 Select Pod
               </h2>
               <PodGrid
@@ -294,8 +294,8 @@ const MainContainer = ({ username }) => {
             </div>
 
             {/* Historical Tracing */}
-            <div className="max-h-[100%] rounded-3xl bg-slate-100 p-4 xl:col-span-2">
-              <h2 className="text-center text-2xl font-semibold text-slate-900">
+            <div className="max-h-[100%] rounded-3xl bg-slate-100 p-4 xl:col-span-2 dark:bg-transparent dark:shadow-custom-lg">
+              <h2 className="text-center text-2xl font-semibold text-slate-900 dark:text-slate-300">
                 Historical Tracing
               </h2>
               <Metrics
@@ -307,8 +307,8 @@ const MainContainer = ({ username }) => {
             </div>
 
             {/* Request vs. Limit */}
-            <div className="relative flex-auto rounded-3xl bg-slate-100 p-4 xl:col-span-2">
-              <h2 className="text-center text-2xl font-semibold text-slate-900">
+            <div className="relative flex-auto rounded-3xl bg-slate-100 p-4 xl:col-span-2 dark:bg-transparent dark:shadow-custom-lg">
+              <h2 className="text-center text-2xl font-semibold text-slate-900 dark:text-slate-300">
                 Request vs. Limit
               </h2>
               <RequestLimit
@@ -320,8 +320,8 @@ const MainContainer = ({ username }) => {
             </div>
 
             {/* Latency */}
-            <div className="rounded-3xl bg-slate-100 p-4 xl:col-span-2">
-              <h2 className="text-center text-2xl font-semibold text-slate-900">
+            <div className="rounded-3xl bg-slate-100 p-4 xl:col-span-2 dark:bg-transparent dark:shadow-custom-lg">
+              <h2 className="text-center text-2xl font-semibold text-slate-900 dark:text-slate-300">
                 Request Latency
               </h2>
               <Latency
@@ -333,14 +333,8 @@ const MainContainer = ({ username }) => {
               />
             </div>
 
-            <div className="mt-4 flex justify-end gap-4">
+            <div className="flex justify-end gap-4">
               {/* Reset Button with Reset Function */}
-              <button
-                onClick={resetView}
-                className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter"
-              >
-                Reset to default
-              </button>
               <button className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter">
                 Ask AI
               </button>

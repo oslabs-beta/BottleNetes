@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: 'class',
+  darkMode: "class",
   content: ["./index.html", "./signup.html", "./src/**/*.{js,ts,jsx,tsx,html}"],
   theme: {
     extend: {
@@ -16,6 +16,8 @@ export default {
       backgroundImage: {
         "custom-gradient":
           "linear-gradient(225deg, #e2e8f0 35%, #dbeafe 50%, #ede9fe 65%, #e2e8f0)",
+        "custom-gradient-dark":
+          "linear-gradient(45deg, #0F172A 55%, #1B274D 70%, #2F3E5C 85%, #0F172A)",
       },
       keyframes: {
         colorChange: {
