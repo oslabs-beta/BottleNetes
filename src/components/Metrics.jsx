@@ -12,7 +12,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-import { use } from "react";
+
 
 ChartJS.register(
   CategoryScale,
@@ -106,13 +106,16 @@ const Metrics = ({
 
   const options = {
     responsive: true,
+    interaction: {
+      mode: "nearest",
+      intersect: false,
+    },
     maintainAspectRatio: false,
     scales: {
       x: {
         stacked: false,
         grid: {
-          color: "rgba(30, 41, 59, 0.1)",
-          drawBorder: false,
+          display: false,
         },
         ticks: {
           color: "#1e293b",
@@ -124,8 +127,7 @@ const Metrics = ({
       y: {
         stacked: false,
         grid: {
-          color: "rgba(30, 41, 59, 0.1)",
-          drawBorder: false,
+          display: false,
         },
         ticks: {
           color: "#1e293b",
@@ -134,6 +136,12 @@ const Metrics = ({
             return value + "%";
           },
         },
+      },
+    },
+    elements: {
+      point: {
+        radius: 0,
+        hoverRadius: 6,
       },
     },
     plugins: {
@@ -167,12 +175,14 @@ const Metrics = ({
         label: "CPU Usage (% of requested)",
         data: CpuUsageAtEachTimestamp,
         borderColor: "rgb(59, 130, 246)",
+        backgroundColor: "rgb(59, 130, 246)",
         tension: 0.4,
       },
       {
         label: "RAM Usage (% of requested)",
         data: MemoryUsageAtEachTimestamp,
-        borderColor: "rgb(147, 51, 234)",
+        borderColor: "#3730a3",
+        backgroundColor: "#3730a3",
         tension: 0.4,
       },
     ],
