@@ -103,6 +103,7 @@ const Metrics = ({
       MemoryUsageAtEachTimestamp = clickedMemoryPod.usageRelative;
     }
   }
+  const isDarkMode = document.documentElement.classList.contains("dark");
 
   const options = {
     responsive: true,
@@ -118,7 +119,7 @@ const Metrics = ({
           display: false,
         },
         ticks: {
-          color: "#1e293b",
+          color: isDarkMode ? "#94a3b8" : "#1e293b",
           font: { size: 14 },
           maxRotation: 45,
           minRotation: 45,
@@ -130,7 +131,7 @@ const Metrics = ({
           display: false,
         },
         ticks: {
-          color: "#1e293b",
+          color: isDarkMode ? "#94a3b8" : "#1e293b",
           font: { size: 14 },
           callback: function (value) {
             return value + "%";
@@ -148,7 +149,7 @@ const Metrics = ({
       legend: {
         position: "bottom",
         labels: {
-          color: "#1e293b",
+          color: isDarkMode ? "#94a3b8" : "#1e293b",
           font: { size: 15 },
         },
       },
@@ -181,8 +182,8 @@ const Metrics = ({
       {
         label: "RAM Usage (% of requested)",
         data: MemoryUsageAtEachTimestamp,
-        borderColor: "#3730a3",
-        backgroundColor: "#3730a3",
+        borderColor: isDarkMode ? "rgba(191, 219, 254, 1)" : "#3730a3",
+        backgroundColor: isDarkMode ? "rgba(191, 219, 254, 1)" : "#3730a3",
         tension: 0.4,
       },
     ],

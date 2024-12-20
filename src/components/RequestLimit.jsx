@@ -40,6 +40,8 @@ const RequestLimit = ({
     memoryRequestLimitRatio: pod.memoryRequestLimitRatio,
   }));
 
+  const isDarkMode = document.documentElement.classList.contains("dark");
+
   const options = {
     indexAxis: "y", // maybe making it horizontal?
     responsive: true,
@@ -49,7 +51,7 @@ const RequestLimit = ({
         stacked: false,
         grid: { color: "transparent" },
         ticks: {
-          color: "#1e293b",
+          color: isDarkMode ? "#94a3b8" : "#1e293b",
           font: {
             size: 14,
           },
@@ -57,7 +59,7 @@ const RequestLimit = ({
         title: {
           display: true,
           text: selectedMetric === "cpu" ? "CPU (cores)" : "Memory (MB)",
-          color: "#1e293b",
+          color: isDarkMode ? "#94a3b8" : "#1e293b",
           font: { size: 14 },
         },
       },
@@ -65,7 +67,7 @@ const RequestLimit = ({
         stacked: false,
         grid: { color: "transparent" },
         ticks: {
-          color: "#1e293b",
+          color: isDarkMode ? "#94a3b8" : "#1e293b",
           font: {
             size: 14,
           },
@@ -76,7 +78,7 @@ const RequestLimit = ({
       legend: {
         position: "bottom",
         labels: {
-          color: "#1e293b",
+          color: isDarkMode ? "#94a3b8" : "#1e293b",
           font: {
             size: 15,
           },
