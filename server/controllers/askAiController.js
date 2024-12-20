@@ -11,15 +11,15 @@ const askAiController = {};
 
 askAiController.queryOpenAI = async (req, res, next) => {
   console.log("in queryOpenAI controller");
-  const allData = req.body;
-  // console.log(allData);
-
-  if (!allData || typeof allData !== "object") {
-    return res
-      .status(400)
-      .json({ success: false, message: "Invalid request format" });
-  }
-
+  const { allData } = req.body;
+  const { userMessage } = req.body
+  console.log(allData, userMessage)
+  console.log(req.body);
+  // if (userMessage || allData || typeof allData !== "object") {
+  //   return res
+  //     .status(400)
+  //     .json({ success: false, message: "Invalid request format" });
+  // }
   try {
     //deconstruct prompt based on available data
     const {
@@ -33,6 +33,7 @@ askAiController.queryOpenAI = async (req, res, next) => {
       latencyAppRequestOneValue,
       latencyAppRequestHistorical,
     } = allData;
+
     //
     // 1. check to see if we are over or under provisioning
     // analyze historic request vs limit for cpu and memory
@@ -56,15 +57,16 @@ askAiController.queryOpenAI = async (req, res, next) => {
                 Request Limits: ${JSON.stringify(requestLimits.usageAbsolute)}.
 
     */
-     console.log(cpuUsageHistorical);
+
     const prompt = `You are a Kubernetes metrics analysis assistant.
     You must analyze the following information and provide actionable insights:
     Memory Usage (Historical): ${JSON.stringify(memoryUsageHistorical)}.
 
+    The user will give you this question: ${(JSON.stringify(userMessage))}. Answer their question.
+
     Limit your response to 100 words.
     `;
    
-
     const response = await axios.post(
       openAiEndpoint,
       {
@@ -86,9 +88,10 @@ askAiController.queryOpenAI = async (req, res, next) => {
     );
 
     const result = response.data.choices[0].message.content;
+    console.log("OPEN AI RESPONSE :", result);
     res.locals.analysis = result;
-
     next();
+
   } catch (error) {
     console.error(
       "Error communicating with OpenAI:",
