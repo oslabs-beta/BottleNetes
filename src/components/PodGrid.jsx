@@ -101,7 +101,7 @@ const PodGrid = ({
           className={`rounded-2xl px-4 py-2 py-5 text-lg font-semibold transition-colors duration-200 ${
             selectedMetric === "cpu"
               ? "border-2 border-[#2563eb] bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] text-slate-100 hover:brightness-90"
-              : "border-2 border-slate-100 bg-gradient-to-r from-slate-200 to-slate-100 text-slate-500 hover:brightness-90"
+              : "border-2 border-slate-100 bg-gradient-to-r from-slate-200 to-slate-100 text-slate-500 hover:brightness-90 dark:bg-gradient-to-r dark:from-slate-900 dark:to-slate-800 dark:border-2 dark:border-slate-900 dark:text-slate-300"
           }`}
         >
           CPU Usage (%)
@@ -111,7 +111,7 @@ const PodGrid = ({
           className={`rounded-2xl px-4 py-2 py-5 text-lg font-semibold transition-colors duration-200 ${
             selectedMetric === "memory"
               ? "border-2 border-[#2563eb] bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] text-slate-100 hover:brightness-90"
-              : "border-2 border-slate-100 bg-gradient-to-r from-slate-200 to-slate-100 text-slate-500 hover:brightness-90"
+              : "border-2 border-slate-100 bg-gradient-to-r from-slate-200 to-slate-100 text-slate-500 hover:brightness-90 dark:bg-gradient-to-r dark:from-slate-900 dark:to-slate-800 dark:border-2 dark:border-slate-900 dark:text-slate-300"
           }`}
         >
           Mem. Usage (%)
@@ -121,14 +121,14 @@ const PodGrid = ({
           className={`rounded-2xl px-4 py-2 py-5 text-lg font-semibold transition-colors duration-200 ${
             selectedMetric === "latency"
               ? "border-2 border-[#2563eb] bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] text-slate-100 hover:brightness-90"
-              : "border-2 border-slate-100 bg-gradient-to-r from-slate-200 to-slate-100 text-slate-500 transition hover:brightness-90"
+              : "border-2 border-slate-100 bg-gradient-to-r from-slate-200 to-slate-100 text-slate-500 transition hover:brightness-90 dark:bg-gradient-to-r dark:from-slate-900 dark:to-slate-800 dark:border-2 dark:border-slate-900 dark:text-slate-300"
           }`}
         >
           Latency (ms)
         </button>
         <button
           onClick={resetView}
-          className={`rounded-2xl border-4 border-blue-600 bg-slate-100 px-4 py-2 py-5 text-lg font-semibold text-blue-600 transition transition-colors duration-200 hover:brightness-90`}
+          className={`rounded-2xl border-4 border-blue-600 bg-slate-100 px-4 py-2 py-5 text-lg font-semibold text-blue-600 transition transition-colors duration-200 hover:brightness-90 dark:bg-transparent dark:border-slate-300 dark:text-slate-300`}
         >
           Reset
         </button>
