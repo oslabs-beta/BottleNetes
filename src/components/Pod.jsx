@@ -9,7 +9,7 @@ const Pod = ({ pod, selectedMetric, onClick, isClicked }) => {
   const color = (value, minVal = 0, maxVal = 100) => {
     const normalizedValue = 1 - (value - minVal) / (maxVal - minVal);
     const r = 238 - Math.floor(normalizedValue * 204);
-    // console.log("red value: ", r);
+    // // console.log("red value: ", r);
     if (r) return `rgb(${r}, 197, 94)`;
     else
       return `#E0E0E0

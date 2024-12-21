@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 import MenuContainer from "./MenuContainer";
 import Overview from "../components/Overview";
@@ -13,13 +13,19 @@ import Chatbot from "../components/Chatbot";
 const MainContainer = ({ username }) => {
   const url = "http://localhost:3000/";
 
-  // State for when the menu button is clicked
-  const [menu, setMenu] = useState(false);
-
   // Determines if the graphs display node data or pod specific data
   const [defaultView, setDefaultView] = useState(true);
 
-  // Which pod has been clicked-  manage selected pod
+  const [isLoading, setIsLoading] = useState(true);
+
+  // state hooks for time window in PodGrid
+  const [queryTimeWindow, setQueryTimeWindow] = useState("1m");
+  const [showTimeWindow, setShowTimeWindow] = useState(false);
+  const [timeInput, setTimeInput] = useState("");
+  const [timeUnit, setTimeUnit] = useState("m");
+  const [showTooltip, setShowTooltip] = useState(false);
+
+  // state hooks for clicked pod and selected metric in PodGrid (will also be passed down to other components)
   const [clickedPod, setClickedPod] = useState("");
 
   // AI popup window visibility
@@ -30,17 +36,13 @@ const MainContainer = ({ username }) => {
 
   const [isLoading, setIsLoading] = useState(true);
 
-  // Function to reset views and clear selected pod
-  const resetView = () => {
-    setDefaultView(true);
-    // Reset to default view
-    setClickedPod("");
-    // Clear selected pod
-    setSelectedMetric("cpu");
-    // Reset metric selection
-  };
+  // State hooks for refresh control in MenuContainer
+  const [manualRefreshCount, setManualRefreshCount] = useState(0);
+  const [refreshFrequency, setRefreshFrequency] = useState(30000);
+  const [showRefreshPopup, setShowRefreshPopup] = useState(false);
+  const [refreshInput, setRefreshInput] = useState("");
 
-  // Data of all pods
+  // State hook for all data fetched from the backend
   const [allData, setAllData] = useState({
     podsStatuses: { podsStatuses: [] },
     requestLimits: { allPodsRequestLimit: [] },
@@ -52,7 +54,43 @@ const MainContainer = ({ username }) => {
     latencyAppRequestOneValue: { latencyAppRequestOneValue: [] },
   });
 
-  //Helper function to fetch all data
+  // handling menu bar toggle
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+  const buttonRef = useRef(null);
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      // Bypass if clicking the menu button itself
+      if (buttonRef.current && buttonRef.current.contains(event.target)) {
+        return;
+      }
+      // Close the menu bar if clicking outside menu and menu is open
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // Function to reset views and clear selected pod
+  const resetView = () => {
+    setDefaultView(true);
+    // Reset to default view
+    setClickedPod("");
+    // Clear selected pod
+    setSelectedMetric("cpu");
+    // Reset metric selection
+  };
+
+  // for testing purposes, delete afterwards
+  useEffect(() => {
+    console.log("time window: ", queryTimeWindow);
+  }, [queryTimeWindow]);
+
+  //helper function
   const fetchData = async (method, endpoint, body = null) => {
     try {
       const request = {
@@ -78,13 +116,13 @@ const MainContainer = ({ username }) => {
 
       const bodyResourceUsageOnevalueCPU = {
         type: "cpu",
-        time: "1h",
+        time: queryTimeWindow,
         level: "pod",
       };
 
       const bodyResourceUsageOnevalueMemory = {
         type: "memory",
-        time: "1h",
+        time: queryTimeWindow,
         level: "pod",
       };
 
@@ -105,7 +143,7 @@ const MainContainer = ({ username }) => {
       };
 
       const bodyLatencyAppRequestOneValue = {
-        time: "1h",
+        time: queryTimeWindow,
         level: "pod",
       };
 
@@ -196,16 +234,15 @@ const MainContainer = ({ username }) => {
     };
     bigFetch();
 
-    const intervalID = setInterval(bigFetch, 3000);
+    const intervalID = setInterval(bigFetch, refreshFrequency);
     return () => {
       clearInterval(intervalID);
     };
-  }, []);
+  }, [refreshFrequency, manualRefreshCount, queryTimeWindow]);
 
-  // Console log all data every time state updates
-  useEffect(() => {
-    console.log("All data: ", allData);
-  }, [allData]);
+  // useEffect(() => {
+  //   console.log("All data: ", allData);
+  // }, [allData]);
 
   return (
     <div>
@@ -214,7 +251,8 @@ const MainContainer = ({ username }) => {
           {/* Menu drop down */}
           <div className="flex items-center gap-0 px-5">
             <button
-              onClick={() => setMenu(true)}
+              ref={buttonRef}
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="group inline-flex h-12 w-12 items-center justify-center rounded border-2 border-slate-500 bg-slate-950 text-center text-slate-300"
             >
               <span className="sr-only">Menu</span>
@@ -223,26 +261,53 @@ const MainContainer = ({ username }) => {
                 viewBox="0 0 16 16"
               >
                 <rect
-                  className="origin-center -translate-y-[5px] translate-x-[7px]"
-                  y="7"
-                  width="9"
-                  height="2"
-                ></rect>
-                <rect
-                  className="origin-center"
+                  className={`origin-center transition-transform duration-300 ${
+                    isMenuOpen
+                      ? "-translate-x-[0px] translate-y-[0px] rotate-45"
+                      : // : "-translate-y-[5px] translate-x-[7px]"
+                        "-translate-y-[5px]"
+                  }`}
                   y="7"
                   width="16"
                   height="2"
                 ></rect>
                 <rect
-                  className="origin-center translate-y-[5px]"
+                  className={`origin-center transition-opacity duration-300 ${
+                    isMenuOpen ? "opacity-0" : "opacity-100"
+                  }`}
                   y="7"
-                  width="9"
+                  width="16"
+                  height="2"
+                ></rect>
+                <rect
+                  className={`origin-center transition-transform duration-300 ${
+                    isMenuOpen
+                      ? "-translate-x-[0px] -translate-y-[0px] -rotate-45"
+                      : "translate-y-[5px]"
+                  }`}
+                  y="7"
+                  width="16"
                   height="2"
                 ></rect>
               </svg>
             </button>
-            {!menu && <MenuContainer />}
+            <div
+              ref={menuRef}
+              className={`fixed left-0 top-20 h-screen w-64 transform bg-slate-900 p-4 shadow-lg transition-transform duration-300 ease-in-out ${
+                isMenuOpen ? "translate-x-0" : "-translate-x-full"
+              }`}
+            >
+              <MenuContainer
+                refreshFrequency={refreshFrequency}
+                setRefreshFrequency={setRefreshFrequency}
+                showRefreshPopup={showRefreshPopup}
+                setShowRefreshPopup={setShowRefreshPopup}
+                refreshInput={refreshInput}
+                setRefreshInput={setRefreshInput}
+                manualRefreshCount={manualRefreshCount}
+                setManualRefreshCount={setManualRefreshCount}
+              />
+            </div>
           </div>
           {/* Title */}
           <h1 className="bg-gradient-to-bl from-blue-500 to-blue-600 bg-clip-text px-5 font-sans text-5xl font-bold text-transparent transition duration-300 hover:scale-105">
@@ -260,7 +325,7 @@ const MainContainer = ({ username }) => {
           <Overview
             podsStatuses={allData.podsStatuses}
             allNodes={allData.allNodes}
-            isLoading={isLoading}
+            // isLoading={isLoading}
           />
         </div>
 
@@ -292,6 +357,16 @@ const MainContainer = ({ username }) => {
                 cpuUsageOneValue={allData.cpuUsageOneValue}
                 memoryUsageOneValue={allData.memoryUsageOneValue}
                 latencyAppRequestOneValue={allData.latencyAppRequestOneValue}
+                queryTimeWindow={queryTimeWindow}
+                setQueryTimeWindow={setQueryTimeWindow}
+                showTimeWindow={showTimeWindow}
+                setShowTimeWindow={setShowTimeWindow}
+                timeInput={timeInput}
+                setTimeInput={setTimeInput}
+                timeUnit={timeUnit}
+                setTimeUnit={setTimeUnit}
+                showTooltip={showTooltip}
+                setShowTooltip={setShowTooltip}
               />
             </div>
 

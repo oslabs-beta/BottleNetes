@@ -1,11 +1,14 @@
 import Users from "../models/UserModel.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
+import { SECRET_KEY } from "../../utils/jwtUtils.js";
 
 const userController = {};
 
 // Middleware for when creating a new user
 userController.createNewUser = async (req, res, next) => {
-  console.log("👥 Running createNewUser middleware...");
+  // console.log("👥 Running createNewUser middleware...");
 
   try {
     const { username, password, email } = await req.body;
@@ -47,7 +50,7 @@ userController.createNewUser = async (req, res, next) => {
 
 // Middleware for when verifying user when they try to sign in
 userController.verifyUser = async (req, res, next) => {
-  console.log("🤖 Running verifyUser middleware...");
+  // console.log("🤖 Running verifyUser middleware...");
 
   try {
     const { username, password } = await req.body;
@@ -65,13 +68,12 @@ userController.verifyUser = async (req, res, next) => {
       );
       // If the password matches, proceed
       if (isMatch) {
-        console.log("🥳 Password Matched!");
+        // console.log("🥳 Password Matched!");
         res.locals.validated = isMatch;
-        res.locals.id = credentials.dataValues.id;
-        res.locals.username = credentials.dataValues.username;
+        res.locals.username = await credentials.dataValues.username;
         return next();
       } else {
-        console.log("🤔 Wrong Password!");
+        // console.log("🤔 Wrong Password!");
         res.locals.validated = isMatch;
         return next({
           log: `🤨 Credentials do not match!`,
@@ -92,6 +94,30 @@ userController.verifyUser = async (req, res, next) => {
       log: `🤬 Error in verifyUser middleware: ${error}`,
       status: 500,
       message: "Could not log in...",
+    });
+  }
+};
+
+userController.verifySignedIn = async (req, _res, next) => {
+  // console.log('🥴 Now running verifySignedIn middleware...');
+
+  try {
+    const token = await req.cookies.jwt;
+    if (!token) {
+      return next({
+        log: "🥲 Unauthorized: No token provided",
+        status: 401,
+        message: "Unauthorized: No token provided",
+      });
+    }
+    const decoded = jwt.verify(token, SECRET_KEY);
+    req.user = decoded;
+    return next();
+  } catch (error) {
+    return next({
+      log: `🥸 Error occurred in verifySignedIn middleware: ${error}`,
+      status: 500,
+      message: "An error occurred while verifying if the user signed in",
     });
   }
 };

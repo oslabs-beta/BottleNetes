@@ -1,25 +1,54 @@
+import jwt from "jsonwebtoken";
+import { SECRET_KEY } from "../../utils/jwtUtils.js";
+import dotenv from "dotenv";
+import process from "node:process";
+
 import Users from "../models/UserModel.js";
+import genToken from "../../utils/jwtUtils.js";
+
+dotenv.config();
 
 const cookieController = {};
 
 // Create the cookie with their id for their session when the user signed in
 cookieController.createCookie = async (req, res, next) => {
-  console.log("🍪 Running createCookie middleware...");
+  // console.log("🍪 Running createCookie middleware...");
 
   try {
-    const { username } = await req.body;
+    // If authenticated by OAuth then run this block
+    if (res.locals.authenticated) {
+      const token = genToken(res.locals.access_token);
+
+      const cookie = await res.cookie("jwt", token, {
+        httpOnly: true, // Prevent access via JS
+        secure: process.env.NODE_ENV === "production", // Only send over HTTPS in production,
+        sameSite: "strict", // Protect against CSRF
+        maxAge: 24 * 60 * 60 * 1000, // 1 day in ms
+      });
+
+      res.locals.cookie = await cookie;
+      res.locals.signedIn = true;
+      return next();
+    }
+
+    let { username } = await req.body;
+
     const foundUserID = await Users.findOne({
       where: { username },
       attributes: ["id"],
     });
 
     if (foundUserID) {
-      const cookie = await res.cookie("ssid", foundUserID.dataValues.id, {
-        httpOnly: true,
-        sameSite: 'Lax',
-        expires: new Date(Date.now() + 3600000), // Cookie expires in 1hr
+      const token = genToken(foundUserID.dataValues.id);
+
+      const cookie = await res.cookie("jwt", token, {
+        httpOnly: true, // Prevent access via JS
+        secure: process.env.NODE_ENV === "production", // Only send over HTTPS in production,
+        sameSite: "strict", // Protect against CSRF
+        maxAge: 24 * 60 * 60 * 1000, // 1 day in ms
       });
-      console.log(`🍪 Filling up the cookie basket...`);
+
+      // console.log(`🍪 Filling up the cookie basket...`);
       res.locals.cookie = cookie;
       // console.log(res.locals.cookie.req.cookies.ssid);
       res.locals.id = foundUserID.dataValues.id;
@@ -42,22 +71,31 @@ cookieController.createCookie = async (req, res, next) => {
 };
 
 // Verify the cookie with their id to make sure they are the correct signed in user
-// NOT CURRENTLY IN USE
 cookieController.verifyCookie = async (req, res, next) => {
-  console.log(`🍪🤔 Running verifyCookie middleware...`);
+  // console.log(`🍪🤔 Running verifyCookie middleware...`);
 
   try {
-    const cookie = await req.cookies;
+    const token = await req.cookies.jwt;
     // Check if the cookie ssid matches the user id
-    if (cookie.ssid === res.locals.id) {
-      console.log(`🍪 Verified session. Proceeds...`);
-      res.locals.verifiedCookie = true;
+    if (token) {
+      console.log(`🍪 Verified session. Enjoy your dashboard!`);
+      const decoded = jwt.verify(token, SECRET_KEY);
+      const username = await Users.findOne({
+        where: { id: decoded.userId },
+        attributes: ["username"],
+      });
+      res.locals.decoded = decoded;
+      res.locals.username = username.dataValues;
+      res.locals.signedIn = true;
       return next();
       // If they're not match, redirect them to the sign in page
     } else {
-      console.log(`🍪🤨 Stop being sus. Not a match!`);
-      res.locals.verifiedCookie = false;
-      return next();
+      res.locals.signedIn = false;
+      return next({
+        log: "🥲 Auth token is missing",
+        status: 401,
+        message: "Token not found",
+      });
     }
   } catch (error) {
     return next({
