@@ -13,8 +13,7 @@ askAiController.queryOpenAI = async (req, res, next) => {
   console.log("in queryOpenAI controller");
   const { allData } = req.body;
   const { userMessage } = req.body
-  console.log(allData, userMessage)
-  console.log(req.body);
+  console.log(userMessage)
   // if (userMessage || allData || typeof allData !== "object") {
   //   return res
   //     .status(400)
@@ -54,28 +53,31 @@ askAiController.queryOpenAI = async (req, res, next) => {
         Pods Statuses: ${JSON.stringify(podsStatuses)}.
         CPU Usage (Historical): ${JSON.stringify(cpuUsageHistorical)}.
         Latency (Historical): ${JSON.stringify(latencyAppRequestHistorical)}.`;
-                Request Limits: ${JSON.stringify(requestLimits.usageAbsolute)}.
+        Request Limits: ${JSON.stringify(requestLimits.usageAbsolute)}.
 
     */
 
-    const prompt = `You are a Kubernetes metrics analysis assistant.
-    You must analyze the following information and provide actionable insights:
-    Memory Usage (Historical): ${JSON.stringify(memoryUsageHistorical)}.
+    // const prompt = `You are a Kubernetes metrics analysis assistant.
+    // You must analyze the following information and provide actionable insights:
+    // Memory Usage (Historical): ${JSON.stringify(memoryUsageHistorical.usageAbsolute)}.
 
-    The user will give you this question: ${(JSON.stringify(userMessage))}. Answer their question.
+    // The user will give you this question: ${JSON.stringify(userMessage)}. Answer their question.
 
-    Limit your response to 100 words.
-    `;
-   
+    // Limit your response to 100 words.
+    // `;
+
+    const prompt = `you are nice chatbot. chat with the user. be brief`
+    
     const response = await axios.post(
       openAiEndpoint,
       {
-        model: "gpt-4",
+        model: "gpt-4o-mini",
         messages: [
           { role: "system", content: prompt },
           {
             role: "user",
-            content: `Please provide an analysis of the following Kubernetes metrics: ${JSON.stringify(cpuUsageHistorical.usageAbsolute)}`,
+            content: `please chat with user`
+            // content: `Please provide an analysis of the following Kubernetes metrics: ${JSON.stringify(cpuUsageHistorical.usageAbsolute)}`,
           },
         ],
       },
