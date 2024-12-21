@@ -78,7 +78,7 @@ cookieController.verifyCookie = async (req, res, next) => {
     const token = await req.cookies.jwt;
     // Check if the cookie ssid matches the user id
     if (token) {
-      console.log('line 63');
+      console.log('lgine 63');
       const decoded = jwt.verify(token, SECRET_KEY);
       res.locals.decoded = decoded;
       console.log(`🍪 Verified session. Enjoy your dashboard!`);
