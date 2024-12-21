@@ -76,7 +76,7 @@ export const parseResponseAllPodsStatus = (req, res, next) => {
   return next();
 };
 
-export const parseResponseAllPodsRequestLimit = (req, res, next) => {
+export const parseResponseAllPodsRequestLimit = (_req, res, next) => {
   const [
     cpuRequestData,
     memoryRequestData,
@@ -151,7 +151,7 @@ export const parseResponseAllPodsRequestLimit = (req, res, next) => {
   return next();
 };
 
-export const parseResponseResourceUsageOneValue = (req, res, next) => {
+export const parseResponseResourceUsageOneValue = (_req, res, next) => {
   const [relativeData, absoluteData] = res.locals.data;
 
   const podsObj = {};
@@ -184,7 +184,7 @@ export const parseResponseResourceUsageOneValue = (req, res, next) => {
   return next();
 };
 
-export const parseResponseResourceUsageHistorical = (req, res, next) => {
+export const parseResponseResourceUsageHistorical = (_req, res, next) => {
   const [relativeData, absoluteData] = res.locals.data;
 
   const podsObj = {};
@@ -212,7 +212,7 @@ export const parseResponseResourceUsageHistorical = (req, res, next) => {
   absoluteData.forEach((item) => {
     const name = item.metric[res.locals.level];
     if (podsObj[name]) {
-      item.values.forEach(([timestamp, value]) => {
+      item.values.forEach(([, value]) => {
         podsObj[name].usageAbsolute.push(Number(value));
       });
     }
@@ -225,7 +225,7 @@ export const parseResponseResourceUsageHistorical = (req, res, next) => {
   return next();
 };
 
-export const parseResponseLatencyAppRequestOneValue = (req, res, next) => {
+export const parseResponseLatencyAppRequestOneValue = (_req, res, next) => {
   const [
     numRequestsData,
     inboundLatencyData,
@@ -319,7 +319,7 @@ export const parseResponseLatencyAppRequestOneValue = (req, res, next) => {
   return next();
 };
 
-export const parseResponseLatencyAppRequestHistorical = (req, res, next) => {
+export const parseResponseLatencyAppRequestHistorical = (_req, res, next) => {
   const [
     inboundLatencyData,
     outboundLatencyData,

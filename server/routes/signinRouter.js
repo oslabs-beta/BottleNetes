@@ -12,16 +12,18 @@ signinRouter.post(
     if (res.locals.validated) {
       return res.status(200).send({
         success: true,
-        message: 'Login Successful!',
-        id: res.locals.id,
-        username: res.locals.username
-        // redirectUrl: '/dashboard',
-        // userData: {
-          // id: res.locals.id
-        // }
+        username: res.locals.username,
       });
-    } else return res.redirect('/');
+    } else return res.redirect("/");
   },
 );
+
+signinRouter.get("/checkSignin", (_req, res) => {
+  return res.status(200).send({
+    signedIn: res.locals.signedIn,
+    user: res.locals.decoded,
+    username: res.locals.username
+  });
+});
 
 export default signinRouter;

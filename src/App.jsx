@@ -1,27 +1,76 @@
-import { useState } from "react";
+import { useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+
+import useStore from "./store.jsx";
 import SigninContainer from "./containers/SigninContainer";
 import MainContainer from "./containers/MainContainer";
+import CallbackHandler from "./CallbackHandler.jsx";
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [username, setUsername] = useState("");
+  const {
+    isSignedIn,
+    loading,
+    username,
+    signIn,
+    signOut,
+    setLoading,
+    setUsername,
+  } = useStore();
 
-  // // If you need to set a default username for testing, use useEffect
-  // useEffect(() => {
-  //   setUsername("zoe");
-  // }, []); // Empty dependency array means this runs once on mount
+  useEffect(() => {
+    const checkSigninStatus = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:3000/signin/checkSignin",
+          {
+            credentials: "include",
+          },
+        );
+        const data = await response.json();
+        console.log(data);
+        if (data.signedIn) {
+          setUsername(data.username.username);
+          signIn();
+        } else signOut();
+        setLoading(false);
+      } catch (error) {
+        console.error(error);
+        signOut();
+        setLoading(false);
+      }
+    };
+    checkSigninStatus();
+  }, [signIn, signOut, setLoading, setUsername]);
+
+  if (loading) return <div>Loading...</div>;
 
   return (
     <div id="app">
-      {!loggedIn ? (
-        <SigninContainer
-          username={username}
-          setUsername={setUsername}
-          setLoggedIn={setLoggedIn}
-        />
-      ) : (
-        <MainContainer username={username} />
-      )}
+      <Router>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              isSignedIn ? <Navigate to="/dashboard" /> : <SigninContainer />
+            }
+          />
+          <Route
+            path="/oauth/callback"
+            element={
+              isSignedIn ? <Navigate to="/dashboard" /> : <CallbackHandler />
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={<MainContainer username={username} />}
+          />
+        </Routes>
+      </Router>
     </div>
   );
 }
