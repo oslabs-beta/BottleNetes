@@ -12,7 +12,15 @@ import MainContainer from "./containers/MainContainer";
 import CallbackHandler from "./CallbackHandler.jsx";
 
 function App() {
-  const { isSignedIn, loading, signIn, signOut, setLoading } = useStore();
+  const {
+    isSignedIn,
+    loading,
+    username,
+    signIn,
+    signOut,
+    setLoading,
+    setUsername,
+  } = useStore();
 
   useEffect(() => {
     const checkSigninStatus = async () => {
@@ -25,8 +33,10 @@ function App() {
         );
         const data = await response.json();
         console.log(data);
-        if (data.signedIn) signIn();
-        else signOut();
+        if (data.signedIn) {
+          setUsername(data.username.username);
+          signIn();
+        } else signOut();
         setLoading(false);
       } catch (error) {
         console.error(error);
@@ -35,7 +45,7 @@ function App() {
       }
     };
     checkSigninStatus();
-  }, [signIn, signOut, setLoading]);
+  }, [signIn, signOut, setLoading, setUsername]);
 
   if (loading) return <div>Loading...</div>;
 
@@ -57,9 +67,7 @@ function App() {
           />
           <Route
             path="/dashboard"
-            element={
-                <MainContainer />
-            }
+            element={<MainContainer username={username} />}
           />
         </Routes>
       </Router>

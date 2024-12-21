@@ -22,6 +22,7 @@ const CallbackHandler = () => {
       
       const params = new URLSearchParams(window.location.search);
       if (!params) return console.error("Unable to get the queries");
+      
       //Getting the query with the key "code";
       const code = params.get("code");
       if (!code) return console.error("Unable to get the code inside the query");

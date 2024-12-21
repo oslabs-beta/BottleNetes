@@ -5,13 +5,14 @@ import { useNavigate } from "react-router-dom";
 
 import useStore from "../store.jsx";
 
-const LogInContainer = () => {
+const SigninContainer = () => {
   const url = "http://localhost:3000/";
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const signIn = useStore((state) => state.signIn);
+  const signOut = useStore((state) => state.signOut);
   const credential = { username, password };
 
   const handleLogIn = async (e) => {
@@ -32,7 +33,10 @@ const LogInContainer = () => {
       setUsername(data.username);
       signIn();
       navigate("/dashboard");
-    } else alert("Unable to fetch data");
+    } else {
+      signOut();
+      alert("Unable to fetch data");
+    }
   };
 
   const handleRedirect = async (endpoint) => {
@@ -148,10 +152,10 @@ const LogInContainer = () => {
   );
 };
 
-LogInContainer.propTypes = {
+SigninContainer.propTypes = {
   username: PropTypes.string,
   setUsername: PropTypes.func,
   setLoggedIn: PropTypes.func,
 };
 
-export default LogInContainer;
+export default SigninContainer;
