@@ -66,7 +66,7 @@ askAiController.queryOpenAI = async (req, res, next) => {
     // Limit your response to 100 words.
     // `;
 
-    const prompt = `you are nice chatbot. chat with the user. be brief`
+    const prompt = `you are nice chatbot. you must chat with the user`
     
     const response = await axios.post(
       openAiEndpoint,
@@ -76,7 +76,7 @@ askAiController.queryOpenAI = async (req, res, next) => {
           { role: "system", content: prompt },
           {
             role: "user",
-            content: `please chat with user`
+            content: `please chat with user. here is their input: ${JSON.stringify(userMessage)}`,
             // content: `Please provide an analysis of the following Kubernetes metrics: ${JSON.stringify(cpuUsageHistorical.usageAbsolute)}`,
           },
         ],

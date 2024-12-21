@@ -340,7 +340,7 @@ const MainContainer = ({ username }) => {
         <div className="relative mx-6">
           {/* Conditionally render AI chat window */}
           {aiVisibility && (
-            <div className="absolute bottom-[100%] right-0 mb-3 rounded-2xl">
+            <div className="absolute bottom-[100%] right-0 mb-3 w-96 rounded-2xl">
               <Chatbot allData={allData} fetchData={fetchData} />
             </div>
           )}
