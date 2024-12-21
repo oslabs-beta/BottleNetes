@@ -14,7 +14,7 @@ const MainContainer = ({ username }) => {
   const url = "http://localhost:3000/";
 
   // State for when the menu button is clicked
-  const [menu, setMenu] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Determines if the graphs display node data or pod specific data
   const [defaultView, setDefaultView] = useState(true);
@@ -22,8 +22,27 @@ const MainContainer = ({ username }) => {
   // Which pod has been clicked-  manage selected pod
   const [clickedPod, setClickedPod] = useState("");
 
-  // Data of selected pod
-  // const [podData, setPodData] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [selectedMetric, setSelectedMetric] = useState("cpu");
+
+  const [refreshFrequency, setRefreshFrequency] = useState(5000);
+
+  const [showRefreshPopup, setShowRefreshPopup] = useState(false);
+
+  const [refreshInput, setRefreshInput] = useState("");
+
+  const [manualRefreshCount, setManualRefreshCount] = useState(0);
+
+  const handleRefreshSubmit = (e) => {
+    e.preventDefault();
+    const value = parseInt(refreshInput);
+    if (value && value > 0) {
+      setRefreshFrequency(value * 1000); // Input in seconds, convert seconds to milliseconds
+      setShowRefreshPopup(false);
+      setRefreshInput("");
+    }
+  };
 
   // Function to reset views and clear selected pod
   const resetView = () => {
@@ -46,10 +65,6 @@ const MainContainer = ({ username }) => {
     memoryUsageHistorical: null,
     latencyAppRequestOneValue: { latencyAppRequestOneValue: [] },
   });
-
-  const [isLoading, setIsLoading] = useState(true);
-
-  const [selectedMetric, setSelectedMetric] = useState("cpu");
 
   //helper function
   const fetchData = async (method, endpoint, body = null) => {
@@ -196,15 +211,15 @@ const MainContainer = ({ username }) => {
     };
     bigFetch();
 
-    const intervalID = setInterval(bigFetch, 30000);
+    const intervalID = setInterval(bigFetch, refreshFrequency);
     return () => {
       clearInterval(intervalID);
     };
-  }, []);
+  }, [refreshFrequency, manualRefreshCount]);
 
-  useEffect(() => {
-    console.log("All data: ", allData);
-  }, [allData]);
+  // useEffect(() => {
+  //   console.log("All data: ", allData);
+  // }, [allData]);
 
   return (
     <div>
@@ -212,7 +227,7 @@ const MainContainer = ({ username }) => {
         <div id="leftside" className="flex items-center">
           <div className="flex items-center gap-0 px-5">
             <button
-              onClick={() => setMenu(true)}
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="group inline-flex h-12 w-12 items-center justify-center rounded border-2 border-slate-500 bg-slate-950 text-center text-slate-300"
             >
               <span className="sr-only">Menu</span>
@@ -240,7 +255,7 @@ const MainContainer = ({ username }) => {
                 ></rect>
               </svg>
             </button>
-            {!menu && <MenuContainer />}
+            {!isMenuOpen && <MenuContainer />}
           </div>
           <h1 className="bg-gradient-to-bl from-blue-500 to-blue-600 bg-clip-text px-5 font-sans text-5xl font-bold text-transparent transition duration-300 hover:scale-105">
             BottleNetes
@@ -259,6 +274,58 @@ const MainContainer = ({ username }) => {
             isLoading={isLoading}
           />
         </div>
+
+        {/* Manual Refresh Button */}
+        <div className="flex justify-end p-4">
+          <button 
+            onClick={() => setManualRefreshCount(manualRefreshCount + 1)} // test if it works
+            className="rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+          >
+            Manual Refresh
+          </button>
+        </div>
+        {/* Refresh Frequency Button */}
+        <div className="flex justify-end p-4">
+          <button
+            onClick={() => setShowRefreshPopup(true)}
+            className="rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+          >
+            Refresh Frequency (s): {refreshFrequency / 1000}
+          </button>
+        </div>
+
+        {/* Refresh Frequency Popup */}
+        {showRefreshPopup && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="rounded-lg bg-white p-6">
+              <form onSubmit={handleRefreshSubmit} className="flex flex-col gap-4">
+                <input
+                  type="number"
+                  min="1"
+                  value={refreshInput}
+                  onChange={(e) => setRefreshInput(e.target.value)}
+                  className="rounded border p-2 text-black"
+                  placeholder="Enter seconds"
+                />
+                <div className="flex gap-2">
+                  <button
+                    type="submit"
+                    className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+                  >
+                    Submit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowRefreshPopup(false)}
+                    className="rounded bg-gray-500 px-4 py-2 text-white hover:bg-gray-600"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
 
         {/* PodNameDisplay */}
         <div className="border-b-2 border-slate-300">

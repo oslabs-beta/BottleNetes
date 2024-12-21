@@ -20,6 +20,7 @@ import signupRouter from "./routes/signupRouter.js";
 import signinRouter from "./routes/signinRouter.js";
 import apiRouter from "./routes/apiRouter.js";
 import oAuthRouter from "./routes/oAuthRouter.js";
+// import k8sRouter from './routes/k8sRouter.js';
 
 // Allow the use of process.env
 dotenv.config();
@@ -33,7 +34,11 @@ app.use(cookieParser());
 // CORS stuffs
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:3000"], //Front-end PORT
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:3000",
+      "https://2c2k69hf-5173.usw3.devtunnels.ms", // Delete this line when finished
+    ], //Front-end PORT
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true, // Important for cookies/session
   }),
@@ -53,6 +58,7 @@ app.use("/signin", signinRouter);
 app.use("/signup", signupRouter);
 app.use("/api", apiRouter);
 app.use("/oauth", oAuthRouter);
+// app.use('/k8s', k8sRouter);
 
 // Serves static files
 app.use(express.static(path.resolve(__dirname, "../index.html")));

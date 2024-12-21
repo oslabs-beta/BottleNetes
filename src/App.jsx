@@ -10,7 +10,6 @@ import useStore from "./store.jsx";
 import SigninContainer from "./containers/SigninContainer";
 import MainContainer from "./containers/MainContainer";
 import CallbackHandler from "./CallbackHandler.jsx";
-import ProtectedRoute from "./ProtectedRoute.jsx";
 
 function App() {
   const { isSignedIn, loading, signIn, signOut, setLoading } = useStore();
@@ -59,9 +58,7 @@ function App() {
           <Route
             path="/dashboard"
             element={
-              <ProtectedRoute isSignedIn={isSignedIn}>
                 <MainContainer />
-              </ProtectedRoute>
             }
           />
         </Routes>

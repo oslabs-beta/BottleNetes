@@ -7,6 +7,7 @@ const CallbackHandler = () => {
 
   useEffect(() => {
     const fetchToken = async () => {
+
       // URLSearchParams will get all queries inside of the passed in URL
       // Ex: const url = http://localhost:3000/oauth/github?key1=value1&key2=value2
       // params = new URLSearchParams(new URL(url).search);
@@ -18,6 +19,7 @@ const CallbackHandler = () => {
   
       // 'window.location.search' will search for a query string inside the location property of the window object
       // Query string is a string format, a part of the url including the ? and containing the queries
+      
       const params = new URLSearchParams(window.location.search);
       if (!params) return console.error("Unable to get the queries");
       //Getting the query with the key "code";
@@ -52,7 +54,7 @@ const CallbackHandler = () => {
     };
   
     fetchToken();
-  }, []);
+  }, [signIn]);
 };
 
 export default CallbackHandler;
