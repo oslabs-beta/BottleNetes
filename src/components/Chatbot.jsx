@@ -74,7 +74,11 @@ const Chatbot = ({ allData, fetchData }) => {
 
   const conversationArr = [];
 
-  for (let i = 0; i < aiContent.length || historicalUserInput.length; i++) {
+  for (
+    let i = 0;
+    i < Math.max(aiContent.length, historicalUserInput.length);
+    i++ ZOE MAKE SURE TO PUSH CODE  PLEASEEEEEEEEEEEEEEEE
+  ) {
     conversationArr.push(
       // human chat
       <div className="ml-auto mt-2 flex w-full max-w-xs justify-end space-x-3">
@@ -104,7 +108,7 @@ const Chatbot = ({ allData, fetchData }) => {
           </div>
           <span className="text-xs leading-none text-gray-500">
             {formatTimestamp(setAiContent.timestamp)}
-            </span>
+          </span>
         </div>
       </div>,
     );
@@ -136,6 +140,7 @@ const Chatbot = ({ allData, fetchData }) => {
               </span>
             </div>
           </div>
+          {conversationArr}
         </div>
         {/* Input text box */}
         <span className="flex w-full items-center justify-between">
