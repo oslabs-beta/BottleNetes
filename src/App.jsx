@@ -10,9 +10,6 @@ import useStore from "./store.jsx";
 import SigninContainer from "./containers/SigninContainer";
 import MainContainer from "./containers/MainContainer";
 import CallbackHandler from "./CallbackHandler.jsx";
-// REMOVE THIS LINE BEFORE PUSHING
-import { useEffect } from "react";
-
 
 function App() {
   const {

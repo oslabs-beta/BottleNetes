@@ -34,8 +34,6 @@ const MainContainer = ({ username }) => {
   // State to store selected metric to display
   const [selectedMetric, setSelectedMetric] = useState("cpu");
 
-  const [isLoading, setIsLoading] = useState(true);
-
   // State hooks for refresh control in MenuContainer
   const [manualRefreshCount, setManualRefreshCount] = useState(0);
   const [refreshFrequency, setRefreshFrequency] = useState(30000);
