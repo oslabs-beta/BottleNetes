@@ -26,12 +26,14 @@ const Chatbot = ({ allData, fetchData }) => {
     setUserInput(event.target.value);
   };
 
+  // Submits form when user hits enter
   const handleKeyDown = ((e) => {
     if (e.key == "Enter") {
       e.preventDefault();
       handleSubmit(e)
     }
   });
+  
   //Event handler for form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -175,152 +177,3 @@ Chatbot.propTypes = {
 };
 
 export default Chatbot;
-
-// <div className="flex" id="myForm">
-//   {/* close button */}
-//   <div>
-//     <button>
-//       CLOSE
-//     </button>
-//   </div>
-
-//   {/* Textbox div */}
-//   <div className="flex column">
-//     <p>AI</p>
-//   </div>
-
-//   {/* Submit form div */}
-//   <div id="submitForm">
-//     <form action="/action_page.php" className="form-container">
-//       <label>
-//         <b>Message</b>
-//       </label>
-//       <textarea placeholder="Type message.." name="msg" required></textarea>
-
-//       <button
-//         type="submit"
-//         className="text-s rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 px-2 py-1 text-slate-200 hover:brightness-90 hover:filter"
-//       >
-//         Send
-//       </button>
-//     </form>
-//   </div>
-// </div>
-
-// ****************************************************************
-// {/* human input text box */}
-// <div className="ml-auto mt-2 flex w-full max-w-xs justify-end space-x-3">
-//   {/* div that includes timestamp */}
-//   <div>
-//     {/* human circles */}
-//     <div className="rounded-l-lg rounded-br-lg bg-blue-600 p-3 text-white">
-//       {/* actual text */}
-//       <p className="text-sm">
-//         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-//         do eiusmod.
-//       </p>
-//     </div>
-//     <span className="text-xs leading-none text-gray-500">
-//       2 min ago
-//     </span>
-//   </div>
-//   <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300"></div>
-// </div>;
-
-// {/* textbox */}
-// <div className="ml-auto mt-2 flex w-full max-w-xs justify-end space-x-3">
-//   <div>
-//     <div className="rounded-l-lg rounded-br-lg bg-blue-600 p-3 text-white">
-//       <p className="text-sm">Lorem ipsum dolor sit amet.</p>
-//     </div>
-//     <span className="text-xs leading-none text-gray-500">
-//       2 min ago
-//     </span>
-//   </div>
-//   <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300"></div>
-// </div>
-
-// {/* textbox */}
-// <div className="mt-2 flex w-full max-w-xs space-x-3">
-//   <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300"></div>
-//   <div>
-//     <div className="rounded-r-lg rounded-bl-lg bg-gray-300 p-3">
-//       <p className="text-sm">
-//         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-//         do eiusmod tempor incididunt ut labore et dolore magna aliqua.{" "}
-//       </p>
-//     </div>
-//     <span className="text-xs leading-none text-gray-500">
-//       2 min ago
-//     </span>
-//   </div>
-// </div>
-// {/* textbox */}
-// <div className="ml-auto mt-2 flex w-full max-w-xs justify-end space-x-3">
-//   <div>
-//     <div className="rounded-l-lg rounded-br-lg bg-blue-600 p-3 text-white">
-//       <p className="text-sm">
-//         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-//         do eiusmod tempor incididunt ut labore et dolore magna aliqua.{" "}
-//       </p>
-//     </div>
-//     <span className="text-xs leading-none text-gray-500">
-//       2 min ago
-//     </span>
-//   </div>
-//   <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300"></div>
-// </div>
-// {/* textbox */}
-// <div className="ml-auto mt-2 flex w-full max-w-xs justify-end space-x-3">
-//   <div>
-//     <div className="rounded-l-lg rounded-br-lg bg-blue-600 p-3 text-white">
-//       <p className="text-sm">
-//         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-//         do eiusmod tempor incididunt.
-//       </p>
-//     </div>
-//     <span className="text-xs leading-none text-gray-500">
-//       2 min ago
-//     </span>
-//   </div>
-//   <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300"></div>
-// </div>
-// {/* textbox */}
-// <div className="ml-auto mt-2 flex w-full max-w-xs justify-end space-x-3">
-//   <div>
-//     <div className="rounded-l-lg rounded-br-lg bg-blue-600 p-3 text-white">
-//       <p className="text-sm">Lorem ipsum dolor sit amet.</p>
-//     </div>
-//     <span className="text-xs leading-none text-gray-500">
-//       2 min ago
-//     </span>
-//   </div>
-//   <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300"></div>
-// </div>
-// {/* textbox */}
-// <div className="mt-2 flex w-full max-w-xs space-x-3">
-//   <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300"></div>
-//   <div>
-//     <div className="rounded-r-lg rounded-bl-lg bg-gray-300 p-3">
-//       <p className="text-sm">
-//         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-//         do eiusmod tempor incididunt ut labore et dolore magna aliqua.{" "}
-//       </p>
-//     </div>
-//     <span className="text-xs leading-none text-gray-500">
-//       2 min ago
-//     </span>
-//   </div>
-// </div>
-// {/* textbox */}
-// <div className="ml-auto mt-2 flex w-full max-w-xs justify-end space-x-3">
-//   <div>
-//     <div className="rounded-l-lg rounded-br-lg bg-blue-600 p-3 text-white">
-//       <p className="text-sm">{aiContent}</p>
-//     </div>
-//     <span className="text-xs leading-none text-gray-500">
-//       2 min ago
-//     </span>
-//   </div>
-//   <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300"></div>
-// </div>
