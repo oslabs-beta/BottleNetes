@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -85,7 +86,7 @@ app.use("*", (_req, res) => {
 });
 
 // Global Error Handler
-// eslint-disable-next-line no-unused-vars
+
 app.use((err, _req, res, _next) => {
   const defaultErr = {
     log: "Express error handler caught unknown middleware error",
@@ -98,16 +99,25 @@ app.use((err, _req, res, _next) => {
   return res.status(errorObj.status).json(errorObj.message);
 });
 
-// Gracefullt shut down when exiting the app
+// Gracefully shut down when exiting the app
+let isShuttingDown = false;
+
 const gracefulShutDown = async () => {
+  if (isShuttingDown) return;
+  isShuttingDown = true;
+  console.log("👂 Received Shut Down Signal. Gracefully Shutting Down...");
+
   try {
-    console.log("👂 Received Shut Down Signal. Gracefully Shutting Down...");
     await sequelize.close();
     console.log("📉 Database connection is closed!");
-    server.close(() => {
-      console.log(`💃🏻 Server has been shutted down gracefully!`);
-      process.exitCode = 0;
+    await new Promise((resolve, reject) => {
+      server.close((err) => {
+        if (err) reject(err);
+        resolve();
+      });
     });
+    console.log(`💃🏻 Server has been shutted down gracefully!`);
+    process.exitCode = 0;
   } catch (error) {
     console.error(
       `😭 Unable to gracefully shut down the server. Force exiting... - ${error}`,
