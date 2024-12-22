@@ -9,9 +9,17 @@ k8sRouter.post(
   k8sController.checkClickedPod,
   k8sController.softDeletePod,
   (req, res) => {
-    return res.status(200).json({
-      status: "success",
-    });
+    return res.status(200).json({ status: "success" });
+  },
+);
+
+k8sRouter.post(
+  "/viewPodLogs",
+  k8sController.checkClickedPod,
+  k8sController.fetchPodLogs,
+  k8sController.formatLogs,
+  (req, res) => {
+    return res.status(200).json({ logs: res.locals.logs });
   },
 );
 

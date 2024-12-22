@@ -72,7 +72,7 @@ const MainContainer = ({ username }) => {
   const resetView = () => {
     setDefaultView(true);
     // Reset to default view
-    setClickedPod("");
+    setClickedPod({ podName: "", namespace: "" });
     // Clear selected pod
     setSelectedMetric("cpu");
     // Reset metric selection

@@ -27,6 +27,10 @@ const PodGrid = ({
   showTooltip,
   setShowTooltip,
 }) => {
+  const [showRestartPopup, setShowRestartPopup] = useState(false);
+  const [showPodLog, setShowPodLog] = useState(false);
+  const [podLog, setPodLog] = useState("No logs available");
+
   const handleTimeWindowSubmit = (e) => {
     e.preventDefault();
     const value = parseInt(timeInput);
@@ -42,12 +46,39 @@ const PodGrid = ({
       alert("Please select a pod first");
       return;
     }
+    setShowRestartPopup(true);
+  };
+
+  const handleViewPodLog = async () => {
+    if (!clickedPod.podName || !clickedPod.namespace) {
+      alert("Please select a pod first");
+      return;
+    }
+
     try {
-      console.log("Sending pod data:", {
-        podName: clickedPod.podName,
-        namespace: clickedPod.namespace,
+      const response = await fetch("http://localhost:3000/k8s/viewPodLogs", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          podName: clickedPod.podName,
+          namespace: clickedPod.namespace,
+        }),
       });
-      console.log("Attempting to restart pod:", clickedPod.podName);
+      const podLogs = await response.json();
+      // console.log("Pod logs:", podLogs.logs);
+      // console.log("type:", typeof podLogs.logs);
+      setPodLog(podLogs.logs);
+      setShowPodLog(true);
+    } catch (error) {
+      console.error("Error fetching pod logs:", error);
+      alert(`Failed to fetch pod logs: ${error.message}`);
+    }
+  };
+
+  const proceedRestartPod = async () => {
+    try {
       const response = await fetch("http://localhost:3000/k8s/restartPod", {
         method: "POST",
         headers: {
@@ -61,12 +92,19 @@ const PodGrid = ({
       const data = await response.json();
       if (data.status === "success") {
         setPodRestartCount(podRestartCount + 1);
+        setClickedPod({ podName: "", namespace: "" });
       }
-      console.log("Response from server:", data);
+      // console.log("Response from server:", data);
     } catch (error) {
       console.error("Error restarting pod:", error);
       alert(`Failed to restart pod: ${error.message}`);
+    } finally {
+      setShowRestartPopup(false);
     }
+  };
+
+  const cancelRestartPod = () => {
+    setShowRestartPopup(false);
   };
 
   if (!podStatuses.allPodsStatus) {
@@ -132,7 +170,7 @@ const PodGrid = ({
 
   const resetView = () => {
     setDefaultView(true);
-    setClickedPod("");
+    setClickedPod({ podName: "", namespace: "" });
     setSelectedMetric("cpu");
   };
 
@@ -147,12 +185,14 @@ const PodGrid = ({
         >
           Restart Pod
         </button>
+
         <button
+          onClick={handleViewPodLog}
           className="rounded-lg bg-slate-600 px-3 py-2 text-sm font-medium text-white hover:bg-slate-700"
-          disabled
         >
-          Placeholder
+          View Pod Log
         </button>
+
         <button
           className="rounded-lg bg-slate-600 px-3 py-2 text-sm font-medium text-white hover:bg-slate-700"
           disabled
@@ -160,6 +200,51 @@ const PodGrid = ({
           Placeholder
         </button>
       </control-buttons-row>
+
+      {/* Restart Confirmation Popup */}
+      {showRestartPopup && (
+        <pod-restart-confirmation-popup class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-slate w-80 rounded-lg p-6">
+            <p>
+              You will be restarting pod <strong>{clickedPod.podName}</strong>.
+              <br />
+              This pod will be deleted and another pod replica will be
+              automatically created.
+            </p>
+            <div className="mt-4 flex justify-center space-x-2">
+              <button
+                onClick={proceedRestartPod}
+                className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+              >
+                Proceed
+              </button>
+              <button
+                onClick={cancelRestartPod}
+                className="rounded bg-blue-300 px-4 py-2 hover:bg-gray-400"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </pod-restart-confirmation-popup>
+      )}
+
+      {/* Pod Log Popup */}
+      {showPodLog && (
+        <pod-log-popup class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
+          <div className="bg-slate relative h-[80vh] w-[80vw] overflow-auto rounded-lg p-6">
+            <button
+              onClick={() => setShowPodLog(false)}
+              className="right-45 fixed top-20 text-red-500 hover:text-red-700"
+            >
+              Close Log
+            </button>
+            <pre className="text-black-100 whitespace-pre-wrap text-xs">
+              {podLog}
+            </pre>
+          </div>
+        </pod-log-popup>
+      )}
 
       {/* Bottom Container */}
       <div className="flex flex-1">
@@ -297,6 +382,8 @@ PodGrid.propTypes = {
   setMetric: PropTypes.func,
   podData: PropTypes.array,
   setPodData: PropTypes.func,
+  podRestartCount: PropTypes.number,
+  setPodRestartCount: PropTypes.func,
 };
 
 PodGrid.propTypes = {

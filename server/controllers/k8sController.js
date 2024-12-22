@@ -8,7 +8,7 @@ const kubeConfigObj = new k8s.KubeConfig();
 // Load the default Kubernetes configuration
 // This configuration is required to authenticate and communicate with the Kubernetes cluster.
 kubeConfigObj.loadFromDefault();
-kubeConfigObj.setCurrentContext("minikube");
+// kubeConfigObj.setCurrentContext("minikube");
 
 // Create client instances from the loaded KubeConfig object
 // The clients are used to interact with Kubernetes resources in the Core API group,
@@ -43,43 +43,11 @@ k8sController.checkClickedPod = async (req, res, next) => {
 k8sController.softDeletePod = async (req, res, next) => {
   const { podName, namespace } = res.locals;
 
-  // async function getPods() {
-  //   try {
-  //     const podsListResponse = await k8sCoreApiClient.listPodForAllNamespaces();
-  //     podsListResponse.items.forEach((pod) => {
-  //       console.log(`${pod.metadata.namespace} - ${pod.metadata.name}`);
-  //     });
-  //   } catch (err) {
-  //     console.error(`Error getting pods: ${err}`);
-  //   }
-  // }
-  // await getPods();
-  // console.log("after get pods");
-
   try {
-    // First verify the pod exists
-    // console.log("About to read pod:", podName, "in namespace:", namespace);
-    // const podExists = await k8sCoreApiClient
-    //   .readNamespacedPod(podName, namespace)
-    //   .catch((err) => {
-    //     console.error("Pod read error:", err.body || err);
-    //     // throw new Error(`Pod ${podName} not found or not accessible`);
-    //   });
-
-    // console.log("Found pod:", podExists.body.metadata.name);
-
-    // Delete the pod
-    // console.log("About to delete:", {
-    //   podName,
-    //   namespace,
-    //   typeOfPodName: typeof podName,
-    // });
     await k8sCoreApiClient.deleteNamespacedPod(
-      podName.trim(), // name
-      namespace.trim(), // namespace
+      podName.trim(),
+      namespace.trim(),
     );
-
-    // console.log(`Pod ${podName} deletion command sent successfully`);
     return next();
   } catch (err) {
     console.error("Full pod deletion error:", err);
@@ -92,6 +60,55 @@ k8sController.softDeletePod = async (req, res, next) => {
       },
     });
   }
+};
+
+k8sController.fetchPodLogs = async (req, res, next) => {
+  const { podName, namespace } = res.locals;
+
+  try {
+    console.log("Fetching logs for", podName, namespace);
+
+    const apiResponse = await k8sCoreApiClient.readNamespacedPodLog(
+      podName.trim(),
+      namespace.trim(),
+    );
+    // console.log("Logs fetched:", logs.body);
+    res.locals.rawLogs = apiResponse.body;
+    return next();
+  } catch (err) {
+    console.error("Error fetching logs:", err);
+    return next({
+      log: `Error in fetchPodLogs: ${err.message}`,
+      status: err.status || 500,
+      message: {
+        error: err.message || "Failed to fetch logs",
+        details: err.body?.message || err.response?.body?.message,
+      },
+    });
+  }
+};
+
+k8sController.formatLogs = async (req, res, next) => {
+  // sample log json:
+  // {
+  //   "level": "warn",
+  //   "ts": "2024-12-21T16:51:21.127720Z",
+  //   "caller": "embed/config.go:687",
+  //   "msg": "Running http and grpc server on single port. This is not recommended for production."
+  // }
+  const { rawLogs } = res.locals;
+  const lines = rawLogs.split("\n");
+  const parsed = lines.map((line) => {
+    try {
+      const jsonObj = JSON.parse(line);
+      const { ts, level, caller, msg } = jsonObj;
+      return `${ts} [${(level || "").toUpperCase()}] ${caller} - ${msg}`;
+    } catch (error) {
+      return line; // return raw line if JSON.parse fails
+    }
+  });
+  res.locals.logs = parsed.join("\n");
+  return next();
 };
 
 k8sController.scaleReplicas = async (req, res, next) => {
