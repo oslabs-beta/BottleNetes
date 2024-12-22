@@ -123,7 +123,7 @@ const MainContainer = ({ username }) => {
       const bodyResourceUsageHistoricalCPU = {
         type: "cpu",
         timeEnd: Math.floor(Date.now() / 1000).toString(),
-        timeStart: (Math.floor(Date.now() / 1000) - 1200).toString(),
+        timeStart: (Math.floor(Date.now() / 1000) - 86400).toString(),
         timeStep: "60",
         level: "pod",
       };
@@ -131,7 +131,7 @@ const MainContainer = ({ username }) => {
       const bodyResourceUsageHistoricalMemory = {
         type: "memory",
         timeEnd: Math.floor(Date.now() / 1000).toString(),
-        timeStart: (Math.floor(Date.now() / 1000) - 1200).toString(),
+        timeStart: (Math.floor(Date.now() / 1000) - 86400).toString(),
         timeStep: "60",
         level: "pod",
       };
@@ -143,7 +143,7 @@ const MainContainer = ({ username }) => {
 
       const bodyLatencyAppRequestHistorical = {
         timeEnd: Math.floor(Date.now() / 1000).toString(),
-        timeStart: (Math.floor(Date.now() / 1000) - 1200).toString(),
+        timeStart: (Math.floor(Date.now() / 1000) - 86400).toString(),
         timeStep: "60",
         level: "pod",
       };
