@@ -13,7 +13,6 @@ import {
   Legend,
 } from "chart.js";
 
-
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -85,13 +84,13 @@ const Metrics = ({
     }
   }
 
-  if (!defaultView && clickedPod) {
+  if (!defaultView && clickedPod.podName) {
     // Find the clicked pod
     const clickedCpuPod = cpuUsageHistorical.resourceUsageHistorical.find(
-      (pod) => pod.name === clickedPod,
+      (pod) => pod.name === clickedPod.podName,
     );
     const clickedMemoryPod = memoryUsageHistorical.resourceUsageHistorical.find(
-      (pod) => pod.name === clickedPod,
+      (pod) => pod.name === clickedPod.podName,
     );
 
     // Clear existing arrays and push new data
@@ -197,7 +196,7 @@ const Metrics = ({
 
 Metrics.propTypes = {
   defaultView: PropTypes.bool,
-  clickedPod: PropTypes.string,
+  clickedPod: PropTypes.object,
   cpuUsageHistorical: PropTypes.object,
   memoryUsageHistorical: PropTypes.object,
 };

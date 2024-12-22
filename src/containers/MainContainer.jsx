@@ -10,9 +10,6 @@ import PodGrid from "../components/PodGrid";
 import RequestLimit from "../components/RequestLimit";
 
 const MainContainer = ({ username }) => {
-  // console.log("main container rendering");
-  const url = "http://localhost:3000/";
-
   // Determines if the graphs display node data or pod specific data
   const [defaultView, setDefaultView] = useState(true);
 
@@ -26,8 +23,11 @@ const MainContainer = ({ username }) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
   // state hooks for clicked pod and selected metric in PodGrid (will also be passed down to other components)
-  const [clickedPod, setClickedPod] = useState("");
+  const [clickedPod, setClickedPod] = useState({ podName: "", namespace: "" });
   const [selectedMetric, setSelectedMetric] = useState("cpu");
+
+  // state hooks for pod restarts in PodGrid
+  const [podRestartCount, setPodRestartCount] = useState(0);
 
   // State hooks for refresh control in MenuContainer
   const [manualRefreshCount, setManualRefreshCount] = useState(0);
@@ -72,17 +72,18 @@ const MainContainer = ({ username }) => {
   const resetView = () => {
     setDefaultView(true);
     // Reset to default view
-    setClickedPod("");
+    setClickedPod({ podName: "", namespace: "" });
     // Clear selected pod
     setSelectedMetric("cpu");
     // Reset metric selection
   };
 
   // for testing purposes, delete afterwards
-  useEffect(() => {
-    console.log("time window: ", queryTimeWindow);
-  }, [queryTimeWindow]);
+  // useEffect(() => {
+  //   console.log("time window: ", queryTimeWindow);
+  // }, [queryTimeWindow]);
 
+  const backendUrl = "http://localhost:3000/";
   //helper function
   const fetchData = async (method, endpoint, body = null) => {
     try {
@@ -91,7 +92,7 @@ const MainContainer = ({ username }) => {
         headers: { "Content-Type": "application/json" },
       };
       if (body) request.body = JSON.stringify(body);
-      const response = await fetch(url + endpoint, request);
+      const response = await fetch(backendUrl + endpoint, request);
 
       return await response.json();
     } catch (error) {
@@ -123,7 +124,7 @@ const MainContainer = ({ username }) => {
       const bodyResourceUsageHistoricalCPU = {
         type: "cpu",
         timeEnd: Math.floor(Date.now() / 1000).toString(),
-        timeStart: (Math.floor(Date.now() / 1000) - 1200).toString(),
+        timeStart: (Math.floor(Date.now() / 1000) - 86400).toString(),
         timeStep: "60",
         level: "pod",
       };
@@ -131,7 +132,7 @@ const MainContainer = ({ username }) => {
       const bodyResourceUsageHistoricalMemory = {
         type: "memory",
         timeEnd: Math.floor(Date.now() / 1000).toString(),
-        timeStart: (Math.floor(Date.now() / 1000) - 1200).toString(),
+        timeStart: (Math.floor(Date.now() / 1000) - 86400).toString(),
         timeStep: "60",
         level: "pod",
       };
@@ -143,7 +144,7 @@ const MainContainer = ({ username }) => {
 
       const bodyLatencyAppRequestHistorical = {
         timeEnd: Math.floor(Date.now() / 1000).toString(),
-        timeStart: (Math.floor(Date.now() / 1000) - 1200).toString(),
+        timeStart: (Math.floor(Date.now() / 1000) - 86400).toString(),
         timeStep: "60",
         level: "pod",
       };
@@ -232,7 +233,7 @@ const MainContainer = ({ username }) => {
     return () => {
       clearInterval(intervalID);
     };
-  }, [refreshFrequency, manualRefreshCount, queryTimeWindow]);
+  }, [refreshFrequency, manualRefreshCount, queryTimeWindow, podRestartCount]);
 
   // useEffect(() => {
   //   console.log("All data: ", allData);
@@ -344,6 +345,8 @@ const MainContainer = ({ username }) => {
                 setClickedPod={setClickedPod}
                 selectedMetric={selectedMetric}
                 setSelectedMetric={setSelectedMetric}
+                podRestartCount={podRestartCount}
+                setPodRestartCount={setPodRestartCount}
                 podStatuses={allData.podsStatuses}
                 cpuUsageOneValue={allData.cpuUsageOneValue}
                 memoryUsageOneValue={allData.memoryUsageOneValue}
