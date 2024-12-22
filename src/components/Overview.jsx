@@ -1,64 +1,30 @@
-/* eslint-disable react/prop-types */
+// /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import PropTypes from 'prop-types';
-import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import React, { useMemo } from "react";
 import "../Overview.css";
 
-const Overview = ({ podsStatuses, allNodes, isLoading }) => {
-  const [overview, setOverview] = useState({
-    clusterName: "Loading...",
-    nodes: 0,
-    pods: 0,
-    containers: 0,
-  });
-
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    try {
-      console.log("🏃💨 Fetching data to overview component");
-
-      if (!isLoading && podsStatuses?.allPodsStatus && allNodes?.allNodes) {
-        const podCount = podsStatuses.allPodsStatus.length;
-        const containerCount = podsStatuses.allPodsStatus.reduce(
-          (acc, pod) => acc + pod.containerCount,
-          0,
-        );
-        const clusterName =
-          allNodes.allNodes[0]?.clusterName || "Unknown Cluster Name";
-        const nodeCount = allNodes.allNodes.length;
-
-        setOverview({
-          clusterName,
-          nodes: nodeCount,
-          pods: podCount,
-          containers: containerCount,
-        });
-        console.log("✅ Data successfully loaded to overview component!");
-      }
-    } catch (err) {
-      console.error("😵 Error fetching metrics:", err);
-      setError(err.message || "An unknown error occurred.");
+const Overview = ({ podsStatuses, allNodes }) => {
+  const overview = useMemo(() => {
+    if (!podsStatuses?.allPodsStatus || !allNodes?.allNodes) {
+      return {
+        clusterName: "Not Connected",
+        nodes: 0,
+        pods: 0,
+        containers: 0,
+      };
     }
-  }, [isLoading, podsStatuses, allNodes]);
 
-  if (isLoading) {
-    return (
-      <div className="overview-container fade-in">
-        <p className="overview-message blinking p-[41px]">
-          ⏳ Loading Cluster Overview...
-        </p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="overview-container fade-in">
-        <p className="overview-error">❗❗ Error❗❗ : {error}</p>
-      </div>
-    );
-  }
+    return {
+      clusterName: allNodes.allNodes[0]?.clusterName || "Unknown Cluster",
+      nodes: allNodes.allNodes.length,
+      pods: podsStatuses.allPodsStatus.length,
+      containers: podsStatuses.allPodsStatus.reduce(
+        (acc, pod) => acc + pod.containerCount,
+        0,
+      ),
+    };
+  }, [podsStatuses, allNodes]);
 
   return (
     <div className="overview-container fade-in">
@@ -85,6 +51,11 @@ const Overview = ({ podsStatuses, allNodes, isLoading }) => {
       </div>
     </div>
   );
+};
+
+Overview.propTypes = {
+  podsStatuses: PropTypes.object,
+  allNodes: PropTypes.object,
 };
 
 export default Overview;

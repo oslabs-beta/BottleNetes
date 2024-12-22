@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { SECRET_KEY } from "../../utils/jwtUtils.js";
 import dotenv from "dotenv";
-import process from 'node:process';
+import process from "node:process";
 
 import Users from "../models/UserModel.js";
 import genToken from "../../utils/jwtUtils.js";
@@ -12,7 +12,7 @@ const cookieController = {};
 
 // Create the cookie with their id for their session when the user signed in
 cookieController.createCookie = async (req, res, next) => {
-  console.log("🍪 Running createCookie middleware...");
+  // console.log("🍪 Running createCookie middleware...");
 
   try {
     // If authenticated by OAuth then run this block
@@ -48,7 +48,7 @@ cookieController.createCookie = async (req, res, next) => {
         maxAge: 24 * 60 * 60 * 1000, // 1 day in ms
       });
 
-      console.log(`🍪 Filling up the cookie basket...`);
+      // console.log(`🍪 Filling up the cookie basket...`);
       res.locals.cookie = cookie;
       // console.log(res.locals.cookie.req.cookies.ssid);
       res.locals.id = foundUserID.dataValues.id;
@@ -72,7 +72,7 @@ cookieController.createCookie = async (req, res, next) => {
 
 // Verify the cookie with their id to make sure they are the correct signed in user
 cookieController.verifyCookie = async (req, res, next) => {
-  console.log(`🍪🤔 Running verifyCookie middleware...`);
+  // console.log(`🍪🤔 Running verifyCookie middleware...`);
 
   try {
     const token = await req.cookies.jwt;

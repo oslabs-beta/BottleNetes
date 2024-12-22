@@ -68,7 +68,7 @@ const redirectUri = process.env.GITHUB_REDIRECT_URI;
 // GitHub OAuth, redirect to the callback route
 app.get("/github", (_req, res) => {
   const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientID}&redirect_uri=${redirectUri}`;
-  console.log(redirectUri);
+  // console.log(redirectUri);
   return res.redirect(githubAuthUrl);
 });
 
@@ -95,7 +95,6 @@ app.use((err, _req, res, _next) => {
   };
   const errorObj = Object.assign({}, defaultErr, err);
   console.log(errorObj.log);
-
   return res.status(errorObj.status).json(errorObj.message);
 });
 

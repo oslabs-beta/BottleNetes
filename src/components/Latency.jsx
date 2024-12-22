@@ -93,11 +93,11 @@ const Latency = ({ defaultView, clickedPod, latencyAppRequestHistorical }) => {
     }
   }
 
-  if (!defaultView && clickedPod) {
+  if (!defaultView && clickedPod.podName) {
     // Find the clicked pod
     const clickedLatencyPod =
       latencyAppRequestHistorical.latencyAppRequestHistorical.find(
-        (pod) => pod.name === clickedPod,
+        (pod) => pod.name === clickedPod.podName,
       );
 
     // Clear existing arrays and push new data
@@ -213,7 +213,7 @@ const Latency = ({ defaultView, clickedPod, latencyAppRequestHistorical }) => {
     ],
   };
 
-  console.log("latency data:");
+  // console.log("latency data:");
 
   return (
     <div className="min-h-[400px] w-full rounded p-4">
@@ -224,7 +224,7 @@ const Latency = ({ defaultView, clickedPod, latencyAppRequestHistorical }) => {
 
 Latency.propTypes = {
   defaultView: PropTypes.bool,
-  clickedPod: PropTypes.string,
+  clickedPod: PropTypes.object,
   latencyAppRequestHistorical: PropTypes.object,
 };
 

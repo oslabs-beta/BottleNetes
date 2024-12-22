@@ -2,14 +2,14 @@
 import PropTypes from "prop-types";
 import { useState } from "react";
 
-const Pod = ({ pod, selectedMetric, onClick, isClicked }) => {
-  // console.log("pod", pod);
+const Pod = ({ podInfo, selectedMetric, onClick, isClicked }) => {
+  // console.log("podInfo", podInfo);
   const [isShowing, setIsShowing] = useState(false);
 
   const color = (value, minVal = 0, maxVal = 100) => {
     const normalizedValue = 1 - (value - minVal) / (maxVal - minVal);
     const r = 238 - Math.floor(normalizedValue * 204);
-    console.log("red value: ", r);
+    // console.log("red value: ", r);
     if (r) return `rgb(${r}, 197, 94)`;
     else
       return `#E0E0E0
@@ -18,23 +18,22 @@ const Pod = ({ pod, selectedMetric, onClick, isClicked }) => {
 
   switch (selectedMetric) {
     case "cpu":
-      pod.color = color(pod.cpuData);
+      podInfo.color = color(podInfo.cpuDataRelative);
       break;
     case "memory":
-      pod.color = color(pod.memoryData);
+      podInfo.color = color(podInfo.memoryDataRelative);
       break;
     case "latency": {
-      pod.color = color(pod.latencyData);
+      podInfo.color = color(podInfo.latencyData);
       break;
     }
     default: {
-      pod.color = color(pod.cpuData);
+      podInfo.color = color(podInfo.cpuDataRelative);
       break;
     }
   }
-  // console.log(pod.color);
-  console.log("cpu", pod.cpuData);
-  console.log("color", pod.color);
+  // console.log("cpu", podInfo.cpuData);
+  // console.log("color", podInfo.color);
 
   const buttonStyle =
     // "relative m-0.5 aspect-square rounded-xl border-blue-600 brightness-90 transition hover:border-[5px] hover:filter"
@@ -44,76 +43,102 @@ const Pod = ({ pod, selectedMetric, onClick, isClicked }) => {
     // "pointer-events-none absolute z-[99999] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white/80 p-2 text-sm text-slate-900/90 opacity-0 transition-opacity duration-700 ease-in-out group-hover:opacity-100 shadow-xl";
     `pointer-events-none absolute z-[99999] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white/80 text-slate-900/90 shadow-xl w-[300px] p-3 space-y-1 transition-opacity duration-700 ease-in-out ${isShowing ? "opacity-100" : "opacity-0"}`;
 
-  if (pod.readiness == true) {
+  if (podInfo.readiness == true) {
     return (
       <button
         className={buttonStyle}
         onMouseEnter={() => setIsShowing(true)}
         onMouseLeave={() => setIsShowing(false)}
-        onClick={onClick} // Add this handler
+        onClick={onClick}
         style={{
-          backgroundColor: pod.color,
+          backgroundColor: podInfo.color,
         }}
       >
         {isShowing && (
-          <div
-            id="pod-info"
-            // Added transition classes for fade in/out
-            className={hoverStyle}
-            // The group-hover:opacity-100 on the parent button is used to ensure smooth fade-in
-          >
+          <pod-info-popup id="pod-info" class={hoverStyle}>
             <p className="font-semibold">
-              Pod Name: <span className="font-normal">{pod.podName}</span>
+              Pod Name: <span className="font-normal">{podInfo.podName}</span>
             </p>
             <p className="font-semibold">
-              Pod Status: <span className="font-normal">{pod.status}</span>
+              Pod Status: <span className="font-normal">{podInfo.status}</span>
             </p>
             <p className="font-semibold">
-              Containers: <span className="font-normal">{pod.containers}</span>
+              Namespace:
+              <span className="font-normal">{podInfo.namespace}</span>
             </p>
             <p className="font-semibold">
-              Service: <span className="font-normal">{pod.service}</span>
+              Containers:
+              <span className="font-normal">{podInfo.containers}</span>
             </p>
             <p className="font-semibold">
-              Ready?:{" "}
+              Service: <span className="font-normal">{podInfo.service}</span>
+            </p>
+            <p className="font-semibold">
+              Ready:
               <span className="font-normal">
-                {pod.readiness ? "Yes" : "No"}
+                {podInfo.readiness ? "Yes" : "No"}
               </span>
             </p>
-          </div>
+            <p className="font-semibold">
+              CPU Usage (% of request):
+              <span className="font-normal">
+                {podInfo.cpuDataRelative
+                  ? podInfo.cpuDataRelative.toFixed(2) + "%"
+                  : "N/A"}
+              </span>
+            </p>
+            <p className="font-semibold">
+              RAM Usage (% of request):
+              <span className="font-normal">
+                {podInfo.memoryDataRelative
+                  ? podInfo.memoryDataRelative.toFixed(2) + "%"
+                  : "N/A"}
+              </span>
+            </p>
+            <p className="font-semibold">
+              CPU Usage (cpu cores):
+              <span className="font-normal">
+                {podInfo.cpuDataAbsolute
+                  ? podInfo.cpuDataAbsolute.toFixed(3)
+                  : "N/A"}
+              </span>
+            </p>
+            <p className="font-semibold">
+              RAM Usage (MB):
+              <span className="font-normal">
+                {podInfo.memoryDataAbsolute
+                  ? (podInfo.memoryDataAbsolute / 1024 / 1024).toFixed(2)
+                  : "N/A"}
+              </span>
+            </p>
+          </pod-info-popup>
         )}
       </button>
     );
-  } else if (pod.readiness == false) {
+  } else if (podInfo.readiness == false) {
     return (
       <button
         className="m-0.5 aspect-square rounded-xl border-blue-600 bg-[#db6451] transition hover:border-[5px] hover:filter"
         onMouseEnter={() => setIsShowing(true)}
         onMouseLeave={() => setIsShowing(false)}
       >
-        {isShowing && ( // Pop up appear on hover for every pod
-          <div id="pod-info">
-            <p>Pod Name: {pod.podName}</p>
-            <p>Pod Status: {pod.status}</p>
-            <p>Container in Pod: {pod.containers}</p>
-            <p>Service in Pod: {pod.service}</p>
-            <p>Active/Inactive: {pod.readiness}</p>
-          </div>
+        {isShowing && (
+          <pod-info-popup id="pod-info">
+            <p>Pod Name: {podInfo.podName}</p>
+            <p>Pod Status: {podInfo.status}</p>
+            <p>Container in Pod: {podInfo.containers}</p>
+            <p>Service in Pod: {podInfo.service}</p>
+            <p>Active/Inactive: {podInfo.readiness}</p>
+          </pod-info-popup>
         )}
       </button>
     );
   }
 };
-// return (
-//   <div>
-//     <p>Hi</p>
-//   </div>
-// );
-// };
 
 Pod.propTypes = {
   metric: PropTypes.string,
-  pod: PropTypes.object,
+  podInfo: PropTypes.object,
   fetchInfo: PropTypes.func,
   onClick: PropTypes.func,
   selectedMetric: PropTypes.string,
