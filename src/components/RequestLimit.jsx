@@ -171,7 +171,7 @@ const RequestLimit = ({
 
 RequestLimit.propTypes = {
   defaultView: PropTypes.bool,
-  clickedPod: PropTypes.string,
+  clickedPod: PropTypes.object,
   selectedMetric: PropTypes.string,
   requestLimits: PropTypes.object,
 };
