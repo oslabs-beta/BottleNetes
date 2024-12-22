@@ -1,7 +1,5 @@
 import * as k8s from "@kubernetes/client-node";
 
-// const namespace = "default";
-
 // object used to load Kubernetes configuration.
 const kubeConfigObj = new k8s.KubeConfig();
 
@@ -104,6 +102,7 @@ k8sController.formatLogs = async (req, res, next) => {
       const { ts, level, caller, msg } = jsonObj;
       return `${ts} [${(level || "").toUpperCase()}] ${caller} - ${msg}`;
     } catch (error) {
+      console.error(`😭 An error occurred in formatLogs middleware: ${error}`);
       return line; // return raw line if JSON.parse fails
     }
   });
@@ -113,25 +112,49 @@ k8sController.formatLogs = async (req, res, next) => {
 
 k8sController.scaleReplicas = async (req, res, next) => {
   console.log(`⚖ Running scaleReplicas middleware...`);
+  const { deployment, newReplicas } = req.body;
 
   try {
-    const { deploymentName, newReplicas } = req.body;
-    if (!deploymentName || !newReplicas) {
+    // See if there are any namespace in res.locals
+    let { namespace } = res.locals;
+
+    // If there are no namespace available, set namespace to 'default'
+    if (!namespace) namespace = 'default';
+
+    // If no deployment or replicas are provided, return to the error handler
+    if (!deployment || !newReplicas) {
       return next({
         log: "😰 Missing Deployment name and number of Replicas",
         status: 400,
         message: "Please provide Deployment name and number of Replicas",
       });
-    }
+    };
 
-    const scaled = await k8sAppsApiClient.readNamespacedDeployment(
-      deploymentName,
+    // Read the deployment in the current namespace
+    let scaled = await k8sAppsApiClient.readNamespacedDeployment(
+      deployment,
       namespace,
     );
     const result = scaled.body;
-    console.log(result);
+    // Replace the current replicas with newReplicas
     result.spec.replicas = newReplicas;
-    res.locals.newReplicas = result.spec.replicas;
+    // Replace the current deployment to the updated deployment
+    const newDeployment = await k8sAppsApiClient.replaceNamespacedDeployment(deployment, namespace, result);
+
+    // Read newDeployment to double-check the updated replicas
+    scaled = await k8sAppsApiClient.readNamespacedDeployment(newDeployment, namespace);
+    
+    // If the replicas does not match with newReplicas, return to the error handler
+    if (scaled.body.spec.replicas !== newReplicas) {
+      return next ({
+        log: `Failed to updated replicas. Current replicas: ${scaled.body.spec.replicas}, Desired replicas: ${newReplicas}`,
+        status: 500,
+        message: 'Unabled to update replicas. Please try again later.'
+      });
+    };
+
+    // Save the updated replicas to res.locals to respond to frontend
+    res.locals.updatedReplicas = scaled.body.spec.replicas;
     return next();
   } catch (error) {
     return next({
@@ -142,18 +165,18 @@ k8sController.scaleReplicas = async (req, res, next) => {
   }
 };
 
-// k8sController.adjustRequestLimit = async (req, res, next) => {
-//   console.log(`🪙 Running adjustRequestLimit middleware...`);
+k8sController.adjustRequestLimit = async (req, res, next) => {
+  console.log(`🪙 Running adjustRequestLimit middleware...`);
 
-// try {
+try {
 
-// } catch (error) {
-//   return next({
-//     log: `Error occurred in adjustRequestLimit middleware: ${error}`,
-//     status: 500,
-//     message: 'Unable to adjust your metrics...'
-//   });
-// };
-// };
+} catch (error) {
+  return next({
+    log: `Error occurred in adjustRequestLimit middleware: ${error}`,
+    status: 500,
+    message: 'Unable to adjust your metrics...'
+  });
+};
+};
 
 export default k8sController;

@@ -24,7 +24,10 @@ k8sRouter.post(
 );
 
 k8sRouter.post("/replicas", k8sController.scaleReplicas, (req, res) => {
-  return res.status(200).json(res.locals.newReplicas);
+  return res.status(200).json({
+    message: 'Successfully updated replicas',
+    data: res.locals.updatedReplicas,
+  });
 });
 
 export default k8sRouter;
