@@ -10,6 +10,8 @@ const PodGrid = ({
   setClickedPod,
   selectedMetric,
   setSelectedMetric,
+  podRestartCount,
+  setPodRestartCount,
   podStatuses,
   cpuUsageOneValue,
   memoryUsageOneValue,
@@ -41,6 +43,11 @@ const PodGrid = ({
       return;
     }
     try {
+      console.log("Sending pod data:", {
+        podName: clickedPod.podName,
+        namespace: clickedPod.namespace,
+      });
+      console.log("Attempting to restart pod:", clickedPod.podName);
       const response = await fetch("http://localhost:3000/k8s/restartPod", {
         method: "POST",
         headers: {
@@ -51,11 +58,14 @@ const PodGrid = ({
           namespace: clickedPod.namespace,
         }),
       });
-      if (!response.ok) throw new Error("Failed to restart pod");
-      alert("Pod restart initiated");
+      const data = await response.json();
+      if (data.status === "success") {
+        setPodRestartCount(podRestartCount + 1);
+      }
+      console.log("Response from server:", data);
     } catch (error) {
       console.error("Error restarting pod:", error);
-      alert("Failed to restart pod");
+      alert(`Failed to restart pod: ${error.message}`);
     }
   };
 
@@ -102,6 +112,7 @@ const PodGrid = ({
     buttonArray.push(
       <Pod
         podInfo={podObj}
+        key={podObj.podName}
         type="button"
         selectedMetric={selectedMetric}
         isClicked={
@@ -132,7 +143,7 @@ const PodGrid = ({
       <control-buttons-row class="mb-4 flex space-x-2 p-4">
         <button
           onClick={handleRestartPod}
-          className="rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          className="rounded-lg bg-slate-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700"
         >
           Restart Pod
         </button>
@@ -140,13 +151,13 @@ const PodGrid = ({
           className="rounded-lg bg-slate-600 px-3 py-2 text-sm font-medium text-white hover:bg-slate-700"
           disabled
         >
-          Scale
+          Placeholder
         </button>
         <button
           className="rounded-lg bg-slate-600 px-3 py-2 text-sm font-medium text-white hover:bg-slate-700"
           disabled
         >
-          Configure
+          Placeholder
         </button>
       </control-buttons-row>
 

@@ -32,7 +32,7 @@ const MenuContainer = ({
               onClick={() => setManualRefreshCount(manualRefreshCount + 1)}
               className="w-full rounded-lg bg-blue-600 px-4 py-2 text-sm hover:bg-blue-700"
             >
-              Manual Refresh
+              Force Refresh
             </button>
           </div>
 
@@ -42,7 +42,7 @@ const MenuContainer = ({
               onClick={() => setShowRefreshPopup(true)}
               className="flex cursor-pointer items-center justify-between rounded-lg bg-slate-800 px-4 py-2 hover:bg-slate-700"
             >
-              <span className="text-sm">Refresh Rate:</span>
+              <span className="text-sm">Refresh Every:</span>
               <span className="text-blue-400">{refreshFrequency / 1000}s</span>
             </div>
           </div>

@@ -9,7 +9,9 @@ k8sRouter.post(
   k8sController.checkClickedPod,
   k8sController.softDeletePod,
   (req, res) => {
-    return res.status(200).json("pod deleted, restarting...");
+    return res.status(200).json({
+      status: "success",
+    });
   },
 );
 
