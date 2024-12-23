@@ -245,7 +245,7 @@ const MainContainer = ({ username }) => {
 
   return (
     <div>
-      <header className="header sticky top-0 z-50 flex flex-col items-center justify-between gap-4 border-b-2 border-slate-600 bg-slate-950 py-4 sm:flex-row">
+      <header className="header sticky top-0 z-50 flex flex-col items-center justify-between gap-4 border-b-2 bg-gradient-to-r from-[#0f172a] to-[#1e40af] py-4 sm:flex-row">
         <div id="leftside" className="flex items-center">
           <div className="flex items-center gap-0 px-5">
             <button
