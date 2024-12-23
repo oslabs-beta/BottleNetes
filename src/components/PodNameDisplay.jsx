@@ -25,7 +25,7 @@ const PodNameDisplay = ({ clickedPod }) => {
           className="overview-value dynamic-text text-slate-100"
           style={{ color: "#e2e8f0" }}
         >
-          {clickedPod.podName ? clickedPod.podName : "Displaying Node Averages"}
+          {clickedPod.podName ? clickedPod.podName : "Displaying Node Average Metrics"}
         </p>
         <h2
           className="dynamic-text text-slate-100"

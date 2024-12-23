@@ -18,7 +18,7 @@ signinRouter.post(
   },
 );
 
-signinRouter.get("/checkSignin", (_req, res) => {
+signinRouter.get("/checkSignin", cookieController.verifyCookie, (_req, res) => {
   return res.status(200).send({
     signedIn: res.locals.signedIn,
     user: res.locals.decoded,

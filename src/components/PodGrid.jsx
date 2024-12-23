@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import PropTypes from "prop-types";
 import { useState } from "react";
 import Pod from "./Pod";
@@ -178,90 +177,94 @@ const PodGrid = ({
     "grid gap-[2px] mr-2 mt-1 grid-cols-5 overflow-visible md:grid-cols-7 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 3xl:grid-cols-9 relative z-20";
   return (
     <div className="flex h-full flex-col overflow-visible">
-      <control-buttons-row class="mb-4 flex space-x-2 p-4">
+      <div id="control-buttons-row" className="mb-4 flex space-x-2 p-4">
         <button
           onClick={handleRestartPod}
-          className="rounded-lg bg-slate-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700"
+          className="rounded-lg bg-slate-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
         >
           Restart Pod
         </button>
 
         <button
           onClick={handleViewPodLog}
-          className="rounded-lg bg-slate-600 px-3 py-2 text-sm font-medium text-white hover:bg-slate-700"
+          className="rounded-lg bg-slate-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-slate-700"
         >
           View Pod Log
         </button>
 
         <button
-          className="rounded-lg bg-slate-600 px-3 py-2 text-sm font-medium text-white hover:bg-slate-700"
+          className="rounded-lg bg-slate-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-slate-700"
           disabled
         >
           Placeholder
         </button>
-      </control-buttons-row>
+      </div>
 
       {/* Restart Confirmation Popup */}
-      {showRestartPopup && (
-        <pod-restart-confirmation-popup class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-slate w-80 rounded-lg p-6">
-            <p>
-              You will be restarting pod <strong>{clickedPod.podName}</strong>.
-              <br />
-              This pod will be deleted and another pod replica will be
-              automatically created.
-            </p>
-            <div className="mt-4 flex justify-center space-x-2">
-              <button
-                onClick={proceedRestartPod}
-                className="rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
-              >
-                Proceed
-              </button>
-              <button
-                onClick={cancelRestartPod}
-                className="rounded bg-blue-300 px-4 py-2 hover:bg-gray-400"
-              >
-                Cancel
-              </button>
-            </div>
+      <div
+        id="pod-restart-confirmation-popup"
+        className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 transition duration-300 ${showRestartPopup ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
+      >
+        <div className="w-80 rounded-lg bg-slate-200 p-6 text-slate-800">
+          <p>
+            You will be restarting pod <strong>{clickedPod.podName}</strong>.
+          </p>
+          <br />
+          <p>
+            This pod will be deleted and another pod replica will be
+            automatically created.
+          </p>
+          <div className="mt-4 flex justify-evenly space-x-2">
+            <button
+              onClick={proceedRestartPod}
+              className="rounded-lg bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+            >
+              Proceed
+            </button>
+            <button
+              onClick={cancelRestartPod}
+              className="rounded-lg bg-slate-600 px-4 py-2 text-slate-100 hover:bg-slate-700"
+            >
+              Cancel
+            </button>
           </div>
-        </pod-restart-confirmation-popup>
-      )}
+        </div>
+      </div>
 
       {/* Pod Log Popup */}
-      {showPodLog && (
-        <pod-log-popup class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
-          <div className="bg-slate relative h-[80vh] w-[80vw] overflow-auto rounded-lg p-6">
-            <button
-              onClick={() => setShowPodLog(false)}
-              className="right-45 fixed top-20 text-red-500 hover:text-red-700"
-            >
-              Close Log
-            </button>
-            <pre className="text-black-100 whitespace-pre-wrap text-xs">
-              {podLog}
-            </pre>
-          </div>
-        </pod-log-popup>
-      )}
+      <div
+        id="pod-log-popup"
+        className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 transition-opacity duration-300 ${showPodLog ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
+      >
+        <div className="relative h-[80vh] w-[80vw] overflow-auto rounded-lg bg-slate-200 p-6">
+          <pre className="whitespace-pre-wrap text-xs text-slate-900">
+            {podLog}
+          </pre>
+          <button
+            onClick={() => setShowPodLog(false)}
+            className="fixed top-20 rounded-lg bg-red-500 px-4 py-2 text-slate-200 hover:bg-red-700 hover:text-slate-300"
+          >
+            Close Log
+          </button>
+        </div>
+      </div>
 
       {/* Bottom Container */}
       <div className="flex flex-1">
         {/* Left Column - Selection Buttons */}
-        <selection-buttons-column class="flex w-1/4 min-w-[207px] max-w-[250px] flex-col justify-start gap-4 p-4">
-          <time-window-contorl class="relative mb-4 flex items-center">
+        <div id='selection-buttons-column' className="flex w-1/4 min-w-[207px] max-w-[250px] flex-col justify-start gap-4 p-4">
+          <div id='time-window-control' className="relative mb-4 flex items-center">
             {/* button to open time window popup and reset time window of the query  */}
             <button
               onClick={() => setShowTimeWindow(true)}
-              className="rounded-2xl px-4 py-2 text-lg font-semibold text-slate-500 hover:bg-slate-200"
+              className="rounded-2xl px-4 py-2 text-lg font-semibold text-slate-500 transition hover:bg-slate-200"
             >
               Time Window: {queryTimeWindow}
             </button>
 
-            <time-window-tooltip-icon class="group relative ml-2 cursor-help rounded-full bg-slate-300 px-2 py-0.5 text-sm font-bold text-slate-600">
+            <div id='time-window-tooltip-icon' className="group relative ml-2 cursor-help rounded-full bg-slate-300 px-2 py-0.5 text-sm font-bold text-slate-600">
               ?
-              <time-window-tooltip-pop-up class="pointer-events-none absolute left-1/2 top-0 z-[99999] mt-[-120px] w-64 -translate-x-1/2 rounded-lg bg-white/80 p-4 text-xs text-slate-900/90 opacity-0 shadow-xl transition-opacity duration-300 group-hover:opacity-100">
+              <div id='time-window-tooltip-pop-up' className="pointer-events-none absolute left-1/2 top-0 z-[99999] mt-[-120px] w-64 -translate-x-1/2 rounded-lg bg-slate-200/95 p-4 text-xs text-slate-900/90 opacity-0 shadow-xl transition-opacity duration-300 group-hover:opacity-100">
                 <p>
                   Select a time window that best suits your monitoring needs:
                 </p>
@@ -274,56 +277,57 @@ const PodGrid = ({
                     Long (e.g., 30m, 1h): Statistical average of pod performance
                   </li>
                 </ul>
-              </time-window-tooltip-pop-up>
-            </time-window-tooltip-icon>
-          </time-window-contorl>
+              </div>
+            </div>
+          </div>
 
           {/* Time Window Popup */}
-          {showTimeWindow && (
-            <time-window-configuration-pop-up class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-              <div className="rounded-lg bg-slate-800 p-6">
-                <form
-                  onSubmit={handleTimeWindowSubmit}
-                  className="flex flex-col gap-4"
-                >
-                  <div className="flex gap-2">
-                    <input
-                      type="number"
-                      min="1"
-                      value={timeInput}
-                      onChange={(e) => setTimeInput(e.target.value)}
-                      className="w-20 rounded border bg-slate-700 p-2 text-white"
-                      placeholder="Value"
-                    />
-                    <select
-                      value={timeUnit}
-                      onChange={(e) => setTimeUnit(e.target.value)}
-                      className="rounded border bg-slate-700 p-2 text-white"
-                    >
-                      <option value="s">Seconds</option>
-                      <option value="m">Minutes</option>
-                      <option value="h">Hours</option>
-                    </select>
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      type="submit"
-                      className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-                    >
-                      Apply
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setShowTimeWindow(false)}
-                      className="rounded bg-slate-600 px-4 py-2 text-white hover:bg-slate-700"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </time-window-configuration-pop-up>
-          )}
+          <div
+            id="time-window-configuration-pop-up"
+            className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 transition-opacity duration-300 ${showTimeWindow ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
+          >
+            <div className="rounded-lg bg-slate-200 p-6">
+              <form
+                onSubmit={handleTimeWindowSubmit}
+                className="flex flex-col gap-4"
+              >
+                <div className="flex gap-2">
+                  <input
+                    type="number"
+                    min="1"
+                    value={timeInput}
+                    onChange={(e) => setTimeInput(e.target.value)}
+                    className="w-20 rounded border bg-slate-300 p-2 text-slate-800"
+                    placeholder="Value"
+                  />
+                  <select
+                    value={timeUnit}
+                    onChange={(e) => setTimeUnit(e.target.value)}
+                    className="rounded border bg-slate-300 p-2 text-slate-800"
+                  >
+                    <option value="s">Seconds</option>
+                    <option value="m">Minutes</option>
+                    <option value="h">Hours</option>
+                  </select>
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    type="submit"
+                    className="rounded bg-blue-600 px-4 py-2 text-slate-100 hover:bg-blue-700"
+                  >
+                    Apply
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setShowTimeWindow(false)}
+                    className="rounded bg-slate-600 px-4 py-2 text-slate-100 hover:bg-slate-700"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
 
           <button
             onClick={() => setSelectedMetric("cpu")}
@@ -362,14 +366,14 @@ const PodGrid = ({
           >
             Reset
           </button>
-        </selection-buttons-column>
+        </div>
 
         {/* Right Column - Pod Heat Map */}
-        <pod-heat-map class="relative z-10 w-3/4 overflow-visible p-4">
+        <div id='pod-heat-map' className="relative z-10 w-3/4 overflow-visible p-4">
           <div id="pod-grid" className={gridStyle}>
             {buttonArray}
           </div>
-        </pod-heat-map>
+        </div>
       </div>
     </div>
   );
