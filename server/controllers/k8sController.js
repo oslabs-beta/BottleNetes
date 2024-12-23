@@ -88,7 +88,7 @@ k8sController.fetchPodLogs = async (req, res, next) => {
   }
 };
 
-k8sController.formatLogs = async (req, res, next) => {
+k8sController.formatPodLogs = async (req, res, next) => {
   // sample log json:
   // {
   //   "level": "warn",

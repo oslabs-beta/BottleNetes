@@ -17,7 +17,7 @@ k8sRouter.post(
   "/viewPodLogs",
   k8sController.checkClickedPod,
   k8sController.fetchPodLogs,
-  k8sController.formatLogs,
+  k8sController.formatPodLogs,
   (req, res) => {
     return res.status(200).json({ logs: res.locals.logs });
   },
