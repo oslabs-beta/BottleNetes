@@ -50,7 +50,11 @@ const PodGrid = ({
   };
 
   const handleViewPodLog = async () => {
-    if (!clickedPod.podName || !clickedPod.namespace) {
+    if (
+      !clickedPod.podName ||
+      !clickedPod.namespace ||
+      !clickedPod.containers
+    ) {
       alert("Please select a pod first");
       return;
     }
@@ -64,6 +68,7 @@ const PodGrid = ({
         body: JSON.stringify({
           podName: clickedPod.podName,
           namespace: clickedPod.namespace,
+          containers: clickedPod.containers,
         }),
       });
       const podLogs = await response.json();
@@ -92,7 +97,7 @@ const PodGrid = ({
       const data = await response.json();
       if (data.status === "success") {
         setPodRestartCount(podRestartCount + 1);
-        setClickedPod({ podName: "", namespace: "" });
+        setClickedPod({ podName: "", namespace: "", containers: [] });
       }
       // console.log("Response from server:", data);
     } catch (error) {
@@ -101,10 +106,6 @@ const PodGrid = ({
     } finally {
       setShowRestartPopup(false);
     }
-  };
-
-  const cancelRestartPod = () => {
-    setShowRestartPopup(false);
   };
 
   if (!podStatuses.allPodsStatus) {
@@ -155,12 +156,14 @@ const PodGrid = ({
         selectedMetric={selectedMetric}
         isClicked={
           clickedPod.podName === podObj.podName &&
-          clickedPod.namespace === podObj.namespace
+          clickedPod.namespace === podObj.namespace &&
+          clickedPod.containers === podObj.containers
         }
         onClick={() => {
           setClickedPod({
             podName: podObj.podName,
             namespace: podObj.namespace,
+            containers: podObj.containers,
           });
           setDefaultView(false);
         }}
@@ -170,7 +173,7 @@ const PodGrid = ({
 
   const resetView = () => {
     setDefaultView(true);
-    setClickedPod({ podName: "", namespace: "" });
+    setClickedPod({ podName: "", namespace: "", containers: [] });
     setSelectedMetric("cpu");
   };
 
@@ -208,8 +211,8 @@ const PodGrid = ({
             <p>
               You will be restarting pod <strong>{clickedPod.podName}</strong>.
               <br />
-              This pod will be deleted and another pod replica will be
-              automatically created.
+              This pod will be deleted, after that another replica of this pod
+              will be automatically created.
             </p>
             <div className="mt-4 flex justify-center space-x-2">
               <button
@@ -219,7 +222,7 @@ const PodGrid = ({
                 Proceed
               </button>
               <button
-                onClick={cancelRestartPod}
+                onClick={() => setShowRestartPopup(false)}
                 className="rounded bg-blue-300 px-4 py-2 hover:bg-gray-400"
               >
                 Cancel

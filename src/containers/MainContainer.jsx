@@ -23,7 +23,11 @@ const MainContainer = ({ username }) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
   // state hooks for clicked pod and selected metric in PodGrid (will also be passed down to other components)
-  const [clickedPod, setClickedPod] = useState({ podName: "", namespace: "" });
+  const [clickedPod, setClickedPod] = useState({
+    podName: "",
+    namespace: "",
+    containers: [],
+  });
   const [selectedMetric, setSelectedMetric] = useState("cpu");
 
   // state hooks for pod restarts in PodGrid
@@ -72,7 +76,7 @@ const MainContainer = ({ username }) => {
   const resetView = () => {
     setDefaultView(true);
     // Reset to default view
-    setClickedPod({ podName: "", namespace: "" });
+    setClickedPod({ podName: "", namespace: "", containers: [] });
     // Clear selected pod
     setSelectedMetric("cpu");
     // Reset metric selection

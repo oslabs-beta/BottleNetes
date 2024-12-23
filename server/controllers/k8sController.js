@@ -20,16 +20,17 @@ const k8sController = {};
 
 k8sController.checkClickedPod = async (req, res, next) => {
   try {
-    const { podName, namespace } = req.body;
-    if (!podName || !namespace) {
+    const { podName, namespace, containers } = req.body;
+    if (!podName || !namespace || !containers) {
       return next({
-        log: "😰 Missing Pod name and Namespace",
+        log: "😰 Missing Pod name, Namespace or Container info",
         status: 400,
-        message: "Please provide Pod name and Namespace",
+        message: "Please provide Pod name, Namespace and Container info",
       });
     }
     res.locals.podName = podName;
     res.locals.namespace = namespace;
+    res.locals.containers = containers;
     return next();
   } catch (error) {
     return next({
@@ -47,6 +48,7 @@ k8sController.softDeletePod = async (req, res, next) => {
     await k8sCoreApiClient.deleteNamespacedPod(
       podName.trim(),
       namespace.trim(),
+      undefined,
     );
     return next();
   } catch (err) {
@@ -63,7 +65,7 @@ k8sController.softDeletePod = async (req, res, next) => {
 };
 
 k8sController.fetchPodLogs = async (req, res, next) => {
-  const { podName, namespace } = res.locals;
+  const { podName, namespace, containers } = res.locals;
 
   try {
     console.log("Fetching logs for", podName, namespace);
@@ -71,6 +73,7 @@ k8sController.fetchPodLogs = async (req, res, next) => {
     const apiResponse = await k8sCoreApiClient.readNamespacedPodLog(
       podName.trim(),
       namespace.trim(),
+      containers[0],
     );
     // console.log("Logs fetched:", logs.body);
     res.locals.rawLogs = apiResponse.body;
