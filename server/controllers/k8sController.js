@@ -62,6 +62,7 @@ k8sController.softDeletePod = async (_req, res, next) => {
       namespace.trim(),
       undefined,
     );
+    console.log(`Pod '${podName}' in '${namespace}' namespace is deleted.`);
     return next();
   } catch (err) {
     console.error("Full pod deletion error:", err);
@@ -120,8 +121,9 @@ k8sController.formatLogs = async (_req, res, next) => {
       const jsonObj = JSON.parse(line);
       const { ts, level, caller, msg } = jsonObj;
       return `${ts} [${(level || "").toUpperCase()}] ${caller} - ${msg}`;
+      // eslint-disable-next-line no-unused-vars
     } catch (error) {
-      console.error(`😭 An error occurred in formatLogs middleware: ${error}`);
+      // console.error(`😭 An error occurred in formatLogs middleware: ${error}`); // too many console erros in terminal
       return line; // return raw line if JSON.parse fails
     }
   });

@@ -91,10 +91,12 @@ const PodGrid = ({
         body: JSON.stringify({
           podName: clickedPod.podName,
           namespace: clickedPod.namespace,
+          containers: clickedPod.containers,
         }),
       });
       const data = await response.json();
       if (data.status === "success") {
+        // alert("Pod restarted successfully");
         setPodRestartCount(podRestartCount + 1);
         setClickedPod({ podName: "", namespace: "", containers: [] });
       }
@@ -211,10 +213,15 @@ const PodGrid = ({
         >
           <div className="w-80 rounded-lg bg-slate-200 p-6 text-slate-800">
             <p>
-              You will be restarting pod <strong>{clickedPod.podName}</strong>.
+              You will be restarting pod <strong>{clickedPod.podName}</strong>{" "}
+              in namespace <strong>{clickedPod.namespace}</strong>.
               <br />
-              This pod will be deleted, after that another replica of this pod
+              This pod will be deleted, after that, another replica of this pod
               will be automatically created.
+              <br />
+              The process may take a few seconds to one minute.
+              <br />
+              Are you sure you want to proceed?
             </p>
             <div className="mt-4 flex justify-center space-x-2">
               <button
