@@ -17,15 +17,27 @@ const k8sAppsApiClient = kubeConfigObj.makeApiClient(k8s.AppsV1Api);
 const k8sController = {};
 
 k8sController.checkClickedPod = async (req, res, next) => {
+  console.log(`🤖 Running checkClickedPod middleware...`);
+  const { podName } = req.body;
+  let { namespace } = req.body;
+
   try {
-    const { podName, namespace } = req.body;
-    if (!podName || !namespace) {
+    if (!podName) {
       return next({
-        log: "😰 Missing Pod name and Namespace",
+        log: "😰 Missing Pod name",
         status: 400,
-        message: "Please provide Pod name and Namespace",
+        message: "Please provide Pod name",
       });
     }
+
+    // If no namespace provided, namespace will be assign to 'default'
+    if (!namespace) {
+      namespace = "default";
+      console.log(
+        `Namespace is not provided. '${namespace}' namespace will be used.`,
+      );
+    }
+
     res.locals.podName = podName;
     res.locals.namespace = namespace;
     return next();
@@ -38,7 +50,8 @@ k8sController.checkClickedPod = async (req, res, next) => {
   }
 };
 
-k8sController.softDeletePod = async (req, res, next) => {
+k8sController.softDeletePod = async (_req, res, next) => {
+  console.log(`🤖 Running softDeletePod middleware...`);
   const { podName, namespace } = res.locals;
 
   try {
@@ -60,7 +73,8 @@ k8sController.softDeletePod = async (req, res, next) => {
   }
 };
 
-k8sController.fetchPodLogs = async (req, res, next) => {
+k8sController.fetchPodLogs = async (_req, res, next) => {
+  console.log(`🤖 Running fetchPodLogs middleware...`);
   const { podName, namespace } = res.locals;
 
   try {
@@ -86,7 +100,7 @@ k8sController.fetchPodLogs = async (req, res, next) => {
   }
 };
 
-k8sController.formatLogs = async (req, res, next) => {
+k8sController.formatLogs = async (_req, res, next) => {
   // sample log json:
   // {
   //   "level": "warn",
@@ -94,6 +108,7 @@ k8sController.formatLogs = async (req, res, next) => {
   //   "caller": "embed/config.go:687",
   //   "msg": "Running http and grpc server on single port. This is not recommended for production."
   // }
+  console.log(`🤖 Running formatLogs middleware...`);
   const { rawLogs } = res.locals;
   const lines = rawLogs.split("\n");
   const parsed = lines.map((line) => {
@@ -110,51 +125,53 @@ k8sController.formatLogs = async (req, res, next) => {
   return next();
 };
 
-k8sController.scaleReplicas = async (req, res, next) => {
-  console.log(`⚖ Running scaleReplicas middleware...`);
-  const { deployment, newReplicas } = req.body;
+k8sController.getDeployment = async (_req, res, next) => {
+  console.log(`🤖 Running getDeployment middleware...`);
+  const { podName, namespace } = res.locals;
 
   try {
-    // See if there are any namespace in res.locals
-    let { namespace } = res.locals;
+    // List all Deployment in all Namespace
+    const data = await k8sAppsApiClient.listNamespacedDeployment(namespace);
 
-    // If there are no namespace available, set namespace to 'default'
-    if (!namespace) namespace = 'default';
-
-    // If no deployment or replicas are provided, return to the error handler
-    if (!deployment || !newReplicas) {
+    if (!data) {
       return next({
-        log: "😰 Missing Deployment name and number of Replicas",
+        log: `No deployment in '${namespace}' namespace`,
         status: 400,
-        message: "Please provide Deployment name and number of Replicas",
+        message: "Unable to return any deployment from provided namespace.",
       });
-    };
+    }
+    // Extract deployment array
+    const deployments = data.body.items;
 
+    // Filter for the corressponding deployment
+    const deployment = deployments.filter((obj) => {
+      const name = obj.metadata.name;
+      return podName.includes(name);
+    });
+
+    res.locals.deployment = deployment[0].metadata.name;
+    return next();
+  } catch (error) {
+    return next({
+      log: `😭 Error occurred in getDeployment middleware: ${error}`,
+      status: 500,
+      message: "Unable to retrieve deployment contain this pod.",
+    });
+  }
+};
+
+k8sController.readDeployment = async (_req, res, next) => {
+  console.log(`🤓 Running readDeployment middleware...`);
+  const { deployment, namespace } = res.locals;
+
+  try {
     // Read the deployment in the current namespace
-    let scaled = await k8sAppsApiClient.readNamespacedDeployment(
+    const scaled = await k8sAppsApiClient.readNamespacedDeployment(
       deployment,
       namespace,
     );
-    const result = scaled.body;
-    // Replace the current replicas with newReplicas
-    result.spec.replicas = newReplicas;
-    // Replace the current deployment to the updated deployment
-    const newDeployment = await k8sAppsApiClient.replaceNamespacedDeployment(deployment, namespace, result);
 
-    // Read newDeployment to double-check the updated replicas
-    scaled = await k8sAppsApiClient.readNamespacedDeployment(newDeployment, namespace);
-    
-    // If the replicas does not match with newReplicas, return to the error handler
-    if (scaled.body.spec.replicas !== newReplicas) {
-      return next ({
-        log: `Failed to updated replicas. Current replicas: ${scaled.body.spec.replicas}, Desired replicas: ${newReplicas}`,
-        status: 500,
-        message: 'Unabled to update replicas. Please try again later.'
-      });
-    };
-
-    // Save the updated replicas to res.locals to respond to frontend
-    res.locals.updatedReplicas = scaled.body.spec.replicas;
+    res.locals.body = scaled.body;
     return next();
   } catch (error) {
     return next({
@@ -165,18 +182,115 @@ k8sController.scaleReplicas = async (req, res, next) => {
   }
 };
 
+k8sController.scaleReplicas = async (req, res, next) => {
+  console.log("⚖️ Running scaleReplicas middleware...");
+  const { body, namespace, deployment } = res.locals;
+  const { newReplicas } = req.body;
+
+  try {
+    // Replace the current replicas with newReplicas
+    body.spec.replicas = newReplicas;
+    // Replace the current deployment to the updated deployment
+    await k8sAppsApiClient.replaceNamespacedDeployment(
+      deployment,
+      namespace,
+      body,
+    );
+
+    // Read newDeployment to double-check the updated replicas
+    const scaled = await k8sAppsApiClient.readNamespacedDeployment(
+      deployment,
+      namespace,
+    );
+
+    // If the replicas does not match with newReplicas, return to the error handler
+    if (scaled.body.spec.replicas !== newReplicas) {
+      return next({
+        log: `Failed to updated replicas. Current replicas: ${scaled.body.spec.replicas}, Desired replicas: ${newReplicas}`,
+        status: 500,
+        message: "Unabled to update replicas. Please try again later.",
+      });
+    }
+
+    // Save the updated replicas to res.locals to respond to frontend
+    res.locals.updatedReplicas = scaled.body.spec.replicas;
+    console.log(`Successfully updated replicas for '${scaled.body.metadata.name}' Deployment.`);
+    return next();
+  } catch (error) {
+    return next({
+      log: `😨 Error occurred in scaleReplicas middleware: ${error}`,
+      status: 500,
+      message: "Unable to update your replicas due to an error",
+    });
+  }
+};
+
 k8sController.adjustRequestLimit = async (req, res, next) => {
   console.log(`🪙 Running adjustRequestLimit middleware...`);
+  const { body, deployment, namespace } = res.locals;
+  const { newRequests, newLimits } = req.body;
+  if (!newRequests || !newLimits) {
+    return next({
+      log: "🤯 New Metrics are not provided",
+      status: 400,
+      message: "Please provide new metrics for adjustments",
+    });
+  }
 
-try {
+  try {
+    // Drill to the container level
+    const container = body.spec.template.spec.containers[0];
+    // Define the new resources and limits metrics
+    const newResources = {
+      ...container.resources,
+      limits: newLimits,
+      request: newRequests,
+    };
 
-} catch (error) {
-  return next({
-    log: `Error occurred in adjustRequestLimit middleware: ${error}`,
-    status: 500,
-    message: 'Unable to adjust your metrics...'
-  });
-};
+    // Replace old resources with new resources
+    container.resources = newResources;
+    // console.log(body);
+    // Replace current deployment with the updated deployment
+    await k8sAppsApiClient.replaceNamespacedDeployment(
+      deployment,
+      namespace,
+      body,
+    );
+
+    // Read the newly updated deployment to make sure the resources are updated
+    const scaled = await k8sAppsApiClient.readNamespacedDeployment(
+      deployment,
+      namespace,
+    );
+
+    // Drill to the container level again
+    const newContainer = scaled.body.spec.template.spec.containers[0];
+
+    // If the new metrics are different, return to the error handler
+    if (
+      newContainer.resources.limits.cpu !== newLimits.cpu ||
+      newContainer.resources.requests.cpu !== newRequests.cpu ||
+      newContainer.resources.limits.memory !== newLimits.memory ||
+      newContainer.resources.requests.memory !== newRequests.memory
+    ) {
+      return next({
+        log: `🤯 Failed to updated Resources and Limits `,
+        status: 400,
+        message: "Unable to update your Resouces and Limits due to an error",
+      });
+    }
+
+    res.locals.newLimits = newContainer.resources.limits;
+    res.locals.newRequests = newContainer.resources.requests;
+    console.log(`Successfully updated Resouces and Limits in '${newContainer.name}' Container.`);
+    return next();
+  } catch (error) {
+    return next({
+      log: `🤯 Error occurred in adjustRequestLimit middleware: ${error}`,
+      status: 500,
+      message: "Unable to adjust your metrics...",
+    });
+  }
 };
 
 export default k8sController;
