@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import PropTypes from "prop-types";
 import { Line } from "react-chartjs-2";
 import {
@@ -139,13 +138,21 @@ const Metrics = ({
     },
     elements: {
       point: {
-        radius: 0,
+        radius: 1,
         hoverRadius: 6,
+        pointStyle: "circle",
+        pointBorderWidth: 5,
       },
     },
     plugins: {
       legend: {
         position: "bottom",
+        title: {
+          display: true,
+          text: "CPU and Memory Usage",
+          color: "#1e293b",
+          padding: 5,
+        },
         labels: {
           color: "#1e293b",
           font: { size: 15 },
@@ -153,15 +160,17 @@ const Metrics = ({
       },
       tooltip: {
         padding: 16,
+        boxPadding: 10,
         bodyFont: {
-          size: 16,
-          color: "#cbd5e1",
+          size: 14,
         },
         titleFont: {
-          size: 16,
-          color: "#cbd5e1",
+          size: 20,
+          weight: "bold",
         },
-        backgroundColor: "#020617",
+        bodyColor: "#1f1f1f",
+        titleColor: "#404040",
+        backgroundColor: "#e9e9e9",
         caretSize: 10,
       },
     },
@@ -189,7 +198,7 @@ const Metrics = ({
 
   return (
     <div className="min-h-[400px] w-full rounded p-4">
-      <Line options={options} data={data} />
+      <Line options={options} data={data}/>
     </div>
   );
 };
