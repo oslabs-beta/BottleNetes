@@ -1,7 +1,8 @@
 // /* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
+
 import PropTypes from "prop-types";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
+
 import "../Overview.css";
 
 const Overview = ({ podsStatuses, allNodes }) => {

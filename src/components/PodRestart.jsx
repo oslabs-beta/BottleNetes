@@ -20,9 +20,11 @@ const PodRestart = ({
   };
 
   const proceedRestartPod = async () => {
+    console.log(`Sending request to '${backendUrl}k8s/restartPod'...`);
+
     try {
       setRestartStatus("loading");
-      const response = await fetch(backendUrl + "/k8s/restartPod", {
+      const response = await fetch(backendUrl + "k8s/restartPod", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -33,7 +35,9 @@ const PodRestart = ({
           containers: clickedPod.containers,
         }),
       });
+
       const data = await response.json();
+
       if (data.status === "success") {
         setPodRestartCount(podRestartCount + 1);
         setClickedPod({ podName: "", namespace: "", containers: [] });
@@ -84,7 +88,8 @@ const PodRestart = ({
             </div>
           </div>
         );
-      default: // default state is 'confirm'
+      // default state is 'confirm'
+      default:
         return (
           <div id="pod-restart-confirm">
             <p>
@@ -127,21 +132,18 @@ const PodRestart = ({
     <div id="pod-restart">
       <button
         onClick={handleRestartPod}
-        className="border-1 rounded-lg border-slate-200 bg-gradient-to-r from-slate-300 to-slate-200 px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90"
+        className="border-1 rounded-lg border-slate-200 bg-gradient-to-r from-slate-300 to-[#d6dee8] px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90"
       >
         Restart Pod
       </button>
-
-      {showRestartPopup && (
-        <div
-          id="pod-restart-popup"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 transition duration-300"
-        >
-          <div className="w-80 rounded-lg bg-slate-200 p-6 text-slate-800">
-            {renderRestartPopupContent()}
-          </div>
+      <div
+        id="pod-restart-popup"
+        className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 transition duration-300 ${showRestartPopup ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
+      >
+        <div className="w-80 rounded-lg bg-slate-200 p-6 text-slate-800">
+          {renderRestartPopupContent()}
         </div>
-      )}
+      </div>
     </div>
   );
 };

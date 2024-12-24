@@ -24,6 +24,19 @@ k8sRouter.post(
 );
 
 k8sRouter.post(
+  "/deployment",
+  k8sController.checkClickedPod,
+  k8sController.getDeployment,
+  (_req, res) => {
+    return res.status(200).json({
+      status: "success",
+      message: `Successfully requested deployment for '${res.locals.podName}' Pod.`,
+      data: { deployment: res.locals.deployment },
+    });
+  },
+);
+
+k8sRouter.post(
   "/replicas",
   k8sController.checkClickedPod,
   k8sController.getDeployment,
@@ -31,6 +44,7 @@ k8sRouter.post(
   k8sController.scaleReplicas,
   (_req, res) => {
     return res.status(200).json({
+      status: "success",
       message: `Successfully updated replicas for '${res.locals.deployment}' Deployment.`,
       data: {
         deployment: res.locals.deployment,
@@ -48,6 +62,7 @@ k8sRouter.post(
   k8sController.adjustRequestLimit,
   (_req, res) => {
     return res.status(200).json({
+      status: "success",
       message: `Successfully updated resources and limits for '${res.locals.deployment}' Deployment.`,
       data: {
         deployment: res.locals.deployment,

@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
-import { SECRET_KEY } from "../../utils/jwtUtils.js";
 import dotenv from "dotenv";
 import process from "node:process";
 
+import { SECRET_KEY } from "../../utils/jwtUtils.js";
 import Users from "../models/UserModel.js";
 import genToken from "../../utils/jwtUtils.js";
 

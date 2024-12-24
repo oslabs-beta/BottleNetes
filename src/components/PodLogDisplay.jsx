@@ -15,8 +15,10 @@ const PodLogDisplay = ({ clickedPod, backendUrl }) => {
       return;
     }
 
+    console.log(`Sending request to '${backendUrl}k8s/viewPodLogs'...`);
+
     try {
-      const response = await fetch(backendUrl + "/k8s/viewPodLogs", {
+      const response = await fetch(backendUrl + "k8s/viewPodLogs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

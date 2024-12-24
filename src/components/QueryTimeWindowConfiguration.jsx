@@ -27,7 +27,7 @@ const QueryTimeWindowConfiguration = ({
       >
         <button
           onClick={() => setShowTimeWindow(true)}
-          className="transition-color rounded-2xl border-slate-100 bg-gradient-to-r from-slate-200 to-slate-100 px-4 py-2 text-lg font-semibold text-slate-500 duration-300 hover:brightness-90"
+          className="transition-color rounded-2xl border-slate-100 bg-gradient-to-r from-slate-300 to-slate-200 px-4 py-2 text-lg font-semibold text-slate-500 duration-300 hover:brightness-90"
         >
           Time Window: {queryTimeWindow}
         </button>
@@ -70,7 +70,7 @@ const QueryTimeWindowConfiguration = ({
             <div id="time-window-input" className="flex gap-2">
               <input
                 type="number"
-                min="1"
+                min={1}
                 value={timeInput}
                 onChange={(e) => setTimeInput(e.target.value)}
                 className="w-20 rounded border bg-slate-300 p-2 text-slate-800"

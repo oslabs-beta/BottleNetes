@@ -140,8 +140,6 @@ const Metrics = ({
       point: {
         radius: 1,
         hoverRadius: 6,
-        pointStyle: "circle",
-        pointBorderWidth: 5,
       },
     },
     plugins: {
@@ -198,7 +196,7 @@ const Metrics = ({
 
   return (
     <div className="min-h-[400px] w-full rounded p-4">
-      <Line options={options} data={data}/>
+      <Line options={options} data={data} />
     </div>
   );
 };

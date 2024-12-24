@@ -8,13 +8,15 @@ import useStore from "../store.jsx";
 const SigninContainer = ({ backendUrl }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
   const navigate = useNavigate();
   const signIn = useStore((state) => state.signIn);
   const signOut = useStore((state) => state.signOut);
+
   const credential = { username, password };
 
   const handleLogIn = async (e) => {
-    console.log(`🔄 Sending request to ${backendUrl} signin`);
+    console.log(`🔄 Sending request to ${backendUrl}signin`);
     e.preventDefault();
 
     const response = await fetch(backendUrl + "signin", {
@@ -54,7 +56,7 @@ const SigninContainer = ({ backendUrl }) => {
   };
 
   const initiateGitHubOAuth = () => {
-    window.location.href = backendUrl + "/github";
+    window.location.href = backendUrl + "github";
   };
 
   return (

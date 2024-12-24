@@ -28,8 +28,10 @@ const CallbackHandler = ({ backendUrl }) => {
       if (!code)
         return console.error("Unable to get the code inside the query");
 
+      console.log(`Sending requests to '${backendUrl}oauth/github'...`);
+
       try {
-        const response = await fetch(backendUrl + "/oauth/github", {
+        const response = await fetch(backendUrl + "oauth/github", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ code }),
@@ -60,7 +62,7 @@ const CallbackHandler = ({ backendUrl }) => {
 };
 
 CallbackHandler.propTypes = {
-  backendUrl: PropTypes.func.isRequired,
+  backendUrl: PropTypes.string,
 };
 
 export default CallbackHandler;

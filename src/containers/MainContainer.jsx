@@ -1,7 +1,8 @@
+/* eslint-disable no-unused-vars */
 import PropTypes from "prop-types";
 import { useState, useRef, useEffect } from "react";
-import useFetchData from "../hooks/useFetchData";
 
+import useFetchData from "../hooks/useFetchData";
 import MenuContainer from "./MenuContainer";
 import Overview from "../components/Overview";
 import PodNameDisplay from "../components/PodNameDisplay";
@@ -11,26 +12,35 @@ import PodGrid from "../components/PodGrid";
 import RequestLimit from "../components/RequestLimit";
 
 const MainContainer = ({ username, backendUrl }) => {
+  // Determines if the graphs display node data or pod specific data
   const [defaultView, setDefaultView] = useState(true);
+
+  // State hook for time window in PodGrid
   const [queryTimeWindow, setQueryTimeWindow] = useState("1m");
+
+  // state hooks for clicked pod and selected metric in PodGrid (will also be passed down to other components)
   const [clickedPod, setClickedPod] = useState({
     podName: "",
     namespace: "",
     containers: [],
+    deployment: "",
   });
   const [selectedMetric, setSelectedMetric] = useState("cpu");
+
+  // State hook for pod restarts in PodGrid
   const [podRestartCount, setPodRestartCount] = useState(0);
+
+  // State hooks for refresh control in MenuContainer
   const [manualRefreshCount, setManualRefreshCount] = useState(0);
   const [refreshFrequency, setRefreshFrequency] = useState(30000);
   const [showRefreshPopup, setShowRefreshPopup] = useState(false);
   const [refreshInput, setRefreshInput] = useState("");
+
+  // State hook for set the menu sidebar's visibility
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
 
-  // !!Seperated the data fetching logics into a custom hook: useFetchData!!
-  // otherwise the MainContainer component will be too long
-  // eslint-disable-next-line no-unused-vars
   const { isLoading, allData } = useFetchData({
     backendUrl,
     refreshFrequency,
@@ -39,11 +49,13 @@ const MainContainer = ({ username, backendUrl }) => {
     manualRefreshCount,
   });
 
-  // handle the click outside of the menu to close the menu
+  // Handle the click outside of the menu to close the menu
   useEffect(() => {
     // Close the menu when clicking outside of the menu
     const handleClickOutside = (event) => {
       if (buttonRef.current?.contains(event.target)) return; // if the button is clicked, bypass
+
+      // Close the menu bar if clicking outside menu and menu is open
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setIsMenuOpen(false);
       }
@@ -136,10 +148,14 @@ const MainContainer = ({ username, backendUrl }) => {
 
         {/* PodNameDisplay */}
         <div className="border-b-2 border-slate-300">
-          <PodNameDisplay clickedPod={clickedPod} />
+          <PodNameDisplay
+            clickedPod={clickedPod}
+            setClickedPod={setClickedPod}
+            backendUrl={backendUrl}
+          />
         </div>
 
-        {/* main container */}
+        {/* Main Container */}
         <div
           id="main-container"
           className="mt-2 flex min-h-screen flex-col gap-4 p-6 text-slate-100"

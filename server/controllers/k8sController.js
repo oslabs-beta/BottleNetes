@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import * as k8s from "@kubernetes/client-node";
 
 // object used to load Kubernetes configuration.
@@ -18,25 +19,16 @@ const k8sController = {};
 
 k8sController.checkClickedPod = async (req, res, next) => {
   console.log(`🤖 Running checkClickedPod middleware...`);
-  // const { podName } = req.body;
-  // let { namespace } = req.body;
 
   try {
     let { podName, namespace, containers } = req.body;
+
     if (!podName || !namespace || !containers) {
       return next({
         log: "😰 Missing Pod name, Namespace or Container info",
         status: 400,
         message: "Please provide Pod name, Namespace and Container info",
       });
-    }
-
-    // If no namespace provided, namespace will be assign to 'default'
-    if (!namespace) {
-      namespace = "default";
-      console.log(
-        `Namespace is not provided. '${namespace}' namespace will be used.`,
-      );
     }
 
     res.locals.podName = podName;
@@ -86,7 +78,7 @@ k8sController.softDeletePod = async (_req, res, next) => {
 
   try {
     console.log(
-      `Attempting to softly delete pod '${podName}' in namespace '${namespace}'`,
+      `🔥 Attempting to softly delete pod '${podName}' in namespace '${namespace}'`,
     );
     const deleteResponse = await k8sCoreApiClient.deleteNamespacedPod(
       podName.trim(),
@@ -94,7 +86,7 @@ k8sController.softDeletePod = async (_req, res, next) => {
       undefined,
     );
     console.log(
-      "Soft deletion pod response status:",
+      "🧐 Soft deletion pod response status:",
       deleteResponse.response.statusCode,
     );
 
@@ -119,15 +111,15 @@ k8sController.softDeletePod = async (_req, res, next) => {
       await new Promise((resolve) => setTimeout(resolve, RETRY_INTERVAL));
       retries++;
       console.log(
-        `Waiting for pod deletion... (attempt ${retries}/${MAX_RETRIES})`,
+        `⏰ Waiting for pod deletion... (attempt ${retries}/${MAX_RETRIES})`,
       );
     }
 
     throw new Error("Pod deletion verification failed after maximum retries");
   } catch (err) {
-    console.error("Full pod deletion error:", err);
+    console.error("😨 Full pod deletion error:", err);
     return next({
-      log: `Error in softDeletePod: ${err.message}`,
+      log: `😭 Error in softDeletePod: ${err.message}`,
       status: err.status || 500,
       message: {
         error: err.message || "Failed to delete pod",
@@ -142,7 +134,9 @@ k8sController.fetchPodLogs = async (_req, res, next) => {
   const { podName, namespace } = res.locals;
 
   try {
-    console.log("Fetching logs for", podName, namespace);
+    console.log(
+      `😗 Fetching logs for '${podName}' pod in '${namespace}' namespace...`,
+    );
 
     const apiResponse = await k8sCoreApiClient.readNamespacedPodLog(
       podName.trim(),
@@ -181,9 +175,8 @@ k8sController.formatLogs = async (_req, res, next) => {
       const jsonObj = JSON.parse(line);
       const { ts, level, caller, msg } = jsonObj;
       return `${ts} [${(level || "").toUpperCase()}] ${caller} - ${msg}`;
-      // eslint-disable-next-line no-unused-vars
     } catch (error) {
-      // console.error(`😭 An error occurred in formatLogs middleware: ${error}`); // too many console erros in terminal
+      // console.error(`🤓 Format not supported. Returning raw logs... ${error}`);
       return line; // return raw line if JSON.parse fails
     }
   });
@@ -255,7 +248,11 @@ k8sController.scaleReplicas = async (req, res, next) => {
 
   try {
     // Replace the current replicas with newReplicas
-    body.spec.replicas = newReplicas;
+    /* 
+    Since stringify parsed everything into a string and replicas only takes a number,
+    We need to parse newReplicas back to a number
+    */
+    body.spec.replicas = parseInt(newReplicas);
     // Replace the current deployment to the updated deployment
     await k8sAppsApiClient.replaceNamespacedDeployment(
       deployment,
@@ -270,7 +267,7 @@ k8sController.scaleReplicas = async (req, res, next) => {
     );
 
     // If the replicas does not match with newReplicas, return to the error handler
-    if (scaled.body.spec.replicas !== newReplicas) {
+    if (parseInt(scaled.body.spec.replicas) !== parseInt(newReplicas)) {
       return next({
         log: `Failed to updated replicas. Current replicas: ${scaled.body.spec.replicas}, Desired replicas: ${newReplicas}`,
         status: 500,

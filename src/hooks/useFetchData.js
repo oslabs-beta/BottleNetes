@@ -73,34 +73,34 @@ const useFetchData = ({
           latencyAppRequestOneValue,
           latencyAppRequestHistorical,
         ] = await Promise.all([
-          fetchData("GET", "/api/all-pods-status"),
-          fetchData("GET", "/api/all-pods-request-limit"),
+          fetchData("GET", "api/all-pods-status"),
+          fetchData("GET", "api/all-pods-request-limit"),
           fetchData(
             "POST",
-            "/api/resource-usage-onevalue",
+            "api/resource-usage-onevalue",
             metricsConfig.bodyResourceUsageOnevalueCPU,
           ),
           fetchData(
             "POST",
-            "/api/resource-usage-onevalue",
+            "api/resource-usage-onevalue",
             metricsConfig.bodyResourceUsageOnevalueMemory,
           ),
-          fetchData("POST", "/api/resource-usage-historical", {
+          fetchData("POST", "api/resource-usage-historical", {
             ...metricsConfig.bodyResourceUsageHistorical,
             type: "cpu",
           }),
-          fetchData("POST", "/api/resource-usage-historical", {
+          fetchData("POST", "api/resource-usage-historical", {
             ...metricsConfig.bodyResourceUsageHistorical,
             type: "memory",
           }),
           fetchData(
             "POST",
-            "/api/latency-app-request-onevalue",
+            "api/latency-app-request-onevalue",
             metricsConfig.bodyLatencyAppRequestOneValue,
           ),
           fetchData(
             "POST",
-            "/api/latency-app-request-historical",
+            "api/latency-app-request-historical",
             metricsConfig.bodyResourceUsageHistorical,
           ),
         ]);

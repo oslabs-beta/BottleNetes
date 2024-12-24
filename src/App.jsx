@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
@@ -22,13 +23,14 @@ const App = () => {
     setUsername,
   } = useStore();
 
-  // eslint-disable-next-line no-unused-vars
-  const [backendUrl, setbackendUrl] = useState("http://localhost:3000");
+  const [backendUrl, setBackendUrl] = useState("http://localhost:3000/");
 
   useEffect(() => {
     const checkSigninStatus = async () => {
+      console.log(`Sending request to '${backendUrl}signin/checkSignin'...`);
+
       try {
-        const response = await fetch(backendUrl + "/signin/checkSignin", {
+        const response = await fetch(backendUrl + "signin/checkSignin", {
           credentials: "include",
         });
         const data = await response.json();
