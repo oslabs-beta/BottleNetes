@@ -1,6 +1,8 @@
+/* eslint-disable no-unused-vars */
 import PropTypes from "prop-types";
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
+import useFetchData from "../hooks/useFetchData";
 import MenuContainer from "./MenuContainer";
 import Overview from "../components/Overview";
 import PodNameDisplay from "../components/PodNameDisplay";
@@ -9,28 +11,23 @@ import Metrics from "../components/Metrics";
 import PodGrid from "../components/PodGrid";
 import RequestLimit from "../components/RequestLimit";
 
-const MainContainer = ({ username }) => {
+const MainContainer = ({ username, backendUrl }) => {
   // Determines if the graphs display node data or pod specific data
   const [defaultView, setDefaultView] = useState(true);
 
-  const [isLoading, setIsLoading] = useState(true);
-
-  // state hooks for time window in PodGrid
+  // State hook for time window in PodGrid
   const [queryTimeWindow, setQueryTimeWindow] = useState("1m");
-  const [showTimeWindow, setShowTimeWindow] = useState(false);
-  const [timeInput, setTimeInput] = useState("");
-  const [timeUnit, setTimeUnit] = useState("m");
-  const [showTooltip, setShowTooltip] = useState(false);
 
   // state hooks for clicked pod and selected metric in PodGrid (will also be passed down to other components)
   const [clickedPod, setClickedPod] = useState({
     podName: "",
     namespace: "",
+    containers: [],
     deployment: "",
   });
   const [selectedMetric, setSelectedMetric] = useState("cpu");
 
-  // state hooks for pod restarts in PodGrid
+  // State hook for pod restarts in PodGrid
   const [podRestartCount, setPodRestartCount] = useState(0);
 
   // State hooks for refresh control in MenuContainer
@@ -39,209 +36,33 @@ const MainContainer = ({ username }) => {
   const [showRefreshPopup, setShowRefreshPopup] = useState(false);
   const [refreshInput, setRefreshInput] = useState("");
 
-  // State hook for all data fetched from the backend
-  const [allData, setAllData] = useState({
-    podsStatuses: { podsStatuses: [] },
-    requestLimits: { allPodsRequestLimit: [] },
-    allNodes: { allNodes: [] },
-    cpuUsageOneValue: { resourceUsageOneValue: [] },
-    memoryUsageOneValue: { resourceUsageOneValue: [] },
-    cpuUsageHistorical: null,
-    memoryUsageHistorical: null,
-    latencyAppRequestOneValue: { latencyAppRequestOneValue: [] },
-  });
-
-  // handling menu bar toggle
+  // State hook for set the menu sidebar's visibility
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
+
+  const { isLoading, allData } = useFetchData({
+    backendUrl,
+    refreshFrequency,
+    queryTimeWindow,
+    podRestartCount,
+    manualRefreshCount,
+  });
+
+  // Handle the click outside of the menu to close the menu
   useEffect(() => {
+    // Close the menu when clicking outside of the menu
     const handleClickOutside = (event) => {
-      // Bypass if clicking the menu button itself
-      if (buttonRef.current && buttonRef.current.contains(event.target)) {
-        return;
-      }
+      if (buttonRef.current?.contains(event.target)) return; // if the button is clicked, bypass
+
       // Close the menu bar if clicking outside menu and menu is open
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setIsMenuOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
-  // Function to reset views and clear selected pod
-  const resetView = () => {
-    setDefaultView(true);
-    // Reset to default view
-    setClickedPod({ podName: "", namespace: "", deployment: "" });
-    // Clear selected pod
-    setSelectedMetric("cpu");
-    // Reset metric selection
-  };
-
-  // for testing purposes, delete afterwards
-  // useEffect(() => {
-  //   console.log("time window: ", queryTimeWindow);
-  // }, [queryTimeWindow]);
-
-  const backendUrl = "http://localhost:3000/";
-  //helper function
-  const fetchData = async (method, endpoint, body = null) => {
-    try {
-      const request = {
-        method: method,
-        headers: { "Content-Type": "application/json" },
-      };
-      if (body) request.body = JSON.stringify(body);
-      const response = await fetch(backendUrl + endpoint, request);
-
-      return await response.json();
-    } catch (error) {
-      console.error("Fetch error:", error);
-      return null;
-    }
-  };
-
-  // Populate all pod status and pods request limit
-  // Run big fetch once every 30 seconds
-  useEffect(() => {
-    const bigFetch = async () => {
-      setIsLoading(true);
-
-      console.log("Fetching data...");
-
-      const bodyResourceUsageOnevalueCPU = {
-        type: "cpu",
-        time: queryTimeWindow,
-        level: "pod",
-      };
-
-      const bodyResourceUsageOnevalueMemory = {
-        type: "memory",
-        time: queryTimeWindow,
-        level: "pod",
-      };
-
-      const bodyResourceUsageHistoricalCPU = {
-        type: "cpu",
-        timeEnd: Math.floor(Date.now() / 1000).toString(),
-        timeStart: (Math.floor(Date.now() / 1000) - 86400).toString(),
-        timeStep: "60",
-        level: "pod",
-      };
-
-      const bodyResourceUsageHistoricalMemory = {
-        type: "memory",
-        timeEnd: Math.floor(Date.now() / 1000).toString(),
-        timeStart: (Math.floor(Date.now() / 1000) - 86400).toString(),
-        timeStep: "60",
-        level: "pod",
-      };
-
-      const bodyLatencyAppRequestOneValue = {
-        time: queryTimeWindow,
-        level: "pod",
-      };
-
-      const bodyLatencyAppRequestHistorical = {
-        timeEnd: Math.floor(Date.now() / 1000).toString(),
-        timeStart: (Math.floor(Date.now() / 1000) - 86400).toString(),
-        timeStep: "60",
-        level: "pod",
-      };
-
-      try {
-        const fakeNodeData = {
-          allNodes: [
-            {
-              nodeName: "Minikube",
-              clusterName: "Minikube",
-            },
-          ],
-        };
-
-        const [
-          status,
-          requestLimits,
-          cpuUsageOneValue,
-          memoryUsageOneValue,
-          cpuUsageHistorical,
-          memoryUsageHistorical,
-          latencyAppRequestOneValue,
-          latencyAppRequestHistorical,
-        ] = await Promise.all([
-          fetchData("GET", "api/all-pods-status"),
-          fetchData("GET", "api/all-pods-request-limit"),
-          // fetchData("GET", "api/allnodes") CURRENTLY POPULATED WITH FAKE DATA
-          fetchData(
-            "POST",
-            "api/resource-usage-onevalue",
-            bodyResourceUsageOnevalueCPU,
-          ),
-          fetchData(
-            "POST",
-            "api/resource-usage-onevalue",
-            bodyResourceUsageOnevalueMemory,
-          ),
-          fetchData(
-            "POST",
-            "api/resource-usage-historical",
-            bodyResourceUsageHistoricalCPU,
-          ),
-          fetchData(
-            "POST",
-            "api/resource-usage-historical",
-            bodyResourceUsageHistoricalMemory,
-          ),
-          fetchData(
-            "POST",
-            "api/latency-app-request-onevalue",
-            bodyLatencyAppRequestOneValue,
-          ),
-          fetchData(
-            "POST",
-            "api/latency-app-request-historical",
-            bodyLatencyAppRequestHistorical,
-          ),
-        ]);
-        // console.log( "DATA FROM BACKEND",
-        //   status,
-        //   requestLimits,
-        //   cpuUsageOneValue,
-        //   memoryUsageOneValue,
-        //   cpuUsageHistorical,
-        // );
-        setAllData({
-          podsStatuses: status || [],
-          requestLimits: requestLimits || [],
-          allNodes: fakeNodeData,
-          cpuUsageOneValue: cpuUsageOneValue || [],
-          memoryUsageOneValue: memoryUsageOneValue || [],
-          cpuUsageHistorical: cpuUsageHistorical || [],
-          memoryUsageHistorical: memoryUsageHistorical || [],
-          latencyAppRequestOneValue: latencyAppRequestOneValue || [],
-          latencyAppRequestHistorical: latencyAppRequestHistorical || [],
-        });
-      } catch (error) {
-        console.error("Error fetching initial data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    bigFetch();
-
-    const intervalID = setInterval(bigFetch, refreshFrequency);
-    return () => {
-      clearInterval(intervalID);
-    };
-  }, [refreshFrequency, manualRefreshCount, queryTimeWindow, podRestartCount]);
-
-  // useEffect(() => {
-  //   console.log("All data: ", allData);
-  // }, [allData]);
 
   return (
     <div>
@@ -330,6 +151,7 @@ const MainContainer = ({ username }) => {
           <PodNameDisplay
             clickedPod={clickedPod}
             setClickedPod={setClickedPod}
+            backendUrl={backendUrl}
           />
         </div>
 
@@ -341,7 +163,10 @@ const MainContainer = ({ username }) => {
           {/*Arrange components in columns for a larger screen, and stack vertically if the screen is smaller*/}
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 xl:grid-cols-4">
             {/* Pod Grid */}
-            <div className="flex max-h-[100%] flex-col rounded-3xl border-4 border-slate-400 bg-slate-100 p-4 xl:col-span-2">
+            <div
+              id="pod-grid"
+              className="flex max-h-[100%] flex-col rounded-3xl border-4 border-slate-400 bg-slate-100 p-4 xl:col-span-2"
+            >
               <h2 className="text-center text-2xl font-bold text-slate-900">
                 Select Pod
               </h2>
@@ -360,19 +185,15 @@ const MainContainer = ({ username }) => {
                 latencyAppRequestOneValue={allData.latencyAppRequestOneValue}
                 queryTimeWindow={queryTimeWindow}
                 setQueryTimeWindow={setQueryTimeWindow}
-                showTimeWindow={showTimeWindow}
-                setShowTimeWindow={setShowTimeWindow}
-                timeInput={timeInput}
-                setTimeInput={setTimeInput}
-                timeUnit={timeUnit}
-                setTimeUnit={setTimeUnit}
-                showTooltip={showTooltip}
-                setShowTooltip={setShowTooltip}
+                backendUrl={backendUrl}
               />
             </div>
 
             {/* Historical Tracing */}
-            <div className="max-h-[100%] rounded-3xl bg-slate-100 p-4 xl:col-span-2">
+            <div
+              id="historical-tracing"
+              className="max-h-[100%] rounded-3xl bg-slate-100 p-4 xl:col-span-2"
+            >
               <h2 className="text-center text-2xl font-semibold text-slate-900">
                 Historical Tracing
               </h2>
@@ -385,7 +206,10 @@ const MainContainer = ({ username }) => {
             </div>
 
             {/* Request vs. Limit */}
-            <div className="relative flex-auto rounded-3xl bg-slate-100 p-4 xl:col-span-2">
+            <div
+              id="request-vs-limit"
+              className="relative flex-auto rounded-3xl bg-slate-100 p-4 xl:col-span-2"
+            >
               <h2 className="text-center text-2xl font-semibold text-slate-900">
                 Request vs. Limit
               </h2>
@@ -398,7 +222,10 @@ const MainContainer = ({ username }) => {
             </div>
 
             {/* Latency */}
-            <div className="rounded-3xl bg-slate-100 p-4 xl:col-span-2">
+            <div
+              id="latency"
+              className="rounded-3xl bg-slate-100 p-4 xl:col-span-2"
+            >
               <h2 className="text-center text-2xl font-semibold text-slate-900">
                 Request Latency
               </h2>
@@ -411,15 +238,19 @@ const MainContainer = ({ username }) => {
               />
             </div>
 
-            <div className="mt-4 flex justify-end gap-4">
+            <div id="bottom-buttons" className="mt-4 flex justify-end gap-4">
+              {/* removed the reset button because it's redundant */}
               {/* Reset Button with Reset Function */}
-              <button
+              {/* <button
                 onClick={resetView}
                 className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter"
               >
                 Reset to default
-              </button>
-              <button className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter">
+              </button> */}
+              <button
+                id="ask-ai-button"
+                className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter"
+              >
                 Ask AI
               </button>
             </div>
@@ -432,6 +263,7 @@ const MainContainer = ({ username }) => {
 
 MainContainer.propTypes = {
   username: PropTypes.string,
+  backendUrl: PropTypes.string.isRequired,
 };
 
 export default MainContainer;

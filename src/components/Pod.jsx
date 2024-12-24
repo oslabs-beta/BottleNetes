@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 import PropTypes from "prop-types";
 import { useState } from "react";
 
@@ -9,11 +8,9 @@ const Pod = ({ podInfo, selectedMetric, onClick, isClicked }) => {
   const color = (value, minVal = 0, maxVal = 100) => {
     const normalizedValue = 1 - (value - minVal) / (maxVal - minVal);
     const r = 238 - Math.floor(normalizedValue * 204);
-    // console.log("red value: ", r);
+
     if (r) return `rgb(${r}, 197, 94)`;
-    else
-      return `#E0E0E0
-`;
+    else return `#E0E0E0`;
   };
 
   switch (selectedMetric) {
@@ -32,8 +29,6 @@ const Pod = ({ podInfo, selectedMetric, onClick, isClicked }) => {
       break;
     }
   }
-  // console.log("cpu", podInfo.cpuData);
-  // console.log("color", podInfo.color);
 
   const buttonStyle =
     // "relative m-0.5 aspect-square rounded-xl border-blue-600 brightness-90 transition hover:border-[5px] hover:filter"
@@ -68,7 +63,9 @@ const Pod = ({ podInfo, selectedMetric, onClick, isClicked }) => {
             </p>
             <p className="font-semibold">
               Containers:
-              <span className="font-normal">{podInfo.containers}</span>
+              <span className="font-normal">
+                {podInfo.containers.join(", ")}
+              </span>
             </p>
             <p className="font-semibold">
               Service: <span className="font-normal">{podInfo.service}</span>
@@ -137,11 +134,10 @@ const Pod = ({ podInfo, selectedMetric, onClick, isClicked }) => {
 };
 
 Pod.propTypes = {
-  metric: PropTypes.string,
   podInfo: PropTypes.object,
-  fetchInfo: PropTypes.func,
   onClick: PropTypes.func,
   selectedMetric: PropTypes.string,
+  isClicked: PropTypes.bool,
 };
 
 export default Pod;

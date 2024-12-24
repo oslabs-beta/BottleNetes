@@ -1,7 +1,5 @@
-/* eslint-disable no-unused-vars */
 import PropTypes from "prop-types";
 import { Bar } from "react-chartjs-2";
-import { useEffect } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -23,12 +21,7 @@ ChartJS.register(
   Legend,
 );
 
-const RequestLimit = ({
-  defaultView,
-  clickedPod,
-  selectedMetric,
-  requestLimits,
-}) => {
+const RequestLimit = ({ selectedMetric, requestLimits }) => {
   const podList = requestLimits?.allPodsRequestLimit.map((pod) => ({
     podName: pod.podName,
     cpuRequest: pod.cpuRequest,
@@ -170,10 +163,10 @@ const RequestLimit = ({
 };
 
 RequestLimit.propTypes = {
-  defaultView: PropTypes.bool,
-  clickedPod: PropTypes.object,
-  selectedMetric: PropTypes.string,
-  requestLimits: PropTypes.object,
+  defaultView: PropTypes.bool.isRequired,
+  clickedPod: PropTypes.object.isRequired,
+  selectedMetric: PropTypes.string.isRequired,
+  requestLimits: PropTypes.object.isRequired,
 };
 
 export default RequestLimit;

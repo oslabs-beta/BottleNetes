@@ -1,4 +1,5 @@
-import { useEffect } from "react";
+/* eslint-disable no-unused-vars */
+import { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -11,7 +12,7 @@ import SigninContainer from "./containers/SigninContainer";
 import MainContainer from "./containers/MainContainer";
 import CallbackHandler from "./CallbackHandler.jsx";
 
-function App() {
+const App = () => {
   const {
     isSignedIn,
     loading,
@@ -22,15 +23,16 @@ function App() {
     setUsername,
   } = useStore();
 
+  const [backendUrl, setBackendUrl] = useState("http://localhost:3000/");
+
   useEffect(() => {
     const checkSigninStatus = async () => {
+      console.log(`Sending request to '${backendUrl}signin/checkSignin'...`);
+
       try {
-        const response = await fetch(
-          "http://localhost:3000/signin/checkSignin",
-          {
-            credentials: "include",
-          },
-        );
+        const response = await fetch(backendUrl + "signin/checkSignin", {
+          credentials: "include",
+        });
         const data = await response.json();
         console.log(data);
         if (data.signedIn) {
@@ -45,7 +47,7 @@ function App() {
       }
     };
     checkSigninStatus();
-  }, [signIn, signOut, setLoading, setUsername]);
+  }, [signIn, signOut, setLoading, setUsername, backendUrl]);
 
   if (loading) return <div>Loading...</div>;
 
@@ -56,23 +58,33 @@ function App() {
           <Route
             path="/"
             element={
-              isSignedIn ? <Navigate to="/dashboard" /> : <SigninContainer />
+              isSignedIn ? (
+                <Navigate to="/dashboard" />
+              ) : (
+                <SigninContainer backendUrl={backendUrl} />
+              )
             }
           />
           <Route
             path="/oauth/callback"
             element={
-              isSignedIn ? <Navigate to="/dashboard" /> : <CallbackHandler />
+              isSignedIn ? (
+                <Navigate to="/dashboard" />
+              ) : (
+                <CallbackHandler backendUrl={backendUrl} />
+              )
             }
           />
           <Route
             path="/dashboard"
-            element={<MainContainer username={username} />}
+            element={
+              <MainContainer username={username} backendUrl={backendUrl} />
+            }
           />
         </Routes>
       </Router>
     </div>
   );
-}
+};
 
 export default App;

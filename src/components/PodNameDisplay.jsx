@@ -3,21 +3,23 @@ import PropTypes from "prop-types";
 import "../Overview.css";
 import { useEffect } from "react";
 
-const PodNameDisplay = ({ clickedPod, setClickedPod }) => {
-  const { podName, namespace, deployment } = clickedPod;
+const PodNameDisplay = ({ clickedPod, setClickedPod, backendUrl }) => {
+  const { podName, namespace, containers, deployment } = clickedPod;
 
+  // Fetching Deployment when selecting a pod
   useEffect(() => {
     const getDeployment = async () => {
-      console.log("Sending POST request to '/k8s/deployment' endpoint...");
+      console.log(`Sending POST request to '${backendUrl}k8s/deployment'...`);
 
-      if (!podName || !namespace) return;
+      if (!podName || !namespace || !containers) return;
       try {
-        const response = await fetch("http://localhost:3000/k8s/deployment", {
+        const response = await fetch(backendUrl + "k8s/deployment", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             podName,
             namespace,
+            containers,
           }),
         });
 
@@ -50,7 +52,7 @@ const PodNameDisplay = ({ clickedPod, setClickedPod }) => {
     };
 
     getDeployment();
-  }, [namespace, podName, setClickedPod]);
+  }, [namespace, podName, containers, setClickedPod, backendUrl]);
 
   return (
     <div className="w-full bg-gradient-to-r from-[#0f172a] to-[#1e40af] py-4 text-center text-[#e2e8f0] transition-all">
@@ -92,8 +94,9 @@ const PodNameDisplay = ({ clickedPod, setClickedPod }) => {
 };
 
 PodNameDisplay.propTypes = {
-  clickedPod: PropTypes.object,
+  clickedPod: PropTypes.object.isRequired,
   setClickedPod: PropTypes.func,
+  backendUrl: PropTypes.string,
 };
 
 export default PodNameDisplay;

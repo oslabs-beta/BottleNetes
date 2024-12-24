@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import * as k8s from "@kubernetes/client-node";
 
 // object used to load Kubernetes configuration.
@@ -18,28 +19,21 @@ const k8sController = {};
 
 k8sController.checkClickedPod = async (req, res, next) => {
   console.log(`🤖 Running checkClickedPod middleware...`);
-  const { podName } = req.body;
-  let { namespace } = req.body;
 
   try {
-    if (!podName) {
-      return next({
-        log: "😰 Missing Pod name",
-        status: 400,
-        message: "Please provide Pod name",
-      });
-    }
+    let { podName, namespace, containers } = req.body;
 
-    // If no namespace provided, namespace will be assign to 'default'
-    if (!namespace) {
-      namespace = "default";
-      console.log(
-        `Namespace is not provided. '${namespace}' namespace will be used.`,
-      );
+    if (!podName || !namespace || !containers) {
+      return next({
+        log: "😰 Missing Pod name, Namespace or Container info",
+        status: 400,
+        message: "Please provide Pod name, Namespace and Container info",
+      });
     }
 
     res.locals.podName = podName;
     res.locals.namespace = namespace;
+    res.locals.containers = containers;
     return next();
   } catch (error) {
     return next({
@@ -52,18 +46,80 @@ k8sController.checkClickedPod = async (req, res, next) => {
 
 k8sController.softDeletePod = async (_req, res, next) => {
   console.log(`🤖 Running softDeletePod middleware...`);
+
   const { podName, namespace } = res.locals;
 
-  try {
-    await k8sCoreApiClient.deleteNamespacedPod(
-      podName.trim(),
-      namespace.trim(),
+  const isPodDeleted = async (podName, namespace, k8sClient) => {
+    try {
+      const response = await k8sClient.readNamespacedPod(podName, namespace);
+      console.log(
+        `Pod status check - Name: ${podName}, Phase: ${response.body.status.phase}`,
+      );
+      return false; // Pod still exists
+    } catch (error) {
+      if (error.response?.statusCode !== 200) {
+        return true; // Pod is deleted
+      }
+      console.log("Error checking pod status:", error.message);
+      throw error; // Unexpected error happened
+    }
+  };
+
+  if (await isPodDeleted(podName.trim(), namespace.trim(), k8sCoreApiClient)) {
+    console.log(
+      `✅ Pod '${podName}' in '${namespace}' namespace is confirmed deleted.`,
     );
     return next();
+  }
+
+  const MAX_RETRIES = 20;
+  const RETRY_INTERVAL = 3000; // in ms
+  const TIMEOUT = MAX_RETRIES * RETRY_INTERVAL;
+
+  try {
+    console.log(
+      `🔥 Attempting to softly delete pod '${podName}' in namespace '${namespace}'`,
+    );
+    const deleteResponse = await k8sCoreApiClient.deleteNamespacedPod(
+      podName.trim(),
+      namespace.trim(),
+      undefined,
+    );
+    console.log(
+      "🧐 Soft deletion pod response status:",
+      deleteResponse.response.statusCode,
+    );
+
+    // Initialize the timer for the retries
+    const startTime = Date.now();
+    let retries = 0;
+    // Check if the pod is deleted every RETRY_INTERVAL
+    while (retries < MAX_RETRIES) {
+      if (
+        await isPodDeleted(podName.trim(), namespace.trim(), k8sCoreApiClient)
+      ) {
+        console.log(
+          `✅ Pod '${podName}' in '${namespace}' namespace is confirmed deleted.`,
+        );
+        return next();
+      }
+
+      if (Date.now() - startTime > TIMEOUT) {
+        throw new Error("Pod deletion timeout exceeded");
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, RETRY_INTERVAL));
+      retries++;
+      console.log(
+        `⏰ Waiting for pod deletion... (attempt ${retries}/${MAX_RETRIES})`,
+      );
+    }
+
+    throw new Error("Pod deletion verification failed after maximum retries");
   } catch (err) {
-    console.error("Full pod deletion error:", err);
+    console.error("😨 Full pod deletion error:", err);
     return next({
-      log: `Error in softDeletePod: ${err.message}`,
+      log: `😭 Error in softDeletePod: ${err.message}`,
       status: err.status || 500,
       message: {
         error: err.message || "Failed to delete pod",
@@ -78,11 +134,14 @@ k8sController.fetchPodLogs = async (_req, res, next) => {
   const { podName, namespace } = res.locals;
 
   try {
-    console.log(`😗 Fetching logs for '${podName}' pod in '${namespace}' namespace...`);
+    console.log(
+      `😗 Fetching logs for '${podName}' pod in '${namespace}' namespace...`,
+    );
 
     const apiResponse = await k8sCoreApiClient.readNamespacedPodLog(
       podName.trim(),
       namespace.trim(),
+      // containers[0],
     );
     // console.log("Logs fetched:", logs.body);
     res.locals.rawLogs = apiResponse.body;
@@ -117,7 +176,7 @@ k8sController.formatLogs = async (_req, res, next) => {
       const { ts, level, caller, msg } = jsonObj;
       return `${ts} [${(level || "").toUpperCase()}] ${caller} - ${msg}`;
     } catch (error) {
-      console.error(`🤓 Format not supported. Returning raw logs... ${error}`);
+      // console.error(`🤓 Format not supported. Returning raw logs... ${error}`);
       return line; // return raw line if JSON.parse fails
     }
   });
@@ -218,7 +277,9 @@ k8sController.scaleReplicas = async (req, res, next) => {
 
     // Save the updated replicas to res.locals to respond to frontend
     res.locals.updatedReplicas = scaled.body.spec.replicas;
-    console.log(`Successfully updated replicas for '${scaled.body.metadata.name}' Deployment.`);
+    console.log(
+      `Successfully updated replicas for '${scaled.body.metadata.name}' Deployment.`,
+    );
     return next();
   } catch (error) {
     return next({
@@ -286,7 +347,9 @@ k8sController.adjustRequestLimit = async (req, res, next) => {
 
     res.locals.newLimits = newContainer.resources.limits;
     res.locals.newRequests = newContainer.resources.requests;
-    console.log(`Successfully updated Resouces and Limits in '${newContainer.name}' Container.`);
+    console.log(
+      `Successfully updated Resouces and Limits in '${newContainer.name}' Container.`,
+    );
     return next();
   } catch (error) {
     return next({
