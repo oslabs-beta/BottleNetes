@@ -3,7 +3,7 @@ import { useState } from "react";
 import Pod from "./Pod";
 
 const PodGrid = ({
-  defaultView,
+  // defaultView,
   setDefaultView,
   clickedPod,
   setClickedPod,
@@ -23,12 +23,17 @@ const PodGrid = ({
   setTimeInput,
   timeUnit,
   setTimeUnit,
-  showTooltip,
-  setShowTooltip,
+  // showTooltip,
+  // setShowTooltip,
 }) => {
-  const [showRestartPopup, setShowRestartPopup] = useState(false);
   const [showPodLog, setShowPodLog] = useState(false);
   const [podLog, setPodLog] = useState("No logs available");
+  const [showRestartPopup, setShowRestartPopup] = useState(false);
+  const [showReplicasPopup, setShowReplicasPopup] = useState(false);
+  const [showRequestsLimitsPopup, setShowRequestsLimitsPopup] = useState(false);
+  const [newReplicas, setNewReplicas] = useState(1);
+  const [newRequests, setNewRequests] = useState("");
+  const [newLimits, setNewLimits] = useState("");
 
   const handleTimeWindowSubmit = (e) => {
     e.preventDefault();
@@ -54,8 +59,10 @@ const PodGrid = ({
       return;
     }
 
+    console.log("Sending request to '/k8s/viewPodLogs' endpoint...");
+
     try {
-      const response = await fetch("http://localhost:3000/k8s/viewPodLogs", {
+      const response = await fetch('http://localhost:3000/k8s/viewPodLogs', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -76,7 +83,25 @@ const PodGrid = ({
     }
   };
 
+  const handleReplicas = async () => {
+    if (!clickedPod.podName || !clickedPod.namespace) {
+      alert("Please select a pod first");
+      return;
+    }
+    setShowReplicasPopup(true);
+  };
+
+  const handleRequestsLimits = async () => {
+    if (!clickedPod.podName || !clickedPod.namespace) {
+      alert("Please select a pod first");
+      return;
+    }
+    setShowRequestsLimitsPopup(true);
+  };
+
   const proceedRestartPod = async () => {
+    console.log("Sending Request to '/k8s/restartPod' endpoint...");
+
     try {
       const response = await fetch("http://localhost:3000/k8s/restartPod", {
         method: "POST",
@@ -102,8 +127,50 @@ const PodGrid = ({
     }
   };
 
+  const proceedReplicas = async () => {
+    console.log(`Sending request to '/k8s/replicas' endpoint...`);
+
+    try {
+      const response = await fetch("http://localhost:3000/k8s/replicas", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          podName: clickedPod.podName,
+          namespace: clickedPod.namespace,
+          newReplicas,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.status !== "success") {
+        console.error(
+          `Unable to handle request to '/k8s/replicas' endpoint: ${data}`,
+        );
+        alert("Unable to handle request...");
+      }
+
+      console.log(data.data);
+      alert(`${data.message}. Please wait until the page is refreshed for changes in the heatmap.`);
+
+    } catch (error) {
+      console.error(`Could not send request: ${error}`);
+      alert(`Failed to send request: ${error.message}`);
+    } finally {
+      setShowReplicasPopup(false);
+    }
+  };
+
   const cancelRestartPod = () => {
     setShowRestartPopup(false);
+  };
+
+  const cancelReplicas = () => {
+    setShowReplicasPopup(false);
+  };
+
+  const cancelRequestsLimits = () => {
+    setShowRequestsLimitsPopup(false);
   };
 
   if (!podStatuses.allPodsStatus) {
@@ -180,28 +247,28 @@ const PodGrid = ({
       <div id="control-buttons-row" className="mb-4 flex space-x-2 p-4">
         <button
           onClick={handleRestartPod}
-          className="border-1 rounded-lg border-slate-200 bg-gradient-to-r from-slate-300 to-slate-200 px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90"
+          className="border-1 rounded-lg border-slate-200 bg-gradient-to-r from-slate-300 to-[#d6dee8] px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90"
         >
           Restart Pod
         </button>
 
         <button
           onClick={handleViewPodLog}
-          className="border-1 rounded-lg border-slate-200 bg-slate-200 px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90"
+          className="border-1 rounded-lg border-slate-200 bg-gradient-to-r from-[#d6dee8] to-slate-200 px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90"
         >
           View Pod Log
         </button>
 
         <button
-          className="border-1 rounded-lg border-slate-100 bg-gradient-to-r from-slate-200 to-slate-100 px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90"
-          disabled
+          className="border-1 rounded-lg border-slate-200 bg-gradient-to-r from-slate-200 to-[#e8eef4] px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90"
+          onClick={handleReplicas}
         >
           Modify Replicas
         </button>
 
         <button
-          className="border-1 rounded-lg border-slate-100 bg-gradient-to-r from-slate-200 to-slate-100 px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90"
-          disabled
+          className="border-1 rounded-lg border-slate-200 bg-gradient-to-r from-[#e8eef4] to-slate-100 px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90"
+          onClick={handleRequestsLimits}
         >
           Adjust Resources/Limits
         </button>
@@ -256,6 +323,64 @@ const PodGrid = ({
         </div>
       </div>
 
+      {/* Replicas Popup */}
+      <div
+        id="replicas-popup"
+        className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 transition duration-300 ${showReplicasPopup ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
+      >
+        <div className="w-1/6 rounded-lg bg-slate-200 p-6 text-center text-slate-800">
+          <h2>Enter the amount of replicas for the designated Deployment</h2>
+          <br />
+          <div className="border-1 rounded-xl border-slate-300 bg-slate-300 p-4 text-left">
+            <p>
+              Selected Pod: <strong>{clickedPod.podName}</strong>
+            </p>
+            <p>
+              Deployment: <strong>{clickedPod.deployment}</strong>
+            </p>
+          </div>
+          <input
+            value={newReplicas}
+            type="number"
+            onChange={(e) => setNewReplicas(e.target.value)}
+            className="my-6 w-full rounded-lg bg-slate-300 p-2 text-slate-800 focus:bg-slate-400"
+          />
+          <div
+            id="button-container"
+            className="mb-5 flex flex-1 justify-around"
+          >
+            <button
+              className="rounded-lg bg-slate-600 px-8 py-2 text-slate-100 hover:bg-slate-700"
+              onClick={proceedReplicas}
+            >
+              Apply
+            </button>
+            <button
+              className="rounded-lg bg-slate-600 px-8 py-2 text-slate-100 hover:bg-slate-700"
+              onClick={cancelReplicas}
+            >
+              Cancel
+            </button>
+          </div>
+          <div
+            id="caution-display"
+            className="rounded-xl border-2 border-orange-200 bg-orange-100 px-4 py-8"
+          >
+            <h3 className="text-xl text-red-700">
+              <strong>CAUTION</strong>
+            </h3>
+            <br />
+            <h4 className="text-left text-red-600">
+              - The value must be greater than 1.
+            </h4>
+            <h4 className="text-left text-red-600">
+              - DO NOT make any adjustments for any components inside Master
+              Node as they can cause unwanted behaviors.
+            </h4>
+          </div>
+        </div>
+      </div>
+
       {/* Bottom Container */}
       <div className="flex flex-1">
         {/* Left Column - Selection Buttons */}
@@ -270,7 +395,7 @@ const PodGrid = ({
             {/* button to open time window popup and reset time window of the query  */}
             <button
               onClick={() => setShowTimeWindow(true)}
-              className="transition-color rounded-2xl border-slate-100 bg-gradient-to-r from-slate-200 to-slate-100 px-4 py-2 text-lg font-semibold text-slate-500 duration-300 hover:brightness-90"
+              className="transition-color rounded-2xl border-slate-100 bg-gradient-to-r from-slate-300 to-slate-200 px-4 py-2 text-lg font-semibold text-slate-500 duration-300 hover:brightness-90"
             >
               Time Window: {queryTimeWindow}
             </button>
@@ -348,12 +473,13 @@ const PodGrid = ({
             </div>
           </div>
 
+          {/* Left Side Buttons */}
           <button
             onClick={() => setSelectedMetric("cpu")}
             className={`rounded-2xl px-2 py-4 text-lg font-semibold transition duration-200 ${
               selectedMetric === "cpu"
                 ? "border-2 border-[#2563eb] bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] text-slate-100 hover:brightness-90"
-                : "border-2 border-slate-100 bg-gradient-to-r from-slate-200 to-slate-100 text-slate-500 hover:brightness-90"
+                : "border-2 border-slate-100 bg-gradient-to-r from-slate-300 to-slate-200 text-slate-500 hover:brightness-90"
             }`}
           >
             CPU Usage (%)
@@ -363,7 +489,7 @@ const PodGrid = ({
             className={`rounded-2xl px-2 py-4 text-lg font-semibold transition duration-200 ${
               selectedMetric === "memory"
                 ? "border-2 border-[#2563eb] bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] text-slate-100 hover:brightness-90"
-                : "border-2 border-slate-100 bg-gradient-to-r from-slate-200 to-slate-100 text-slate-500 hover:brightness-90"
+                : "border-2 border-slate-100 bg-gradient-to-r from-slate-300 to-slate-200 text-slate-500 hover:brightness-90"
             }`}
           >
             Mem. Usage (%)
@@ -373,7 +499,7 @@ const PodGrid = ({
             className={`rounded-2xl px-2 py-4 text-lg font-semibold transition duration-200 ${
               selectedMetric === "latency"
                 ? "border-2 border-[#2563eb] bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] text-slate-100 hover:brightness-90"
-                : "border-2 border-slate-100 bg-gradient-to-r from-slate-200 to-slate-100 text-slate-500 transition hover:brightness-90"
+                : "border-2 border-slate-100 bg-gradient-to-r from-slate-300 to-slate-200 text-slate-500 transition hover:brightness-90"
             }`}
           >
             Latency (ms)
@@ -381,7 +507,7 @@ const PodGrid = ({
 
           <button
             onClick={resetView}
-            className={`rounded-2xl border-4 border-blue-600 bg-slate-100 px-2 py-4 text-lg font-semibold text-blue-600 transition duration-200 hover:bg-blue-600 hover:text-slate-100`}
+            className="rounded-2xl border-4 border-blue-600 bg-gradient-to-r from-slate-200 to-slate-100 px-2 py-4 text-lg font-semibold text-blue-600 transition duration-200 hover:border-2 hover:bg-gradient-to-r hover:from-[#1d4ed8] hover:to-[#2563eb] hover:text-slate-100"
           >
             Reset
           </button>

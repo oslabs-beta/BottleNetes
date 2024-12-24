@@ -78,7 +78,7 @@ k8sController.fetchPodLogs = async (_req, res, next) => {
   const { podName, namespace } = res.locals;
 
   try {
-    console.log("Fetching logs for", podName, namespace);
+    console.log(`😗 Fetching logs for '${podName}' pod in '${namespace}' namespace...`);
 
     const apiResponse = await k8sCoreApiClient.readNamespacedPodLog(
       podName.trim(),
@@ -117,7 +117,7 @@ k8sController.formatLogs = async (_req, res, next) => {
       const { ts, level, caller, msg } = jsonObj;
       return `${ts} [${(level || "").toUpperCase()}] ${caller} - ${msg}`;
     } catch (error) {
-      console.error(`😭 An error occurred in formatLogs middleware: ${error}`);
+      console.error(`🤓 Format not supported. Returning raw logs... ${error}`);
       return line; // return raw line if JSON.parse fails
     }
   });
@@ -189,7 +189,11 @@ k8sController.scaleReplicas = async (req, res, next) => {
 
   try {
     // Replace the current replicas with newReplicas
-    body.spec.replicas = newReplicas;
+    /* 
+    Since stringify parsed everything into a string and replicas only takes a number,
+    We need to parse newReplicas back to a number
+    */
+    body.spec.replicas = parseInt(newReplicas);
     // Replace the current deployment to the updated deployment
     await k8sAppsApiClient.replaceNamespacedDeployment(
       deployment,
@@ -204,7 +208,7 @@ k8sController.scaleReplicas = async (req, res, next) => {
     );
 
     // If the replicas does not match with newReplicas, return to the error handler
-    if (scaled.body.spec.replicas !== newReplicas) {
+    if (parseInt(scaled.body.spec.replicas) !== parseInt(newReplicas)) {
       return next({
         log: `Failed to updated replicas. Current replicas: ${scaled.body.spec.replicas}, Desired replicas: ${newReplicas}`,
         status: 500,

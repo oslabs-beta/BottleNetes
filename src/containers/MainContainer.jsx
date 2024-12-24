@@ -23,7 +23,11 @@ const MainContainer = ({ username }) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
   // state hooks for clicked pod and selected metric in PodGrid (will also be passed down to other components)
-  const [clickedPod, setClickedPod] = useState({ podName: "", namespace: "" });
+  const [clickedPod, setClickedPod] = useState({
+    podName: "",
+    namespace: "",
+    deployment: "",
+  });
   const [selectedMetric, setSelectedMetric] = useState("cpu");
 
   // state hooks for pod restarts in PodGrid
@@ -72,7 +76,7 @@ const MainContainer = ({ username }) => {
   const resetView = () => {
     setDefaultView(true);
     // Reset to default view
-    setClickedPod({ podName: "", namespace: "" });
+    setClickedPod({ podName: "", namespace: "", deployment: "" });
     // Clear selected pod
     setSelectedMetric("cpu");
     // Reset metric selection
@@ -323,10 +327,13 @@ const MainContainer = ({ username }) => {
 
         {/* PodNameDisplay */}
         <div className="border-b-2 border-slate-300">
-          <PodNameDisplay clickedPod={clickedPod} />
+          <PodNameDisplay
+            clickedPod={clickedPod}
+            setClickedPod={setClickedPod}
+          />
         </div>
 
-        {/* main container */}
+        {/* Main Container */}
         <div
           id="main-container"
           className="mt-2 flex min-h-screen flex-col gap-4 p-6 text-slate-100"

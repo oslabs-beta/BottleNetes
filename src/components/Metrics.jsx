@@ -140,8 +140,6 @@ const Metrics = ({
       point: {
         radius: 1,
         hoverRadius: 6,
-        pointStyle: "circle",
-        pointBorderWidth: 5,
       },
     },
     plugins: {
