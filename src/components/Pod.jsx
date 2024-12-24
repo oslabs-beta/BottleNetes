@@ -68,7 +68,9 @@ const Pod = ({ podInfo, selectedMetric, onClick, isClicked }) => {
             </p>
             <p className="font-semibold">
               Containers:
-              <span className="font-normal">{podInfo.containers}</span>
+              <span className="font-normal">
+                {podInfo.containers.join(", ")}
+              </span>
             </p>
             <p className="font-semibold">
               Service: <span className="font-normal">{podInfo.service}</span>
