@@ -6,7 +6,6 @@ import QueryTimeWindowConfiguration from "./QueryTimeWindowConfiguration";
 import PodGridMetricSelection from "./PodGridMetricSelection";
 
 const PodGrid = ({
-  defaultView,
   setDefaultView,
   clickedPod,
   setClickedPod,
@@ -99,6 +98,7 @@ const PodGrid = ({
         <PodRestart
           clickedPod={clickedPod}
           setClickedPod={setClickedPod}
+          podRestartCount={podRestartCount}
           setPodRestartCount={setPodRestartCount}
           backendUrl={backendUrl}
         />

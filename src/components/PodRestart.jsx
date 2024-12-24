@@ -4,6 +4,7 @@ import { useState } from "react";
 const PodRestart = ({
   clickedPod,
   setClickedPod,
+  podRestartCount,
   setPodRestartCount,
   backendUrl,
 }) => {
@@ -34,7 +35,7 @@ const PodRestart = ({
       });
       const data = await response.json();
       if (data.status === "success") {
-        setPodRestartCount((prev) => prev + 1);
+        setPodRestartCount(podRestartCount + 1);
         setClickedPod({ podName: "", namespace: "", containers: [] });
         setShowRestartPopup(false);
       } else {
@@ -152,6 +153,7 @@ PodRestart.propTypes = {
     containers: PropTypes.array,
   }).isRequired,
   setClickedPod: PropTypes.func.isRequired,
+  podRestartCount: PropTypes.number.isRequired,
   setPodRestartCount: PropTypes.func.isRequired,
   backendUrl: PropTypes.string.isRequired,
 };

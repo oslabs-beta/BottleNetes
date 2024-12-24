@@ -28,7 +28,7 @@ const MainContainer = ({ username, backendUrl }) => {
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
 
-  // !!Seperated the data fetching logics into a custom hook: useFetchData
+  // !!Seperated the data fetching logics into a custom hook: useFetchData!!
   // otherwise the MainContainer component will be too long
   // eslint-disable-next-line no-unused-vars
   const { isLoading, allData } = useFetchData({

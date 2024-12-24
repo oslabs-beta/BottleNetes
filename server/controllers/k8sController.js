@@ -14,23 +14,6 @@ kubeConfigObj.loadFromDefault();
 const k8sCoreApiClient = kubeConfigObj.makeApiClient(k8s.CoreV1Api);
 const k8sAppsApiClient = kubeConfigObj.makeApiClient(k8s.AppsV1Api);
 
-// Add this helper function before k8sController definition
-const isPodDeleted = async (podName, namespace, k8sClient) => {
-  try {
-    const response = await k8sClient.readNamespacedPod(podName, namespace);
-    console.log(
-      `Pod status check - Name: ${podName}, Phase: ${response.body.status.phase}`,
-    );
-    return false; // Pod still exists
-  } catch (error) {
-    if (error.response?.statusCode === 404) {
-      return true; // Pod is deleted
-    }
-    console.log("Error checking pod status:", error.message);
-    throw error; // Unexpected error
-  }
-};
-
 const k8sController = {};
 
 k8sController.checkClickedPod = async (req, res, next) => {
@@ -71,28 +54,55 @@ k8sController.checkClickedPod = async (req, res, next) => {
 
 k8sController.softDeletePod = async (_req, res, next) => {
   console.log(`🤖 Running softDeletePod middleware...`);
+
   const { podName, namespace } = res.locals;
-  const MAX_RETRIES = 30; // Maximum number of retries
-  const RETRY_INTERVAL = 1000; // 1 second between retries
-  const TIMEOUT = MAX_RETRIES * RETRY_INTERVAL; // Total timeout in milliseconds
+
+  const isPodDeleted = async (podName, namespace, k8sClient) => {
+    try {
+      const response = await k8sClient.readNamespacedPod(podName, namespace);
+      console.log(
+        `Pod status check - Name: ${podName}, Phase: ${response.body.status.phase}`,
+      );
+      return false; // Pod still exists
+    } catch (error) {
+      if (error.response?.statusCode !== 200) {
+        return true; // Pod is deleted
+      }
+      console.log("Error checking pod status:", error.message);
+      throw error; // Unexpected error happened
+    }
+  };
+
+  if (await isPodDeleted(podName.trim(), namespace.trim(), k8sCoreApiClient)) {
+    console.log(
+      `✅ Pod '${podName}' in '${namespace}' namespace is confirmed deleted.`,
+    );
+    return next();
+  }
+
+  const MAX_RETRIES = 20;
+  const RETRY_INTERVAL = 3000; // in ms
+  const TIMEOUT = MAX_RETRIES * RETRY_INTERVAL;
 
   try {
     console.log(
-      `Attempting to delete pod '${podName}' in namespace '${namespace}'`,
+      `Attempting to softly delete pod '${podName}' in namespace '${namespace}'`,
     );
     const deleteResponse = await k8sCoreApiClient.deleteNamespacedPod(
       podName.trim(),
       namespace.trim(),
       undefined,
     );
-    console.log("Delete pod response:", deleteResponse.response.statusCode);
+    console.log(
+      "Soft deletion pod response status:",
+      deleteResponse.response.statusCode,
+    );
 
-    // Wait for pod deletion with timeout
+    // Initialize the timer for the retries
     const startTime = Date.now();
     let retries = 0;
-
+    // Check if the pod is deleted every RETRY_INTERVAL
     while (retries < MAX_RETRIES) {
-      console.log(`\nCheck attempt ${retries + 1}/${MAX_RETRIES}`);
       if (
         await isPodDeleted(podName.trim(), namespace.trim(), k8sCoreApiClient)
       ) {
