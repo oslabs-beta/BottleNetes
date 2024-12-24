@@ -5,9 +5,7 @@ import { useNavigate } from "react-router-dom";
 
 import useStore from "../store.jsx";
 
-const SigninContainer = () => {
-  const url = "http://localhost:3000/";
-
+const SigninContainer = ({ backendUrl }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -16,10 +14,10 @@ const SigninContainer = () => {
   const credential = { username, password };
 
   const handleLogIn = async (e) => {
-    console.log(`🔄 Sending request to ${url}signin`);
+    console.log(`🔄 Sending request to ${backendUrl} signin`);
     e.preventDefault();
 
-    const response = await fetch(url + "signin", {
+    const response = await fetch(backendUrl + "signin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -40,10 +38,10 @@ const SigninContainer = () => {
   };
 
   const handleRedirect = async (endpoint) => {
-    console.log(`🔄 Sending request to ${url + endpoint}`);
+    console.log(`🔄 Sending request to ${backendUrl + endpoint}`);
 
     try {
-      const response = await fetch(url + endpoint, {
+      const response = await fetch(backendUrl + endpoint, {
         credentials: "include",
       });
       const data = await response.json();
@@ -56,7 +54,7 @@ const SigninContainer = () => {
   };
 
   const initiateGitHubOAuth = () => {
-    window.location.href = "http://localhost:3000/github";
+    window.location.href = backendUrl + "/github";
   };
 
   return (
@@ -153,6 +151,7 @@ const SigninContainer = () => {
 };
 
 SigninContainer.propTypes = {
+  backendUrl: PropTypes.string,
   username: PropTypes.string,
   setUsername: PropTypes.func,
   setLoggedIn: PropTypes.func,

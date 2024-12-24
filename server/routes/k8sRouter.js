@@ -52,7 +52,7 @@ k8sRouter.post(
       data: {
         deployment: res.locals.deployment,
         updatedRequests: res.locals.newRequests,
-        updatedLimits: res.locals.newLimits
+        updatedLimits: res.locals.newLimits,
       },
     });
   },

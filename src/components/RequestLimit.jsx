@@ -170,10 +170,10 @@ const RequestLimit = ({
 };
 
 RequestLimit.propTypes = {
-  defaultView: PropTypes.bool,
-  clickedPod: PropTypes.object,
-  selectedMetric: PropTypes.string,
-  requestLimits: PropTypes.object,
+  defaultView: PropTypes.bool.isRequired,
+  clickedPod: PropTypes.object.isRequired,
+  selectedMetric: PropTypes.string.isRequired,
+  requestLimits: PropTypes.object.isRequired,
 };
 
 export default RequestLimit;
