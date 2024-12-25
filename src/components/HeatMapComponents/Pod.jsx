@@ -40,7 +40,7 @@ const Pod = ({ podInfo, selectedMetric, onClick, isClicked }) => {
 
   const hoverStyle =
     // "pointer-events-none absolute z-[99999] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white/80 p-2 text-sm text-slate-900/90 opacity-0 transition-opacity duration-700 ease-in-out group-hover:opacity-100 shadow-xl";
-    `pointer-events-none absolute z-[99999] rounded-lg bg-white/80 text-slate-900/90 shadow-xl w-[300px] p-3 space-y-1 transition-opacity duration-500 ease-in-out ${isShowing ? "opacity-100" : "opacity-0"}`;
+    `pointer-events-none absolute z-[99999] rounded-lg bg-slate-100/95 text-slate-900/90 shadow-xl w-[300px] p-3 space-y-1 transition-opacity duration-500 ${isShowing ? "opacity-100" : "opacity-0"}`;
 
   if (podInfo.readiness == true) {
     return (
