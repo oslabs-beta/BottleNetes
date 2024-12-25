@@ -156,7 +156,7 @@ const PodGrid = ({
   let processedPodList = [...podList];
 
   // Apply filter
-  if (filterConfig.type && filterConfig.value) {
+  if (filterConfig.type && filterConfig.value && !defaultView) {
     processedPodList = processedPodList.filter((pod) => {
       if (["cpuRelative", "memoryRelative"].includes(filterConfig.type)) {
         const value = pod[filterConfig.type];
@@ -243,7 +243,12 @@ const PodGrid = ({
           defaultView={defaultView}
           setDefaultView={setDefaultView}
         />
-        <PodFilter podList={podList} setFilterConfig={setFilterConfig} />
+        <PodFilter
+          podList={podList}
+          setFilterConfig={setFilterConfig}
+          defaultView={defaultView}
+          setDefaultView={setDefaultView}
+        />
       </div>
 
       {/* Replicas Popup */}
