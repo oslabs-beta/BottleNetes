@@ -232,6 +232,7 @@ const MainContainer = ({ username, backendUrl }) => {
               <Latency
                 defaultView={defaultView}
                 clickedPod={clickedPod}
+                cpuUsageHistorical={allData.cpuUsageHistorical}
                 latencyAppRequestHistorical={
                   allData.latencyAppRequestHistorical
                 }
