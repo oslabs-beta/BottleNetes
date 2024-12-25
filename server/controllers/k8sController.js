@@ -129,21 +129,30 @@ k8sController.softDeletePod = async (_req, res, next) => {
   }
 };
 
-k8sController.fetchPodLogs = async (_req, res, next) => {
+k8sController.fetchPodLogs = async (req, res, next) => {
   console.log(`🤖 Running fetchPodLogs middleware...`);
   const { podName, namespace } = res.locals;
+  const { selectedContainer } = req.body;
+
+  if (!selectedContainer) {
+    return next({
+      log: "Container name not provided",
+      status: 400,
+      message: "Please select a container to view logs",
+    });
+  }
 
   try {
     console.log(
-      `😗 Fetching logs for '${podName}' pod in '${namespace}' namespace...`,
+      `😗 Fetching logs for container '${selectedContainer}' in pod '${podName}' (namespace: '${namespace}')...`,
     );
 
     const apiResponse = await k8sCoreApiClient.readNamespacedPodLog(
       podName.trim(),
       namespace.trim(),
-      // containers[0],
+      selectedContainer,
     );
-    // console.log("Logs fetched:", logs.body);
+
     res.locals.rawLogs = apiResponse.body;
     return next();
   } catch (err) {
@@ -248,7 +257,7 @@ k8sController.scaleReplicas = async (req, res, next) => {
 
   try {
     // Replace the current replicas with newReplicas
-    /* 
+    /*
     Since stringify parsed everything into a string and replicas only takes a number,
     We need to parse newReplicas back to a number
     */

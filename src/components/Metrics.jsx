@@ -29,76 +29,92 @@ const Metrics = ({
   cpuUsageHistorical,
   memoryUsageHistorical,
 }) => {
-  // Check if we have data first
+  // Check if we have at least one type of data
   if (
-    !cpuUsageHistorical?.resourceUsageHistorical ||
+    !cpuUsageHistorical?.resourceUsageHistorical &&
     !memoryUsageHistorical?.resourceUsageHistorical
   ) {
     return <div>Loading...</div>;
   }
 
-  // console.log("clickedPod", clickedPod);
-
   let timeStamps = [];
   let CpuUsageAtEachTimestamp = [];
   let MemoryUsageAtEachTimestamp = [];
 
-  timeStamps =
-    cpuUsageHistorical.resourceUsageHistorical[0].timestampsReadable.map(
-      (timestamp) => {
-        const date = new Date(timestamp);
-        return date.toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false,
-        });
-      },
-    );
+  // Use timestamps from whichever dataset is available
+  let availableData;
+  const cpuData = cpuUsageHistorical?.resourceUsageHistorical?.[0];
+  const memoryData = memoryUsageHistorical?.resourceUsageHistorical?.[0];
 
+  // if CPU data is available, use its timestamps
+  if (cpuData?.timestampsReadable) {
+    availableData = cpuData;
+    // if memory data is available, use its timestamps
+  } else if (memoryData?.timestampsReadable) {
+    availableData = memoryData;
+  }
+
+  timeStamps = availableData.timestampsReadable.map((timestamp) => {
+    const date = new Date(timestamp);
+    return date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    });
+  });
+
+  // if default view, show average of all pods
   if (defaultView) {
-    const cpuPodCount = cpuUsageHistorical.resourceUsageHistorical.length;
-    const memoryPodCount = memoryUsageHistorical.resourceUsageHistorical.length;
+    // Process CPU data if available
+    if (cpuUsageHistorical?.resourceUsageHistorical) {
+      // get the number of pods with CPU data
+      const cpuPodCount = cpuUsageHistorical.resourceUsageHistorical.length;
+      for (let i = 0; i < timeStamps.length; i++) {
+        let totalCpuUsageAtThisTimeStamp = 0;
+        cpuUsageHistorical.resourceUsageHistorical.forEach((pod) => {
+          totalCpuUsageAtThisTimeStamp += Number(pod.usageRelative[i]) || 0;
+        });
+        CpuUsageAtEachTimestamp.push(
+          // divide by the number of pods to get the average
+          totalCpuUsageAtThisTimeStamp / cpuPodCount,
+        );
+      }
+    }
 
-    // Calculate average for each timestamp
-    for (let i = 0; i < timeStamps.length; i++) {
-      let totalCpuUsageAtThisTimeStamp = 0;
-      let totalMemoryUsageAtThisTimeStamp = 0;
-
-      // Sum CPU usage for all pods at this timestamp
-      cpuUsageHistorical.resourceUsageHistorical.forEach((pod) => {
-        totalCpuUsageAtThisTimeStamp += Number(pod.usageRelative[i]) || 0;
-      });
-
-      // Sum Memory usage for all pods at this timestamp
-      memoryUsageHistorical.resourceUsageHistorical.forEach((pod) => {
-        totalMemoryUsageAtThisTimeStamp += Number(pod.usageRelative[i]) || 0;
-      });
-
-      // Calculate averages
-      CpuUsageAtEachTimestamp.push(totalCpuUsageAtThisTimeStamp / cpuPodCount);
-      MemoryUsageAtEachTimestamp.push(
-        totalMemoryUsageAtThisTimeStamp / memoryPodCount,
-      );
+    // Process Memory data if available
+    if (memoryUsageHistorical?.resourceUsageHistorical) {
+      const memoryPodCount =
+        memoryUsageHistorical.resourceUsageHistorical.length;
+      for (let i = 0; i < timeStamps.length; i++) {
+        let totalMemoryUsageAtThisTimeStamp = 0;
+        memoryUsageHistorical.resourceUsageHistorical.forEach((pod) => {
+          totalMemoryUsageAtThisTimeStamp += Number(pod.usageRelative[i]) || 0;
+        });
+        MemoryUsageAtEachTimestamp.push(
+          totalMemoryUsageAtThisTimeStamp / memoryPodCount,
+        );
+      }
     }
   }
 
+  // if a pod is clicked, show only its data
   if (!defaultView && clickedPod.podName) {
-    // Find the clicked pod
-    const clickedCpuPod = cpuUsageHistorical.resourceUsageHistorical.find(
-      (pod) => pod.name === clickedPod.podName,
-    );
-    const clickedMemoryPod = memoryUsageHistorical.resourceUsageHistorical.find(
-      (pod) => pod.name === clickedPod.podName,
-    );
-
-    // Clear existing arrays and push new data
-    CpuUsageAtEachTimestamp = [];
-    MemoryUsageAtEachTimestamp = [];
-
-    if (clickedCpuPod && clickedMemoryPod) {
-      CpuUsageAtEachTimestamp = clickedCpuPod.usageRelative;
-      MemoryUsageAtEachTimestamp = clickedMemoryPod.usageRelative;
+    // Process CPU data if available
+    if (cpuUsageHistorical?.resourceUsageHistorical) {
+      // find the clicked pod in the CPU data, using pod name
+      const clickedCpuPod = cpuUsageHistorical.resourceUsageHistorical.find(
+        (pod) => pod.name === clickedPod.podName,
+      );
+      CpuUsageAtEachTimestamp = clickedCpuPod?.usageRelative || [];
+    }
+    // Process Memory data if available
+    if (memoryUsageHistorical?.resourceUsageHistorical) {
+      const clickedMemoryPod =
+        memoryUsageHistorical.resourceUsageHistorical.find(
+          (pod) => pod.name === clickedPod.podName,
+        );
+      MemoryUsageAtEachTimestamp = clickedMemoryPod?.usageRelative || [];
     }
   }
 
@@ -174,24 +190,30 @@ const Metrics = ({
     },
   };
 
+  const datasets = [];
+  if (CpuUsageAtEachTimestamp.length > 0) {
+    datasets.push({
+      label: "CPU Usage (% of requested)",
+      data: CpuUsageAtEachTimestamp,
+      borderColor: "rgb(59, 130, 246)",
+      backgroundColor: "rgb(59, 130, 246)",
+      tension: 0.4,
+    });
+  }
+
+  if (MemoryUsageAtEachTimestamp.length > 0) {
+    datasets.push({
+      label: "RAM Usage (% of requested)",
+      data: MemoryUsageAtEachTimestamp,
+      borderColor: "#3730a3",
+      backgroundColor: "#3730a3",
+      tension: 0.4,
+    });
+  }
+
   const data = {
     labels: timeStamps,
-    datasets: [
-      {
-        label: "CPU Usage (% of requested)",
-        data: CpuUsageAtEachTimestamp,
-        borderColor: "rgb(59, 130, 246)",
-        backgroundColor: "rgb(59, 130, 246)",
-        tension: 0.4,
-      },
-      {
-        label: "RAM Usage (% of requested)",
-        data: MemoryUsageAtEachTimestamp,
-        borderColor: "#3730a3",
-        backgroundColor: "#3730a3",
-        tension: 0.4,
-      },
-    ],
+    datasets: datasets,
   };
 
   return (
