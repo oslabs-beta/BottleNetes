@@ -6,8 +6,12 @@ import PodRestart from "./PodRestart";
 import PodLogDisplay from "./PodLogDisplay";
 import QueryTimeWindowConfiguration from "./QueryTimeWindowConfiguration";
 import PodGridMetricSelection from "./PodGridMetricSelection";
+import PodSelector from "./PodSelector";
+import PodSorter from "./PodSorter";
+import PodFilter from "./PodFilter";
 
 const PodGrid = ({
+  defaultView,
   setDefaultView,
   clickedPod,
   setClickedPod,
@@ -28,6 +32,12 @@ const PodGrid = ({
   const [newReplicas, setNewReplicas] = useState(1);
   const [newRequests, setNewRequests] = useState("");
   const [newLimits, setNewLimits] = useState("");
+  const [metricToSort, setMetricToSort] = useState("");
+  const [filterConfig, setFilterConfig] = useState({
+    type: "",
+    value: "",
+    operator: "over",
+  });
 
   const handleReplicas = async () => {
     if (!clickedPod.podName || !clickedPod.namespace) {
@@ -124,44 +134,75 @@ const PodGrid = ({
 
     return podObj;
   });
+  // e.g.
+  // podList: [
+  //   {
+  //     podName: "pod1",
+  //     namespace: "namespace1",
+  //     status: "Running",
+  //     readiness: true,
+  //     containers: ["container1", "container2"],
+  //     service: "service1",
+  //     cpuDataRelative: 0.5,
+  //     cpuDataAbsolute: 500,
+  //     memoryDataRelative: 0.3,
+  //     memoryDataAbsolute: 300,
+  //     latencyData: 0.1,
+  //     selectedMetric: "cpu",
+  //   },
 
-  const buttonArray = [];
+  let processedPodList = [...podList];
 
-  for (const podObj of podList) {
-    buttonArray.push(
-      <Pod
-        podInfo={podObj}
-        key={podObj.podName}
-        type="button"
-        selectedMetric={selectedMetric}
-        isClicked={
-          clickedPod.podName === podObj.podName &&
-          clickedPod.namespace === podObj.namespace &&
-          clickedPod.containers === podObj.containers
-        }
-        onClick={() => {
-          setClickedPod({
-            podName: podObj.podName,
-            namespace: podObj.namespace,
-            containers: podObj.containers,
-          });
-          setDefaultView(false);
-        }}
-      />,
+  // Apply filter
+  if (filterConfig.type && filterConfig.value) {
+    processedPodList = processedPodList.filter((pod) => {
+      if (["cpuRelative", "memoryRelative"].includes(filterConfig.type)) {
+        const value = pod[filterConfig.type];
+        const threshold = parseFloat(filterConfig.value);
+        return filterConfig.operator === "over"
+          ? value > threshold
+          : value < threshold;
+      }
+      return pod[filterConfig.type] === filterConfig.value;
+    });
+  }
+
+  // Only sort if a metricToSort is selected and default view is false
+  if (metricToSort && !defaultView) {
+    processedPodList.sort(
+      // when metric data is not available, default to 0
+      (a, b) => (b[metricToSort] || 0) - (a[metricToSort] || 0),
     );
   }
 
-  // const resetView = () => {
-  //   setDefaultView(true);
-  //   setClickedPod({ podName: "", namespace: "", containers: [] });
-  //   setSelectedMetric("cpu");
-  // };
+  const buttonArray = processedPodList.map((podObj) => (
+    <Pod
+      podInfo={podObj}
+      key={podObj.podName}
+      type="button"
+      selectedMetric={selectedMetric}
+      isClicked={
+        clickedPod.podName === podObj.podName &&
+        clickedPod.namespace === podObj.namespace &&
+        clickedPod.containers === podObj.containers
+      }
+      onClick={() => {
+        setClickedPod({
+          podName: podObj.podName,
+          namespace: podObj.namespace,
+          containers: podObj.containers,
+        });
+        setDefaultView(false);
+      }}
+    />
+  ));
 
   const gridStyle =
     "grid gap-[2px] mr-2 mt-1 grid-cols-5 overflow-visible md:grid-cols-7 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 3xl:grid-cols-9 relative z-20";
+
   return (
     <div className="flex h-full flex-col overflow-visible">
-      <div id="control-buttons-row" className="mb-4 flex space-x-2 p-4">
+      <div id="control-buttons-row" className="mb-4 flex flex-wrap gap-2 p-4">
         <PodRestart
           clickedPod={clickedPod}
           setClickedPod={setClickedPod}
@@ -188,6 +229,19 @@ const PodGrid = ({
         >
           Adjust Resources/Limits
         </button>
+
+        <PodSelector
+          podList={podList}
+          setClickedPod={setClickedPod}
+          defaultView={defaultView}
+          setDefaultView={setDefaultView}
+        />
+        <PodSorter
+          setMetricToSort={setMetricToSort}
+          defaultView={defaultView}
+          setDefaultView={setDefaultView}
+        />
+        <PodFilter podList={podList} setFilterConfig={setFilterConfig} />
       </div>
 
       {/* Replicas Popup */}

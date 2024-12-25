@@ -12,7 +12,7 @@ const PodRestart = ({
   const [showRestartPopup, setShowRestartPopup] = useState(false);
   const [restartStatus, setRestartStatus] = useState("confirm"); // other state: 'loading', 'error'
 
-  console.log("clicked pod containers: ", clickedPod.containers);
+  // console.log("clicked pod containers: ", clickedPod.containers);
   const handleRestartPod = () => {
     if (!clickedPod.podName || !clickedPod.namespace) {
       alert("Please select a pod first");
