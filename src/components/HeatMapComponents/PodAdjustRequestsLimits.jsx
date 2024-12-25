@@ -1,3 +1,7 @@
+/**
+ * This component renders the 'Adjust Resources/Limits' with its Popup
+ */
+
 import PropTypes from "prop-types";
 import { useState } from "react";
 import {
@@ -140,7 +144,7 @@ const PodAdjustRequestsLimits = ({ clickedPod, backendUrl }) => {
         className="border-1 rounded-lg border-slate-200 bg-gradient-to-r from-[#e8eef4] to-slate-100 px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90"
         onClick={handleRequestsLimits}
       >
-        Adjust Resources/Limits
+        Adjust Requests/Limits
       </button>
 
       {/* Requests Limits Popup */}
