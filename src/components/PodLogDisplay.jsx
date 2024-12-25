@@ -71,7 +71,7 @@ const PodLogDisplay = ({ clickedPod, backendUrl }) => {
       >
         <div className="w-1/3 rounded-lg bg-slate-200 p-6">
           <h2 className="mb-4 text-center text-lg font-bold text-slate-800">
-            Select Container
+            Select A Container To View Logs
           </h2>
           <div id="container-select-buttons" className="flex flex-col gap-2">
             {clickedPod.containers.map((containerName) => (
