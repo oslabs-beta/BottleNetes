@@ -6,11 +6,13 @@ const PodRestart = ({
   setClickedPod,
   podRestartCount,
   setPodRestartCount,
+  setDefaultView,
   backendUrl,
 }) => {
   const [showRestartPopup, setShowRestartPopup] = useState(false);
   const [restartStatus, setRestartStatus] = useState("confirm"); // other state: 'loading', 'error'
 
+  console.log("clicked pod containers: ", clickedPod.containers);
   const handleRestartPod = () => {
     if (!clickedPod.podName || !clickedPod.namespace) {
       alert("Please select a pod first");
@@ -37,12 +39,14 @@ const PodRestart = ({
       });
 
       const data = await response.json();
-
+      // if the pod is successfully restarted
       if (data.status === "success") {
         setPodRestartCount(podRestartCount + 1);
         setClickedPod({ podName: "", namespace: "", containers: [] });
         setShowRestartPopup(false);
+        setDefaultView(true);
       } else {
+        // if the pod restart failed
         setRestartStatus("error");
       }
     } catch (error) {
@@ -157,6 +161,7 @@ PodRestart.propTypes = {
   setClickedPod: PropTypes.func.isRequired,
   podRestartCount: PropTypes.number.isRequired,
   setPodRestartCount: PropTypes.func.isRequired,
+  setDefaultView: PropTypes.func.isRequired,
   backendUrl: PropTypes.string.isRequired,
 };
 

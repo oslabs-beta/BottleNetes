@@ -167,6 +167,7 @@ const PodGrid = ({
           setClickedPod={setClickedPod}
           podRestartCount={podRestartCount}
           setPodRestartCount={setPodRestartCount}
+          setDefaultView={setDefaultView}
           backendUrl={backendUrl}
         />
 
