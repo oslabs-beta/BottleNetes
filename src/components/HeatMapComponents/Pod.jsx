@@ -1,3 +1,7 @@
+/**
+ * This component render each pod in the heatmap with the popup when hovering over each pod
+ */
+
 import PropTypes from "prop-types";
 import { useState } from "react";
 
@@ -36,7 +40,7 @@ const Pod = ({ podInfo, selectedMetric, onClick, isClicked }) => {
 
   const hoverStyle =
     // "pointer-events-none absolute z-[99999] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white/80 p-2 text-sm text-slate-900/90 opacity-0 transition-opacity duration-700 ease-in-out group-hover:opacity-100 shadow-xl";
-    `pointer-events-none absolute z-[99999] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white/80 text-slate-900/90 shadow-xl w-[300px] p-3 space-y-1 transition-opacity duration-700 ease-in-out ${isShowing ? "opacity-100" : "opacity-0"}`;
+    `pointer-events-none absolute z-[99999] rounded-lg bg-white/80 text-slate-900/90 shadow-xl w-[300px] p-3 space-y-1 transition-opacity duration-500 ease-in-out ${isShowing ? "opacity-100" : "opacity-0"}`;
 
   if (podInfo.readiness == true) {
     return (
@@ -49,67 +53,63 @@ const Pod = ({ podInfo, selectedMetric, onClick, isClicked }) => {
           backgroundColor: podInfo.color,
         }}
       >
-        {isShowing && (
-          <pod-info-popup id="pod-info" class={hoverStyle}>
-            <p className="font-semibold">
-              Pod Name: <span className="font-normal">{podInfo.podName}</span>
-            </p>
-            <p className="font-semibold">
-              Pod Status: <span className="font-normal">{podInfo.status}</span>
-            </p>
-            <p className="font-semibold">
-              Namespace:
-              <span className="font-normal">{podInfo.namespace}</span>
-            </p>
-            <p className="font-semibold">
-              Containers:
-              <span className="font-normal">
-                {podInfo.containers.join(", ")}
-              </span>
-            </p>
-            <p className="font-semibold">
-              Service: <span className="font-normal">{podInfo.service}</span>
-            </p>
-            <p className="font-semibold">
-              Ready:
-              <span className="font-normal">
-                {podInfo.readiness ? "Yes" : "No"}
-              </span>
-            </p>
-            <p className="font-semibold">
-              CPU Usage (% of request):
-              <span className="font-normal">
-                {podInfo.cpuDataRelative
-                  ? podInfo.cpuDataRelative.toFixed(2) + "%"
-                  : "N/A"}
-              </span>
-            </p>
-            <p className="font-semibold">
-              RAM Usage (% of request):
-              <span className="font-normal">
-                {podInfo.memoryDataRelative
-                  ? podInfo.memoryDataRelative.toFixed(2) + "%"
-                  : "N/A"}
-              </span>
-            </p>
-            <p className="font-semibold">
-              CPU Usage (cpu cores):
-              <span className="font-normal">
-                {podInfo.cpuDataAbsolute
-                  ? podInfo.cpuDataAbsolute.toFixed(3)
-                  : "N/A"}
-              </span>
-            </p>
-            <p className="font-semibold">
-              RAM Usage (MB):
-              <span className="font-normal">
-                {podInfo.memoryDataAbsolute
-                  ? (podInfo.memoryDataAbsolute / 1024 / 1024).toFixed(2)
-                  : "N/A"}
-              </span>
-            </p>
-          </pod-info-popup>
-        )}
+        <div id="pod-info-popup" className={hoverStyle}>
+          <p className="font-semibold">
+            Pod Name: <span className="font-normal">{podInfo.podName}</span>
+          </p>
+          <p className="font-semibold">
+            Pod Status: <span className="font-normal">{podInfo.status}</span>
+          </p>
+          <p className="font-semibold">
+            Namespace:
+            <span className="font-normal">{podInfo.namespace}</span>
+          </p>
+          <p className="font-semibold">
+            Containers:
+            <span className="font-normal">{podInfo.containers.join(", ")}</span>
+          </p>
+          <p className="font-semibold">
+            Service: <span className="font-normal">{podInfo.service}</span>
+          </p>
+          <p className="font-semibold">
+            Ready:
+            <span className="font-normal">
+              {podInfo.readiness ? "Yes" : "No"}
+            </span>
+          </p>
+          <p className="font-semibold">
+            CPU Usage (% of request):
+            <span className="font-normal">
+              {podInfo.cpuDataRelative
+                ? podInfo.cpuDataRelative.toFixed(2) + "%"
+                : "N/A"}
+            </span>
+          </p>
+          <p className="font-semibold">
+            RAM Usage (% of request):
+            <span className="font-normal">
+              {podInfo.memoryDataRelative
+                ? podInfo.memoryDataRelative.toFixed(2) + "%"
+                : "N/A"}
+            </span>
+          </p>
+          <p className="font-semibold">
+            CPU Usage (cpu cores):
+            <span className="font-normal">
+              {podInfo.cpuDataAbsolute
+                ? podInfo.cpuDataAbsolute.toFixed(3)
+                : "N/A"}
+            </span>
+          </p>
+          <p className="font-semibold">
+            RAM Usage (MB):
+            <span className="font-normal">
+              {podInfo.memoryDataAbsolute
+                ? (podInfo.memoryDataAbsolute / 1024 / 1024).toFixed(2)
+                : "N/A"}
+            </span>
+          </p>
+        </div>
       </button>
     );
   } else if (podInfo.readiness == false) {

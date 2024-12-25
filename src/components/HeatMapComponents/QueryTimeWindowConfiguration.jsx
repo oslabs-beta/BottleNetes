@@ -1,5 +1,9 @@
+/**
+ * This component renders 'Time Window' button with its Popup
+ */
+
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 const QueryTimeWindowConfiguration = ({
   queryTimeWindow,
@@ -20,7 +24,7 @@ const QueryTimeWindowConfiguration = ({
   };
 
   return (
-    <div id="query-time-window-configuration" className="flex flex-col gap-4">
+    <Fragment>
       <div
         id="time-window-config-button"
         className="relative mb-4 flex items-center"
@@ -104,7 +108,7 @@ const QueryTimeWindowConfiguration = ({
           </form>
         </div>
       </div>
-    </div>
+    </Fragment>
   );
 };
 

@@ -1,11 +1,20 @@
+/**
+ * This component renders the heatmap with the following components:
+ * Pod.jsx: Renders pods in heatmap
+ * PodGridMetricSelection.jsx: Renders buttons to select metrics to render in heatmap
+ * PodLogDisplay.jsx: Render 'View Pod Log' button
+ * PodRestart.jsx: Render 'Restart Pod' button
+ * QueryTimeWindowConfiguration.jsx: Render 'Time Window' button
+ */
+
 import PropTypes from "prop-types";
 import { useState } from "react";
 
 import Pod from "./Pod";
-import PodRestart from "./PodRestart";
-import PodLogDisplay from "./PodLogDisplay";
-import QueryTimeWindowConfiguration from "./QueryTimeWindowConfiguration";
 import PodGridMetricSelection from "./PodGridMetricSelection";
+import PodLogDisplay from "./PodLogDisplay";
+import PodRestart from "./PodRestart";
+import QueryTimeWindowConfiguration from "./QueryTimeWindowConfiguration";
 
 const PodGrid = ({
   setDefaultView,
@@ -254,6 +263,7 @@ const PodGrid = ({
           <QueryTimeWindowConfiguration
             queryTimeWindow={queryTimeWindow}
             setQueryTimeWindow={setQueryTimeWindow}
+            id="query-time-window-configuration"
           />
 
           <PodGridMetricSelection

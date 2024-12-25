@@ -1,15 +1,33 @@
 /* eslint-disable no-unused-vars */
+/**
+ * This component renders the main page with the following components:
+ * - MenuContainer.jsx: Display the menu section
+ * - Latency.jsx: Display the Latency chart
+ * - Metrics.jsx: Display historical data for resource usages
+ * - Overview.jsx: Display the overview
+ * - RequestLimit.jsx: Display the Request vs. Limit chart
+ * - PodGrid.jsx: Display the heatmap
+ * - PodNameDisplay.jsx: Display the Namespace, Pod Name and Deployment
+ */
+
 import PropTypes from "prop-types";
 import { useState, useRef, useEffect } from "react";
 
+// Hooks Folder
 import useFetchData from "../hooks/useFetchData";
+
+// Container Folder
 import MenuContainer from "./MenuContainer";
-import Overview from "../components/Overview";
-import PodNameDisplay from "../components/PodNameDisplay";
+
+// Component Folder
 import Latency from "../components/Latency";
 import Metrics from "../components/Metrics";
-import PodGrid from "../components/PodGrid";
+import Overview from "../components/Overview";
 import RequestLimit from "../components/RequestLimit";
+
+// Component/HeatMapComponent Folder
+import PodGrid from '../components/HeatMapComponents/PodGrid';
+import PodNameDisplay from '../components/HeatMapComponents/PodNameDisplay';
 
 const MainContainer = ({ username, backendUrl }) => {
   // Determines if the graphs display node data or pod specific data

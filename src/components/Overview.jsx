@@ -1,4 +1,6 @@
-// /* eslint-disable react/prop-types */
+/**
+ * This component renders the overview such as Cluster Name, number of Nodes, Pods and Containers in that cluster
+ */
 
 import PropTypes from "prop-types";
 import { useMemo } from "react";

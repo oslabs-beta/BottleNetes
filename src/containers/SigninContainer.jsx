@@ -1,3 +1,7 @@
+/**
+ * This component renders the Sign In Page
+ */
+
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { Hexagon } from "lucide-react";
