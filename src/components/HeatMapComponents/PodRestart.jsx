@@ -1,3 +1,7 @@
+/**
+ * This component renders 'Restart Pod' button with its Popups
+ */
+
 import PropTypes from "prop-types";
 import { useState } from "react";
 

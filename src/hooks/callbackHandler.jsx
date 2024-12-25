@@ -1,11 +1,15 @@
-// Run when redirected to the callback route of GitHub OAuth
+/**
+ * Hooks run when using OAuth
+ */
+
 import { useEffect } from "react";
-import useStore from "./store.jsx";
+import useStore from "../store.jsx";
 import PropTypes from "prop-types";
 
 const CallbackHandler = ({ backendUrl }) => {
   const signIn = useStore((state) => state.signIn);
-
+  
+  // Run when redirected to the callback route of GitHub OAuth
   useEffect(() => {
     const fetchToken = async () => {
       // URLSearchParams will get all queries inside of the passed in URL

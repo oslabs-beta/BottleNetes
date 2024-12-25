@@ -1,4 +1,8 @@
+/**
+ * This component renders buttons to configure with metric to display the graph
+ */
 import PropTypes from "prop-types";
+import { Fragment } from "react";
 
 const PodGridMetricSelection = ({ selectedMetric, setSelectedMetric }) => {
   const metrics = [
@@ -8,7 +12,7 @@ const PodGridMetricSelection = ({ selectedMetric, setSelectedMetric }) => {
   ];
 
   return (
-    <div id="metric-type-selection">
+    <Fragment>
       {metrics.map((metric) => (
         <button
           key={metric.type}
@@ -22,7 +26,7 @@ const PodGridMetricSelection = ({ selectedMetric, setSelectedMetric }) => {
           {metric.displayLabel}
         </button>
       ))}
-    </div>
+    </Fragment>
   );
 };
 

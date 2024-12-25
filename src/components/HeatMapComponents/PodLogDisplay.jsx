@@ -1,3 +1,7 @@
+/**
+ * This component render 'View Pod Log' button with its Popups
+ */
+
 import PropTypes from "prop-types";
 import { useState } from "react";
 

@@ -1,3 +1,7 @@
+/**
+ * This component renders the Sign Up Page
+ */
+
 import { useState } from "react";
 import { Hexagon } from "lucide-react";
 

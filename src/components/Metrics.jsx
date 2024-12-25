@@ -1,3 +1,7 @@
+/**
+ * This component renders the line graph representing historical CPU and Memory Usage data
+ */
+
 import PropTypes from "prop-types";
 import { Line } from "react-chartjs-2";
 import {
