@@ -1,5 +1,5 @@
 /**
- * This component render 'View Pod Log' button with its Popup
+ * This component render 'View Pod Log' button with its Popups
  */
 
 import PropTypes from "prop-types";
