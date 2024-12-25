@@ -8,12 +8,12 @@
  */
 
 import PropTypes from "prop-types";
-import { useState } from "react";
 
 import Pod from "./Pod";
+import PodAdjustRequestsLimits from "./PodAdjustRequestsLimits";
 import PodGridMetricSelection from "./PodGridMetricSelection";
 import PodLogDisplay from "./PodLogDisplay";
-import PodReplicas from './PodReplicas';
+import PodReplicas from "./PodReplicas";
 import PodRestart from "./PodRestart";
 import QueryTimeWindowConfiguration from "./QueryTimeWindowConfiguration";
 
@@ -33,22 +33,6 @@ const PodGrid = ({
   setQueryTimeWindow,
   backendUrl,
 }) => {
-  const [showRequestsLimitsPopup, setShowRequestsLimitsPopup] = useState(false);
-  const [newRequests, setNewRequests] = useState("");
-  const [newLimits, setNewLimits] = useState("");
-
-  const handleRequestsLimits = async () => {
-    if (!clickedPod.podName || !clickedPod.namespace) {
-      alert("Please select a pod first");
-      return;
-    }
-    setShowRequestsLimitsPopup(true);
-  };
-
-  const cancelRequestsLimits = () => {
-    setShowRequestsLimitsPopup(false);
-  };
-
   if (!podStatuses.allPodsStatus) {
     return <div>loading...</div>;
   }
@@ -110,13 +94,14 @@ const PodGrid = ({
       />,
     );
   }
-  
+
   // Dynamic Grid Style for the heatmap
   const gridStyle =
     "grid gap-[2px] mr-2 mt-1 grid-cols-5 overflow-visible md:grid-cols-7 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 3xl:grid-cols-9 relative z-20";
 
   return (
     <div className="flex h-full flex-col overflow-visible">
+      {/* Configuring button */}
       <div id="control-buttons-row" className="mb-4 flex space-x-2 p-4">
         <PodRestart
           clickedPod={clickedPod}
@@ -127,14 +112,10 @@ const PodGrid = ({
         />
         <PodLogDisplay clickedPod={clickedPod} backendUrl={backendUrl} />
         <PodReplicas clickedPod={clickedPod} backendUrl={backendUrl} />
-
-        {/* To be separated into a new component */}
-        <button
-          className="border-1 rounded-lg border-slate-200 bg-gradient-to-r from-[#e8eef4] to-slate-100 px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90"
-          onClick={handleRequestsLimits}
-        >
-          Adjust Resources/Limits
-        </button>
+        <PodAdjustRequestsLimits
+          clickedPod={clickedPod}
+          backendUrl={backendUrl}
+        />
       </div>
 
       {/* Bottom Container */}
@@ -146,12 +127,10 @@ const PodGrid = ({
             setQueryTimeWindow={setQueryTimeWindow}
             id="query-time-window-configuration"
           />
-
           <PodGridMetricSelection
             selectedMetric={selectedMetric}
             setSelectedMetric={setSelectedMetric}
           />
-
           {/* Left Side Buttons */}
           <button
             id="reset-button"
