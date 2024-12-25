@@ -111,6 +111,7 @@ const PodGrid = ({
       readiness: pod.readiness,
       containers: pod.containers,
       service: pod.service,
+      deploymentName: pod.deploymentName,
       selectedMetric,
     };
 
@@ -148,6 +149,7 @@ const PodGrid = ({
   //     memoryDataRelative: 0.3,
   //     memoryDataAbsolute: 300,
   //     latencyData: 0.1,
+  //     deploymentName: "deployment1",
   //     selectedMetric: "cpu",
   //   },
 
