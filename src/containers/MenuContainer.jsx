@@ -1,3 +1,7 @@
+/**
+ * This component renders the menu sidebar
+ */
+
 import PropTypes from "prop-types";
 
 const MenuContainer = ({

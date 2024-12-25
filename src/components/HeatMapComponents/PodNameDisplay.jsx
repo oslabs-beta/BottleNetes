@@ -1,7 +1,11 @@
-// PodNameDisplay.jsx
+/**
+ * This component renders Namespace, Pod Name and Deployment data
+ */
+
 import PropTypes from "prop-types";
-import "../Overview.css";
 import { useEffect } from "react";
+
+import "../../Overview.css";
 
 const PodNameDisplay = ({ clickedPod, setClickedPod, backendUrl }) => {
   const { podName, namespace, containers, deployment } = clickedPod;
