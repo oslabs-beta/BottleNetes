@@ -1,9 +1,6 @@
 import dotenv from "dotenv";
-// import jwt from "jsonwebtoken";
 import axios from "axios";
 import process from "node:process";
-
-// import { SECRET_KEY } from "../../utils/jwtUtils.js";
 
 dotenv.config();
 
@@ -12,23 +9,23 @@ const clientSecret = process.env.GITHUB_CLIENT_SECRET;
 
 const oAuthGitHubController = {};
 
-oAuthGitHubController.getTemporaryCode = async (req, res, next) => {
-  console.log("👩🏻‍🔧 Running getTemporaryCode middleware...");
+oAuthGitHubController.getCode = async (req, res, next) => {
+  console.log("👩🏻‍🔧 Running getCode middleware...");
 
   try {
-    const temporaryCode = await req.query.code;
-    if (!temporaryCode) {
+    const code = req.query.code;
+    if (!code) {
       return next({
         log: "🤨 No keys retrieved",
         status: 400,
         message: "Unable to retrieve key...",
       });
     }
-    res.locals.temporaryCode = temporaryCode;
+    res.locals.code = code;
     return next();
   } catch (error) {
     return next({
-      log: `❌ Error occurred in getTemporeryCode middleware: ${error}`,
+      log: `❌ Error occurred in getCode middleware: ${error}`,
       status: 500,
       message: "Error occurred while retrieving key",
     });
@@ -44,14 +41,22 @@ oAuthGitHubController.requestToken = async (_req, res, next) => {
       {
         client_id: clientID,
         client_secret: clientSecret,
-        code: res.locals.temporaryCode,
+        code: res.locals.code,
       },
       {
         headers: { Accept: "application/json" },
       },
     );
 
-    const { access_token } = await tokenResponse.data;
+    if (tokenResponse.data.error) {
+      return next({
+        log: `Unable to retrieve token: ${tokenResponse.data.error_description}`,
+        status: 400,
+        message: 'Unable to retrieve token',
+      });
+    };
+
+    const { access_token } = tokenResponse.data;
     if (!access_token)
       return next({
         log: "😥 Token does not exist",
@@ -59,8 +64,7 @@ oAuthGitHubController.requestToken = async (_req, res, next) => {
         message: "Unable to retrieve token...",
       });
 
-    res.locals.ssid = await access_token;
-    res.locals.access_token = await access_token;
+    res.locals.access_token = access_token;
     return next();
   } catch (error) {
     return next({
@@ -71,8 +75,8 @@ oAuthGitHubController.requestToken = async (_req, res, next) => {
   }
 };
 
-oAuthGitHubController.getGithubUsername = async (_req, res, next) => {
-  console.log("👩🏻‍🔧 Running getGithubUsername middleware...");
+oAuthGitHubController.getGitHubUserData = async (_req, res, next) => {
+  console.log("👩🏻‍🔧 Running getGithubUserData middleware...");
 
   try {
     const userResponse = await axios.get("https://api.github.com/user", {
@@ -107,35 +111,15 @@ oAuthGitHubController.getGithubUsername = async (_req, res, next) => {
     //   ...
     // }
     res.locals.authenticated = true;
-    res.locals.username = await user.login;
-    res.locals.user = await user;
+    res.locals.user = user;
     return next();
   } catch (error) {
     return next({
-      log: `😰 Error occurred in getGithubUsername middleware: ${error}`,
+      log: `😰 Error occurred in getGitHubUserData middleware: ${error}`,
       status: 500,
       message: "Error occurred while getting username",
     });
   }
 };
-
-// oAuthGitHubController.genJWT = async (_req, res, next) => {
-//   const token = jwt.sign(
-//     { id: res.locals.ssid, username: res.locals.username },
-//     SECRET_KEY,
-//     { expiresIn: "1d" },
-//   );
-//   const cookie = await res.cookie("jwt", res.locals.username, {
-//     httpOnly: true,
-//     secure: process.env.NODE_ENV === "production",
-//     maxAge: 24 * 60 * 60 * 1000,
-//     sameSite: "strict",
-//   });
-
-//   res.locals.cookie = cookie;
-//   res.locals.token = token;
-//   res.locals.signedIn = true;
-//   return next();
-// };
 
 export default oAuthGitHubController;

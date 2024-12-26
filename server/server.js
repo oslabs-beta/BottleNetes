@@ -72,9 +72,9 @@ app.get("/github", (_req, res) => {
   return res.redirect(githubAuthUrl);
 });
 
-app.get("/dashboard", userController.verifySignedIn, (req, res) => {
-  return res.status(200).json(`Welcome to your dashboard, ${req.user.userId}`);
-});
+// app.get("/dashboard", userController.verifySignedIn, (req, res) => {
+//   return res.status(200).json(`Welcome to your dashboard, ${req.user.userId}`);
+// });
 
 app.get("/", (_req, res) => {
   return res.status(200).sendFile(path.resolve(__dirname, "../index.html"));
@@ -89,7 +89,7 @@ app.use("*", (_req, res) => {
 
 app.use((err, _req, res, _next) => {
   const defaultErr = {
-    log: "Express error handler caught unknown middleware error",
+    log: `Express error handler caught unknown middleware error: ${err}`,
     status: 500,
     message: { err: "An error occurred" },
   };

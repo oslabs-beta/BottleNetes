@@ -27,15 +27,15 @@ const CallbackHandler = ({ backendUrl }) => {
       const params = new URLSearchParams(window.location.search);
       if (!params) return console.error("Unable to get the queries");
 
-      //Getting the query with the key "code";
+      // Getting the query with the key "code";
       const code = params.get("code");
       if (!code)
         return console.error("Unable to get the code inside the query");
 
-      console.log(`Sending requests to '${backendUrl}oauth/github'...`);
+      console.log(`Sending requests to '${backendUrl}oauth/github/callback'...`);
 
       try {
-        const response = await fetch(backendUrl + "oauth/github", {
+        const response = await fetch(backendUrl + "oauth/github/callback", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ code }),
@@ -50,10 +50,10 @@ const CallbackHandler = ({ backendUrl }) => {
         const data = await response.json();
         console.log(data);
 
-        // Set the token received from the back to localStorage
         if (!data.token) console.error("Unable to retrieve token.");
-
+        
         console.log("Successfully retrieved token.");
+        // Set the token received from the back to localStorage
         localStorage.setItem("token", data.token);
         signIn();
       } catch (error) {
@@ -63,6 +63,8 @@ const CallbackHandler = ({ backendUrl }) => {
 
     fetchToken();
   }, [signIn, backendUrl]);
+
+  return <div>Loading...</div>
 };
 
 CallbackHandler.propTypes = {
