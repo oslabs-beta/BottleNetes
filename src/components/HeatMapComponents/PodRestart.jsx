@@ -165,7 +165,7 @@ PodRestart.propTypes = {
   setClickedPod: PropTypes.func.isRequired,
   podRestartCount: PropTypes.number.isRequired,
   setPodRestartCount: PropTypes.func.isRequired,
-  setDefaultView: PropTypes.func.isRequired,
+  setDefaultView: PropTypes.func,
   backendUrl: PropTypes.string.isRequired,
 };
 
