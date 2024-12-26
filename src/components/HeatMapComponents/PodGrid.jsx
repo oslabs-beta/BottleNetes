@@ -45,6 +45,7 @@ const PodGrid = ({
       readiness: pod.readiness,
       containers: pod.containers,
       service: pod.service,
+      deploymentName: pod.deploymentName,
       selectedMetric,
     };
 
@@ -81,13 +82,15 @@ const PodGrid = ({
         isClicked={
           clickedPod.podName === podObj.podName &&
           clickedPod.namespace === podObj.namespace &&
-          clickedPod.containers === podObj.containers
+          clickedPod.containers === podObj.containers &&
+          clickedPod.deploymentName === podObj.deploymentName
         }
         onClick={() => {
           setClickedPod({
             podName: podObj.podName,
             namespace: podObj.namespace,
             containers: podObj.containers,
+            deploymentName: podObj.deploymentName
           });
           setDefaultView(false);
         }}
@@ -101,7 +104,7 @@ const PodGrid = ({
 
   return (
     <div className="flex h-full flex-col overflow-visible">
-      {/* Configuring button */}
+      {/* Configuring buttons */}
       <div id="control-buttons-row" className="mb-4 flex space-x-2 p-4">
         <PodRestart
           clickedPod={clickedPod}
@@ -172,7 +175,7 @@ PodGrid.propTypes = {
     podName: PropTypes.string,
     namespace: PropTypes.string,
     containers: PropTypes.array,
-    deployment: PropTypes.string,
+    deploymentName: PropTypes.string,
   }).isRequired,
   setClickedPod: PropTypes.func.isRequired,
   selectedMetric: PropTypes.string.isRequired,

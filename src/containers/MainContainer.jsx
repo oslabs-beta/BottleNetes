@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /**
  * This component renders the main page with the following components:
  * - MenuContainer.jsx: Display the menu section
@@ -26,8 +25,8 @@ import Overview from "../components/Overview";
 import RequestLimit from "../components/RequestLimit";
 
 // Component/HeatMapComponent Folder
-import PodGrid from '../components/HeatMapComponents/PodGrid';
-import PodNameDisplay from '../components/HeatMapComponents/PodNameDisplay';
+import PodGrid from "../components/HeatMapComponents/PodGrid";
+import PodNameDisplay from "../components/HeatMapComponents/PodNameDisplay";
 
 const MainContainer = ({ username, backendUrl }) => {
   // Determines if the graphs display node data or pod specific data
@@ -169,7 +168,6 @@ const MainContainer = ({ username, backendUrl }) => {
           <PodNameDisplay
             clickedPod={clickedPod}
             setClickedPod={setClickedPod}
-            backendUrl={backendUrl}
           />
         </div>
 
