@@ -4,17 +4,15 @@
 
 import { useEffect, useState } from "react";
 import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate, createBrowserRouter, RouterProvider
+  Navigate,
+  createBrowserRouter,
+  RouterProvider,
 } from "react-router-dom";
 
 import SigninContainer from "./containers/SigninContainer";
 import MainContainer from "./containers/MainContainer";
+import SignupContainer from "./containers/SignupContainer";
 import useStore from "./store.jsx";
-import CallbackHandler from "./hooks/CallbackHandler.jsx";
-import ProtectedRoute from "./ProtectedRoute.jsx";
 
 const App = () => {
   const {
@@ -26,16 +24,6 @@ const App = () => {
     setLoading,
     setUsername,
   } = useStore();
-
-  const router = createBrowserRouter([
-    {
-      path: '/',
-      element: isSignedIn ? <Navigate to={'/dashboard'} /> : <SigninContainer />
-    },
-    {
-      path: '/'
-    }
-  ])
 
   const [backendUrl] = useState("http://localhost:3000/");
 
@@ -81,40 +69,32 @@ const App = () => {
 
   if (loading) return <div>Loading...</div>;
 
+  const router = createBrowserRouter([
+    {
+      path: "/dashboard",
+      element: isSignedIn ? (
+        <MainContainer username={username} backendUrl={backendUrl} />
+      ) : (
+        <Navigate to={"/"} />
+      ),
+    },
+    {
+      path: "/signup",
+      element: <SignupContainer />,
+    },
+    {
+      path: "/",
+      element: isSignedIn ? (
+        <Navigate to={"/dashboard"} />
+      ) : (
+        <SigninContainer backendUrl={backendUrl} />
+      ),
+    },
+  ]);
+
   return (
     <div id="app">
-      <Router>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              isSignedIn ? (
-                <Navigate to="/dashboard" />
-              ) : (
-                <SigninContainer backendUrl={backendUrl} />
-              )
-            }
-          />
-          <Route
-            path="/oauth/github/callback"
-            element={
-              isSignedIn ? (
-                <Navigate to="/dashboard" />
-              ) : (
-                <CallbackHandler backendUrl={backendUrl} />
-              )
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute isSignedIn={isSignedIn}>
-                <MainContainer username={username} backendUrl={backendUrl} />
-              </ProtectedRoute>
-            }
-          />
-        </Routes>
-      </Router>
+      <RouterProvider router={router} />
     </div>
   );
 };
