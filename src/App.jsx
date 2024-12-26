@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /**
  * This component contains the security logics
  */
@@ -14,7 +13,8 @@ import {
 import SigninContainer from "./containers/SigninContainer";
 import MainContainer from "./containers/MainContainer";
 import useStore from "./store.jsx";
-import CallbackHandler from './hooks/CallbackHandler.jsx';
+import CallbackHandler from "./hooks/CallbackHandler.jsx";
+import ProtectedRoute from "./ProtectedRoute.jsx";
 
 const App = () => {
   const {
@@ -82,7 +82,9 @@ const App = () => {
           <Route
             path="/dashboard"
             element={
-              <MainContainer username={username} backendUrl={backendUrl} />
+              <ProtectedRoute isSignedIn={isSignedIn}>
+                <MainContainer username={username} backendUrl={backendUrl} />
+              </ProtectedRoute>
             }
           />
         </Routes>
