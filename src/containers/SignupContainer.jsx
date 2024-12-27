@@ -39,8 +39,8 @@ const SignupContainer = () => {
 
   return (
     <div
-      id="login-container"
-      className="flex h-screen w-screen flex-col items-center justify-center bg-gradient-to-bl from-slate-950 from-10% via-slate-800 via-70% to-cyan-950 to-90% text-center align-middle font-mono"
+      id="signup-container"
+      className="flex h-screen w-screen flex-col items-center justify-center bg-gradient-to-bl from-slate-950 from-10% via-slate-800 via-70% to-cyan-950 to-90% text-center align-middle font-mono absolute -z-10"
     >
       <h1 className="animate-text-color-animation font-sans text-7xl font-black transition duration-300 hover:scale-105">
         <a
@@ -62,10 +62,10 @@ const SignupContainer = () => {
       />
       <img src="src/assets/logo.png" className="mt-2 size-60" />
       <div
-        id="loginDisplay"
-        className="my-10 size-1/5 content-center rounded-2xl border-2 border-slate-950 bg-slate-950 text-center align-middle"
+        id="signup-display"
+        className="my-10 size-1/5 content-center rounded-2xl border-2 border-slate-950 bg-slate-950 text-center align-middle relative shadow-2xl shadow-slate-950"
       >
-        <h2 className="pb-5 text-3xl text-slate-300">Log In</h2>
+        <h2 className="pb-5 text-3xl text-slate-300">Sign Up</h2>
         <form className="mx-5 flex flex-col gap-y-2">
           <input
             type="text"
