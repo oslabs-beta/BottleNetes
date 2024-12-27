@@ -58,7 +58,7 @@ const MainContainer = ({ username, backendUrl }) => {
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
 
-  const { isLoading, allData } = useFetchData({
+  const { allData } = useFetchData({
     backendUrl,
     refreshFrequency,
     queryTimeWindow,
