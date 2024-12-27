@@ -4,6 +4,7 @@
 
 import { useState } from "react";
 import { Hexagon } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const SignupContainer = () => {
   const url = "http://localhost:3000/";
@@ -95,7 +96,7 @@ const SignupContainer = () => {
         </form>
         <br />
         <div id="button-container" className="flex justify-center align-middle">
-          <a href="/">
+          <Link to={"/"}>
             <button
               className="hover:border-3 active:border-3 rounded-lg border-2 border-slate-600 bg-slate-700 px-5 py-2 text-slate-300 hover:border-slate-500 hover:bg-slate-600 hover:text-slate-200 active:border-slate-700 active:bg-slate-800 active:text-slate-400"
               type="submit"
@@ -104,7 +105,7 @@ const SignupContainer = () => {
             >
               Sign Up
             </button>
-          </a>
+          </Link>
         </div>
       </div>
     </div>
