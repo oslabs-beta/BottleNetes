@@ -62,20 +62,6 @@ app.use(express.static(path.resolve(__dirname, "../signup.html")));
 app.use(express.static(path.resolve(__dirname, "./")));
 app.use(express.static(path.resolve(__dirname, "../src/")));
 
-const clientID = process.env.GITHUB_CLIENT_ID;
-const redirectUri = process.env.GITHUB_REDIRECT_URI;
-
-// GitHub OAuth, redirect to the callback route
-app.get("/github", (_req, res) => {
-  const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientID}&redirect_uri=${redirectUri}`;
-  // console.log(redirectUri);
-  return res.redirect(githubAuthUrl);
-});
-
-// app.get("/dashboard", userController.verifySignedIn, (req, res) => {
-//   return res.status(200).json(`Welcome to your dashboard, ${req.user.userId}`);
-// });
-
 app.get("/", (_req, res) => {
   return res.status(200).sendFile(path.resolve(__dirname, "../index.html"));
 });

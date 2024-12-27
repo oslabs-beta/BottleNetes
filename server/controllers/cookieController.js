@@ -16,34 +16,27 @@ cookieController.createCookie = async (req, res, next) => {
 
   try {
     // If authenticated by OAuth then run this block
-    if (res.locals.authenticated) {
-      const user = res.locals.user;
+    if (req.user) {
+      const { profile } = req.user;
+      // Capitalize the first word
+      const provider = profile.provider
+        .split(" ")
+        .map((word) => word[0].toUpperCase() + word.substring(1))
+        .join(" ");
+      console.log(`Now signing in using ${provider} Account...`);
 
-      if (!user) {
-        return next({
-          log: `User data is missing`,
-          status: 500,
-          message: 'Error occurred while creating cookie',
-        });
-      };
-
-      const id = user.id;
-      const username = user.login;
-      const token = genToken(id, username, "github");
-
+      const token = genToken(profile.id, profile.displayName, profile.provider);
       await res.cookie("jwt", token, {
-        httpOnly: true, // Prevent access via JS
-        secure: process.env.NODE_ENV === "production", // Only send over HTTPS in production,
-        sameSite: "strict", // Protect against CSRF
-        maxAge: 24 * 60 * 60 * 1000, // 1 day in ms
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 24 * 60 * 60 * 60,
       });
 
-      console.log(`🍪 Filling up the GitHub cookie basket...`);
+      console.log(`🍪 Filling up your ${provider} cookie basket...`);
+      return next();
+    }
 
-      res.locals.token = token;
-      res.locals.signedIn = true;
-    } 
-    
     // If user signed in using our app then run this block
     else {
       let { username } = await req.body;
