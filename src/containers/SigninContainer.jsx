@@ -5,7 +5,7 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
 import { Hexagon } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 import useStore from "../store.jsx";
 
@@ -43,22 +43,6 @@ const SigninContainer = ({ backendUrl }) => {
     }
   };
 
-  const handleRedirect = async (endpoint) => {
-    console.log(`🔄 Sending request to ${backendUrl + endpoint}`);
-
-    try {
-      const response = await fetch(backendUrl + endpoint, {
-        credentials: "include",
-      });
-      const data = await response.json();
-      console.log(data);
-
-      if (!response.ok) alert("Unable to redirect to requested page");
-    } catch (error) {
-      console.error(`😳 Redirect failed: ${error}`);
-    }
-  };
-
   const initiateGitHubOAuth = () => {
     window.location.href = backendUrl + "github";
   };
@@ -89,7 +73,7 @@ const SigninContainer = ({ backendUrl }) => {
       <img src="src/assets/logo.png" className="mt-2 size-60" />
       <div
         id="loginDisplay"
-        className="my-10 size-1/5 content-center rounded-2xl border-2 border-slate-950 bg-slate-950 text-center align-middle"
+        className="my-10 p-5 w-1/5 content-center rounded-2xl border-2 border-slate-950 bg-slate-950 text-center align-middle"
       >
         <h2 className="pb-5 text-3xl text-slate-300">Log In</h2>
         <form className="mx-5 flex flex-col gap-y-2">
@@ -121,16 +105,15 @@ const SigninContainer = ({ backendUrl }) => {
           >
             Log In
           </button>
-          <a href="/signup">
+          <Link to={'/signup'}>
             <button
               className="hover:border-3 active:border-3 rounded-lg border-2 border-slate-600 bg-slate-700 px-5 py-2 text-slate-300 hover:border-slate-500 hover:bg-slate-600 hover:text-slate-200 active:border-slate-700 active:bg-slate-800 active:text-slate-400"
               type="button"
               id="signup-button"
-              onClick={() => handleRedirect("signup")}
             >
               Sign Up
             </button>
-          </a>
+          </Link>
         </div>
         <div id="oauth-button">
           <button
@@ -147,7 +130,6 @@ const SigninContainer = ({ backendUrl }) => {
           className="text-slate-300 hover:text-slate-200 active:text-slate-400"
           type="button"
           id="retrieve-button"
-          onClick={() => handleRedirect("forgotpassword")}
         >
           Forgot your Password?
         </button>
