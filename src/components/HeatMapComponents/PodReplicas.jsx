@@ -78,7 +78,7 @@ const PodReplicas = ({ clickedPod, backendUrl }) => {
               Selected Pod: <strong>{clickedPod.podName}</strong>
             </p>
             <p>
-              Deployment: <strong>{clickedPod.deployment}</strong>
+              Deployment: <strong>{clickedPod.deploymentName}</strong>
             </p>
           </div>
           <input
@@ -131,7 +131,7 @@ PodReplicas.propTypes = {
     podName: PropTypes.string,
     namespace: PropTypes.string,
     containers: PropTypes.array,
-    deployment: PropTypes.string,
+    deploymentName: PropTypes.string,
   }),
   backendUrl: PropTypes.string,
 };
