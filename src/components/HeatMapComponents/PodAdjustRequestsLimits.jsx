@@ -52,7 +52,7 @@ const PodAdjustRequestsLimits = ({ clickedPod, backendUrl }) => {
 
       const data = await response.json();
 
-      if (data.message !== "success") {
+      if (data.status !== "success") {
         console.error(`Could not retrieve data: ${data}`);
         alert("Unable to retrieve data...");
       }
@@ -61,7 +61,7 @@ const PodAdjustRequestsLimits = ({ clickedPod, backendUrl }) => {
       alert(`${data.message}`);
     } catch (error) {
       console.error(`Failed to send request: ${error}`);
-      alert(`Failed to send request: ${error.message}`);
+      alert(`Failed to send request`);
     } finally {
       setShowRequestsLimitsPopup(false);
     }
@@ -166,7 +166,7 @@ const PodAdjustRequestsLimits = ({ clickedPod, backendUrl }) => {
               Selected Pod: <strong>{clickedPod.podName}</strong>
             </p>
             <p>
-              Deployment: <strong>{clickedPod.deployment}</strong>
+              Deployment: <strong>{clickedPod.deploymentName}</strong>
             </p>
           </div>
           <br />
@@ -278,7 +278,7 @@ PodAdjustRequestsLimits.propTypes = {
     podName: PropTypes.string,
     namespace: PropTypes.string,
     containers: PropTypes.array,
-    deployment: PropTypes.string,
+    deploymentName: PropTypes.string,
   }),
   backendUrl: PropTypes.string,
 };

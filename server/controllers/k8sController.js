@@ -318,12 +318,11 @@ k8sController.adjustRequestLimit = async (req, res, next) => {
     const newResources = {
       ...container.resources,
       limits: newLimits,
-      request: newRequests,
+      requests: newRequests,
     };
 
     // Replace old resources with new resources
     container.resources = newResources;
-    // console.log(body);
     // Replace current deployment with the updated deployment
     await k8sAppsApiClient.replaceNamespacedDeployment(
       deployment,
@@ -339,7 +338,6 @@ k8sController.adjustRequestLimit = async (req, res, next) => {
 
     // Drill to the container level again
     const newContainer = scaled.body.spec.template.spec.containers[0];
-
     // If the new metrics are different, return to the error handler
     if (
       newContainer.resources.limits.cpu !== newLimits.cpu ||
