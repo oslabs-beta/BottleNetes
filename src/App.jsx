@@ -12,6 +12,7 @@ import {
 import SigninContainer from "./containers/SigninContainer";
 import MainContainer from "./containers/MainContainer";
 import SignupContainer from "./containers/SignupContainer";
+import LoadingContainer from "./containers/LoadingContainer.jsx";
 import useStore from "./store.jsx";
 
 const App = () => {
@@ -64,7 +65,7 @@ const App = () => {
         if (data.signedIn) {
           setUsername(data.username);
           signIn();
-        } 
+        }
         // Otherwise, make sure they are signed out
         else signOut();
 
@@ -82,8 +83,7 @@ const App = () => {
     return () => controller.abort();
   }, [signIn, signOut, setLoading, setUsername, backendUrl]);
 
-  if (loading) return <div>Loading...</div>;
-
+  if (loading) return <LoadingContainer />;
 
   // Router for Client-side Rendering (CSR)
   const router = createBrowserRouter([
