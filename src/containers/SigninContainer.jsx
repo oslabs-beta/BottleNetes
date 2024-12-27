@@ -43,8 +43,8 @@ const SigninContainer = ({ backendUrl }) => {
     }
   };
 
-  const initiateGitHubOAuth = () => {
-    window.location.href = backendUrl + "github";
+  const initiateOAuth = (provider) => {
+    window.location.href = backendUrl + provider;
   };
 
   return (
@@ -73,7 +73,7 @@ const SigninContainer = ({ backendUrl }) => {
       <img src="src/assets/logo.png" className="mt-2 size-60" />
       <div
         id="loginDisplay"
-        className="my-10 p-5 w-1/5 content-center rounded-2xl border-2 border-slate-950 bg-slate-950 text-center align-middle"
+        className="my-10 w-1/5 content-center rounded-2xl border-2 border-slate-950 bg-slate-950 p-5 text-center align-middle"
       >
         <h2 className="pb-5 text-3xl text-slate-300">Log In</h2>
         <form className="mx-5 flex flex-col gap-y-2">
@@ -105,7 +105,7 @@ const SigninContainer = ({ backendUrl }) => {
           >
             Log In
           </button>
-          <Link to={'/signup'}>
+          <Link to={"/signup"}>
             <button
               className="hover:border-3 active:border-3 rounded-lg border-2 border-slate-600 bg-slate-700 px-5 py-2 text-slate-300 hover:border-slate-500 hover:bg-slate-600 hover:text-slate-200 active:border-slate-700 active:bg-slate-800 active:text-slate-400"
               type="button"
@@ -120,9 +120,17 @@ const SigninContainer = ({ backendUrl }) => {
             className="text-white"
             type="button"
             id="github"
-            onClick={initiateGitHubOAuth}
+            onClick={() => initiateOAuth('oauth/github')}
           >
             GitHub
+          </button>
+          <button
+            className="text-white"
+            type="button"
+            id="google"
+            onClick={() => initiateOAuth('oauth/google')}
+          >
+            Google
           </button>
         </div>
         <br />
