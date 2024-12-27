@@ -3,18 +3,21 @@
  */
 
 import PropTypes from "prop-types";
-
+import { useEffect } from "react";
 import "../../Overview.css";
 
 const PodNameDisplay = ({ clickedPod, setClickedPod }) => {
   const { podName, namespace, deploymentName } = clickedPod;
 
-  if (deploymentName === 'deployment not found') {
-    setClickedPod(prev => ({
-      ...prev,
-      deploymentName: '-',
-    }));
-  };
+  // move setClickedPod iside an useEffect to avoid calling setClickedPod directly during render (warning in console).
+  useEffect(() => {
+    if (deploymentName === "deployment not found") {
+      setClickedPod((prev) => ({
+        ...prev,
+        deploymentName: "-",
+      }));
+    }
+  }, [deploymentName, setClickedPod]);
 
   return (
     <div className="w-full bg-gradient-to-r from-[#0f172a] to-[#1e40af] py-4 text-center text-[#e2e8f0] transition-all">
@@ -48,7 +51,9 @@ const PodNameDisplay = ({ clickedPod, setClickedPod }) => {
         >
           <h2 className="text-2xl font-extrabold">Deployment</h2>
           <br />
-          <p className="text-4xl font-semibold">{podName ? deploymentName : "-"}</p>
+          <p className="text-4xl font-semibold">
+            {podName ? deploymentName : "-"}
+          </p>
         </div>
       </div>
     </div>

@@ -8,6 +8,7 @@
  */
 
 import PropTypes from "prop-types";
+import { useState } from "react";
 
 import Pod from "./Pod";
 import PodAdjustRequestsLimits from "./PodAdjustRequestsLimits";
@@ -16,8 +17,13 @@ import PodLogDisplay from "./PodLogDisplay";
 import PodReplicas from "./PodReplicas";
 import PodRestart from "./PodRestart";
 import QueryTimeWindowConfiguration from "./QueryTimeWindowConfiguration";
+import PodSelector from "./PodSelector";
+import PodSorter from "./PodSorter";
+import PodFilter from "./PodFilter";
+import usePodListProcessor from "../../hooks/usePodListProcessor";
 
 const PodGrid = ({
+  defaultView,
   setDefaultView,
   clickedPod,
   setClickedPod,
@@ -33,70 +39,51 @@ const PodGrid = ({
   setQueryTimeWindow,
   backendUrl,
 }) => {
+  const [metricToSort, setMetricToSort] = useState("");
+  const [filterConfig, setFilterConfig] = useState({
+    type: "",
+    value: "",
+  });
+
+  // Funan: separated the preparation of the pod list into a custom hook, usePodListProcessor
+  const processedPodList = usePodListProcessor({
+    podStatuses,
+    cpuUsageOneValue,
+    memoryUsageOneValue,
+    latencyAppRequestOneValue,
+    selectedMetric,
+    filterConfig,
+    metricToSort,
+    defaultView,
+  });
+
   if (!podStatuses.allPodsStatus) {
     return <div>loading...</div>;
   }
 
-  const podList = podStatuses?.allPodsStatus?.map((pod) => {
-    const podObj = {
-      podName: pod.podName,
-      namespace: pod.namespace,
-      status: pod.status,
-      readiness: pod.readiness,
-      containers: pod.containers,
-      service: pod.service,
-      deploymentName: pod.deploymentName,
-      selectedMetric,
-    };
-
-    const cpuData = cpuUsageOneValue?.resourceUsageOneValue?.find(
-      (obj) => obj.name === pod.podName,
-    );
-    podObj.cpuDataRelative = cpuData?.usageRelativeToRequest;
-    podObj.cpuDataAbsolute = cpuData?.usageAbsolute;
-
-    const memoryData = memoryUsageOneValue?.resourceUsageOneValue?.find(
-      (obj) => obj.name === pod.podName,
-    );
-    podObj.memoryDataRelative = memoryData?.usageRelativeToRequest;
-    podObj.memoryDataAbsolute = memoryData?.usageAbsolute;
-
-    const latencyData =
-      latencyAppRequestOneValue?.latencyAppRequestOneValue?.find(
-        (obj) => obj.name === pod.podName,
-      );
-    podObj.latencyData = latencyData?.avgCombinedLatency;
-
-    return podObj;
-  });
-
-  const buttonArray = [];
-
-  for (const podObj of podList) {
-    buttonArray.push(
-      <Pod
-        podInfo={podObj}
-        key={podObj.podName}
-        type="button"
-        selectedMetric={selectedMetric}
-        isClicked={
-          clickedPod.podName === podObj.podName &&
-          clickedPod.namespace === podObj.namespace &&
-          clickedPod.containers === podObj.containers &&
-          clickedPod.deploymentName === podObj.deploymentName
-        }
-        onClick={() => {
-          setClickedPod({
-            podName: podObj.podName,
-            namespace: podObj.namespace,
-            containers: podObj.containers,
-            deploymentName: podObj.deploymentName
-          });
-          setDefaultView(false);
-        }}
-      />,
-    );
-  }
+  const buttonArray = processedPodList.map((podObj) => (
+    <Pod
+      podInfo={podObj}
+      key={podObj.podName}
+      type="button"
+      selectedMetric={selectedMetric}
+      isClicked={
+        clickedPod.podName === podObj.podName &&
+        clickedPod.namespace === podObj.namespace &&
+        clickedPod.containers === podObj.containers
+        // && clickedPod.deploymentName === podObj.deploymentName // Don't need to check deployment, it also messes up the selector
+      }
+      onClick={() => {
+        setClickedPod({
+          podName: podObj.podName,
+          namespace: podObj.namespace,
+          containers: podObj.containers,
+          deploymentName: podObj.deploymentName,
+        });
+        setDefaultView(false);
+      }}
+    />
+  ));
 
   // Dynamic Grid Style for the heatmap
   const gridStyle =
@@ -105,12 +92,13 @@ const PodGrid = ({
   return (
     <div className="flex h-full flex-col overflow-visible">
       {/* Configuring buttons */}
-      <div id="control-buttons-row" className="mb-4 flex space-x-2 p-4">
+      <div id="control-buttons-row" className="mb-4 flex flex-wrap gap-2 p-4">
         <PodRestart
           clickedPod={clickedPod}
           setClickedPod={setClickedPod}
           podRestartCount={podRestartCount}
           setPodRestartCount={setPodRestartCount}
+          setDefaultView={setDefaultView}
           backendUrl={backendUrl}
         />
         <PodLogDisplay clickedPod={clickedPod} backendUrl={backendUrl} />
@@ -118,6 +106,24 @@ const PodGrid = ({
         <PodAdjustRequestsLimits
           clickedPod={clickedPod}
           backendUrl={backendUrl}
+        />
+        <PodSelector
+          podList={processedPodList}
+          setClickedPod={setClickedPod}
+          defaultView={defaultView}
+          setDefaultView={setDefaultView}
+          clickedPod={clickedPod}
+        />
+        <PodSorter
+          setMetricToSort={setMetricToSort}
+          defaultView={defaultView}
+          setDefaultView={setDefaultView}
+        />
+        <PodFilter
+          podList={processedPodList}
+          setFilterConfig={setFilterConfig}
+          defaultView={defaultView}
+          setDefaultView={setDefaultView}
         />
       </div>
 
@@ -147,6 +153,11 @@ const PodGrid = ({
               });
               setSelectedMetric("cpu");
               setQueryTimeWindow("1m");
+              setFilterConfig({
+                type: "",
+                value: "",
+              });
+              setMetricToSort("");
             }}
             className="rounded-2xl border-4 border-blue-600 bg-gradient-to-r from-slate-200 to-slate-100 px-2 py-4 text-lg font-semibold text-blue-600 transition duration-200 hover:border-2 hover:bg-gradient-to-r hover:from-[#1d4ed8] hover:to-[#2563eb] hover:text-slate-100"
           >
