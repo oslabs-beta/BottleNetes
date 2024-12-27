@@ -6,8 +6,16 @@ const PodSelector = ({
   setClickedPod,
   defaultView,
   setDefaultView,
+  clickedPod,
 }) => {
   const [selectedValue, setSelectedValue] = useState("");
+
+  // Update selectedValue when user clicks on a pod in the heatmap
+  useEffect(() => {
+    if (clickedPod.podName && clickedPod.namespace) {
+      setSelectedValue(`${clickedPod.namespace}||${clickedPod.podName}`);
+    }
+  }, [clickedPod]);
 
   // Reset when defaultView becomes true
   useEffect(() => {
@@ -85,6 +93,12 @@ PodSelector.propTypes = {
   setClickedPod: PropTypes.func.isRequired,
   defaultView: PropTypes.bool.isRequired,
   setDefaultView: PropTypes.func.isRequired,
+  clickedPod: PropTypes.shape({
+    podName: PropTypes.string,
+    namespace: PropTypes.string,
+    containers: PropTypes.array,
+    deployment: PropTypes.string,
+  }).isRequired,
 };
 
 export default PodSelector;

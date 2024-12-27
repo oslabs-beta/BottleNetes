@@ -64,14 +64,18 @@ const App = () => {
         if (data.signedIn) {
           setUsername(data.username);
           signIn();
-        } 
+        }
         // Otherwise, make sure they are signed out
         else signOut();
 
         setLoading(false);
       } catch (error) {
-        console.error(error);
-        signOut();
+        // added this to bypass the AbortError in browser console (may not be the best solution)
+        if (error.name != "AbortError") {
+          console.error(error);
+          signOut();
+        }
+      } finally {
         setLoading(false);
       }
     };
@@ -83,7 +87,6 @@ const App = () => {
   }, [signIn, signOut, setLoading, setUsername, backendUrl]);
 
   if (loading) return <div>Loading...</div>;
-
 
   // Router for Client-side Rendering (CSR)
   const router = createBrowserRouter([
