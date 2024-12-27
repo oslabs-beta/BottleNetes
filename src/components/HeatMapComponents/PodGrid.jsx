@@ -8,6 +8,7 @@
  */
 
 import PropTypes from "prop-types";
+import { useState } from "react";
 
 import Pod from "./Pod";
 import PodAdjustRequestsLimits from "./PodAdjustRequestsLimits";
@@ -16,8 +17,12 @@ import PodLogDisplay from "./PodLogDisplay";
 import PodReplicas from "./PodReplicas";
 import PodRestart from "./PodRestart";
 import QueryTimeWindowConfiguration from "./QueryTimeWindowConfiguration";
+import PodSelector from "./PodSelector";
+import PodSorter from "./PodSorter";
+import PodFilter from "./PodFilter";
 
 const PodGrid = ({
+  defaultView,
   setDefaultView,
   clickedPod,
   setClickedPod,
@@ -33,6 +38,13 @@ const PodGrid = ({
   setQueryTimeWindow,
   backendUrl,
 }) => {
+  const [metricToSort, setMetricToSort] = useState("");
+  const [filterConfig, setFilterConfig] = useState({
+    type: "",
+    value: "",
+    operator: "over",
+  });
+
   if (!podStatuses.allPodsStatus) {
     return <div>loading...</div>;
   }
@@ -70,33 +82,53 @@ const PodGrid = ({
     return podObj;
   });
 
-  const buttonArray = [];
+  let processedPodList = [...podList];
 
-  for (const podObj of podList) {
-    buttonArray.push(
-      <Pod
-        podInfo={podObj}
-        key={podObj.podName}
-        type="button"
-        selectedMetric={selectedMetric}
-        isClicked={
-          clickedPod.podName === podObj.podName &&
-          clickedPod.namespace === podObj.namespace &&
-          clickedPod.containers === podObj.containers &&
-          clickedPod.deploymentName === podObj.deploymentName
-        }
-        onClick={() => {
-          setClickedPod({
-            podName: podObj.podName,
-            namespace: podObj.namespace,
-            containers: podObj.containers,
-            deploymentName: podObj.deploymentName
-          });
-          setDefaultView(false);
-        }}
-      />,
+  // Apply filter
+  if (filterConfig.type && filterConfig.value && !defaultView) {
+    processedPodList = processedPodList.filter((pod) => {
+      if (["cpuRelative", "memoryRelative"].includes(filterConfig.type)) {
+        const value = pod[filterConfig.type];
+        const threshold = parseFloat(filterConfig.value);
+        return filterConfig.operator === "over"
+          ? value > threshold
+          : value < threshold;
+      }
+      return pod[filterConfig.type] === filterConfig.value;
+    });
+  }
+
+  // Only sort if a metricToSort is selected and default view is false
+  if (metricToSort && !defaultView) {
+    processedPodList.sort(
+      // when metric data is not available, default to 0
+      (a, b) => (b[metricToSort] || 0) - (a[metricToSort] || 0),
     );
   }
+
+  const buttonArray = processedPodList.map((podObj) => (
+    <Pod
+      podInfo={podObj}
+      key={podObj.podName}
+      type="button"
+      selectedMetric={selectedMetric}
+      isClicked={
+        clickedPod.podName === podObj.podName &&
+        clickedPod.namespace === podObj.namespace &&
+        clickedPod.containers === podObj.containers
+        // && clickedPod.deploymentName === podObj.deploymentName // don't need to check deployment for isClicked, will mess up with selector
+      }
+      onClick={() => {
+        setClickedPod({
+          podName: podObj.podName,
+          namespace: podObj.namespace,
+          containers: podObj.containers,
+          deploymentName: podObj.deploymentName,
+        });
+        setDefaultView(false);
+      }}
+    />
+  ));
 
   // Dynamic Grid Style for the heatmap
   const gridStyle =
@@ -105,12 +137,13 @@ const PodGrid = ({
   return (
     <div className="flex h-full flex-col overflow-visible">
       {/* Configuring buttons */}
-      <div id="control-buttons-row" className="mb-4 flex space-x-2 p-4">
+      <div id="control-buttons-row" className="mb-4 flex flex-wrap gap-2 p-4">
         <PodRestart
           clickedPod={clickedPod}
           setClickedPod={setClickedPod}
           podRestartCount={podRestartCount}
           setPodRestartCount={setPodRestartCount}
+          setDefaultView={setDefaultView}
           backendUrl={backendUrl}
         />
         <PodLogDisplay clickedPod={clickedPod} backendUrl={backendUrl} />
@@ -118,6 +151,23 @@ const PodGrid = ({
         <PodAdjustRequestsLimits
           clickedPod={clickedPod}
           backendUrl={backendUrl}
+        />
+        <PodSelector
+          podList={podList}
+          setClickedPod={setClickedPod}
+          defaultView={defaultView}
+          setDefaultView={setDefaultView}
+        />
+        <PodSorter
+          setMetricToSort={setMetricToSort}
+          defaultView={defaultView}
+          setDefaultView={setDefaultView}
+        />
+        <PodFilter
+          podList={podList}
+          setFilterConfig={setFilterConfig}
+          defaultView={defaultView}
+          setDefaultView={setDefaultView}
         />
       </div>
 
@@ -147,6 +197,14 @@ const PodGrid = ({
               });
               setSelectedMetric("cpu");
               setQueryTimeWindow("1m");
+              // Reset filter configuration
+              setFilterConfig({
+                type: "",
+                value: "",
+                operator: "over",
+              });
+              // Reset sort configuration
+              setMetricToSort("");
             }}
             className="rounded-2xl border-4 border-blue-600 bg-gradient-to-r from-slate-200 to-slate-100 px-2 py-4 text-lg font-semibold text-blue-600 transition duration-200 hover:border-2 hover:bg-gradient-to-r hover:from-[#1d4ed8] hover:to-[#2563eb] hover:text-slate-100"
           >
