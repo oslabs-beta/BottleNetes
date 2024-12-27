@@ -1,4 +1,5 @@
 import express from "express";
+
 import userController from "../controllers/userController.js";
 import cookieController from "../controllers/cookieController.js";
 
@@ -12,16 +13,17 @@ signinRouter.post(
     if (res.locals.validated) {
       return res.status(200).send({
         success: true,
-        message: 'Login Successful!',
-        id: res.locals.id,
-        username: res.locals.username
-        // redirectUrl: '/dashboard',
-        // userData: {
-          // id: res.locals.id
-        // }
+        username: res.locals.username,
       });
-    } else return res.redirect('/');
+    } else return res.redirect("/");
   },
 );
+
+signinRouter.get("/checkSignin", cookieController.verifyCookie, (_req, res) => {
+  return res.status(200).send({
+    signedIn: res.locals.signedIn,
+    username: res.locals.username,
+  });
+});
 
 export default signinRouter;

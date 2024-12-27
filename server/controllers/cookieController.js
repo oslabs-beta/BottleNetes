@@ -1,4 +1,12 @@
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+import process from "node:process";
+
+import { SECRET_KEY } from "../../utils/jwtUtils.js";
 import Users from "../models/UserModel.js";
+import genToken from "../../utils/jwtUtils.js";
+
+dotenv.config();
 
 const cookieController = {};
 
@@ -7,31 +15,59 @@ cookieController.createCookie = async (req, res, next) => {
   console.log("🍪 Running createCookie middleware...");
 
   try {
-    const { username } = await req.body;
-    const foundUserID = await Users.findOne({
-      where: { username },
-      attributes: ["id"],
-    });
+    // If authenticated by OAuth then run this block
+    if (req.user) {
+      const { profile } = req.user;
+      // Capitalize the first word
+      const provider = profile.provider
+        .split(" ")
+        .map((word) => word[0].toUpperCase() + word.substring(1))
+        .join(" ");
+      console.log(`Now signing in using ${provider} Account...`);
 
-    if (foundUserID) {
-      const cookie = await res.cookie("ssid", foundUserID.dataValues.id, {
+      const token = genToken(profile.id, profile.displayName, profile.provider);
+      await res.cookie("jwt", token, {
         httpOnly: true,
-        sameSite: 'Lax',
-        expires: new Date(Date.now() + 3600000), // Cookie expires in 1hr
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 24 * 60 * 60 * 60,
       });
-      console.log(`🍪 Filling up the cookie basket...`);
-      res.locals.cookie = cookie;
-      // console.log(res.locals.cookie.req.cookies.ssid);
-      res.locals.id = foundUserID.dataValues.id;
-      // console.log(res.locals.id);
+
+      console.log(`🍪 Filling up your ${provider} cookie basket...`);
       return next();
-    } else {
-      return next({
-        log: `🤨 Could not find user. Cookie will not be created`,
-        status: 401,
-        message: "Error occurred while retrieving cookies...",
-      });
     }
+
+    // If user signed in using our app then run this block
+    else {
+      let { username } = await req.body;
+
+      const foundUserID = await Users.findOne({
+        where: { username },
+        attributes: ["id"],
+      });
+
+      if (!foundUserID) {
+        return next({
+          log: `🤨 Could not find user. Cookie will not be created`,
+          status: 401,
+          message: "Error occurred while retrieving cookies...",
+        });
+      }
+      const token = genToken(foundUserID.dataValues.id, username);
+
+      await res.cookie("jwt", token, {
+        httpOnly: true, // Prevent access via JS
+        secure: process.env.NODE_ENV === "production", // Only send over HTTPS in production,
+        sameSite: "strict", // Protect against CSRF
+        maxAge: 24 * 60 * 60 * 1000, // 1 day in ms
+      });
+
+      console.log(`🍪 Filling up the cookie basket...`);
+
+      res.locals.token = token;
+      res.locals.id = foundUserID.dataValues.id;
+    }
+    return next();
   } catch (error) {
     return next({
       log: `🍪❌ Error occurred in createCookie middleware: ${error}`,
@@ -42,23 +78,27 @@ cookieController.createCookie = async (req, res, next) => {
 };
 
 // Verify the cookie with their id to make sure they are the correct signed in user
-// NOT CURRENTLY IN USE
 cookieController.verifyCookie = async (req, res, next) => {
   console.log(`🍪🤔 Running verifyCookie middleware...`);
 
   try {
-    const cookie = await req.cookies;
-    // Check if the cookie ssid matches the user id
-    if (cookie.ssid === res.locals.id) {
-      console.log(`🍪 Verified session. Proceeds...`);
-      res.locals.verifiedCookie = true;
-      return next();
-      // If they're not match, redirect them to the sign in page
-    } else {
-      console.log(`🍪🤨 Stop being sus. Not a match!`);
-      res.locals.verifiedCookie = false;
-      return next();
+    const token = await req.cookies.jwt;
+
+    if (!token) {
+      res.locals.signedIn = false;
+      return next({
+        log: "🥲 Auth token is missing",
+        status: 401,
+        message: "Token not found",
+      });
     }
+
+    const decoded = jwt.verify(token, SECRET_KEY);
+
+    res.locals.username = decoded.username;
+    res.locals.signedIn = true;
+    console.log(`🍪 Verified session. Enjoy your dashboard!`);
+    return next();
   } catch (error) {
     return next({
       log: `😭 Error in verifyCookie middleware: ${error}`,
