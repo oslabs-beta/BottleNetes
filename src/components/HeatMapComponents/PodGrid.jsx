@@ -157,6 +157,7 @@ const PodGrid = ({
           setClickedPod={setClickedPod}
           defaultView={defaultView}
           setDefaultView={setDefaultView}
+          clickedPod={clickedPod}
         />
         <PodSorter
           setMetricToSort={setMetricToSort}

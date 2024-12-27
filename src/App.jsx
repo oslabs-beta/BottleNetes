@@ -70,8 +70,12 @@ const App = () => {
 
         setLoading(false);
       } catch (error) {
-        console.error(error);
-        signOut();
+        // added this to bypass the AbortError in browser console (may not be the best solution)
+        if (error.name != "AbortError") {
+          console.error(error);
+          signOut();
+        }
+      } finally {
         setLoading(false);
       }
     };
