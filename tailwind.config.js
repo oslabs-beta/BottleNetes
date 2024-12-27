@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  darkMode: 'class',
+  darkMode: "class",
   content: ["./index.html", "./signup.html", "./src/**/*.{js,ts,jsx,tsx,html}"],
   theme: {
     extend: {
@@ -9,14 +9,17 @@ export default {
         "xl-2xl": "1400px",
         "3xl": "1750px",
       },
+
       boxShadow: {
         "custom-lg":
           "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 -10px 15px -3px rgba(0, 0, 0, 0.1), 0 -4px 6px -2px rgba(0, 0, 0, 0.05)",
       },
+
       backgroundImage: {
         "custom-gradient":
           "linear-gradient(225deg, #e2e8f0 35%, #dbeafe 50%, #ede9fe 65%, #e2e8f0)",
       },
+
       keyframes: {
         colorChange: {
           "0%": {
@@ -43,6 +46,7 @@ export default {
         textColorAnimation: "textColorAnimation 3s linear infinite",
         "slow-spin": "spin 20s linear infinite",
       },
+
       fontFamily: {
         sans: ["Inter", "sans-serif"],
       },

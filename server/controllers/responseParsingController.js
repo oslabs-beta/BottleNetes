@@ -5,20 +5,22 @@ export const parseResponseAllPodsStatus = (req, res, next) => {
     containerInfoData,
     restartData,
     podInfoData,
+    podReplicaSetOwnerData,
   ] = res.locals.data;
 
   const podsObj = {};
 
   phaseData.forEach((item) => {
     const { pod, namespace, phase, service } = item.metric;
-
+    // key is the pod name
+    // value is an object with pod info
     podsObj[pod] = {
       podName: pod,
       status: phase.toLowerCase(),
       namespace: namespace,
       service: service,
 
-      // Default values
+      // placeholder values
       nodeName: "node name not configured",
       clusterName: "cluster name not configured",
       restartCount: 0,
@@ -26,6 +28,7 @@ export const parseResponseAllPodsStatus = (req, res, next) => {
       containers: [],
       readiness: "cannot fetch readiness",
       podIp: "cannot fetch pod ip",
+      deploymentName: "deployment not found",
     };
   });
 
@@ -68,6 +71,24 @@ export const parseResponseAllPodsStatus = (req, res, next) => {
     }
   });
 
+  podReplicaSetOwnerData.forEach((item) => {
+    const { replicaset, owner_name } = item.metric;
+    // The relationship between ReplicaSet names and Pod names:
+    // ReplicaSet name: deployment-name-hash
+    // Pod name: deployment-name-hash-random
+    // Example:
+    // ReplicaSet: ai-daffy-frontend-deployment-5c9d8c6685
+    // Pod: ai-daffy-frontend-deployment-5c9d8c6685-tb55c
+
+    // For each pod in podsObj, check if its name starts with the replicaset name
+    Object.keys(podsObj).forEach((podName) => {
+      // If the pod name starts with the replicaset name, assign the deployment name to that pod
+      if (podName.startsWith(replicaset)) {
+        podsObj[podName].deploymentName = owner_name;
+      };
+    });
+  });
+
   // Convert object values to array
   res.locals.parsedData = {
     allPodsStatus: Object.values(podsObj),
@@ -76,7 +97,7 @@ export const parseResponseAllPodsStatus = (req, res, next) => {
   return next();
 };
 
-export const parseResponseAllPodsRequestLimit = (req, res, next) => {
+export const parseResponseAllPodsRequestLimit = (_req, res, next) => {
   const [
     cpuRequestData,
     memoryRequestData,
@@ -151,7 +172,7 @@ export const parseResponseAllPodsRequestLimit = (req, res, next) => {
   return next();
 };
 
-export const parseResponseResourceUsageOneValue = (req, res, next) => {
+export const parseResponseResourceUsageOneValue = (_req, res, next) => {
   const [relativeData, absoluteData] = res.locals.data;
 
   const podsObj = {};
@@ -184,7 +205,7 @@ export const parseResponseResourceUsageOneValue = (req, res, next) => {
   return next();
 };
 
-export const parseResponseResourceUsageHistorical = (req, res, next) => {
+export const parseResponseResourceUsageHistorical = (_req, res, next) => {
   const [relativeData, absoluteData] = res.locals.data;
 
   const podsObj = {};
@@ -212,7 +233,7 @@ export const parseResponseResourceUsageHistorical = (req, res, next) => {
   absoluteData.forEach((item) => {
     const name = item.metric[res.locals.level];
     if (podsObj[name]) {
-      item.values.forEach(([timestamp, value]) => {
+      item.values.forEach(([, value]) => {
         podsObj[name].usageAbsolute.push(Number(value));
       });
     }
@@ -225,7 +246,7 @@ export const parseResponseResourceUsageHistorical = (req, res, next) => {
   return next();
 };
 
-export const parseResponseLatencyAppRequestOneValue = (req, res, next) => {
+export const parseResponseLatencyAppRequestOneValue = (_req, res, next) => {
   const [
     numRequestsData,
     inboundLatencyData,
@@ -319,7 +340,7 @@ export const parseResponseLatencyAppRequestOneValue = (req, res, next) => {
   return next();
 };
 
-export const parseResponseLatencyAppRequestHistorical = (req, res, next) => {
+export const parseResponseLatencyAppRequestHistorical = (_req, res, next) => {
   const [
     inboundLatencyData,
     outboundLatencyData,

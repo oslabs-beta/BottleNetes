@@ -14,11 +14,11 @@ const isValidType = (str) => {
   return true;
 };
 
-export const parseRequestAllPodsStatus = (req, res, next) => {
+export const parseRequestAllPodsStatus = (_req, _res, next) => {
   return next();
 };
 
-export const parseRequestAllPodsRequestLimit = (req, res, next) => {
+export const parseRequestAllPodsRequestLimit = (_req, _res, next) => {
   return next();
 };
 
