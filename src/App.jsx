@@ -1,4 +1,8 @@
 /* eslint-disable no-unused-vars */
+/**
+ * This component contains the security logics
+ */
+
 import { useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
@@ -7,10 +11,10 @@ import {
   Navigate,
 } from "react-router-dom";
 
-import useStore from "./store.jsx";
 import SigninContainer from "./containers/SigninContainer";
 import MainContainer from "./containers/MainContainer";
-import CallbackHandler from "./CallbackHandler.jsx";
+import useStore from "./store.jsx";
+import CallbackHandler from './hooks/CallbackHandler.jsx';
 
 const App = () => {
   const {

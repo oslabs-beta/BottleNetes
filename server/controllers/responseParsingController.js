@@ -85,7 +85,7 @@ export const parseResponseAllPodsStatus = (req, res, next) => {
       // If the pod name starts with the replicaset name, assign the deployment name to that pod
       if (podName.startsWith(replicaset)) {
         podsObj[podName].deploymentName = owner_name;
-      }
+      };
     });
   });
 

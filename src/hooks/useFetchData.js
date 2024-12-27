@@ -1,3 +1,7 @@
+/**
+ * Hooks run when fetching data to display in the Main Page
+ */
+
 import { useState, useEffect } from "react";
 
 const useFetchData = ({
