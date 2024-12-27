@@ -7,7 +7,7 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Navigate,
+  Navigate, createBrowserRouter, RouterProvider
 } from "react-router-dom";
 
 import SigninContainer from "./containers/SigninContainer";
@@ -27,22 +27,45 @@ const App = () => {
     setUsername,
   } = useStore();
 
-  const [backendUrl, setBackendUrl] = useState("http://localhost:3000/");
+  const router = createBrowserRouter([
+    {
+      path: '/',
+      element: isSignedIn ? <Navigate to={'/dashboard'} /> : <SigninContainer />
+    },
+    {
+      path: '/'
+    }
+  ])
 
+  const [backendUrl] = useState("http://localhost:3000/");
+
+  // This hook fires whenever you go to the home page (Sign In Page)
   useEffect(() => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     const checkSigninStatus = async () => {
       console.log(`Sending request to '${backendUrl}signin/checkSignin'...`);
 
       try {
         const response = await fetch(backendUrl + "signin/checkSignin", {
           credentials: "include",
+          signal,
         });
+
+        if (!response.ok) {
+          console.error(
+            `Server responded with a ${response.status} code: ${response.statusText}`,
+          );
+        }
         const data = await response.json();
         console.log(data);
+
         if (data.signedIn) {
-          setUsername(data.username.username);
+          setUsername(data.username);
           signIn();
         } else signOut();
+
         setLoading(false);
       } catch (error) {
         console.error(error);
@@ -50,7 +73,10 @@ const App = () => {
         setLoading(false);
       }
     };
+
     checkSigninStatus();
+
+    return () => controller.abort();
   }, [signIn, signOut, setLoading, setUsername, backendUrl]);
 
   if (loading) return <div>Loading...</div>;
@@ -70,7 +96,7 @@ const App = () => {
             }
           />
           <Route
-            path="/oauth/callback"
+            path="/oauth/github/callback"
             element={
               isSignedIn ? (
                 <Navigate to="/dashboard" />

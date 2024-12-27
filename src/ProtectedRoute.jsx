@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import { Navigate } from 'react-router-dom';
 
 const ProtectedRoute = ({ children, isSignedIn }) => {
-  
   return isSignedIn ? children : <Navigate to='/' />;
 };
 
