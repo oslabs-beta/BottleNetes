@@ -102,159 +102,155 @@ const MainContainer = ({ username, backendUrl }) => {
     console.log("time window: ", queryTimeWindow);
   }, [queryTimeWindow]);
 
-  //helper function
-  const fetchData = async (method, endpoint, body = null) => {
-    try {
-      const request = {
-        method: method,
-        headers: { "Content-Type": "application/json" },
-      };
-      if (body) request.body = JSON.stringify(body);
-      const response = await fetch(url + endpoint, request);
+  // FETCH HELPER FUNC, OUTDATED
+  // const fetchData = async (method, endpoint, body = null) => {
+  //   try {
+  //     const request = {
+  //       method: method,
+  //       headers: { "Content-Type": "application/json" },
+  //     };
+  //     if (body) request.body = JSON.stringify(body);
+  //     const response = await fetch(url + endpoint, request);
 
-      return await response.json();
-    } catch (error) {
-      console.error("Fetch error:", error);
-      return null;
-    }
-  };
+  //     return await response.json();
+  //   } catch (error) {
+  //     console.error("Fetch error:", error);
+  //     return null;
+  //   }
+  // };
 
-  // Populate all data with big fetch, run every 30 seconds
-  useEffect(() => {
-    const bigFetch = async () => {
-      setIsLoading(true);
-
-      console.log("Fetching data...");
-
-      const bodyResourceUsageOnevalueCPU = {
-        type: "cpu",
-        time: queryTimeWindow,
-        level: "pod",
-      };
-
-      const bodyResourceUsageOnevalueMemory = {
-        type: "memory",
-        time: queryTimeWindow,
-        level: "pod",
-      };
-
-      const bodyResourceUsageHistoricalCPU = {
-        type: "cpu",
-        timeEnd: Math.floor(Date.now() / 1000).toString(),
-        timeStart: (Math.floor(Date.now() / 1000) - 1200).toString(),
-        timeStep: "60",
-        level: "pod",
-      };
-
-      const bodyResourceUsageHistoricalMemory = {
-        type: "memory",
-        timeEnd: Math.floor(Date.now() / 1000).toString(),
-        timeStart: (Math.floor(Date.now() / 1000) - 1200).toString(),
-        timeStep: "60",
-        level: "pod",
-      };
-
-      const bodyLatencyAppRequestOneValue = {
-        time: queryTimeWindow,
-        level: "pod",
-      };
-
-      const bodyLatencyAppRequestHistorical = {
-        timeEnd: Math.floor(Date.now() / 1000).toString(),
-        timeStart: (Math.floor(Date.now() / 1000) - 1200).toString(),
-        timeStep: "60",
-        level: "pod",
-      };
-
-      try {
-        const fakeNodeData = {
-          allNodes: [
-            {
-              nodeName: "Minikube",
-              clusterName: "Minikube",
-            },
-          ],
-        };
-
-        const [
-          status,
-          requestLimits,
-          cpuUsageOneValue,
-          memoryUsageOneValue,
-          cpuUsageHistorical,
-          memoryUsageHistorical,
-          latencyAppRequestOneValue,
-          latencyAppRequestHistorical,
-        ] = await Promise.all([
-          fetchData("GET", "api/all-pods-status"),
-          fetchData("GET", "api/all-pods-request-limit"),
-          // fetchData("GET", "api/allnodes") CURRENTLY POPULATED WITH FAKE DATA
-          fetchData(
-            "POST",
-            "api/resource-usage-onevalue",
-            bodyResourceUsageOnevalueCPU,
-          ),
-          fetchData(
-            "POST",
-            "api/resource-usage-onevalue",
-            bodyResourceUsageOnevalueMemory,
-          ),
-          fetchData(
-            "POST",
-            "api/resource-usage-historical",
-            bodyResourceUsageHistoricalCPU,
-          ),
-          fetchData(
-            "POST",
-            "api/resource-usage-historical",
-            bodyResourceUsageHistoricalMemory,
-          ),
-          fetchData(
-            "POST",
-            "api/latency-app-request-onevalue",
-            bodyLatencyAppRequestOneValue,
-          ),
-          fetchData(
-            "POST",
-            "api/latency-app-request-historical",
-            bodyLatencyAppRequestHistorical,
-          ),
-        ]);
-        // console.log( "DATA FROM BACKEND",
-        //   status,
-        //   requestLimits,
-        //   cpuUsageOneValue,
-        //   memoryUsageOneValue,
-        //   cpuUsageHistorical,
-        // );
-        setAllData({
-          podsStatuses: status || [],
-          requestLimits: requestLimits || [],
-          allNodes: fakeNodeData,
-          cpuUsageOneValue: cpuUsageOneValue || [],
-          memoryUsageOneValue: memoryUsageOneValue || [],
-          cpuUsageHistorical: cpuUsageHistorical || [],
-          memoryUsageHistorical: memoryUsageHistorical || [],
-          latencyAppRequestOneValue: latencyAppRequestOneValue || [],
-          latencyAppRequestHistorical: latencyAppRequestHistorical || [],
-        });
-      } catch (error) {
-        console.error("Error fetching initial data:", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    bigFetch();
-
-    const intervalID = setInterval(bigFetch, refreshFrequency);
-    return () => {
-      clearInterval(intervalID);
-    };
-  }, [refreshFrequency, manualRefreshCount, queryTimeWindow]);
-
+  // BIG FETCH RUNNING EVERY 30 SECS, OUTDATED
   // useEffect(() => {
-  //   console.log("All data: ", allData);
-  // }, [allData]);
+  //   const bigFetch = async () => {
+  //     // setIsLoading(true);
+
+  //     console.log("Fetching data...");
+
+  //     const bodyResourceUsageOnevalueCPU = {
+  //       type: "cpu",
+  //       time: queryTimeWindow,
+  //       level: "pod",
+  //     };
+
+  //     const bodyResourceUsageOnevalueMemory = {
+  //       type: "memory",
+  //       time: queryTimeWindow,
+  //       level: "pod",
+  //     };
+
+  //     const bodyResourceUsageHistoricalCPU = {
+  //       type: "cpu",
+  //       timeEnd: Math.floor(Date.now() / 1000).toString(),
+  //       timeStart: (Math.floor(Date.now() / 1000) - 1200).toString(),
+  //       timeStep: "60",
+  //       level: "pod",
+  //     };
+
+  //     const bodyResourceUsageHistoricalMemory = {
+  //       type: "memory",
+  //       timeEnd: Math.floor(Date.now() / 1000).toString(),
+  //       timeStart: (Math.floor(Date.now() / 1000) - 1200).toString(),
+  //       timeStep: "60",
+  //       level: "pod",
+  //     };
+
+  //     const bodyLatencyAppRequestOneValue = {
+  //       time: queryTimeWindow,
+  //       level: "pod",
+  //     };
+
+  //     const bodyLatencyAppRequestHistorical = {
+  //       timeEnd: Math.floor(Date.now() / 1000).toString(),
+  //       timeStart: (Math.floor(Date.now() / 1000) - 1200).toString(),
+  //       timeStep: "60",
+  //       level: "pod",
+  //     };
+
+  //     try {
+  //       const fakeNodeData = {
+  //         allNodes: [
+  //           {
+  //             nodeName: "Minikube",
+  //             clusterName: "Minikube",
+  //           },
+  //         ],
+  //       };
+
+  //       const [
+  //         status,
+  //         requestLimits,
+  //         cpuUsageOneValue,
+  //         memoryUsageOneValue,
+  //         cpuUsageHistorical,
+  //         memoryUsageHistorical,
+  //         latencyAppRequestOneValue,
+  //         latencyAppRequestHistorical,
+  //       ] = await Promise.all([
+  //         fetchData("GET", "api/all-pods-status"),
+  //         fetchData("GET", "api/all-pods-request-limit"),
+  //         // fetchData("GET", "api/allnodes") CURRENTLY POPULATED WITH FAKE DATA
+  //         fetchData(
+  //           "POST",
+  //           "api/resource-usage-onevalue",
+  //           bodyResourceUsageOnevalueCPU,
+  //         ),
+  //         fetchData(
+  //           "POST",
+  //           "api/resource-usage-onevalue",
+  //           bodyResourceUsageOnevalueMemory,
+  //         ),
+  //         fetchData(
+  //           "POST",
+  //           "api/resource-usage-historical",
+  //           bodyResourceUsageHistoricalCPU,
+  //         ),
+  //         fetchData(
+  //           "POST",
+  //           "api/resource-usage-historical",
+  //           bodyResourceUsageHistoricalMemory,
+  //         ),
+  //         fetchData(
+  //           "POST",
+  //           "api/latency-app-request-onevalue",
+  //           bodyLatencyAppRequestOneValue,
+  //         ),
+  //         fetchData(
+  //           "POST",
+  //           "api/latency-app-request-historical",
+  //           bodyLatencyAppRequestHistorical,
+  //         ),
+  //       ]);
+  //       // console.log( "DATA FROM BACKEND",
+  //       //   status,
+  //       //   requestLimits,
+  //       //   cpuUsageOneValue,
+  //       //   memoryUsageOneValue,
+  //       //   cpuUsageHistorical,
+  //       // );
+  //       setAllData({
+  //         podsStatuses: status || [],
+  //         requestLimits: requestLimits || [],
+  //         allNodes: fakeNodeData,
+  //         cpuUsageOneValue: cpuUsageOneValue || [],
+  //         memoryUsageOneValue: memoryUsageOneValue || [],
+  //         cpuUsageHistorical: cpuUsageHistorical || [],
+  //         memoryUsageHistorical: memoryUsageHistorical || [],
+  //         latencyAppRequestOneValue: latencyAppRequestOneValue || [],
+  //         latencyAppRequestHistorical: latencyAppRequestHistorical || [],
+  //       });
+  //     } catch (error) {
+  //       console.error("Error fetching initial data:", error);
+  //     } finally {
+  //       // setIsLoading(false);
+  //     }
+  //   };
+  //   bigFetch();
+
+  //   const intervalID = setInterval(bigFetch, refreshFrequency);
+  //   return () => {
+  //     clearInterval(intervalID);
+  //   };
+  // }, [refreshFrequency, manualRefreshCount, queryTimeWindow]);
 
   return (
     <div>
@@ -439,7 +435,7 @@ const MainContainer = ({ username, backendUrl }) => {
           {/* Conditionally render AI chat window */}
           {aiVisibility && (
             <div className="absolute bottom-[100%] right-0 mb-3 w-96 rounded-2xl">
-              <Chatbot allData={allData} fetchData={fetchData} />
+              <Chatbot allData={allData} />
             </div>
           )}
           {/* Reset to default and Ask AI buttons*/}

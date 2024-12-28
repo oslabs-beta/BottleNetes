@@ -3,39 +3,66 @@ import { useState, useEffect, useRef } from "react";
 import { react } from "react";
 import logo from "../assets/logo.png";
 
-const formatTimestamp = (timestamp) => {
-  const date = new Date(timestamp);
-  return `${date.getHours()}:${date.getMinutes().toString().padStart(2, "0")}`;
+//Helper functopn tp calculate relative time 
+const formatRelativeTime = (timestamp) => {
+  const secondsAgo = Math.floor ((Date.now() - timestamp/1000));
+  if (secondsAgo < 60) return `${secondsAgo} sec ago`
+  if (secondsAgo < 3600) return `${Math.floor(secondsAgo / 60)} min ago`
+  return `${Math.floor(secondsAgo/ 3600)} hr ago`;
 };
 
-const Chatbot = ({ allData, fetchData }) => {
-  // State that holds ai response
+const Chatbot = ({ allData, username }) => {
+  // State that holds ai responses
   const [aiContent, setAiContent] = useState([]);
 
-  // State that holds user input
+  // State that holds user input in text field
   const [userInput, setUserInput] = useState("");
 
-  // State that holds all user chat input
+  // State that holds all user chat input/track the history of user messages
   const [historicalUserInput, setHistoricalUserInput] = useState([]);
+
+  const [timestamps, setTimestamps] = useState([]);
 
   // Scrollbar reference
   const chatRef = useRef(null);
 
-  // Update userInput state every time keystroke logged
+  // Event handle to update userInput state every time keystroke logged
   const handleInputChange = (event) => {
     setUserInput(event.target.value);
   };
 
-  // Submits form when user hits enter
-  const handleKeyDown = ((e) => {
+  // Event handler for submiting the form when user hits enter
+  const handleKeyDown = (e) => {
     if (e.key == "Enter") {
       e.preventDefault();
-      handleSubmit(e)
+      handleSubmit(e);
     }
-  });
-  
+  };
+
+  // Fetch request to open ai
+  const fetchData = async (method, endpoint, body = null) => {
+    try {
+      const request = {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+      if (body) request.body = JSON.stringify(body);
+      const response = await fetch(
+        "http://localhost:3000/" + endpoint,
+        request,
+      );
+      return await response.json();
+    } catch (error) {
+      console.error("Fetch error:", error);
+      return null;
+    }
+  };
+
   //Event handler for form submission
   const handleSubmit = async (event) => {
+    console.log("submitted");
     event.preventDefault();
 
     if (!userInput.trim()) return;
@@ -47,9 +74,9 @@ const Chatbot = ({ allData, fetchData }) => {
     ]);
     setUserInput("");
 
-    // Formate request body
+    // Format request body
     const body = {
-      allData: allData,
+      // allData: allData,
       userMessage: userInput,
     };
 
@@ -83,38 +110,39 @@ const Chatbot = ({ allData, fetchData }) => {
   ) {
     conversationArr.push(
       // human chat
-      <div className="ml-auto mt-2 flex w-full max-w-xs justify-end space-x-3">
-        {/* div that includes timestamp */}
-        <div>
-          {/* text bubble backgorund color */}
-          <div className="rounded-l-lg rounded-br-lg bg-blue-600 p-2 text-white">
+      <div key={i}>
+        <div className="ml-auto mt-2 flex w-full max-w-xs justify-end space-x-3">
+          {/* div that includes timestamp */}
+          <div>
+            {/* text bubble backgouond color */}
+            <div className="rounded-l-lg rounded-br-lg bg-blue-600 p-2 text-white">
+              {/* actual text */}
+              <p className="text-sm">{historicalUserInput[i]}</p>
+            </div>
+            <span className="text-xs leading-none text-gray-500">
+              {/* {formatTimestamp(setAiContent.timestamp)} */}
+            </span>
+          </div>
+          {/* human circles */}
+
+          <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300"></div>
+        </div>
+        {/* ai chat? */}
+        <div className="mt-1 flex w-full max-w-xs space-x-3">
+          {/* AI circle */}
+          <div className="h-10 w-10 flex-shrink-0 rounded-full bg-red-300"></div>
+          {/* div that includes the timestamp */}
+          <div>
             {/* actual text */}
-            <p className="text-sm">{historicalUserInput[i]}</p>
+            <div className="rounded-r-lg rounded-bl-lg bg-gray-300 p-2">
+              <p className="text-sm">{aiContent[i]}</p>
+            </div>
+            <span className="text-xs leading-none text-gray-500">
+              {/* {formatTimestamp(setAiContent.timestamp)} */}
+            </span>
           </div>
-          <span className="text-xs leading-none text-gray-500">
-            {formatTimestamp(setAiContent.timestamp)}
-          </span>
         </div>
-        {/* human circles */}
-
-        <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300"></div>
-      </div>,
-
-      // ai chat?
-      <div className="mt-1 flex w-full max-w-xs space-x-3">
-        {/* AI circle */}
-        <div className="h-10 w-10 flex-shrink-0 rounded-full bg-red-300"></div>
-        {/* div that includes the timestamp */}
-        <div>
-          {/* actual text */}
-          <div className="rounded-r-lg rounded-bl-lg bg-gray-300 p-2">
-            <p className="text-sm">{aiContent[i]}</p>
-          </div>
-          <span className="text-xs leading-none text-gray-500">
-            {formatTimestamp(setAiContent.timestamp)}
-          </span>
-        </div>
-      </div>,
+      </div>
     );
   }
 
@@ -143,7 +171,7 @@ const Chatbot = ({ allData, fetchData }) => {
                 <p className="text-sm">How can I help you?</p>
               </div>
               <span className="text-xs leading-none text-gray-500">
-                {formatTimestamp(setAiContent.timestamp)}
+                {/* {formatTimestamp(setAiContent.timestamp)} */}
               </span>
             </div>
           </div>
@@ -173,7 +201,7 @@ const Chatbot = ({ allData, fetchData }) => {
 // Validate allData prop type
 Chatbot.propTypes = {
   allData: PropTypes.object,
-  fetchData: PropTypes.func.isRequired,
+  // fetchData: PropTypes.func.isRequired,
 };
 
 export default Chatbot;

@@ -38,6 +38,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+
+// increase limits
+app.use(express.json({ limit: "750mb" }));
+app.use(express.urlencoded({ extended: true, limit: "750mb" }));
+
 // CORS stuffs
 app.use(
   cors({
