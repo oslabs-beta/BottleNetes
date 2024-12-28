@@ -14,7 +14,7 @@ const PodRestart = ({
   backendUrl,
 }) => {
   const [showRestartPopup, setShowRestartPopup] = useState(false);
-  const [restartStatus, setRestartStatus] = useState("confirm"); // other state: 'loading', 'error'
+  const [restartStatus, setRestartStatus] = useState("confirm"); // other state: 'loading', 'error', 'success'
 
   // console.log("clicked pod containers: ", clickedPod.containers);
   const handleRestartPod = () => {
@@ -46,9 +46,7 @@ const PodRestart = ({
       // if the pod is successfully restarted
       if (data.status === "success") {
         setPodRestartCount(podRestartCount + 1);
-        setClickedPod({ podName: "", namespace: "", containers: [] });
-        setShowRestartPopup(false);
-        setDefaultView(true);
+        setRestartStatus("success");
       } else {
         // if the pod restart failed
         setRestartStatus("error");
@@ -61,15 +59,58 @@ const PodRestart = ({
 
   const renderRestartPopupContent = () => {
     switch (restartStatus) {
+      case "success":
+        return (
+          <div id="pod-restart-success" className="text-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="1em"
+              height="1em"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#458045"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              fontSize="6vh"
+              className="inline"
+              id="success"
+            >
+              <path d="M21.801 10A10 10 0 1 1 17 3.335" />
+              <path d="m9 11 3 3L22 4" />
+            </svg>
+            <p className="p-4">Sucessfully restarted Pod</p>
+            <p>
+              <strong>{clickedPod.podName}</strong>
+            </p>
+            <br />
+            <p>
+              It will take a few moments for this pod to become active again.
+            </p>
+            <br />
+            <button
+              onClick={() => {
+                setShowRestartPopup(false);
+                setClickedPod({ podName: "", namespace: "", containers: [] });
+                setDefaultView(true);
+                setRestartStatus("confirm");
+              }}
+              className="rounded-lg bg-slate-600 px-4 py-2 text-slate-100 transition duration-200 hover:brightness-110 active:brightness-90"
+            >
+              Confirm
+            </button>
+          </div>
+        );
       case "loading":
         return (
           <div id="pod-restart-loading" className="text-center">
             <div className="mx-auto mb-4 h-12 w-12 animate-spin rounded-full border-b-2 border-blue-500"></div>
             <p>
-              Deleting pod <strong>{clickedPod.podName}</strong>...
+              Restarting pod <strong>{clickedPod.podName}</strong>...
             </p>
           </div>
         );
+
       case "error":
         return (
           <div id="pod-restart-error" className="text-center">
@@ -80,7 +121,7 @@ const PodRestart = ({
             <div className="flex justify-center space-x-2">
               <button
                 onClick={() => setRestartStatus("confirm")}
-                className="rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+                className="rounded-lg bg-blue-500 px-4 py-2 text-white transition duration-200 hover:brightness-110 active:brightness-90"
               >
                 Try Again
               </button>
@@ -89,35 +130,38 @@ const PodRestart = ({
                   setShowRestartPopup(false);
                   setRestartStatus("confirm");
                 }}
-                className="rounded-lg bg-slate-600 px-4 py-2 text-slate-100 hover:bg-slate-700"
+                className="rounded-lg bg-slate-600 px-4 py-2 text-slate-100 transition duration-200 hover:brightness-110 active:brightness-90"
               >
                 Cancel
               </button>
             </div>
           </div>
         );
+
       // default state is 'confirm'
       default:
         return (
-          <div id="pod-restart-confirm">
+          <div id="pod-restart-confirm" className="text-center">
             <p>
               You will be restarting pod <strong>{clickedPod.podName}</strong>{" "}
               in namespace <strong>{clickedPod.namespace}</strong>.
-              <br />
+            </p>
+            <br />
+            <p>
               This pod will be deleted, after that, another replica of this pod
               will be automatically created.
-              <br />
-              The process may take a few seconds to one minute.
-              <br />
-              Are you sure you want to proceed?
             </p>
+            <br />
+            <p>The process may take a few seconds to one minute.</p>
+            <br />
+            <p>Are you sure you want to proceed?</p>
             <div
               id="pod-restart-confirm-button"
-              className="mt-4 flex justify-center space-x-2"
+              className="mt-4 flex justify-between"
             >
               <button
                 onClick={proceedRestartPod}
-                className="rounded-lg bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+                className="rounded-lg bg-red-500 px-4 py-2 text-white transition duration-200 hover:brightness-110 active:brightness-90"
               >
                 Proceed
               </button>
@@ -126,7 +170,7 @@ const PodRestart = ({
                   setShowRestartPopup(false);
                   setRestartStatus("confirm");
                 }}
-                className="rounded-lg bg-slate-600 px-4 py-2 text-slate-100 hover:bg-slate-700"
+                className="rounded-lg bg-slate-600 px-4 py-2 text-slate-100 transition duration-200 hover:brightness-110 active:brightness-90"
               >
                 Cancel
               </button>
@@ -140,15 +184,15 @@ const PodRestart = ({
     <div id="pod-restart">
       <button
         onClick={handleRestartPod}
-        className="w-full rounded-lg border-2 border-slate-200 bg-gradient-to-r from-slate-200 to-slate-100 px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90"
+        className="w-full rounded-lg border-2 border-slate-200 bg-gradient-to-r from-slate-200 to-slate-100 px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-105 active:brightness-90"
       >
         Restart Pod
       </button>
       <div
         id="pod-restart-popup"
-        className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 transition duration-300 ${showRestartPopup ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
+        className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 transition duration-150 ${showRestartPopup ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
       >
-        <div className="w-80 rounded-lg bg-slate-200 p-6 text-slate-800">
+        <div className="w-1/5 rounded-lg bg-slate-200 p-4 text-slate-800">
           {renderRestartPopupContent()}
         </div>
       </div>
