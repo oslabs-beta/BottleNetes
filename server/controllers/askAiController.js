@@ -11,7 +11,7 @@ const askAiController = {};
 
 askAiController.queryOpenAI = async (req, res, next) => {
   console.log("in queryOpenAI controller");
-  const { allData } = req.body;
+  // const { allData } = req.body;
   const { userMessage } = req.body
   console.log(userMessage)
   // if (userMessage || allData || typeof allData !== "object") {
@@ -21,17 +21,17 @@ askAiController.queryOpenAI = async (req, res, next) => {
   // }
   try {
     //deconstruct prompt based on available data
-    const {
-      podsStatuses,
-      requestLimits,
-      allNodes,
-      cpuUsageOneValue,
-      memoryUsageOneValue,
-      cpuUsageHistorical,
-      memoryUsageHistorical,
-      latencyAppRequestOneValue,
-      latencyAppRequestHistorical,
-    } = allData;
+    // const {
+    //   podsStatuses,
+    //   requestLimits,
+    //   allNodes,
+    //   cpuUsageOneValue,
+    //   memoryUsageOneValue,
+    //   cpuUsageHistorical,
+    //   memoryUsageHistorical,
+    //   latencyAppRequestOneValue,
+    //   latencyAppRequestHistorical,
+    // } = allData;
 
     //
     // 1. check to see if we are over or under provisioning
