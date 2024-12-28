@@ -1,8 +1,14 @@
+/**
+ * This component renders the 'Modify Replicas' button and its popup and functionalities
+ */
+
 import PropTypes from "prop-types";
 import { useState } from 'react';
 
 const PodReplicas = ({ clickedPod, backendUrl }) => {
+  // State to determine the visibility of the popup when clicking the button
   const [showReplicasPopup, setShowReplicasPopup] = useState(false);
+  // State to set the new amount of replicas
   const [newReplicas, setNewReplicas] = useState(1);
 
   const handleReplicas = async () => {

@@ -1,3 +1,7 @@
+/**
+ * Hook to memoize pod data
+ */
+
 import { useMemo } from "react";
 
 const usePodListProcessor = ({

@@ -1,4 +1,16 @@
 /* eslint-disable no-unused-vars */
+/**
+ * Controller contains:
+ * checkClickedPod: Check if a pod is clicked and send data to the next middleware
+ * softDeletePod: Restart a pod by deleting a clicked pod. Deployment will automatically create a new pod
+ * fetchPodLogs: Get logs for clicked pod
+ * formatLogs: Format fatched logs into a more readable format
+ * getDeployment: Get deployment name for clicked pod
+ * readDeployment: Get the info of the retrieved deployment
+ * scaleReplicas: Replace old replicas with new amount of replicas for the retrieved deployment. Deployment will create new pods accordingly
+ * adjustRequestsLimits: Change the resources quota for the retrieved deployment
+ */
+
 import * as k8s from "@kubernetes/client-node";
 
 // object used to load Kubernetes configuration.

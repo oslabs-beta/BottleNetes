@@ -1,6 +1,7 @@
 /**
  * This component renders buttons to configure with metric to display the graph
  */
+
 import PropTypes from "prop-types";
 import { Fragment } from "react";
 
