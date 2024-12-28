@@ -40,10 +40,13 @@ const RequestLimit = ({ selectedMetric, requestLimits }) => {
     indexAxis: "y", // maybe making it horizontal?
     responsive: true,
     maintainAspectRatio: false,
+    barThickness: 30,
+    maxBarThickness: 30,
     scales: {
       x: {
         stacked: false,
         grid: { color: "transparent" },
+        beginAtZero: true,
         ticks: {
           color: "#1e293b",
           font: {
@@ -52,15 +55,16 @@ const RequestLimit = ({ selectedMetric, requestLimits }) => {
         },
         title: {
           display: true,
-          text: selectedMetric === "cpu" ? "CPU (cores)" : "Memory (MB)",
+          text: selectedMetric === "cpu" ? "CPU (Cores)" : "Memory (Mi)",
           color: "#1e293b",
           font: { size: 14 },
         },
       },
       y: {
-        stacked: false,
+        stacked: true,
         grid: { color: "transparent" },
         ticks: {
+          autoSkip: false,
           color: "#1e293b",
           font: {
             size: 14,
@@ -70,7 +74,7 @@ const RequestLimit = ({ selectedMetric, requestLimits }) => {
     },
     plugins: {
       legend: {
-        position: "bottom",
+        position: "top",
         labels: {
           color: "#1e293b",
           font: {
@@ -99,9 +103,6 @@ const RequestLimit = ({ selectedMetric, requestLimits }) => {
         caretSize: 10,
       },
     },
-    barThickness: 20, // Control bar thickness
-    barPercentage: 0.8, // Control bar width
-    categoryPercentage: 0.9, // Control spacing between bar groups
   };
 
   const formatMemoryToMB = (memoryInBytes) => {
@@ -139,22 +140,22 @@ const RequestLimit = ({ selectedMetric, requestLimits }) => {
       {
         label: "Requested Resources",
         data: requestDataToUse,
-        backgroundColor: "rgba(191, 219, 254, 1)",
+        backgroundColor: "rgba(191, 219, 254)",
         borderRadius: 5,
-        maxBarThickness: 20,
       },
       {
         label: "Resource Limits",
         data: limitDataToUse,
-        backgroundColor: "rgba(59, 130, 246, 1)",
+        backgroundColor: "rgba(59, 130, 246)",
         borderRadius: 5,
-        maxBarThickness: 20,
       },
     ],
   };
 
+  const chartHeight = podList.length * 50
+
   return (
-    <div className="min-h-[400px] w-full p-4">
+    <div className="p-4" style={{height: chartHeight}}>
       {podList.length > 0 ? (
         <Bar options={options} data={data} />
       ) : (
