@@ -1,3 +1,7 @@
+/**
+ * This component renders the menu sidebar
+ */
+
 import PropTypes from "prop-types";
 
 const MenuContainer = ({
@@ -21,28 +25,29 @@ const MenuContainer = ({
   };
 
   return (
-    <div className="h-full w-full p-4 text-white">
+    <div id="menu-bar" className="h-full w-full p-4 text-white">
       <div className="space-y-4">
         <div className="pb-4">
           <h3 className="mb-2 text-lg font-semibold">Refresh Controls</h3>
 
           {/* Manual Refresh */}
-          <div className="mb-4">
+          <div id="manual-refresh-button" className="mb-4">
             <button
               onClick={() => setManualRefreshCount(manualRefreshCount + 1)}
               className="w-full rounded-lg bg-blue-600 px-4 py-2 text-sm hover:bg-blue-700"
             >
-              Manual Refresh
+              Force Refresh
             </button>
           </div>
 
           {/* Refresh Frequency Control */}
-          <div>
+          <div id="refresh-frequency-display">
             <div
+              id="refresh-frequency-config-button"
               onClick={() => setShowRefreshPopup(true)}
               className="flex cursor-pointer items-center justify-between rounded-lg bg-slate-800 px-4 py-2 hover:bg-slate-700"
             >
-              <span className="text-sm">Refresh Rate:</span>
+              <span className="text-sm">Refresh Every:</span>
               <span className="text-blue-400">{refreshFrequency / 1000}s</span>
             </div>
           </div>
@@ -51,7 +56,10 @@ const MenuContainer = ({
 
       {/* Refresh Frequency Popup */}
       {showRefreshPopup && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-50">
+        <div
+          id="refresh-frequency-config-popup"
+          className="relative inset-0 z-[9999] flex items-center justify-center bg-black bg-opacity-50"
+        >
           <div className="relative rounded-lg bg-white p-6 shadow-xl">
             <form
               onSubmit={handleRefreshSubmit}

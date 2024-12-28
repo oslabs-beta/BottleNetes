@@ -4,7 +4,8 @@ export const generateQueryAllPodsStatus = async (_req, res, next) => {
   const query3 = "kube_pod_container_info";
   const query4 = "kube_pod_container_status_restarts_total";
   const query5 = "kube_pod_info == 1";
-  res.locals.queries = [query1, query2, query3, query4, query5];
+  const query6 = `kube_replicaset_owner{owner_kind="Deployment"}`;
+  res.locals.queries = [query1, query2, query3, query4, query5, query6];
   return next();
 };
 

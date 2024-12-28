@@ -1,14 +1,14 @@
-import Users from "../models/UserModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+import Users from "../models/UserModel.js";
 import { SECRET_KEY } from "../../utils/jwtUtils.js";
 
 const userController = {};
 
 // Middleware for when creating a new user
 userController.createNewUser = async (req, res, next) => {
-  // console.log("👥 Running createNewUser middleware...");
+  console.log("👥 Running createNewUser middleware...");
 
   try {
     const { username, password, email } = await req.body;
@@ -50,7 +50,7 @@ userController.createNewUser = async (req, res, next) => {
 
 // Middleware for when verifying user when they try to sign in
 userController.verifyUser = async (req, res, next) => {
-  // console.log("🤖 Running verifyUser middleware...");
+  console.log("🤖 Running verifyUser middleware...");
 
   try {
     const { username, password } = await req.body;
@@ -99,7 +99,7 @@ userController.verifyUser = async (req, res, next) => {
 };
 
 userController.verifySignedIn = async (req, _res, next) => {
-  // console.log('🥴 Now running verifySignedIn middleware...');
+  console.log('🥴 Now running verifySignedIn middleware...');
 
   try {
     const token = await req.cookies.jwt;

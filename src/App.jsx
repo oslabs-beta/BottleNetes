@@ -1,17 +1,20 @@
-import { useEffect } from "react";
+/**
+ * This component contains the security logics
+ */
+
+import { useEffect, useState } from "react";
 import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
   Navigate,
+  createBrowserRouter,
+  RouterProvider,
 } from "react-router-dom";
 
-import useStore from "./store.jsx";
 import SigninContainer from "./containers/SigninContainer";
 import MainContainer from "./containers/MainContainer";
-import CallbackHandler from "./CallbackHandler.jsx";
+import SignupContainer from "./containers/SignupContainer";
+import useStore from "./store.jsx";
 
-function App() {
+const App = () => {
   const {
     isSignedIn,
     loading,
@@ -22,57 +25,99 @@ function App() {
     setUsername,
   } = useStore();
 
+  const [backendUrl] = useState("http://localhost:3000/");
+
+  // This hook fires whenever you go to the home page (Sign In Page)
   useEffect(() => {
+    // Setting up a controller to stop the useEffect from running when closing the application
+    const controller = new AbortController();
+    const signal = controller.signal;
+
     const checkSigninStatus = async () => {
+      console.log(`Sending request to '${backendUrl}signin/checkSignin'...`);
+
       try {
-        const response = await fetch(
-          "http://localhost:3000/signin/checkSignin",
-          {
-            credentials: "include",
-          },
-        );
+        /**
+         * Fetch request runs when landing on the homepage.
+         * It checks if the user is already signed in by checking the cookie
+         * Credentials are included to send the cookie back to the backend
+         * Cookie format:
+         * { "jwt": "jwt_encoded_string" }
+         **/
+        const response = await fetch(backendUrl + "signin/checkSignin", {
+          credentials: "include",
+          signal, // Adding signal to the fetch request
+        });
+
+        if (!response.ok) {
+          console.error(
+            `Server responded with a ${response.status} code: ${response.statusText}`,
+          );
+        }
         const data = await response.json();
         console.log(data);
+
+        /**
+         * If they are already signed in
+         * isSignedIn is set to true, which in turn will trigger the redirect to '/dashboard'
+         */
         if (data.signedIn) {
-          setUsername(data.username.username);
+          setUsername(data.username);
           signIn();
-        } else signOut();
+        }
+        // Otherwise, make sure they are signed out
+        else signOut();
+
         setLoading(false);
       } catch (error) {
-        console.error(error);
-        signOut();
+        // added this to bypass the AbortError in browser console (may not be the best solution)
+        if (error.name != "AbortError") {
+          console.error(error);
+          signOut();
+        }
+      } finally {
         setLoading(false);
       }
     };
+
     checkSigninStatus();
-  }, [signIn, signOut, setLoading, setUsername]);
+
+    // useEffect clean up function. Abort the fetch request when shutting down the application
+    return () => controller.abort();
+  }, [signIn, signOut, setLoading, setUsername, backendUrl]);
 
   if (loading) return <div>Loading...</div>;
 
+  // Router for Client-side Rendering (CSR)
+  const router = createBrowserRouter([
+    {
+      path: "/dashboard",
+      element: isSignedIn ? (
+        <MainContainer username={username} backendUrl={backendUrl} />
+      ) : (
+        <Navigate to={"/"} />
+      ),
+    },
+    {
+      path: "/signup",
+      element: <SignupContainer />,
+    },
+    {
+      path: "/",
+      element: isSignedIn ? (
+        <Navigate to={"/dashboard"} />
+      ) : (
+        <SigninContainer backendUrl={backendUrl} />
+      ),
+    },
+  ]);
+
+  // Return the RouterProvider component to use the router above
   return (
     <div id="app">
-      <Router>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              isSignedIn ? <Navigate to="/dashboard" /> : <SigninContainer />
-            }
-          />
-          <Route
-            path="/oauth/callback"
-            element={
-              isSignedIn ? <Navigate to="/dashboard" /> : <CallbackHandler />
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={<MainContainer username={username} />}
-          />
-        </Routes>
-      </Router>
+      <RouterProvider router={router} />
     </div>
   );
-}
+};
 
 export default App;

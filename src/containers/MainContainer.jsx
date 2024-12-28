@@ -1,32 +1,48 @@
-import PropTypes from "prop-types";
-import { useState, useEffect, useRef } from "react";
+/**
+ * This component renders the main page with the following components:
+ * - MenuContainer.jsx: Display the menu section
+ * - Latency.jsx: Display the Latency chart
+ * - Metrics.jsx: Display historical data for resource usages
+ * - Overview.jsx: Display the overview
+ * - RequestLimit.jsx: Display the Request vs. Limit chart
+ * - PodGrid.jsx: Display the heatmap
+ * - PodNameDisplay.jsx: Display the Namespace, Pod Name and Deployment
+ */
 
+import PropTypes from "prop-types";
+import { useState, useRef, useEffect } from "react";
+
+// Hooks Folder
+import useFetchData from "../hooks/useFetchData";
+
+// Container Folder
 import MenuContainer from "./MenuContainer";
-import Overview from "../components/Overview";
-import PodNameDisplay from "../components/PodNameDisplay";
+
+// Component Folder
 import Latency from "../components/Latency";
 import Metrics from "../components/Metrics";
-import PodGrid from "../components/PodGrid";
+import Overview from "../components/Overview";
 import RequestLimit from "../components/RequestLimit";
 import Chatbot from "../components/Chatbot";
 
-const MainContainer = ({ username }) => {
-  const url = "http://localhost:3000/";
+// Component/HeatMapComponent Folder
+import PodGrid from "../components/HeatMapComponents/PodGrid";
+import PodNameDisplay from "../components/HeatMapComponents/PodNameDisplay";
 
+const MainContainer = ({ username, backendUrl }) => {
   // Determines if the graphs display node data or pod specific data
   const [defaultView, setDefaultView] = useState(true);
 
-  const [isLoading, setIsLoading] = useState(true);
-
-  // state hooks for time window in PodGrid
+  // State hook for time window in PodGrid
   const [queryTimeWindow, setQueryTimeWindow] = useState("1m");
-  const [showTimeWindow, setShowTimeWindow] = useState(false);
-  const [timeInput, setTimeInput] = useState("");
-  const [timeUnit, setTimeUnit] = useState("m");
-  const [showTooltip, setShowTooltip] = useState(false);
 
   // state hooks for clicked pod and selected metric in PodGrid (will also be passed down to other components)
-  const [clickedPod, setClickedPod] = useState("");
+  const [clickedPod, setClickedPod] = useState({
+    podName: "",
+    namespace: "",
+    containers: [],
+    deployment: "",
+  });
 
   // AI popup window visibility
   const [aiVisibility, setAiVisibility] = useState(false);
@@ -34,43 +50,41 @@ const MainContainer = ({ username }) => {
   // State to store selected metric to display
   const [selectedMetric, setSelectedMetric] = useState("cpu");
 
+  // State hook for pod restarts in PodGrid
+  const [podRestartCount, setPodRestartCount] = useState(0);
+
   // State hooks for refresh control in MenuContainer
   const [manualRefreshCount, setManualRefreshCount] = useState(0);
   const [refreshFrequency, setRefreshFrequency] = useState(30000);
   const [showRefreshPopup, setShowRefreshPopup] = useState(false);
   const [refreshInput, setRefreshInput] = useState("");
 
-  // State hook for all data fetched from the backend
-  const [allData, setAllData] = useState({
-    podsStatuses: { podsStatuses: [] },
-    requestLimits: { allPodsRequestLimit: [] },
-    allNodes: { allNodes: [] },
-    cpuUsageOneValue: { resourceUsageOneValue: [] },
-    memoryUsageOneValue: { resourceUsageOneValue: [] },
-    cpuUsageHistorical: null,
-    memoryUsageHistorical: null,
-    latencyAppRequestOneValue: { latencyAppRequestOneValue: [] },
-  });
-
-  // handling menu bar toggle
+  // State hook for set the menu sidebar's visibility
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
+
+  const { isLoading, allData } = useFetchData({
+    backendUrl,
+    refreshFrequency,
+    queryTimeWindow,
+    podRestartCount,
+    manualRefreshCount,
+  });
+
+  // Handle the click outside of the menu to close the menu
   useEffect(() => {
+    // Close the menu when clicking outside of the menu
     const handleClickOutside = (event) => {
-      // Bypass if clicking the menu button itself
-      if (buttonRef.current && buttonRef.current.contains(event.target)) {
-        return;
-      }
+      if (buttonRef.current?.contains(event.target)) return; // if the button is clicked, bypass
+
       // Close the menu bar if clicking outside menu and menu is open
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setIsMenuOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   // Function to reset views and clear selected pod
@@ -244,7 +258,7 @@ const MainContainer = ({ username }) => {
 
   return (
     <div>
-      <header className="header sticky top-0 z-50 flex flex-col items-center justify-between gap-4 border-b-2 border-slate-600 bg-slate-950 py-4 sm:flex-row">
+      <header className="header sticky top-0 z-50 flex flex-col items-center justify-between gap-4 border-b-2 bg-gradient-to-r from-[#0f172a] to-[#1e40af] py-4 sm:flex-row">
         <div id="leftside" className="flex items-center">
           {/* Menu drop down */}
           <div className="flex items-center gap-0 px-5">
@@ -329,7 +343,10 @@ const MainContainer = ({ username }) => {
 
         {/* Pod Name Display */}
         <div className="border-b-2 border-slate-300">
-          <PodNameDisplay clickedPod={clickedPod} />
+          <PodNameDisplay
+            clickedPod={clickedPod}
+            setClickedPod={setClickedPod}
+          />
         </div>
 
         {/* Main Container */}
@@ -340,7 +357,10 @@ const MainContainer = ({ username }) => {
           {/*Arrange components in columns for a larger screen, and stack vertically if the screen is smaller*/}
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 xl:grid-cols-4">
             {/* Pod Grid */}
-            <div className="flex max-h-[100%] flex-col rounded-3xl border-4 border-slate-400 bg-slate-100 p-4 xl:col-span-2">
+            <div
+              id="pod-grid"
+              className="flex max-h-[100%] flex-col rounded-3xl border-4 border-slate-400 bg-slate-100 p-4 xl:col-span-2"
+            >
               <h2 className="text-center text-2xl font-bold text-slate-900">
                 Select Pod
               </h2>
@@ -351,25 +371,23 @@ const MainContainer = ({ username }) => {
                 setClickedPod={setClickedPod}
                 selectedMetric={selectedMetric}
                 setSelectedMetric={setSelectedMetric}
+                podRestartCount={podRestartCount}
+                setPodRestartCount={setPodRestartCount}
                 podStatuses={allData.podsStatuses}
                 cpuUsageOneValue={allData.cpuUsageOneValue}
                 memoryUsageOneValue={allData.memoryUsageOneValue}
                 latencyAppRequestOneValue={allData.latencyAppRequestOneValue}
                 queryTimeWindow={queryTimeWindow}
                 setQueryTimeWindow={setQueryTimeWindow}
-                showTimeWindow={showTimeWindow}
-                setShowTimeWindow={setShowTimeWindow}
-                timeInput={timeInput}
-                setTimeInput={setTimeInput}
-                timeUnit={timeUnit}
-                setTimeUnit={setTimeUnit}
-                showTooltip={showTooltip}
-                setShowTooltip={setShowTooltip}
+                backendUrl={backendUrl}
               />
             </div>
 
             {/* Historical Tracing */}
-            <div className="max-h-[100%] rounded-3xl bg-slate-100 p-4 xl:col-span-2">
+            <div
+              id="historical-tracing"
+              className="max-h-[100%] rounded-3xl bg-slate-100 p-4 xl:col-span-2"
+            >
               <h2 className="text-center text-2xl font-semibold text-slate-900">
                 Historical Tracing
               </h2>
@@ -382,7 +400,10 @@ const MainContainer = ({ username }) => {
             </div>
 
             {/* Request vs. Limit */}
-            <div className="relative flex-auto rounded-3xl bg-slate-100 p-4 xl:col-span-2">
+            <div
+              id="request-vs-limit"
+              className="relative flex-auto rounded-3xl bg-slate-100 p-4 xl:col-span-2"
+            >
               <h2 className="text-center text-2xl font-semibold text-slate-900">
                 Request vs. Limit
               </h2>
@@ -395,13 +416,17 @@ const MainContainer = ({ username }) => {
             </div>
 
             {/* Latency */}
-            <div className="rounded-3xl bg-slate-100 p-4 xl:col-span-2">
+            <div
+              id="latency"
+              className="rounded-3xl bg-slate-100 p-4 xl:col-span-2"
+            >
               <h2 className="text-center text-2xl font-semibold text-slate-900">
                 Request Latency
               </h2>
               <Latency
                 defaultView={defaultView}
                 clickedPod={clickedPod}
+                cpuUsageHistorical={allData.cpuUsageHistorical}
                 latencyAppRequestHistorical={
                   allData.latencyAppRequestHistorical
                 }
@@ -441,6 +466,7 @@ const MainContainer = ({ username }) => {
 
 MainContainer.propTypes = {
   username: PropTypes.string,
+  backendUrl: PropTypes.string.isRequired,
 };
 
 export default MainContainer;
