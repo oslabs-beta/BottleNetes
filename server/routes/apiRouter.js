@@ -1,4 +1,11 @@
 import express from "express";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "node:url";
+
+// Config path for usability in ES Module
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 import {
   parseRequestAllPodsStatus,
@@ -31,6 +38,29 @@ import {
 } from "../controllers/responseParsingController.js";
 
 const apiRouter = express.Router();
+
+const cacheDataToFile = (location) => {
+  return (req, res, next) => {
+    // Grab data to store from res.locals
+    const dataToStore = res.locals.parsedData || {};
+    // Configure path to data file
+    const dataFilePath = path.join(__dirname, "//data", `${location}.json`);
+    // Format data
+    const dataToWrite = JSON.stringify(dataToStore, null, 2);
+    // Write data to file but this overwrites the file
+    fs.writeFile(dataFilePath, dataToWrite, "utf8", (err) => {
+      if (err) {
+        return next({
+          log: "Error saving data to file",
+          status: 500,
+          message: {
+            err: err,
+          },
+        });
+      }
+    });
+  };
+};
 
 apiRouter.get(
   "/all-pods-status",
