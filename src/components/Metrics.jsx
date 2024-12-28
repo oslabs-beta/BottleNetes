@@ -167,7 +167,7 @@ const Metrics = ({
         position: "bottom",
         title: {
           display: true,
-          text: "CPU and Memory Usage",
+          text: "CPU and Memory Usage over time",
           color: "#1e293b",
           padding: 5,
         },
@@ -221,7 +221,7 @@ const Metrics = ({
   };
 
   return (
-    <div className="min-h-[400px] w-full rounded p-4">
+    <div className="w-full min-h-[600px] max-h-fit relative p-4">
       <Line options={options} data={data} />
     </div>
   );

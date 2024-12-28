@@ -41,10 +41,11 @@ const PodSelector = ({
   }, {});
 
   return (
-    <div id="pod-selector" className="relative">
+    <div id="pod-selector" className="col-span-3">
       <select
         id="pod-selector-dropdown"
         value={selectedValue} // This controls what's displayed in the closed select
+        className="w-full rounded-lg border-2 border-slate-200 bg-gradient-to-r from-slate-200 to-slate-100 px-3 py-2 text-center text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90"
         onChange={(e) => {
           const value = e.target.value;
           setSelectedValue(value); // Update what's shown in the closed select
@@ -65,7 +66,6 @@ const PodSelector = ({
             }
           }
         }}
-        className="rounded-lg bg-gradient-to-r from-slate-200 to-slate-100 px-3 py-2 text-sm font-medium text-slate-500"
       >
         <option value="">Select a Pod</option>
         {Object.entries(podsByNamespace).map(([namespace, pods]) => (

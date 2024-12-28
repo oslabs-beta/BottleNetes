@@ -56,7 +56,7 @@ const PodReplicas = ({ clickedPod, backendUrl }) => {
   return (
     <div id="pod-replica-component">
       <button
-        className="border-1 rounded-lg border-slate-200 bg-gradient-to-r from-slate-200 to-[#e8eef4] px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90"
+        className="border-2 rounded-lg border-slate-200 bg-gradient-to-r from-slate-200 to-slate-100 px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90 w-full"
         onClick={handleReplicas}
       >
         Modify Replicas
@@ -67,7 +67,7 @@ const PodReplicas = ({ clickedPod, backendUrl }) => {
         id="replicas-display"
         className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 transition duration-300 ${showReplicasPopup ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
       >
-        <div id='replicas-popup' className="w-1/6 rounded-lg bg-slate-200 p-6 text-center text-slate-800">
+        <div id='replicas-popup' className="w-1/4 rounded-lg bg-slate-200 p-6 text-center text-slate-800">
           <h2>Enter the amount of replicas for the designated Deployment</h2>
           <br />
           <div
