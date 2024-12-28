@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -69,20 +70,6 @@ app.use('/signup', express.static(path.resolve(__dirname, "../signup.html")));
 app.use(express.static(path.resolve(__dirname, "./")));
 app.use(express.static(path.resolve(__dirname, "../src/")));
 
-const clientID = process.env.GITHUB_CLIENT_ID;
-const redirectUri = process.env.GITHUB_REDIRECT_URI;
-
-// GitHub OAuth, redirect to the callback route
-app.get("/github", (_req, res) => {
-  const githubAuthUrl = `https://github.com/login/oauth/authorize?client_id=${clientID}&redirect_uri=${redirectUri}`;
-  // console.log(redirectUri);
-  return res.redirect(githubAuthUrl);
-});
-
-app.get("/dashboard", userController.verifySignedIn, (req, res) => {
-  return res.status(200).json(`Welcome to your dashboard, ${req.user.userId}`);
-});
-
 app.get("/", (_req, res) => {
   return res.status(200).sendFile(path.resolve(__dirname, "../index.html"));
 });
@@ -98,29 +85,37 @@ app.use("*", (_req, res) => {
 });
 
 // Global Error Handler
-// eslint-disable-next-line no-unused-vars
+
 app.use((err, _req, res, _next) => {
   const defaultErr = {
-    log: "Express error handler caught unknown middleware error",
+    log: `Express error handler caught unknown middleware error: ${err}`,
     status: 500,
     message: { err: "An error occurred" },
   };
   const errorObj = Object.assign({}, defaultErr, err);
-  // console.log(errorObj.log);
-
+  console.log(errorObj.log);
   return res.status(errorObj.status).json(errorObj.message);
 });
 
-// Graceful shut down when exiting the app
+// Gracefully shut down when exiting the app
+let isShuttingDown = false;
+
 const gracefulShutDown = async () => {
+  if (isShuttingDown) return;
+  isShuttingDown = true;
+  console.log("👂 Received Shut Down Signal. Gracefully Shutting Down...");
+
   try {
-    console.log("👂 Received Shut Down Signal. Gracefully Shutting Down...");
     await sequelize.close();
     console.log("📉 Database connection is closed!");
-    server.close(() => {
-      console.log(`💃🏻 Server has been shutted down gracefully!`);
-      process.exitCode = 0;
+    await new Promise((resolve, reject) => {
+      server.close((err) => {
+        if (err) reject(err);
+        resolve();
+      });
     });
+    console.log(`💃🏻 Server has been shutted down gracefully!`);
+    process.exitCode = 0;
   } catch (error) {
     console.error(
       `😭 Unable to gracefully shut down the server. Force exiting... - ${error}`,

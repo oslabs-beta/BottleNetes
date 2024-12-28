@@ -1,16 +1,8 @@
 import express from "express";
-import path from "path";
-import { fileURLToPath } from "url";
 
 import userController from "../controllers/userController.js";
 
 const signupRouter = express.Router();
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-signupRouter.get("/", (req, res) => {
-  return res.status(200).sendFile(path.resolve(__dirname, "../../signup.html"));
-});
 
 signupRouter.post("/", userController.createNewUser, (_req, res) => {
   if (res.locals.newUser) {

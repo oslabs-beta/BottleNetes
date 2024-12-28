@@ -1,7 +1,10 @@
-/* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
+/**
+ * This component renders the overview such as Cluster Name, number of Nodes, Pods and Containers in that cluster
+ */
+
 import PropTypes from "prop-types";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
+
 import "../Overview.css";
 
 const Overview = ({ podsStatuses, allNodes }) => {

@@ -30,9 +30,9 @@ import {
   parseResponseLatencyAppRequestHistorical,
 } from "../controllers/responseParsingController.js";
 
-const router = express.Router();
+const apiRouter = express.Router();
 
-router.get(
+apiRouter.get(
   "/all-pods-status",
   parseRequestAllPodsStatus,
   generateQueryAllPodsStatus,
@@ -43,7 +43,7 @@ router.get(
   },
 );
 
-router.get(
+apiRouter.get(
   "/all-pods-request-limit",
   parseRequestAllPodsRequestLimit,
   generateQueryAllPodsRequestLimit,
@@ -54,7 +54,7 @@ router.get(
   },
 );
 
-router.post(
+apiRouter.post(
   "/resource-usage-onevalue",
   parseRequestResourceUsageOneValue,
   generateQueryResourceUsage,
@@ -65,7 +65,7 @@ router.post(
   },
 );
 
-router.post(
+apiRouter.post(
   "/resource-usage-historical",
   parseRequestResourceUsageHistorical,
   generateQueryResourceUsage,
@@ -76,7 +76,7 @@ router.post(
   },
 );
 
-router.post(
+apiRouter.post(
   "/latency-app-request-onevalue",
   parseRequestLatencyAppRequestOneValue,
   generateQueryLatencyAppRequest,
@@ -87,7 +87,7 @@ router.post(
   },
 );
 
-router.post(
+apiRouter.post(
   "/latency-app-request-historical",
   parseRequestLatencyAppRequestHistorical,
   generateQueryLatencyAppRequest,
@@ -98,4 +98,4 @@ router.post(
   },
 );
 
-export default router;
+export default apiRouter;

@@ -1,3 +1,7 @@
+/**
+ * Store using zustand to centralize all states
+ */
+
 import { create } from 'zustand';
 
 const useStore = create((set) => ({

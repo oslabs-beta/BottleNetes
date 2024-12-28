@@ -1,6 +1,7 @@
 import { DataTypes, Sequelize } from "sequelize";
-import sequelize from "../db/db.js";
 import bcrypt from "bcrypt";
+
+import sequelize from "../db/db.js";
 
 // Define a model Users using Sequelizq
 const Users = sequelize.define(

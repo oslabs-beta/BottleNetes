@@ -5,20 +5,22 @@ export const parseResponseAllPodsStatus = (req, res, next) => {
     containerInfoData,
     restartData,
     podInfoData,
+    podReplicaSetOwnerData,
   ] = res.locals.data;
 
   const podsObj = {};
 
   phaseData.forEach((item) => {
     const { pod, namespace, phase, service } = item.metric;
-
+    // key is the pod name
+    // value is an object with pod info
     podsObj[pod] = {
       podName: pod,
       status: phase.toLowerCase(),
       namespace: namespace,
       service: service,
 
-      // Default values
+      // placeholder values
       nodeName: "node name not configured",
       clusterName: "cluster name not configured",
       restartCount: 0,
@@ -26,6 +28,7 @@ export const parseResponseAllPodsStatus = (req, res, next) => {
       containers: [],
       readiness: "cannot fetch readiness",
       podIp: "cannot fetch pod ip",
+      deploymentName: "deployment not found",
     };
   });
 
@@ -66,6 +69,24 @@ export const parseResponseAllPodsStatus = (req, res, next) => {
         podsObj[pod].clusterName = cluster;
       }
     }
+  });
+
+  podReplicaSetOwnerData.forEach((item) => {
+    const { replicaset, owner_name } = item.metric;
+    // The relationship between ReplicaSet names and Pod names:
+    // ReplicaSet name: deployment-name-hash
+    // Pod name: deployment-name-hash-random
+    // Example:
+    // ReplicaSet: ai-daffy-frontend-deployment-5c9d8c6685
+    // Pod: ai-daffy-frontend-deployment-5c9d8c6685-tb55c
+
+    // For each pod in podsObj, check if its name starts with the replicaset name
+    Object.keys(podsObj).forEach((podName) => {
+      // If the pod name starts with the replicaset name, assign the deployment name to that pod
+      if (podName.startsWith(replicaset)) {
+        podsObj[podName].deploymentName = owner_name;
+      };
+    });
   });
 
   // Convert object values to array
