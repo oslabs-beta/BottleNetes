@@ -27,11 +27,11 @@ const QueryTimeWindowConfiguration = ({
     <Fragment>
       <div
         id="time-window-config-button"
-        className="relative mb-4 flex items-center"
+        className="flex items-center"
       >
         <button
           onClick={() => setShowTimeWindow(true)}
-          className="transition-color rounded-2xl border-slate-100 bg-gradient-to-r from-slate-300 to-slate-200 px-4 py-2 text-lg font-semibold text-slate-500 duration-300 hover:brightness-90"
+          className="transition-color rounded-2xl border-2 border-slate-200 bg-gradient-to-r from-slate-200 to-slate-100 px-4 py-2 text-lg font-semibold text-slate-500 duration-300 hover:brightness-90 w-full"
         >
           Time Window: {queryTimeWindow}
         </button>

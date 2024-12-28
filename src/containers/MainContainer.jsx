@@ -82,7 +82,7 @@ const MainContainer = ({ username, backendUrl }) => {
   }, []);
 
   return (
-    <div>
+    <div id='main-container'>
       <header className="header sticky top-0 z-50 flex flex-col items-center justify-between gap-4 border-b-2 bg-gradient-to-r from-[#0f172a] to-[#1e40af] py-4 sm:flex-row">
         <div id="leftside" className="flex items-center">
           <div className="flex items-center gap-0 px-5">
@@ -173,7 +173,7 @@ const MainContainer = ({ username, backendUrl }) => {
 
         {/* Main Container */}
         <div
-          id="main-container"
+          id="graph-container"
           className="mt-2 flex min-h-screen flex-col gap-4 p-6 text-slate-100"
         >
           {/*Arrange components in columns for a larger screen, and stack vertically if the screen is smaller*/}
@@ -181,10 +181,10 @@ const MainContainer = ({ username, backendUrl }) => {
             {/* Pod Grid */}
             <div
               id="pod-grid"
-              className="flex max-h-[100%] flex-col rounded-3xl border-4 border-slate-400 bg-slate-100 p-4 xl:col-span-2"
+              className="flex max-h-[100%] flex-col rounded-3xl bg-slate-100 p-4 xl:col-span-2"
             >
               <h2 className="text-center text-2xl font-bold text-slate-900">
-                Select Pod
+                Heat Map
               </h2>
               <PodGrid
                 defaultView={defaultView}

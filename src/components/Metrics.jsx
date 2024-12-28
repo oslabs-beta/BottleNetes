@@ -221,7 +221,7 @@ const Metrics = ({
   };
 
   return (
-    <div className="w-full min-h-[500px] max-h-fit relative p-4">
+    <div className="w-full min-h-[600px] max-h-fit relative p-4">
       <Line options={options} data={data} />
     </div>
   );

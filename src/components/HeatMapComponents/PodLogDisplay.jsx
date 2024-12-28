@@ -59,7 +59,7 @@ const PodLogDisplay = ({ clickedPod, backendUrl }) => {
     <div id="pod-log-display">
       <button
         onClick={handleViewPodLog}
-        className="border-1 rounded-lg border-slate-200 bg-slate-200 px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90"
+        className="w-full rounded-lg border-2 border-slate-200 bg-gradient-to-br from-slate-200 to-slate-100 px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90"
       >
         View Pod Log
       </button>
