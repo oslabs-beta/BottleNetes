@@ -1,152 +1,142 @@
 import PropTypes from "prop-types";
 import { useState, useEffect, useRef } from "react";
-import { react } from "react";
-import logo from "../assets/logo.png";
+import logo from "../assets/logo.png"; // Importing the AI logo image for branding purposes
 
-//Helper functopn tp calculate relative time 
+// Helper function to calculate relative time
+// This version calculates a human-readable timestamp format like "5 min ago"
 const formatRelativeTime = (timestamp) => {
-  const secondsAgo = Math.floor ((Date.now() - timestamp/1000));
-  if (secondsAgo < 60) return `${secondsAgo} sec ago`
-  if (secondsAgo < 3600) return `${Math.floor(secondsAgo / 60)} min ago`
-  return `${Math.floor(secondsAgo/ 3600)} hr ago`;
+  const secondsAgo = Math.floor((Date.now() - timestamp) / 1000); // Calculate the difference in seconds
+  if (secondsAgo < 60) return `${secondsAgo} sec ago`; // Less than 1 minute
+  if (secondsAgo < 3600) return `${Math.floor(secondsAgo / 60)} min ago`; // Less than 1 hour
+  return `${Math.floor(secondsAgo / 3600)} hr ago`; // 1 hour or more
 };
 
-const Chatbot = ({ allData, username }) => {
-  // State that holds ai responses
+// A previous formatTimestamp function was used, but the relative time approach is more user-friendly.
+// Old code for comparison:
+// const formatTimestamp = (timestamp) => {
+//   const date = new Date(timestamp);
+//   return `${date.getHours()}:${date.getMinutes().toString().padStart(2, "0")}`;
+// };
+
+const Chatbot = ({ allData, fetchData, username }) => {
+  // State to hold AI responses
   const [aiContent, setAiContent] = useState([]);
-
-  // State that holds user input in text field
+  // State to hold user input text
   const [userInput, setUserInput] = useState("");
-
-  // State that holds all user chat input/track the history of user messages
+  // State to store user message history
   const [historicalUserInput, setHistoricalUserInput] = useState([]);
-
-  const [timestamps, setTimestamps] = useState([]);
-
-  // Scrollbar reference
+  // State to track timestamps for messages
+  const [timestamps, setTimestamps] = useState([]); // Added for displaying relative timestamps
+  // Scrollbar reference for auto-scrolling
   const chatRef = useRef(null);
 
-  // Event handle to update userInput state every time keystroke logged
+  // Handle input changes for the text field
   const handleInputChange = (event) => {
-    setUserInput(event.target.value);
+    setUserInput(event.target.value); // Updates the state with user input
   };
 
-  // Event handler for submiting the form when user hits enter
+  // Event handler for pressing Enter to submit
   const handleKeyDown = (e) => {
-    if (e.key == "Enter") {
-      e.preventDefault();
-      handleSubmit(e);
+    if (e.key === "Enter") {
+      e.preventDefault(); // Prevents default form submission
+      handleSubmit(e); // Calls handleSubmit
     }
   };
 
-  // Fetch request to open ai
-  const fetchData = async (method, endpoint, body = null) => {
-    try {
-      const request = {
-        method: method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-      if (body) request.body = JSON.stringify(body);
-      const response = await fetch(
-        "http://localhost:3000/" + endpoint,
-        request,
-      );
-      return await response.json();
-    } catch (error) {
-      console.error("Fetch error:", error);
-      return null;
-    }
-  };
-
-  //Event handler for form submission
+  // Handle form submission to send user input and fetch AI response
   const handleSubmit = async (event) => {
-    console.log("submitted");
     event.preventDefault();
 
-    if (!userInput.trim()) return;
+    if (!userInput.trim()) return; // Prevent empty submissions
 
-    // Update historical user input state
-    setHistoricalUserInput((historicalUserInput) => [
-      ...historicalUserInput,
-      userInput,
-    ]);
-    setUserInput("");
+    const timestamp = Date.now(); // Record the current timestamp
+
+    // Update historical user input and timestamps states
+    setHistoricalUserInput((prev) => [...prev, { text: userInput, timestamp }]);
+    setTimestamps((prev) => [...prev, timestamp]);
+
+    setUserInput(""); // Clear the input field after submission
 
     // Format request body
     const body = {
-      // allData: allData,
+      allData: allData,
       userMessage: userInput,
     };
 
-    // Send data to backend and update state with ai response
+    // Send data to backend and update AI response state
     try {
       const response = await fetchData("POST", "ai/askAi", body);
       const { analysis } = response;
-      setAiContent((aiContent) => [
-        ...aiContent,
-        analysis || "❌ No response received",
+
+      // Append the AI response and its timestamp to aiContent state
+      setAiContent((prev) => [
+        ...prev,
+        { text: analysis || "❌ No response received", timestamp },
       ]);
     } catch (error) {
       console.error("😵 Error:", error);
-      throw new Error("💀 an error has occurred...");
     }
   };
 
-  // Scroll to bottom of convo every time
+  // Auto-scroll to the bottom when new messages are added
   useEffect(() => {
     if (chatRef.current) {
       chatRef.current.scrollTop = chatRef.current.scrollHeight;
     }
   }, [aiContent, historicalUserInput]);
 
-  // Map out user-ai conversation
+  // Construct the conversation array dynamically
   const conversationArr = [];
   for (
     let i = 0;
     i < Math.max(aiContent.length, historicalUserInput.length);
     i++
   ) {
-    conversationArr.push(
-      // human chat
-      <div key={i}>
-        <div className="ml-auto mt-2 flex w-full max-w-xs justify-end space-x-3">
-          {/* div that includes timestamp */}
-          <div>
-            {/* text bubble backgouond color */}
-            <div className="rounded-l-lg rounded-br-lg bg-blue-600 p-2 text-white">
-              {/* actual text */}
-              <p className="text-sm">{historicalUserInput[i]}</p>
-            </div>
-            <span className="text-xs leading-none text-gray-500">
-              {/* {formatTimestamp(setAiContent.timestamp)} */}
-            </span>
-          </div>
-          {/* human circles */}
+    const userMessage = historicalUserInput[i];
+    const aiMessage = aiContent[i];
 
-          <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300"></div>
-        </div>
-        {/* ai chat? */}
-        <div className="mt-1 flex w-full max-w-xs space-x-3">
-          {/* AI circle */}
-          <div className="h-10 w-10 flex-shrink-0 rounded-full bg-red-300"></div>
-          {/* div that includes the timestamp */}
+    // Render user messages
+    conversationArr.push(
+      userMessage && (
+        <div className="ml-auto mt-2 flex w-full max-w-xs justify-end space-x-3">
           <div>
-            {/* actual text */}
-            <div className="rounded-r-lg rounded-bl-lg bg-gray-300 p-2">
-              <p className="text-sm">{aiContent[i]}</p>
+            <div className="rounded-l-lg rounded-br-lg bg-blue-600 p-2 text-white">
+              <p className="text-sm">{userMessage.text}</p>
             </div>
             <span className="text-xs leading-none text-gray-500">
-              {/* {formatTimestamp(setAiContent.timestamp)} */}
+              {formatRelativeTime(userMessage.timestamp)}
+            </span>
+          </div>
+          <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300 flex items-center justify-center text-white font-bold">
+            {username[0].toUpperCase()} {/* Display the first letter of the username */}
+          </div>
+        </div>
+      ),
+
+      // Render AI messages
+      aiMessage && (
+        <div className="mt-1 flex w-full max-w-xs space-x-3">
+          <div className="h-10 w-10 flex-shrink-0">
+            <img
+              src={logo}
+              alt="AI Logo"
+              className="h-full w-full rounded-full object-cover"
+            />
+          </div>
+          <div>
+            <div className="rounded-r-lg rounded-bl-lg bg-gray-300 p-2">
+              <p className="text-sm">{aiMessage.text}</p>
+            </div>
+            <span className="text-xs leading-none text-gray-500">
+              {formatRelativeTime(aiMessage.timestamp)}
             </span>
           </div>
         </div>
-      </div>
+      )
     );
   }
 
-  //RENDERING CHATBOT COMPONENT
+  // Render the chatbot component
   return (
     <div className="flex min-h-[500px] flex-col items-center">
       <div className="flex w-full max-w-xl flex-grow flex-col overflow-hidden rounded-lg bg-white p-1.5 shadow-xl">
@@ -154,9 +144,7 @@ const Chatbot = ({ allData, username }) => {
           className="flex h-0 flex-grow flex-col overflow-auto p-3"
           ref={chatRef}
         >
-          {/* ai text box that includes everything*/}
           <div className="flex w-full max-w-xs space-x-3">
-            {/* AI circle */}
             <div className="h-20 w-20 flex-shrink-0">
               <img
                 src={logo}
@@ -164,20 +152,17 @@ const Chatbot = ({ allData, username }) => {
                 className="h-full w-full rounded-full object-cover"
               />
             </div>
-            {/* div that includes the timestamp */}
             <div>
-              {/* actual text */}
               <div className="rounded-r-lg rounded-bl-lg bg-gray-300 p-3">
                 <p className="text-sm">How can I help you?</p>
               </div>
               <span className="text-xs leading-none text-gray-500">
-                {/* {formatTimestamp(setAiContent.timestamp)} */}
+                {formatRelativeTime(Date.now())}
               </span>
             </div>
           </div>
           {conversationArr}
         </div>
-        {/* Input text box */}
         <span className="bg flex w-full items-center justify-between">
           <div className="flex-grow rounded-l-lg rounded-br-lg p-2">
             <input
@@ -187,7 +172,7 @@ const Chatbot = ({ allData, username }) => {
               onChange={handleInputChange}
               value={userInput}
               onKeyDown={handleKeyDown}
-            ></input>
+            />
           </div>
           <div className="text-m mx-1 rounded-xl bg-blue-500 px-3 py-1.5 text-slate-200 hover:brightness-90">
             <button onClick={handleSubmit}>Send</button>
@@ -198,10 +183,11 @@ const Chatbot = ({ allData, username }) => {
   );
 };
 
-// Validate allData prop type
+// PropTypes validation
 Chatbot.propTypes = {
   allData: PropTypes.object,
-  // fetchData: PropTypes.func.isRequired,
+  fetchData: PropTypes.func.isRequired,
+  username: PropTypes.string.isRequired, // New username prop for displaying initials
 };
 
 export default Chatbot;
