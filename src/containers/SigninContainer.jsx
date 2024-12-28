@@ -39,7 +39,7 @@ const SigninContainer = ({ backendUrl }) => {
       navigate("/dashboard");
     } else {
       signOut();
-      alert("Unable to fetch data");
+      alert("Credential not found");
     }
   };
 

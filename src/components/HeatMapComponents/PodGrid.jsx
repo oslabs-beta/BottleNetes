@@ -71,7 +71,6 @@ const PodGrid = ({
         clickedPod.podName === podObj.podName &&
         clickedPod.namespace === podObj.namespace &&
         clickedPod.containers === podObj.containers
-        // && clickedPod.deploymentName === podObj.deploymentName // Don't need to check deployment, it also messes up the selector
       }
       onClick={() => {
         setClickedPod({
@@ -87,12 +86,15 @@ const PodGrid = ({
 
   // Dynamic Grid Style for the heatmap
   const gridStyle =
-    "grid gap-[2px] mr-2 mt-1 grid-cols-5 overflow-visible md:grid-cols-7 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 3xl:grid-cols-9 relative z-20";
+    "grid gap-[2px] grid-cols-5 overflow-visible md:grid-cols-7 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 3xl:grid-cols-9 relative z-20";
 
   return (
     <div className="flex h-full flex-col overflow-visible">
       {/* Configuring buttons */}
-      <div id="control-buttons-row" className="mb-4 flex flex-wrap gap-2 p-4">
+      <div
+        id="control-buttons-row"
+        className="grid grid-cols-4 gap-x-4 gap-y-2 px-4 py-2"
+      >
         <PodRestart
           clickedPod={clickedPod}
           setClickedPod={setClickedPod}
@@ -130,7 +132,7 @@ const PodGrid = ({
       {/* Bottom Container */}
       <div className="flex flex-1">
         {/* Left Column - Selection Buttons */}
-        <div className="flex w-1/4 min-w-[207px] max-w-[250px] flex-col justify-start gap-4 p-4">
+        <div className="flex w-1/4 min-w-[207px] flex-col justify-start gap-2 p-4">
           <QueryTimeWindowConfiguration
             queryTimeWindow={queryTimeWindow}
             setQueryTimeWindow={setQueryTimeWindow}
@@ -168,7 +170,7 @@ const PodGrid = ({
         {/* Right Column - Pod Heat Map */}
         <div
           id="pod-heat-map"
-          className="relative z-10 w-3/4 overflow-visible p-4"
+          className="z-10 my-4 mr-3 w-3/4 overflow-visible rounded-xl border-2 border-blue-500/10 bg-blue-500/10 p-2"
         >
           <div id="pod-grid" className={gridStyle}>
             {buttonArray}
