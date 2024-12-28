@@ -140,7 +140,7 @@ const PodRestart = ({
     <div id="pod-restart">
       <button
         onClick={handleRestartPod}
-        className="border-1 rounded-lg border-slate-200 bg-gradient-to-r from-slate-300 to-[#d6dee8] px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90"
+        className="w-full rounded-lg border-2 border-slate-200 bg-gradient-to-r from-slate-200 to-slate-100 px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90"
       >
         Restart Pod
       </button>

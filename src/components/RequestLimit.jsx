@@ -155,7 +155,7 @@ const RequestLimit = ({ selectedMetric, requestLimits }) => {
   const chartHeight = podList.length * 50
 
   return (
-    <div className="p-4" style={{height: chartHeight}}>
+    <div className="p-4 overflow-y-auto" style={{height: chartHeight}}>
       {podList.length > 0 ? (
         <Bar options={options} data={data} />
       ) : (

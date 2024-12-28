@@ -53,7 +53,7 @@ const Pod = ({ podInfo, selectedMetric, onClick, isClicked }) => {
           backgroundColor: podInfo.color,
         }}
       >
-        <div id="pod-info-popup" className={hoverStyle}>
+        <div id="pod-info-popup" className={`${hoverStyle}`}>
           <p className="font-semibold">
             Pod Name: <span className="font-normal">{podInfo.podName}</span>
           </p>
@@ -70,6 +70,9 @@ const Pod = ({ podInfo, selectedMetric, onClick, isClicked }) => {
           </p>
           <p className="font-semibold">
             Service: <span className="font-normal">{podInfo.service}</span>
+          </p>
+          <p className="font-semibold">
+            Deployment: <span className="font-normal">{podInfo.deploymentName}</span>
           </p>
           <p className="font-semibold">
             Ready:
