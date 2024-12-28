@@ -1,3 +1,7 @@
+/**
+ * Controller contains middleware to parse the responses back with the usable formats
+ */
+
 export const parseResponseAllPodsStatus = (req, res, next) => {
   const [
     phaseData,

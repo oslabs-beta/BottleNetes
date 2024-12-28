@@ -1,3 +1,9 @@
+/**
+ * Contains middlewares:
+ * createCookie: Create Cookie when user sign in
+ * verifyCookie: Check if the user has already signed in
+ */
+
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import process from "node:process";

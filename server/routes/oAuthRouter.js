@@ -19,7 +19,7 @@ passport.use(
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: process.env.GOOGLE_REDIRECT_URI,
     },
-    (accessToken, refreshToken, profile, done) => {
+    (accessToken, _refreshToken, profile, done) => {
       done(null, { profile, accessToken });
     },
   ),
@@ -46,7 +46,7 @@ passport.use(
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
       callbackURL: process.env.GITHUB_REDIRECT_URI,
     },
-    (accessToken, refreshToken, profile, done) => {
+    (accessToken, _refreshToken, profile, done) => {
       done(null, { profile, accessToken });
     },
   ),
