@@ -224,7 +224,7 @@ const MainContainer = ({ username, backendUrl }) => {
             {/* Request vs. Limit */}
             <div
               id="request-vs-limit"
-              className="relative flex-auto rounded-3xl bg-slate-100 p-4 xl:col-span-2"
+              className=" rounded-3xl bg-slate-100 p-4 xl:col-span-2 overflow-y-auto w-full h-[500px]"
             >
               <h2 className="text-center text-2xl font-semibold text-slate-900">
                 Request vs. Limit
