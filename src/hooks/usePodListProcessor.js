@@ -81,13 +81,13 @@ const usePodListProcessor = ({
     // Apply filtering if configured and not in default view
     if (filterConfig.type && filterConfig.value && !defaultView) {
       processedPods = processedPods.filter((pod) => {
-        if (["cpuRelative", "memoryRelative"].includes(filterConfig.type)) {
-          const value = pod[filterConfig.type];
-          const threshold = parseFloat(filterConfig.value);
-          return filterConfig.operator === "over"
-            ? value > threshold
-            : value < threshold;
-        }
+        // if (["cpuRelative", "memoryRelative"].includes(filterConfig.type)) {
+        //   const value = pod[filterConfig.type];
+        //   const threshold = parseFloat(filterConfig.value);
+        //   return filterConfig.operator === "over"
+        //     ? value > threshold
+        //     : value < threshold;
+        // }
         return pod[filterConfig.type] === filterConfig.value;
       });
     }
