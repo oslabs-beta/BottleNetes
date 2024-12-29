@@ -2,7 +2,7 @@
  * This component contains the security logics
  */
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
   Navigate,
   createBrowserRouter,
@@ -13,24 +13,27 @@ import SigninContainer from "./containers/SigninContainer";
 import MainContainer from "./containers/MainContainer";
 import SignupContainer from "./containers/SignupContainer";
 import LoadingContainer from "./containers/LoadingContainer.jsx";
-import useStore from "./store.jsx";
+import useStore from "./hooks/store.js";
 
 const App = () => {
   const {
     isSignedIn,
-    loading,
-    username,
-    firstName,
-    lastName,
     signIn,
     signOut,
+    loading,
     setLoading,
+    username,
     setUsername,
+    password,
+    setPassword,
+    email,
+    setEmail,
+    firstName,
     setFirstName,
+    lastName,
     setLastName,
+    backendUrl,
   } = useStore();
-
-  const [backendUrl] = useState("http://localhost:3000/");
 
   // This hook fires whenever you go to the home page (Sign In Page)
   useEffect(() => {
@@ -107,14 +110,34 @@ const App = () => {
     },
     {
       path: "/user/signup",
-      element: <SignupContainer />,
+      element: (
+        <SignupContainer
+          username={username}
+          setUsername={setUsername}
+          password={password}
+          setPassword={setPassword}
+          email={email}
+          setEmail={setEmail}
+          firstName={firstName}
+          setFirstName={setFirstName}
+          lastName={lastName}
+          setLastName={setLastName}
+          backendUrl={backendUrl}
+        />
+      ),
     },
     {
       path: "/",
       element: isSignedIn ? (
         <Navigate to={"/dashboard"} />
       ) : (
-        <SigninContainer backendUrl={backendUrl} />
+        <SigninContainer
+          username={username}
+          setUsername={setUsername}
+          signIn={signIn}
+          signOut={signOut}
+          backendUrl={backendUrl}
+        />
       ),
     },
   ]);

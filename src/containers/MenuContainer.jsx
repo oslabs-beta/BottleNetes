@@ -3,9 +3,9 @@
  */
 
 import PropTypes from "prop-types";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
-import useStore from '../store';
+import useStore from "../hooks/store.js";
 
 const MenuContainer = ({
   refreshFrequency,
@@ -16,7 +16,7 @@ const MenuContainer = ({
   setRefreshInput,
   manualRefreshCount,
   setManualRefreshCount,
-  backendUrl
+  backendUrl,
 }) => {
   const navigate = useNavigate();
   const signOut = useStore((state) => state.signOut);
@@ -37,24 +37,23 @@ const MenuContainer = ({
 
     try {
       const response = await fetch(backendUrl + "user/signout", {
-        method: 'POST',
-        credentials: 'include',
+        method: "POST",
+        credentials: "include",
       });
 
       if (!response.ok) {
-        console.error('Unable to send request');
+        console.error("Unable to send request");
       } else {
         const data = await response.json();
         console.log(data);
         signOut();
         navigate("/");
-      };
-
+      }
     } catch (error) {
       console.error(error);
-      alert('Unable to sign out');
+      alert("Unable to sign out");
     }
-  }
+  };
 
   return (
     <div
