@@ -5,6 +5,10 @@
 import { DataTypes, Sequelize } from "sequelize";
 import bcrypt from "bcrypt";
 
+// Import in tables to establish relationship
+import UsersGitHub from './UsersGitHubModel.js';
+import UsersGoogle from './UsersGoogleModel.js';
+
 import sequelize from "../db/db.js";
 
 // Define a model Users using Sequelizq
@@ -29,9 +33,29 @@ const Users = sequelize.define(
     },
 
     email: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      type: DataTypes.STRING(50),
       unique: true,
+      allowNull: false,
+    },
+
+    first_name: {
+      type: DataTypes.STRING(20),
+      allowNull: false,
+    },
+
+    last_name: {
+      type: DataTypes.STRING(20),
+      allowNull: false,
+    },
+
+    // Foreign Key
+    github_id: {
+      type: DataTypes.UUID,
+    },
+
+    // Foreign Key
+    google_id: {
+      type: DataTypes.UUID,
     },
 
     created_at: {
@@ -51,6 +75,12 @@ const Users = sequelize.define(
     updatedAt: "updated_at",
   },
 );
+
+Users.belongsTo(UsersGitHub, { foreignKey: "github_id" });
+Users.belongsTo(UsersGoogle, { foreignKey: "google_id" });
+
+UsersGitHub.hasOne(Users, { foreignKey: "github_id" });
+UsersGoogle.hasOne(Users, { foreignKey: "google_id" });
 
 // Hash the password before creating and updating
 Users.addHook("beforeSave", async (users) => {

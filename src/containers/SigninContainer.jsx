@@ -10,12 +10,18 @@ import { useNavigate, Link } from "react-router-dom";
 import useStore from "../store.jsx";
 
 const SigninContainer = ({ backendUrl }) => {
-  const [username, setUsername] = useState("");
+  // const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
+  const username = useStore((state) => state.username);
+  const firstName = useStore((state) => state.firstName);
+  const lastName = useStore((state) => state.lastName);
   const signIn = useStore((state) => state.signIn);
   const signOut = useStore((state) => state.signOut);
+  const setUsername = useStore((state) => state.setUsername);
+  const setfirstName = useStore((state) => state.setfirstName);
+  const setLastName = useStore((state) => state.setLastName);
 
   const credential = { username, password };
 
