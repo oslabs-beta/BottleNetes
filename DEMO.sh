@@ -164,7 +164,7 @@ echo "-----------------------------------------"
 echo "Step 8.5 ⏳🤔 Waiting for all pods to become ready..."
 echo "🔍 Opening a new terminal to watch pods status..."
 osascript -e 'tell application "Terminal" to do script "echo Waiting for all pods to become Ready...; kubectl get pods -w"'
-kubectl wait --for=condition=Ready pods --all --timeout=150s
+kubectl wait --for=condition=Ready pods --all --timeout=5000s
 
 if [ $? -eq 0 ]; then
     echo "✅ All pods are now ready! Proceeding to the next steps..."
