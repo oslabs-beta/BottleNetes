@@ -83,7 +83,7 @@ const MainContainer = ({ username, backendUrl }) => {
 
   return (
     <div id='main-container'>
-      <header className="header sticky top-0 z-50 flex flex-col items-center justify-between gap-4 border-b-2 bg-gradient-to-r from-[#0f172a] to-[#1e40af] py-4 sm:flex-row">
+      <header className="header sticky top-0 z-50 flex flex-col items-center justify-between gap-4 border-b-2 bg-gradient-to-r from-slate-900 to-[#1e40af] py-4 sm:flex-row">
         <div id="leftside" className="flex items-center">
           <div className="flex items-center gap-0 px-5">
             <button
@@ -129,7 +129,7 @@ const MainContainer = ({ username, backendUrl }) => {
             </button>
             <div
               ref={menuRef}
-              className={`fixed left-0 top-20 h-screen w-64 transform bg-slate-900 p-4 shadow-lg transition-transform duration-300 ease-in-out ${
+              className={`fixed left-0 top-20 h-screen w-80 transform bg-gradient-to-r from-slate-900 to-[#101b38] p-4 shadow-lg transition-transform duration-300 ease-in-out overflow-y-auto ${
                 isMenuOpen ? "translate-x-0" : "-translate-x-full"
               }`}
             >
@@ -142,6 +142,7 @@ const MainContainer = ({ username, backendUrl }) => {
                 setRefreshInput={setRefreshInput}
                 manualRefreshCount={manualRefreshCount}
                 setManualRefreshCount={setManualRefreshCount}
+                backendUrl={backendUrl}
               />
             </div>
           </div>

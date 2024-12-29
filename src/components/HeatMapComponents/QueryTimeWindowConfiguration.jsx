@@ -82,13 +82,13 @@ const QueryTimeWindowConfiguration = ({
                 min={1}
                 value={timeInput}
                 onChange={(e) => setTimeInput(e.target.value)}
-                className="w-20 rounded-md border border-slate-300 bg-slate-300 p-2 text-slate-800 hover:brightness-105 active:brightness-90 transition duration-300"
+                className="w-20 rounded-md border border-slate-300 bg-slate-300 p-2 text-slate-800 hover:brightness-105 focus:brightness-90 transition duration-300"
                 placeholder="Value"
               />
               <select
                 value={timeUnit}
                 onChange={(e) => setTimeUnit(e.target.value)}
-                className="rounded-md border border-slate-300 bg-slate-300 p-3 text-slate-800 w-28 hover:brightness-105 active:brightness-90 transition duration-300"
+                className="rounded-md border border-slate-300 bg-slate-300 p-3 text-slate-800 w-28 hover:brightness-105 focus:brightness-90 transition duration-300"
               >
                 <option value="s">
                   {parseInt(timeInput) <= 1 ? "Second" : "Seconds"}

@@ -16,12 +16,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Import Routers
-import signupRouter from "./routes/signupRouter.js";
 import signinRouter from "./routes/signinRouter.js";
+import signupRouter from "./routes/signupRouter.js";
+import signoutRouter from './routes/signoutRouter.js';
 import apiRouter from "./routes/apiRouter.js";
 import oAuthRouter from "./routes/oAuthRouter.js";
 import k8sRouter from "./routes/k8sRouter.js";
-
 // Allow the use of process.env
 dotenv.config();
 
@@ -52,6 +52,7 @@ connectDB();
 // Routers
 app.use("/signin", signinRouter);
 app.use("/signup", signupRouter);
+app.use("/signout", signoutRouter);
 app.use("/api", apiRouter);
 app.use("/oauth", oAuthRouter);
 app.use("/k8s", k8sRouter);
