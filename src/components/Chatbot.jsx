@@ -59,7 +59,7 @@ const Chatbot = ({ allData, fetchData, username }) => {
 
     // Format request body
     const body = {
-      allData: allData,
+      // allData: allData,
       userMessage: userInput,
     };
 
@@ -128,7 +128,7 @@ const Chatbot = ({ allData, fetchData, username }) => {
               {formatRelativeTime(userMessage.timestamp)}
             </span>
           </div>
-          <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300 flex items-center justify-center text-white font-bold">
+          <div className="h-10 w-10 flex-shrink-0 rounded-full bg-purple-900 flex items-center justify-center text-white font-bold">
             {username[0].toUpperCase()} {/* Display the first letter of the username */}
           </div>
         </div>
