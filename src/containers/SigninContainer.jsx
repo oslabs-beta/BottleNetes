@@ -38,7 +38,6 @@ const SigninContainer = ({
     if (response.ok) {
       setUsername(data.username);
       signIn();
-      navigate("/dashboard");
     } else {
       signOut();
       alert("Credential not found");

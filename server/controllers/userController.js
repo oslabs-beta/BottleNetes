@@ -15,9 +15,9 @@ userController.createNewUser = async (req, res, next) => {
   console.log("👥 Running createNewUser middleware...");
 
   try {
-    const { username, password, email } = await req.body;
+    const { username, password, email, firstName, lastName } = await req.body;
     // Check if any required field is missing
-    if (!username || !password || !email) {
+    if (!username || !password || !email || !firstName || !lastName) {
       return next({
         log: "Required credentials are not provided",
         status: 500,
@@ -39,9 +39,11 @@ userController.createNewUser = async (req, res, next) => {
       username,
       password_hash: password,
       email,
+      first_name: firstName,
+      last_name: lastName,
     });
     console.log("✅ User created: ", newUser.toJSON());
-    res.locals.newUser = newUser;
+    res.locals.newUser = newUser.toJSON();
     return next();
   } catch (error) {
     return next({

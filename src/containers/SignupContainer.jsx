@@ -3,7 +3,7 @@
  */
 import PropTypes from "prop-types";
 import { Hexagon } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const SignupContainer = ({
   username,
@@ -18,6 +18,7 @@ const SignupContainer = ({
   setLastName,
   backendUrl,
 }) => {
+  const navigate = useNavigate();
   const handleSignup = async () => {
     const newUserCredential = { username, password, email, firstName, lastName };
     console.log(`🔄 Sending request to ${backendUrl}user/signup`);
@@ -29,13 +30,14 @@ const SignupContainer = ({
         body: JSON.stringify(newUserCredential),
       });
 
-      const data = await response.json();
-      console.log(data);
+      if (!response.ok) {
+        alert("Something is wrong... Please try again later.");
+      }
 
-      if (response.ok) {
-        console.log("😛 New user successfully created!");
-        alert("Succesfully created a new account.");
-      } else alert("Something is wrong... Please try again later.");
+      const data = await response.json();
+      alert(data.message);
+      console.log(data.data);
+      navigate('/');
     } catch (error) {
       console.log(`🤬 Failed to fetch data: ${error}`);
       alert("Failed to fetch data");
