@@ -11,7 +11,7 @@
  *   - Renders user and AI messages with dynamic timestamps.
  *   - Includes user initials in profile avatars and branded AI logos.
  */
-
+import "../index.css";
 import PropTypes from "prop-types";
 import { useState, useRef, useEffect } from "react";
 
@@ -192,7 +192,9 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
                 podStatuses={allData.podsStatuses || []}
                 cpuUsageOneValue={allData.cpuUsageOneValue || []}
                 memoryUsageOneValue={allData.memoryUsageOneValue || []}
-                latencyAppRequestOneValue={allData.latencyAppRequestOneValue || []}
+                latencyAppRequestOneValue={
+                  allData.latencyAppRequestOneValue || []
+                }
                 queryTimeWindow={queryTimeWindow}
                 setQueryTimeWindow={setQueryTimeWindow}
                 backendUrl={backendUrl}
@@ -258,17 +260,30 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
               <Chatbot
                 allData={allData}
                 fetchData={(method, endpoint, body) =>
-                  fetch(`${backendUrl}/${endpoint}`, {
+                  fetch(`${backendUrl}${endpoint}`, {
                     method,
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(body),
                   }).then((res) => res.json())
                 }
                 username={username}
+                className="text-gradient text-2xl font-bold shadow-lg font-poppins"
+                logoStyle={{
+                  width: "70px",
+                  height: "70px",
+                  borderRadius: "50%",
+                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                  backgroundImage: "linear-gradient(to right, #1e90ff, #87ceeb)",
+                  color: "#fff",
+                  fontSize: "18px",
+                  fontWeight: "bold",
+                  textTransform: "uppercase",
+                }}
               />
             </div>
           )}
-          {/* Reset and Ask AI buttons */}
+
+        {/* Reset and Ask AI buttons */}
           <div className="flex justify-between pb-5">
             <button
               onClick={resetView}
@@ -360,7 +375,7 @@ export default MainContainer;
 //     podRestartCount,
 //     manualRefreshCount,
 //   });
-  
+
 //   const allData = fetchedData || {};
 
 //   // Automatically close the menu when clicking outside.
@@ -457,7 +472,7 @@ export default MainContainer;
 //               allNodes={allData.allNodes}
 //             />
 //           </div>
-    
+
 //           {/* Pod Name Display */}
 //           <div className="border-b-2 border-slate-300">
 //             <PodNameDisplay
@@ -465,7 +480,7 @@ export default MainContainer;
 //               setClickedPod={setClickedPod}
 //             />
 //           </div>
-    
+
 //           {/* Main Container */}
 //           <div
 //             id="main-container"
@@ -499,7 +514,7 @@ export default MainContainer;
 //                   backendUrl={backendUrl}
 //                 />
 //               </div>
-    
+
 //               {/* Historical Tracing */}
 //               <div
 //                 id="historical-tracing"
@@ -515,7 +530,7 @@ export default MainContainer;
 //                   memoryUsageHistorical={allData.memoryUsageHistorical}
 //                 />
 //               </div>
-    
+
 //               {/* Request vs. Limit */}
 //               <div
 //                 id="request-vs-limit"
@@ -531,7 +546,7 @@ export default MainContainer;
 //                   requestLimits={allData.requestLimits}
 //                 />
 //               </div>
-    
+
 //               {/* Latency */}
 //               <div
 //                 id="latency"
@@ -588,8 +603,8 @@ export default MainContainer;
 //         </div>
 //       </div>
 //     );
-//   };  
-    
+//   };
+
 // MainContainer.propTypes = {
 //   username: PropTypes.string.isRequired,
 //   backendUrl: PropTypes.string.isRequired,

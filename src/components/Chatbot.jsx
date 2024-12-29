@@ -6,8 +6,8 @@ import logo from "../assets/logo.png"; // Importing the AI logo image for brandi
 // This version calculates a human-readable timestamp format like "5 min ago"
 const formatRelativeTime = (timestamp) => {
   const secondsAgo = Math.floor((Date.now() - timestamp) / 1000); // Calculate the difference in seconds
-  if (secondsAgo < 60) return `${secondsAgo} sec ago`; // Less than 1 minute
-  if (secondsAgo < 3600) return `${Math.floor(secondsAgo / 60)} min ago`; // Less than 1 hour
+ if (secondsAgo < 60) return `${secondsAgo} sec ago`; // Less than 1 minute
+ if (secondsAgo < 3600) return `${Math.floor(secondsAgo / 60)} min ago`; // Less than 1 hour
   return `${Math.floor(secondsAgo / 3600)} hr ago`; // 1 hour or more
 };
 
@@ -20,7 +20,7 @@ const formatRelativeTime = (timestamp) => {
 
 const Chatbot = ({ allData, fetchData, username }) => {
   // State to hold AI responses
-  const [aiContent, setAiContent] = useState([]);
+  const [aiContent, setAiContent] = useState([{text: "How can I help you?", timestamp: Date.now()}]);
   // State to hold user input text
   const [userInput, setUserInput] = useState("");
   // State to store user message history
@@ -97,21 +97,6 @@ const Chatbot = ({ allData, fetchData, username }) => {
 
     // Render user messages
     conversationArr.push(
-      userMessage && (
-        <div className="ml-auto mt-2 flex w-full max-w-xs justify-end space-x-3">
-          <div>
-            <div className="rounded-l-lg rounded-br-lg bg-blue-600 p-2 text-white">
-              <p className="text-sm">{userMessage.text}</p>
-            </div>
-            <span className="text-xs leading-none text-gray-500">
-              {formatRelativeTime(userMessage.timestamp)}
-            </span>
-          </div>
-          <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300 flex items-center justify-center text-white font-bold">
-            {username[0].toUpperCase()} {/* Display the first letter of the username */}
-          </div>
-        </div>
-      ),
 
       // Render AI messages
       aiMessage && (
@@ -132,7 +117,23 @@ const Chatbot = ({ allData, fetchData, username }) => {
             </span>
           </div>
         </div>
+      ),
+      userMessage && (
+        <div className="ml-auto mt-2 flex w-full max-w-xs justify-end space-x-3">
+          <div>
+            <div className="rounded-l-lg rounded-br-lg bg-blue-600 p-2 text-white">
+              <p className="text-sm">{userMessage.text}</p>
+            </div>
+            <span className="text-xs leading-none text-gray-500">
+              {formatRelativeTime(userMessage.timestamp)}
+            </span>
+          </div>
+          <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gray-300 flex items-center justify-center text-white font-bold">
+            {username[0].toUpperCase()} {/* Display the first letter of the username */}
+          </div>
+        </div>
       )
+
     );
   }
 
@@ -144,7 +145,7 @@ const Chatbot = ({ allData, fetchData, username }) => {
           className="flex h-0 flex-grow flex-col overflow-auto p-3"
           ref={chatRef}
         >
-          <div className="flex w-full max-w-xs space-x-3">
+          {/* <div className="flex w-full max-w-xs space-x-3">
             <div className="h-20 w-20 flex-shrink-0">
               <img
                 src={logo}
@@ -160,7 +161,7 @@ const Chatbot = ({ allData, fetchData, username }) => {
                 {formatRelativeTime(Date.now())}
               </span>
             </div>
-          </div>
+          </div> */}
           {conversationArr}
         </div>
         <span className="bg flex w-full items-center justify-between">
