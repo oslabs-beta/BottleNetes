@@ -1,0 +1,112 @@
+{
+  "allPodsRequestLimit": [
+    {
+      "podName": "istiod-b877844fb-x5zt5",
+      "cpuRequest": 0.01,
+      "memoryRequest": 104857600,
+      "cpuLimit": "cannot fetch cpu limit",
+      "memoryLimit": "cannot fetch memory limit",
+      "cpuRequestLimitRatio": "cannot fetch cpu request limit ratio",
+      "memoryRequestLimitRatio": "cannot fetch memory request limit ratio"
+    },
+    {
+      "podName": "coredns-6f6b679f8f-22gzb",
+      "cpuRequest": 0.1,
+      "memoryRequest": 73400320,
+      "cpuLimit": "cannot fetch cpu limit",
+      "memoryLimit": 178257920,
+      "cpuRequestLimitRatio": "cannot fetch cpu request limit ratio",
+      "memoryRequestLimitRatio": 41.17647058823529
+    },
+    {
+      "podName": "ai-daffy-frontend-deployment-5d5746c968-hvt8n",
+      "cpuRequest": 0.01,
+      "memoryRequest": 41943040,
+      "cpuLimit": 2,
+      "memoryLimit": 1073741824,
+      "cpuRequestLimitRatio": 10.4,
+      "memoryRequestLimitRatio": 9.027777777777777
+    },
+    {
+      "podName": "etcd-minikube",
+      "cpuRequest": 0.1,
+      "memoryRequest": 104857600,
+      "cpuLimit": "cannot fetch cpu limit",
+      "memoryLimit": "cannot fetch memory limit",
+      "cpuRequestLimitRatio": "cannot fetch cpu request limit ratio",
+      "memoryRequestLimitRatio": "cannot fetch memory request limit ratio"
+    },
+    {
+      "podName": "kube-scheduler-minikube",
+      "cpuRequest": 0.1,
+      "memoryRequest": "cannot fetch memory request",
+      "cpuLimit": "cannot fetch cpu limit",
+      "memoryLimit": "cannot fetch memory limit",
+      "cpuRequestLimitRatio": "cannot fetch cpu request limit ratio",
+      "memoryRequestLimitRatio": "cannot fetch memory request limit ratio"
+    },
+    {
+      "podName": "istio-ingressgateway-dd9f7f444-mdn5g",
+      "cpuRequest": 0.01,
+      "memoryRequest": 41943040,
+      "cpuLimit": 2,
+      "memoryLimit": 1073741824,
+      "cpuRequestLimitRatio": 0.5,
+      "memoryRequestLimitRatio": 3.90625
+    },
+    {
+      "podName": "ai-daffy-backend-deployment-6bc75765d-blb6n",
+      "cpuRequest": 0.01,
+      "memoryRequest": 41943040,
+      "cpuLimit": 2,
+      "memoryLimit": 1073741824,
+      "cpuRequestLimitRatio": 10.4,
+      "memoryRequestLimitRatio": 9.027777777777777
+    },
+    {
+      "podName": "ai-daffy-backend-deployment-6bc75765d-ckttz",
+      "cpuRequest": 0.01,
+      "memoryRequest": 41943040,
+      "cpuLimit": 2,
+      "memoryLimit": 1073741824,
+      "cpuRequestLimitRatio": 10.4,
+      "memoryRequestLimitRatio": 9.027777777777777
+    },
+    {
+      "podName": "kube-apiserver-minikube",
+      "cpuRequest": 0.25,
+      "memoryRequest": "cannot fetch memory request",
+      "cpuLimit": "cannot fetch cpu limit",
+      "memoryLimit": "cannot fetch memory limit",
+      "cpuRequestLimitRatio": "cannot fetch cpu request limit ratio",
+      "memoryRequestLimitRatio": "cannot fetch memory request limit ratio"
+    },
+    {
+      "podName": "kube-controller-manager-minikube",
+      "cpuRequest": 0.2,
+      "memoryRequest": "cannot fetch memory request",
+      "cpuLimit": "cannot fetch cpu limit",
+      "memoryLimit": "cannot fetch memory limit",
+      "cpuRequestLimitRatio": "cannot fetch cpu request limit ratio",
+      "memoryRequestLimitRatio": "cannot fetch memory request limit ratio"
+    },
+    {
+      "podName": "istio-egressgateway-84bfcbdd68-rkmlr",
+      "cpuRequest": 0.01,
+      "memoryRequest": 41943040,
+      "cpuLimit": 2,
+      "memoryLimit": 1073741824,
+      "cpuRequestLimitRatio": 0.5,
+      "memoryRequestLimitRatio": 3.90625
+    },
+    {
+      "podName": "ai-daffy-frontend-deployment-5d5746c968-gkx6n",
+      "cpuRequest": 0.01,
+      "memoryRequest": 41943040,
+      "cpuLimit": 2,
+      "memoryLimit": 1073741824,
+      "cpuRequestLimitRatio": 10.4,
+      "memoryRequestLimitRatio": 9.027777777777777
+    }
+  ]
+}

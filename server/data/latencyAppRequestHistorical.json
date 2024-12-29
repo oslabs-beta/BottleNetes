@@ -1,0 +1,103 @@
+{
+  "latencyAppRequestHistorical": [
+    {
+      "name": "ai-daffy-frontend-deployment-5d5746c968-hvt8n",
+      "timestampsUnix": [
+        "1735374156",
+        "1735374216",
+        "1735374276",
+        "1735374336",
+        "1735374396",
+        "1735374456",
+        "1735374516",
+        "1735374576",
+        "1735374636",
+        "1735374696"
+      ],
+      "timestampsReadable": [
+        "2024-12-28T08:22:36.000Z",
+        "2024-12-28T08:23:36.000Z",
+        "2024-12-28T08:24:36.000Z",
+        "2024-12-28T08:25:36.000Z",
+        "2024-12-28T08:26:36.000Z",
+        "2024-12-28T08:27:36.000Z",
+        "2024-12-28T08:28:36.000Z",
+        "2024-12-28T08:29:36.000Z",
+        "2024-12-28T08:30:36.000Z",
+        "2024-12-28T08:31:36.000Z"
+      ],
+      "avgInboundLatency": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "avgOutboundLatency": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "avgCombinedLatency": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "peakInboundLatency": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ],
+      "peakOutboundLatency": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null
+      ]
+    }
+  ]
+}

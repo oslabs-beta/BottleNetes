@@ -1,0 +1,332 @@
+{
+  "allPodsStatus": [
+    {
+      "podName": "kube-scheduler-minikube",
+      "status": "running",
+      "namespace": "kube-system",
+      "service": "prometheus-kube-state-metrics",
+      "nodeName": "minikube",
+      "clusterName": "cluster name not configured",
+      "restartCount": 0,
+      "containerCount": 1,
+      "containers": [
+        "kube-scheduler"
+      ],
+      "readiness": true,
+      "podIp": "192.168.49.2",
+      "deploymentName": "deployment not found"
+    },
+    {
+      "podName": "storage-provisioner",
+      "status": "running",
+      "namespace": "kube-system",
+      "service": "prometheus-kube-state-metrics",
+      "nodeName": "minikube",
+      "clusterName": "cluster name not configured",
+      "restartCount": 1,
+      "containerCount": 1,
+      "containers": [
+        "storage-provisioner"
+      ],
+      "readiness": true,
+      "podIp": "192.168.49.2",
+      "deploymentName": "deployment not found"
+    },
+    {
+      "podName": "istio-ingressgateway-dd9f7f444-mdn5g",
+      "status": "running",
+      "namespace": "istio-system",
+      "service": "prometheus-kube-state-metrics",
+      "nodeName": "minikube",
+      "clusterName": "cluster name not configured",
+      "restartCount": 0,
+      "containerCount": 1,
+      "containers": [
+        "istio-proxy"
+      ],
+      "readiness": true,
+      "podIp": "10.244.0.11",
+      "deploymentName": "istio-ingressgateway"
+    },
+    {
+      "podName": "ai-daffy-frontend-deployment-5d5746c968-hvt8n",
+      "status": "running",
+      "namespace": "default",
+      "service": "prometheus-kube-state-metrics",
+      "nodeName": "minikube",
+      "clusterName": "cluster name not configured",
+      "restartCount": 0,
+      "containerCount": 2,
+      "containers": [
+        "ai-daffy-frontend",
+        "istio-proxy"
+      ],
+      "readiness": true,
+      "podIp": "10.244.0.15",
+      "deploymentName": "ai-daffy-frontend-deployment"
+    },
+    {
+      "podName": "alertmanager-prometheus-kube-prometheus-alertmanager-0",
+      "status": "running",
+      "namespace": "default",
+      "service": "prometheus-kube-state-metrics",
+      "nodeName": "minikube",
+      "clusterName": "cluster name not configured",
+      "restartCount": 0,
+      "containerCount": 2,
+      "containers": [
+        "alertmanager",
+        "config-reloader"
+      ],
+      "readiness": true,
+      "podIp": "10.244.0.8",
+      "deploymentName": "deployment not found"
+    },
+    {
+      "podName": "etcd-minikube",
+      "status": "running",
+      "namespace": "kube-system",
+      "service": "prometheus-kube-state-metrics",
+      "nodeName": "minikube",
+      "clusterName": "cluster name not configured",
+      "restartCount": 0,
+      "containerCount": 1,
+      "containers": [
+        "etcd"
+      ],
+      "readiness": true,
+      "podIp": "192.168.49.2",
+      "deploymentName": "deployment not found"
+    },
+    {
+      "podName": "kube-controller-manager-minikube",
+      "status": "running",
+      "namespace": "kube-system",
+      "service": "prometheus-kube-state-metrics",
+      "nodeName": "minikube",
+      "clusterName": "cluster name not configured",
+      "restartCount": 0,
+      "containerCount": 1,
+      "containers": [
+        "kube-controller-manager"
+      ],
+      "readiness": true,
+      "podIp": "192.168.49.2",
+      "deploymentName": "deployment not found"
+    },
+    {
+      "podName": "istio-egressgateway-84bfcbdd68-rkmlr",
+      "status": "running",
+      "namespace": "istio-system",
+      "service": "prometheus-kube-state-metrics",
+      "nodeName": "minikube",
+      "clusterName": "cluster name not configured",
+      "restartCount": 0,
+      "containerCount": 1,
+      "containers": [
+        "istio-proxy"
+      ],
+      "readiness": true,
+      "podIp": "10.244.0.12",
+      "deploymentName": "istio-egressgateway"
+    },
+    {
+      "podName": "ai-daffy-frontend-deployment-5d5746c968-gkx6n",
+      "status": "running",
+      "namespace": "default",
+      "service": "prometheus-kube-state-metrics",
+      "nodeName": "minikube",
+      "clusterName": "cluster name not configured",
+      "restartCount": 0,
+      "containerCount": 2,
+      "containers": [
+        "ai-daffy-frontend",
+        "istio-proxy"
+      ],
+      "readiness": true,
+      "podIp": "10.244.0.16",
+      "deploymentName": "ai-daffy-frontend-deployment"
+    },
+    {
+      "podName": "ai-daffy-backend-deployment-6bc75765d-blb6n",
+      "status": "running",
+      "namespace": "default",
+      "service": "prometheus-kube-state-metrics",
+      "nodeName": "minikube",
+      "clusterName": "cluster name not configured",
+      "restartCount": 0,
+      "containerCount": 2,
+      "containers": [
+        "ai-daffy-backend",
+        "istio-proxy"
+      ],
+      "readiness": true,
+      "podIp": "10.244.0.13",
+      "deploymentName": "ai-daffy-backend-deployment"
+    },
+    {
+      "podName": "ai-daffy-backend-deployment-6bc75765d-ckttz",
+      "status": "running",
+      "namespace": "default",
+      "service": "prometheus-kube-state-metrics",
+      "nodeName": "minikube",
+      "clusterName": "cluster name not configured",
+      "restartCount": 0,
+      "containerCount": 2,
+      "containers": [
+        "ai-daffy-backend",
+        "istio-proxy"
+      ],
+      "readiness": true,
+      "podIp": "10.244.0.14",
+      "deploymentName": "ai-daffy-backend-deployment"
+    },
+    {
+      "podName": "prometheus-kube-prometheus-operator-7c556f9655-4xpk6",
+      "status": "running",
+      "namespace": "default",
+      "service": "prometheus-kube-state-metrics",
+      "nodeName": "minikube",
+      "clusterName": "cluster name not configured",
+      "restartCount": 0,
+      "containerCount": 1,
+      "containers": [
+        "kube-prometheus-stack"
+      ],
+      "readiness": true,
+      "podIp": "10.244.0.4",
+      "deploymentName": "prometheus-kube-prometheus-operator"
+    },
+    {
+      "podName": "kube-apiserver-minikube",
+      "status": "running",
+      "namespace": "kube-system",
+      "service": "prometheus-kube-state-metrics",
+      "nodeName": "minikube",
+      "clusterName": "cluster name not configured",
+      "restartCount": 0,
+      "containerCount": 1,
+      "containers": [
+        "kube-apiserver"
+      ],
+      "readiness": true,
+      "podIp": "192.168.49.2",
+      "deploymentName": "deployment not found"
+    },
+    {
+      "podName": "prometheus-prometheus-kube-prometheus-prometheus-0",
+      "status": "running",
+      "namespace": "default",
+      "service": "prometheus-kube-state-metrics",
+      "nodeName": "minikube",
+      "clusterName": "cluster name not configured",
+      "restartCount": 0,
+      "containerCount": 2,
+      "containers": [
+        "prometheus",
+        "config-reloader"
+      ],
+      "readiness": true,
+      "podIp": "10.244.0.9",
+      "deploymentName": "deployment not found"
+    },
+    {
+      "podName": "istiod-b877844fb-x5zt5",
+      "status": "running",
+      "namespace": "istio-system",
+      "service": "prometheus-kube-state-metrics",
+      "nodeName": "minikube",
+      "clusterName": "cluster name not configured",
+      "restartCount": 0,
+      "containerCount": 1,
+      "containers": [
+        "discovery"
+      ],
+      "readiness": true,
+      "podIp": "10.244.0.10",
+      "deploymentName": "istiod"
+    },
+    {
+      "podName": "coredns-6f6b679f8f-22gzb",
+      "status": "running",
+      "namespace": "kube-system",
+      "service": "prometheus-kube-state-metrics",
+      "nodeName": "minikube",
+      "clusterName": "cluster name not configured",
+      "restartCount": 0,
+      "containerCount": 1,
+      "containers": [
+        "coredns"
+      ],
+      "readiness": true,
+      "podIp": "10.244.0.2",
+      "deploymentName": "coredns"
+    },
+    {
+      "podName": "prometheus-grafana-578946f5d5-b97q7",
+      "status": "running",
+      "namespace": "default",
+      "service": "prometheus-kube-state-metrics",
+      "nodeName": "minikube",
+      "clusterName": "cluster name not configured",
+      "restartCount": 0,
+      "containerCount": 3,
+      "containers": [
+        "grafana-sc-dashboard",
+        "grafana-sc-datasources",
+        "grafana"
+      ],
+      "readiness": true,
+      "podIp": "10.244.0.6",
+      "deploymentName": "prometheus-grafana"
+    },
+    {
+      "podName": "prometheus-kube-state-metrics-79574d956b-sdn5r",
+      "status": "running",
+      "namespace": "default",
+      "service": "prometheus-kube-state-metrics",
+      "nodeName": "minikube",
+      "clusterName": "cluster name not configured",
+      "restartCount": 0,
+      "containerCount": 1,
+      "containers": [
+        "kube-state-metrics"
+      ],
+      "readiness": true,
+      "podIp": "10.244.0.5",
+      "deploymentName": "prometheus-kube-state-metrics"
+    },
+    {
+      "podName": "prometheus-prometheus-node-exporter-5ndmt",
+      "status": "running",
+      "namespace": "default",
+      "service": "prometheus-kube-state-metrics",
+      "nodeName": "minikube",
+      "clusterName": "cluster name not configured",
+      "restartCount": 0,
+      "containerCount": 1,
+      "containers": [
+        "node-exporter"
+      ],
+      "readiness": true,
+      "podIp": "192.168.49.2",
+      "deploymentName": "deployment not found"
+    },
+    {
+      "podName": "kube-proxy-srpq6",
+      "status": "running",
+      "namespace": "kube-system",
+      "service": "prometheus-kube-state-metrics",
+      "nodeName": "minikube",
+      "clusterName": "cluster name not configured",
+      "restartCount": 0,
+      "containerCount": 1,
+      "containers": [
+        "kube-proxy"
+      ],
+      "readiness": true,
+      "podIp": "192.168.49.2",
+      "deploymentName": "deployment not found"
+    }
+  ]
+}
