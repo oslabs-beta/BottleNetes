@@ -1,6 +1,7 @@
 // askAiController.js - Controller for handling POST /askAi connecting to OpenAI API
 import axios from "axios";
 import dotenv from "dotenv";
+import process from "process";
 
 dotenv.config();
 
@@ -12,8 +13,8 @@ const askAiController = {};
 askAiController.queryOpenAI = async (req, res, next) => {
   console.log("in queryOpenAI controller");
   // const { allData } = req.body;
-  const { userMessage } = req.body
-  console.log(userMessage)
+  const { userMessage } = req.body;
+  console.log(userMessage);
   // if (userMessage || allData || typeof allData !== "object") {
   //   return res
   //     .status(400)
@@ -66,8 +67,8 @@ askAiController.queryOpenAI = async (req, res, next) => {
     // Limit your response to 100 words.
     // `;
 
-    const prompt = `you are nice chatbot. you must chat with the user`
-    
+    const prompt = `you are nice chatbot. you must chat with the user`;
+
     const response = await axios.post(
       openAiEndpoint,
       {
@@ -93,7 +94,6 @@ askAiController.queryOpenAI = async (req, res, next) => {
     console.log("OPEN AI RESPONSE :", result);
     res.locals.analysis = result;
     next();
-
   } catch (error) {
     console.error(
       "Error communicating with OpenAI:",
