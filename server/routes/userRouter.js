@@ -19,22 +19,33 @@ userRouter.post(
   },
 );
 
-userRouter.get("/signin/checkSignin", cookieController.verifyCookie, (_req, res) => {
-  return res.status(200).send({
-    signedIn: res.locals.signedIn,
-    username: res.locals.username,
-  });
-});
+userRouter.get(
+  "/signin/checkSignin",
+  cookieController.verifyCookie,
+  (_req, res) => {
+    return res.status(200).send({
+      signedIn: res.locals.signedIn,
+      username: res.locals.username,
+    });
+  },
+);
 
-userRouter.post('/signout', cookieController.deleteCookie, (_req, res) => {
+userRouter.post("/signout", cookieController.deleteCookie, (_req, res) => {
   return res.status(200).json("Success. You have successfully signed out.");
 });
 
 userRouter.post("/signup", userController.createNewUser, (_req, res) => {
   if (res.locals.newUser) {
-    console.log(`🫡 New User Created! Redirecting to Homepage...`);
-    res.locals.newUser = null;
-    return res.redirect("/");
+    return res.status(200).json({
+      message:
+        "🤓 Successfully created new user. Redirecting to Sign In Page...",
+      data: {
+        username: res.locals.newUser.username,
+        firstName: res.locals.newUser.first_name,
+        lastName: res.locals.newUser.last_name,
+        email: res.locals.newUser.email,
+      },
+    });
   }
   return res.status(400).json("Failed to create new user...");
 });
