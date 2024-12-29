@@ -18,8 +18,8 @@ router.post("/askAi", check, askAiController.queryOpenAI, (req, res) => {
 export default router;
 */
 
-// Updated Code
-const express = require("express");
+import express from "express";
+
 const router = express.Router();
 
 router.post("/askAi", (req, res) => {
@@ -38,4 +38,4 @@ router.post("/askAi", (req, res) => {
   */
 });
 
-module.exports = router;
+export default router;
