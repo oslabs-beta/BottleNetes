@@ -8,7 +8,7 @@ import Latency from "../components/Latency";
 import Metrics from "../components/Metrics";
 import PodGrid from "../components/PodGrid";
 import RequestLimit from "../components/RequestLimit";
-import TestMode from "../test-components/TestMode";
+import DarkMode from "../components/DarkMode";
 
 const MainContainer = ({ username }) => {
   console.log("main container rendering");
@@ -248,7 +248,7 @@ const MainContainer = ({ username }) => {
           </h1>
         </div>
         <div className="flex items-center space-x-[50px]">
-        <TestMode />
+        <DarkMode />
           <h1 className="mr-5 px-5 text-2xl font-semibold text-slate-300">{`Welcome, ${username}`}</h1>
         </div>
       </header>
