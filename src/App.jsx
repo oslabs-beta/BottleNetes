@@ -20,10 +20,14 @@ const App = () => {
     isSignedIn,
     loading,
     username,
+    firstName,
+    lastName,
     signIn,
     signOut,
     setLoading,
     setUsername,
+    setFirstName,
+    setLastName,
   } = useStore();
 
   const [backendUrl] = useState("http://localhost:3000/");
@@ -35,7 +39,9 @@ const App = () => {
     const signal = controller.signal;
 
     const checkSigninStatus = async () => {
-      console.log(`Sending request to '${backendUrl}user/signin/checkSignin'...`);
+      console.log(
+        `Sending request to '${backendUrl}user/signin/checkSignin'...`,
+      );
 
       try {
         /**
