@@ -62,9 +62,9 @@ const Overview = ({ podsStatuses, allNodes, isLoading }) => {
 
   return (
     <div className="overview-container fade-in">
-      <div className="overview-cluster thin-line">
+      <div className="overview-cluster cluster-name dark:cluster-name-dark">
         <h2 style={{ fontWeight: 600 }}>Cluster Name</h2>
-        <p className="overview-value dynamic-text">{overview.clusterName}</p>
+        <p className="overview-value dynamic-text dark:dynamic-text-dark">{overview.clusterName}</p>
       </div>
 
       <div className="overview-metrics-row">
