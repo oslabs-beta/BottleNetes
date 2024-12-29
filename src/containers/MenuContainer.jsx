@@ -32,11 +32,11 @@ const MenuContainer = ({
   };
 
   const handleSignOut = async (e) => {
-    console.log(`Now sending request to '${backendUrl}logout'...`);
+    console.log(`Now sending request to '${backendUrl}user/signout'...`);
     e.preventDefault();
 
     try {
-      const response = await fetch(backendUrl + "signout", {
+      const response = await fetch(backendUrl + "user/signout", {
         method: 'POST',
         credentials: 'include',
       });

@@ -20,10 +20,10 @@ const SigninContainer = ({ backendUrl }) => {
   const credential = { username, password };
 
   const handleLogIn = async (e) => {
-    console.log(`🔄 Sending request to ${backendUrl}signin`);
+    console.log(`🔄 Sending request to ${backendUrl}user/signin`);
     e.preventDefault();
 
-    const response = await fetch(backendUrl + "signin", {
+    const response = await fetch(backendUrl + "user/signin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
@@ -70,7 +70,7 @@ const SigninContainer = ({ backendUrl }) => {
         color="rgb(8 145 178)"
         strokeWidth={1}
       />
-      <img src="src/assets/logo.png" className="mt-2 size-60" />
+      <img src="/src/assets/logo.png" className="mt-2 size-60" />
       <div
         id="login-display"
         className="relative my-10 w-1/5 rounded-2xl border-2 border-slate-800 bg-slate-950 p-5 shadow-2xl shadow-slate-950"
@@ -105,7 +105,7 @@ const SigninContainer = ({ backendUrl }) => {
           >
             Sign In
           </button>
-          <Link to={"/signup"}>
+          <Link to={"/user/signup"}>
             <button
               className="rounded-lg border-2 border-slate-600 bg-slate-700 px-5 py-2 text-slate-300 transition-colors duration-200 hover:border-slate-500 hover:bg-slate-600 hover:text-slate-200 active:border-slate-700 active:bg-slate-800 active:text-slate-400"
               type="button"
