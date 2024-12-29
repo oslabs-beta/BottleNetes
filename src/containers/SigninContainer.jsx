@@ -7,21 +7,17 @@ import PropTypes from "prop-types";
 import { Hexagon } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 
-import useStore from "../store.jsx";
-
-const SigninContainer = ({ backendUrl }) => {
+const SigninContainer = ({
+  signIn,
+  signOut,
+  username,
+  setUsername,
+  backendUrl,
+}) => {
   // const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
-  const username = useStore((state) => state.username);
-  const firstName = useStore((state) => state.firstName);
-  const lastName = useStore((state) => state.lastName);
-  const signIn = useStore((state) => state.signIn);
-  const signOut = useStore((state) => state.signOut);
-  const setUsername = useStore((state) => state.setUsername);
-  const setfirstName = useStore((state) => state.setfirstName);
-  const setLastName = useStore((state) => state.setLastName);
 
   const credential = { username, password };
 
@@ -56,7 +52,7 @@ const SigninContainer = ({ backendUrl }) => {
   return (
     <div
       id="login-container"
-      className="font-mono bg-gradient-to-bl flex h-screen w-screen flex-col items-center justify-center from-slate-950 from-10% via-slate-800 via-70% to-cyan-950 to-90% text-center align-middle absolute -z-10"
+      className="absolute -z-10 flex h-screen w-screen flex-col items-center justify-center bg-gradient-to-bl from-slate-950 from-10% via-slate-800 via-70% to-cyan-950 to-90% text-center align-middle font-mono"
     >
       <h1 className="animate-text-color-animation font-sans text-7xl font-black transition duration-300 hover:scale-105">
         <a
@@ -177,10 +173,11 @@ const SigninContainer = ({ backendUrl }) => {
 };
 
 SigninContainer.propTypes = {
-  backendUrl: PropTypes.string,
+  signIn: PropTypes.func,
+  signOut: PropTypes.func,
   username: PropTypes.string,
   setUsername: PropTypes.func,
-  setLoggedIn: PropTypes.func,
+  backendUrl: PropTypes.string,
 };
 
 export default SigninContainer;

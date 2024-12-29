@@ -1,24 +1,29 @@
 /**
  * This component renders the Sign Up Page
  */
-
-import { useState } from "react";
+import PropTypes from "prop-types";
 import { Hexagon } from "lucide-react";
 import { Link } from "react-router-dom";
 
-const SignupContainer = () => {
-  const url = "http://localhost:3000/";
-
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
-
+const SignupContainer = ({
+  username,
+  setUsername,
+  password,
+  setPassword,
+  email,
+  setEmail,
+  firstName,
+  setFirstName,
+  lastName,
+  setLastName,
+  backendUrl,
+}) => {
   const handleSignup = async () => {
-    const newUserCredential = { username, password, email };
-    console.log(`🔄 Sending request to ${url}user/signup`);
+    const newUserCredential = { username, password, email, firstName, lastName };
+    console.log(`🔄 Sending request to ${backendUrl}user/signup`);
 
     try {
-      const response = await fetch(url + "user/signup", {
+      const response = await fetch(backendUrl + "user/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newUserCredential),
@@ -63,10 +68,10 @@ const SignupContainer = () => {
       <img src="/src/assets/logo.png" className="mt-2 size-60" />
       <div
         id="signup-display"
-        className="relative my-10 size-1/5 content-center rounded-2xl border-2 border-slate-950 bg-slate-950 text-center align-middle shadow-2xl shadow-slate-950"
+        className="relative my-10 3xl:w-1/5 3xl:h-1/4 content-center rounded-2xl border-2 border-slate-950 bg-slate-950 text-center align-middle shadow-2xl shadow-slate-950 2xl:w-1/4 2xl:h-1/3 lg:w-1/3 lg:h-1/2 sm:w-1/2"
       >
         <h2 className="pb-5 text-3xl text-slate-300">Sign Up</h2>
-        <form className="mx-5 flex flex-col gap-y-2">
+        <form className="mx-5 grid grid-cols-2 gap-2">
           <input
             type="text"
             placeholder="Username"
@@ -74,7 +79,7 @@ const SignupContainer = () => {
             value={username}
             autoComplete="username"
             onChange={(e) => setUsername(e.target.value)}
-            className="rounded-md bg-slate-900 p-1 px-10 text-center text-slate-300 focus:bg-slate-800"
+            className="rounded-md bg-slate-900 p-1 px-10 text-center text-slate-300 focus:bg-slate-800 col-span-2"
           />
           <input
             type="password"
@@ -82,7 +87,7 @@ const SignupContainer = () => {
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="rounded-md bg-slate-900 p-1 px-10 text-center text-slate-300 focus:bg-slate-800"
+            className="rounded-md bg-slate-900 p-1 px-10 text-center text-slate-300 focus:bg-slate-800 col-span-2"
           />
           <input
             type="email"
@@ -91,7 +96,23 @@ const SignupContainer = () => {
             value={email}
             autoComplete="email"
             onChange={(e) => setEmail(e.target.value)}
-            className="rounded-md bg-slate-900 p-1 px-10 text-center text-slate-300 focus:bg-slate-800"
+            className="rounded-md bg-slate-900 p-1 px-10 text-center text-slate-300 focus:bg-slate-800 col-span-2"
+          />
+          <input
+            type="text"
+            placeholder="First Name"
+            id="first-name"
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            className="rounded-md bg-slate-900 p-1 px-10 text-center text-slate-300 focus:bg-slate-800 3xl:col-span-1 sm:col-span-2"
+          />
+          <input
+            type="text"
+            placeholder="Last Name"
+            id="last-name"
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            className="rounded-md bg-slate-900 p-1 px-10 text-center text-slate-300 focus:bg-slate-800 sm:col-span-2 3xl:col-span-1"
           />
         </form>
         <br />
@@ -110,6 +131,20 @@ const SignupContainer = () => {
       </div>
     </div>
   );
+};
+
+SignupContainer.propTypes = {
+  username: PropTypes.string,
+  setUsername: PropTypes.func,
+  password: PropTypes.string,
+  setPassword: PropTypes.func,
+  email: PropTypes.string,
+  setEmail: PropTypes.func,
+  firstName: PropTypes.string,
+  setFirstName: PropTypes.func,
+  lastName: PropTypes.string,
+  setLastName: PropTypes.func,
+  backendUrl: PropTypes.string,
 };
 
 export default SignupContainer;
