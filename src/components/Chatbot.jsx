@@ -109,10 +109,10 @@ const Chatbot = ({ allData, fetchData, username }) => {
             />
           </div>
           <div>
-            <div className="rounded-r-lg rounded-bl-lg bg-gray-300 p-2">
+            <div className="rounded-r-lg rounded-bl-lg bg-gradient-to-br from-gray-400 to-gray-200 p-2">
               <p className="text-sm">{aiMessage.text}</p>
             </div>
-            <span className="text-xs leading-none text-gray-500">
+            <span className="text-xs leading-none text-gray-500 font-bold">
               {formatRelativeTime(aiMessage.timestamp)}
             </span>
           </div>
@@ -121,14 +121,14 @@ const Chatbot = ({ allData, fetchData, username }) => {
       userMessage && (
         <div className="ml-auto mt-2 flex w-full max-w-xs justify-end space-x-3">
           <div>
-            <div className="rounded-l-lg rounded-br-lg bg-blue-600 p-2 text-white">
+            <div className="rounded-l-lg rounded-br-lg p-2 bg-gradient-to-br from-[#6699e1] to-[#2229f4] text-white">
               <p className="text-sm">{userMessage.text}</p>
             </div>
             <span className="text-xs leading-none text-gray-500">
               {formatRelativeTime(userMessage.timestamp)}
             </span>
           </div>
-          <div className="h-10 w-10 flex-shrink-0 rounded-full bg-purple-900 flex items-center justify-center text-white font-bold">
+          <div className= "h-10 w-10 flex-shrink-0 rounded-full bg-gradient-to-br from-blue-800 to-indigo-600 flex items-center justify-center text-white font-bold">
             {username[0].toUpperCase()} {/* Display the first letter of the username */}
           </div>
         </div>
