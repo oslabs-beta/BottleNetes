@@ -103,7 +103,7 @@ const SigninContainer = ({ backendUrl }) => {
             id="login-button"
             onClick={handleLogIn}
           >
-            Log In
+            Sign In
           </button>
           <Link to={"/signup"}>
             <button

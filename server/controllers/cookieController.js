@@ -114,4 +114,23 @@ cookieController.verifyCookie = async (req, res, next) => {
   }
 };
 
+cookieController.deleteCookie = async (req, res, next) => {
+  console.log('🍪🔥 Now running deleteCookie middleware...');
+
+  try {
+    res.clearCookie('jwt', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+    });
+    return next();
+  } catch (error) {
+    return next({
+      log: `Error occurred in deleteCookie middleware: ${error}`,
+      status: 500,
+      message: 'Error while clearing your session',
+    });
+  };
+};
+
 export default cookieController;
