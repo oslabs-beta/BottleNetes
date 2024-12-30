@@ -6,8 +6,8 @@ import logo from "../assets/logo.png"; // Importing the AI logo image for brandi
 // This version calculates a human-readable timestamp format like "5 min ago"
 const formatRelativeTime = (timestamp) => {
   const secondsAgo = Math.floor((Date.now() - timestamp) / 1000); // Calculate the difference in seconds
- if (secondsAgo < 60) return `${secondsAgo} sec ago`; // Less than 1 minute
- if (secondsAgo < 3600) return `${Math.floor(secondsAgo / 60)} min ago`; // Less than 1 hour
+  if (secondsAgo < 60) return `${secondsAgo} sec ago`; // Less than 1 minute
+  if (secondsAgo < 3600) return `${Math.floor(secondsAgo / 60)} min ago`; // Less than 1 hour
   return `${Math.floor(secondsAgo / 3600)} hr ago`; // 1 hour or more
 };
 
@@ -20,7 +20,9 @@ const formatRelativeTime = (timestamp) => {
 
 const Chatbot = ({ allData, fetchData, username }) => {
   // State to hold AI responses
-  const [aiContent, setAiContent] = useState([{text: "How can I help you?", timestamp: Date.now()}]);
+  const [aiContent, setAiContent] = useState([
+    { text: "How can I help you?", timestamp: Date.now() },
+  ]);
   // State to hold user input text
   const [userInput, setUserInput] = useState("");
   // State to store user message history
@@ -97,7 +99,6 @@ const Chatbot = ({ allData, fetchData, username }) => {
 
     // Render user messages
     conversationArr.push(
-
       // Render AI messages
       aiMessage && (
         <div className="mt-1 flex w-full max-w-xs space-x-3">
@@ -112,7 +113,7 @@ const Chatbot = ({ allData, fetchData, username }) => {
             <div className="rounded-r-lg rounded-bl-lg bg-gradient-to-br from-gray-400 to-gray-200 p-2">
               <p className="text-sm">{aiMessage.text}</p>
             </div>
-            <span className="text-xs leading-none text-gray-500 font-bold">
+            <span className="text-xs font-bold leading-none text-gray-500">
               {formatRelativeTime(aiMessage.timestamp)}
             </span>
           </div>
@@ -121,19 +122,19 @@ const Chatbot = ({ allData, fetchData, username }) => {
       userMessage && (
         <div className="ml-auto mt-2 flex w-full max-w-xs justify-end space-x-3">
           <div>
-            <div className="rounded-l-lg rounded-br-lg p-2 bg-gradient-to-br from-[#6699e1] to-[#2229f4] text-white">
+            <div className="rounded-l-lg rounded-br-lg bg-gradient-to-br from-[#6699e1] to-[#2229f4] p-2 text-white">
               <p className="text-sm">{userMessage.text}</p>
             </div>
             <span className="text-xs leading-none text-gray-500">
               {formatRelativeTime(userMessage.timestamp)}
             </span>
           </div>
-          <div className= "h-10 w-10 flex-shrink-0 rounded-full bg-gradient-to-br from-blue-800 to-indigo-600 flex items-center justify-center text-white font-bold">
-            {username[0].toUpperCase()} {/* Display the first letter of the username */}
+          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-800 to-indigo-600 font-bold text-white">
+            {username[0].toUpperCase()}{" "}
+            {/* Display the first letter of the username */}
           </div>
         </div>
-      )
-
+      ),
     );
   }
 

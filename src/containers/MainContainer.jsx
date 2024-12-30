@@ -267,13 +267,14 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
                   }).then((res) => res.json())
                 }
                 username={username}
-                className="text-gradient text-2xl font-bold shadow-lg font-poppins"
+                className="text-gradient font-poppins text-2xl font-bold shadow-lg"
                 logoStyle={{
                   width: "70px",
                   height: "70px",
                   borderRadius: "50%",
                   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                  backgroundImage: "linear-gradient(to right, #1e90ff, #87ceeb)",
+                  backgroundImage:
+                    "linear-gradient(to right, #1e90ff, #87ceeb)",
                   color: "#fff",
                   fontSize: "18px",
                   fontWeight: "bold",
@@ -283,7 +284,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
             </div>
           )}
 
-        {/* Reset and Ask AI buttons */}
+          {/* Reset and Ask AI buttons */}
           <div className="flex justify-between pb-5">
             <button
               onClick={resetView}
