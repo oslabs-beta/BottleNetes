@@ -2,7 +2,7 @@
  * This component contains the security logics
  */
 
-import React, { FC, useEffect } from "react";
+import React, { useEffect } from "react";
 import {
   Navigate,
   createBrowserRouter,
@@ -12,7 +12,7 @@ import {
 import SigninContainer from "./containers/SigninContainer.tsx";
 import MainContainer from "./containers/MainContainer.jsx";
 import SignupContainer from "./containers/SignupContainer.tsx";
-import LoadingContainer from "./containers/LoadingContainer.jsx";
+import LoadingContainer from "./containers/LoadingContainer.tsx";
 
 import userStore from "./stores/userStore.ts";
 
@@ -21,7 +21,7 @@ type Data = {
   username: string;
 };
 
-const App: FC = (): JSX.Element => {
+const App = () => {
   const { signedIn, setSignedIn, loading, setLoading, setUsername } =
     userStore();
 
@@ -72,7 +72,7 @@ const App: FC = (): JSX.Element => {
         setLoading(false);
       } catch (error) {
         // added this to bypass the AbortError in browser console (may not be the best solution)
-        if (error.name != "AbortError") {
+        if (error instanceof Error && error.name !== "AbortError") {
           console.error(error);
           setSignedIn(false);
         }
