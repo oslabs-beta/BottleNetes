@@ -5,6 +5,7 @@ const usePodListProcessor = ({
   cpuUsageOneValue,
   memoryUsageOneValue,
   latencyAppRequestOneValue,
+  requestLimits,
   selectedMetric,
   filterConfig,
   metricToSort,
@@ -45,6 +46,19 @@ const usePodListProcessor = ({
       );
       podObj.memoryDataRelative = memoryData?.usageRelativeToRequest;
       podObj.memoryDataAbsolute = memoryData?.usageAbsolute;
+
+      // Request and Limits data
+      const requestLimit = requestLimits?.allPodsRequestLimit?.find(
+        (obj) => obj.podName === pod.podName,
+      );
+      podObj.cpuRequest = requestLimit?.cpuRequest || null;
+      podObj.cpuLimit = requestLimit?.cpuLimit || null;
+      podObj.memoryRequest = requestLimit?.memoryRequest
+        ? requestLimit.memoryRequest / (1024 * 1024)
+        : null;
+      podObj.memoryLimit = requestLimit?.memoryLimit
+        ? requestLimit.memoryLimit / (1024 * 1024)
+        : null;
 
       // Latency metrics
       const latencyData =
@@ -112,6 +126,7 @@ const usePodListProcessor = ({
     cpuUsageOneValue,
     memoryUsageOneValue,
     latencyAppRequestOneValue,
+    requestLimits,
     selectedMetric,
     filterConfig,
     metricToSort,
