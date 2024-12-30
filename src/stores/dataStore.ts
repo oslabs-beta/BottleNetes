@@ -14,15 +14,26 @@ type allData = {
   [key: string]: Record<string, unknown> | any[] | null;
 };
 
+type filterConfig = {
+  type: string;
+  value: string;
+};
+
 type State = {
   isFetchingData: boolean;
   allData: allData;
   backendUrl: "http://localhost:3000/";
+  // PodGrid States
+  metricToSort: string;
+  filterConfig: filterConfig;
 };
 
 type Action = {
   setIsFetchingData: (boolean: State["isFetchingData"]) => void;
   setAllData: (allData: State["allData"]) => void;
+  // PodGrid States
+  setMetricToSort: (metricToSort: State["metricToSort"]) => void;
+  setFilterConfig: (filterConfig: State["filterConfig"]) => void;
 };
 
 const dataStore = create<State & Action>()((set) => ({
@@ -69,6 +80,22 @@ const dataStore = create<State & Action>()((set) => ({
     })),
 
   backendUrl: "http://localhost:3000/",
+
+  metricToSort: "",
+  setMetricToSort: (metricToSort) => set({ metricToSort }),
+
+  filterConfig: {
+    type: "",
+    value: "",
+  },
+  setFilterConfig: (filterConfig) =>
+    set((state) => ({
+      filterConfig: {
+        ...state.filterConfig,
+        type: filterConfig.type,
+        value: filterConfig.value,
+      },
+    })),
 }));
 
 export default dataStore;
