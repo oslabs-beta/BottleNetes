@@ -56,65 +56,87 @@ const Pod = ({ podInfo, selectedMetric, onClick, isClicked }) => {
       >
         {/* Tooltip is contained inside each pod. Renders when hovering the mouse over each pod */}
         <div id="pod-info-ready" className={`${hoverStyle}`}>
-          <p className="font-semibold">
+          <p className="text-left font-semibold">
             Pod Name: <span className="font-normal">{podInfo.podName}</span>
           </p>
-          <p className="font-semibold">
-            Pod Status: <span className="font-normal">{podInfo.status}</span>
-          </p>
-          <p className="font-semibold">
+          <p className="text-left font-semibold">
             Namespace:
             <span className="font-normal">{podInfo.namespace}</span>
           </p>
-          <p className="font-semibold">
-            Containers:
-            <span className="font-normal">{podInfo.containers.join(", ")}</span>
+          <hr className="border-1 my-0.5 border-gray-400" />
+          <p className="text-left font-semibold">
+            Pod Status: <span className="font-normal">{podInfo.status}</span>
           </p>
-          <p className="font-semibold">
-            Service: <span className="font-normal">{podInfo.service}</span>
-          </p>
-          <p className="font-semibold">
-            Deployment:{" "}
-            <span className="font-normal">{podInfo.deploymentName}</span>
-          </p>
-          <p className="font-semibold">
+          <p className="text-left font-semibold">
             Ready:
             <span className="font-normal">
               {podInfo.readiness ? "Yes" : "No"}
             </span>
           </p>
-          <p className="font-semibold">
-            CPU Usage (% of request):
+          <hr className="border-1 my-0.5 border-gray-400" />
+          <p className="text-left font-semibold">
+            Deployment:{" "}
+            <span className="font-normal">{podInfo.deploymentName}</span>
+          </p>
+          <p className="text-left font-semibold">
+            Service: <span className="font-normal">{podInfo.service}</span>
+          </p>
+          <p className="text-left font-semibold">
+            Containers:
+            <span className="font-normal">{podInfo.containers.join(", ")}</span>
+          </p>
+          <hr className="border-1 my-0.5 border-gray-400" />
+          <p className="text-left font-semibold">
+            CPU Usage (% of request):{" "}
             <span className="font-normal">
               {podInfo.cpuDataRelative
                 ? podInfo.cpuDataRelative.toFixed(2) + "%"
                 : "N/A"}
             </span>
           </p>
-          <p className="font-semibold">
-            RAM Usage (% of request):
+          <p className="text-left font-semibold">
+            RAM Usage (% of request):{" "}
             <span className="font-normal">
               {podInfo.memoryDataRelative
                 ? podInfo.memoryDataRelative.toFixed(2) + "%"
                 : "N/A"}
             </span>
           </p>
-          <p className="font-semibold">
-            CPU Usage (cpu cores):
+          <hr className="border-1 my-0.5 border-gray-400" />
+          <p className="text-left font-semibold">
+            CPU Usage (cpu cores):{" "}
             <span className="font-normal">
               {podInfo.cpuDataAbsolute
                 ? podInfo.cpuDataAbsolute.toFixed(3)
                 : "N/A"}
             </span>
           </p>
-          <p className="font-semibold">
-            RAM Usage (MB):
+          <p className="text-left font-semibold">
+            RAM Usage (MB):{" "}
             <span className="font-normal">
               {podInfo.memoryDataAbsolute
                 ? (podInfo.memoryDataAbsolute / 1024 / 1024).toFixed(2)
                 : "N/A"}
             </span>
           </p>
+          <hr className="border-1 my-0.5 border-gray-400" />
+          <p className="text-left font-semibold">
+            CPU Request vs. Limit (cpu cores):{" "}
+            <span className="font-normal">
+              {podInfo.cpuRequest !== null || podInfo.cpuLimit !== null
+                ? `${podInfo.cpuRequest} / ${podInfo.cpuLimit}`
+                : "N/A"}
+            </span>
+          </p>
+          <p className="text-left font-semibold">
+            RAM Request vs. Limit (MB):{" "}
+            <span className="font-normal">
+              {podInfo.memoryRequest !== null || podInfo.memoryLimit !== null
+                ? `${podInfo.memoryRequest} / ${podInfo.memoryLimit}`
+                : "N/A"}
+            </span>
+          </p>
+          <hr className="border-1 my-0.5 border-gray-400" />
         </div>
       </button>
     );

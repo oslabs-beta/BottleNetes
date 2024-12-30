@@ -19,6 +19,7 @@ const usePodListProcessor = ({
   cpuUsageOneValue,
   memoryUsageOneValue,
   latencyAppRequestOneValue,
+  requestLimits,
   selectedMetric,
   filterConfig,
   metricToSort,
@@ -60,6 +61,19 @@ const usePodListProcessor = ({
       podObj.memoryDataRelative = memoryData?.usageRelativeToRequest;
       podObj.memoryDataAbsolute = memoryData?.usageAbsolute;
 
+      // Request and Limits data
+      const requestLimit = requestLimits?.allPodsRequestLimit?.find(
+        (obj) => obj.podName === pod.podName,
+      );
+      podObj.cpuRequest = requestLimit?.cpuRequest || null;
+      podObj.cpuLimit = requestLimit?.cpuLimit || null;
+      podObj.memoryRequest = requestLimit?.memoryRequest
+        ? requestLimit.memoryRequest / (1024 * 1024)
+        : null;
+      podObj.memoryLimit = requestLimit?.memoryLimit
+        ? requestLimit.memoryLimit / (1024 * 1024)
+        : null;
+
       // Latency metrics
       const latencyData =
         latencyAppRequestOneValue?.latencyAppRequestOneValue?.find(
@@ -95,6 +109,7 @@ const usePodListProcessor = ({
     // Apply filtering if configured and not in default view
     if (filterConfig.type && filterConfig.value && !defaultView) {
       processedPods = processedPods.filter((pod) => {
+        // will add this back when implementing filtering by metric threshold values
         // if (["cpuRelative", "memoryRelative"].includes(filterConfig.type)) {
         //   const value = pod[filterConfig.type];
         //   const threshold = parseFloat(filterConfig.value);
@@ -108,10 +123,15 @@ const usePodListProcessor = ({
 
     // Apply sorting if metric is selected and not in default view
     if (metricToSort && !defaultView) {
-      processedPods.sort(
-        // when metric data is not available, default to 0
-        (a, b) => (b[metricToSort] || 0) - (a[metricToSort] || 0),
-      );
+      processedPods.sort((a, b) => {
+        if (metricToSort === "podName") {
+          // when sorting by pod name, use localeCompare method for string comparison
+          return a[metricToSort].localeCompare(b[metricToSort]);
+        }
+        // when sorting by other metrics, use numeric comparison,
+        // if the metric is not available, default to 0
+        return (b[metricToSort] || 0) - (a[metricToSort] || 0);
+      });
     }
 
     return processedPods;
@@ -120,6 +140,7 @@ const usePodListProcessor = ({
     cpuUsageOneValue,
     memoryUsageOneValue,
     latencyAppRequestOneValue,
+    requestLimits,
     selectedMetric,
     filterConfig,
     metricToSort,
