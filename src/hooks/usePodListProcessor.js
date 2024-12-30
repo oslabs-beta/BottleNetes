@@ -81,6 +81,7 @@ const usePodListProcessor = ({
     // Apply filtering if configured and not in default view
     if (filterConfig.type && filterConfig.value && !defaultView) {
       processedPods = processedPods.filter((pod) => {
+        // will add this back when implementing filtering by metric threshold values
         // if (["cpuRelative", "memoryRelative"].includes(filterConfig.type)) {
         //   const value = pod[filterConfig.type];
         //   const threshold = parseFloat(filterConfig.value);
@@ -94,10 +95,15 @@ const usePodListProcessor = ({
 
     // Apply sorting if metric is selected and not in default view
     if (metricToSort && !defaultView) {
-      processedPods.sort(
-        // when metric data is not available, default to 0
-        (a, b) => (b[metricToSort] || 0) - (a[metricToSort] || 0),
-      );
+      processedPods.sort((a, b) => {
+        if (metricToSort === "podName") {
+          // when sorting by pod name, use localeCompare method for string comparison
+          return a[metricToSort].localeCompare(b[metricToSort]);
+        }
+        // when sorting by other metrics, use numeric comparison,
+        // if the metric is not available, default to 0
+        return (b[metricToSort] || 0) - (a[metricToSort] || 0);
+      });
     }
 
     return processedPods;
