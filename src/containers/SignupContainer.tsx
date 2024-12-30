@@ -2,24 +2,24 @@
  * This component renders the Sign Up Page
  */
 
-import React, { FC } from 'react';
+import React, { FC } from "react";
 import { Hexagon } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
 import userStore from "../stores/userStore.ts";
 
 type Props = {
-  backendUrl: 'http://localhost:3000/'
+  backendUrl: "http://localhost:3000/";
 };
 
 type Data = {
-  message: string,
+  message: string;
   data: {
-    username: string,
-    firstName: string,
-    lastName: string,
-    email: string
-  },
+    username: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
 };
 
 const SignupContainer: FC<Props> = ({ backendUrl }): JSX.Element => {
@@ -55,6 +55,9 @@ const SignupContainer: FC<Props> = ({ backendUrl }): JSX.Element => {
       });
 
       if (!response.ok) {
+        console.error(
+          `Server responded with a ${response.status} code: ${response.statusText}`,
+        );
         alert("Something is wrong... Please try again later.");
       }
 

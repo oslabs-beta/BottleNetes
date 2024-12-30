@@ -16,6 +16,11 @@ import LoadingContainer from "./containers/LoadingContainer.jsx";
 
 import userStore from "./stores/userStore.ts";
 
+type Data = {
+  signedIn: boolean;
+  username: string;
+};
+
 const App: FC = (): JSX.Element => {
   const { signedIn, setSignedIn, loading, setLoading, setUsername } =
     userStore();
@@ -50,7 +55,7 @@ const App: FC = (): JSX.Element => {
             `Server responded with a ${response.status} code: ${response.statusText}`,
           );
         }
-        const data = await response.json();
+        const data: Data = await response.json();
         console.log(data);
 
         /**
