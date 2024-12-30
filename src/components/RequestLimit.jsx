@@ -26,15 +26,17 @@ ChartJS.register(
 );
 
 const RequestLimit = ({ selectedMetric, requestLimits }) => {
-  const podList = requestLimits?.allPodsRequestLimit.map((pod) => ({
-    podName: pod.podName,
-    cpuRequest: pod.cpuRequest,
-    memoryRequest: pod.memoryRequest,
-    cpuLimit: pod.cpuLimit,
-    memoryLimit: pod.memoryLimit,
-    cpuRequestLimitRatio: pod.cpuRequestLimitRatio,
-    memoryRequestLimitRatio: pod.memoryRequestLimitRatio,
-  }));
+  // Add null check and default to empty array (to fix the erros sometimes thrown by browser console)
+  const podList =
+    requestLimits?.allPodsRequestLimit?.map((pod) => ({
+      podName: pod.podName || "",
+      cpuRequest: pod.cpuRequest || 0,
+      memoryRequest: pod.memoryRequest || 0,
+      cpuLimit: pod.cpuLimit || 0,
+      memoryLimit: pod.memoryLimit || 0,
+      cpuRequestLimitRatio: pod.cpuRequestLimitRatio || 0,
+      memoryRequestLimitRatio: pod.memoryRequestLimitRatio || 0,
+    })) || [];
 
   const options = {
     indexAxis: "y", // maybe making it horizontal?
@@ -111,31 +113,33 @@ const RequestLimit = ({ selectedMetric, requestLimits }) => {
 
   let limitDataToUse = [];
   let requestDataToUse = [];
-  if (podList.length > 0) {
+
+  // Only process data if podList exists and has items
+  if (podList && podList.length > 0) {
     switch (selectedMetric) {
       case "cpu":
-        limitDataToUse = podList.map((pod) => pod.cpuLimit);
-        requestDataToUse = podList.map((pod) => pod.cpuRequest);
+        limitDataToUse = podList.map((pod) => pod.cpuLimit || 0);
+        requestDataToUse = podList.map((pod) => pod.cpuRequest || 0);
         break;
       case "memory":
         limitDataToUse = podList.map((pod) =>
-          formatMemoryToMB(pod.memoryLimit),
+          formatMemoryToMB(pod.memoryLimit || 0),
         );
         requestDataToUse = podList.map((pod) =>
-          formatMemoryToMB(pod.memoryRequest),
+          formatMemoryToMB(pod.memoryRequest || 0),
         );
         break;
       case "latency":
         break;
       default:
-        limitDataToUse = podList.map((pod) => pod.cpuLimit);
-        requestDataToUse = podList.map((pod) => pod.cpuRequest);
+        limitDataToUse = podList.map((pod) => pod.cpuLimit || 0);
+        requestDataToUse = podList.map((pod) => pod.cpuRequest || 0);
     }
   }
 
-  // Use empty data if no pod list or create data from pods
+  // Data object with safe defaults
   const data = {
-    labels: podList.map((pod) => pod.podName),
+    labels: podList?.map((pod) => pod.podName) || [],
     datasets: [
       {
         label: "Requested Resources",
@@ -152,10 +156,10 @@ const RequestLimit = ({ selectedMetric, requestLimits }) => {
     ],
   };
 
-  const chartHeight = podList.length * 50
+  const chartHeight = podList.length * 50;
 
   return (
-    <div className="p-4 overflow-y-auto" style={{height: chartHeight}}>
+    <div className="overflow-y-auto p-4" style={{ height: chartHeight }}>
       {podList.length > 0 ? (
         <Bar options={options} data={data} />
       ) : (

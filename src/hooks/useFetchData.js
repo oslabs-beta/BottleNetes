@@ -171,7 +171,7 @@ const useFetchData = ({
       queryTimeWindow,
       podRestartCount,
       backendUrl,
-      // Do not include allData.podsStatuses.allPodsStatus from dependencies (will cause crazy fast refresh)
+      // note: Do not include allData.podsStatuses.allPodsStatus from dependencies! (will cause crazy fast refresh)
     ],
   );
 
