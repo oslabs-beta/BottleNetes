@@ -65,6 +65,56 @@ const Chatbot = ({ allData, fetchData, username }) => {
       userMessage: userInput,
     };
 
+    function pruneArray(arr, targetLength) {
+      const originalLength = arr.length;
+      if (originalLength <= targetLength) return arr;
+      // If the array is already short enough, no need to prune }
+      const step = Math.floor(originalLength / targetLength);
+      const prunedArray = [];
+      for (let i = 0; i < originalLength; i += step) {
+        prunedArray.push(arr[i]);
+        if (prunedArray.length === targetLength) break; // Stop when we have the desired number of elements
+      }
+      // }
+      return prunedArray;
+    }
+
+    const historicalDataArray = [
+      allData.cpuUsageHistorical.resourceUsageHistorical, // array of 12 elements
+      allData.latencyAppRequestHistorical.latencyAppRequestHistorical, // array of 1 elements
+      allData.memoryUsageHistorical.resourceUsageHistorical, // array of 10 elements
+    ];
+    console.log(
+      allData.latencyAppRequestHistorical.latencyAppRequestHistorical,
+    );
+
+    const singlePointArray = [
+      allData.podsStatuses.allPodsStatus, // array of 20 elements
+      allData.requestLimits.allPodsRequestLimit, // array of 12 elements
+    ];
+
+    const prunedHistoricalDataArray = [];
+    //  console.log(singlePointArray)
+
+    //loop through each individual element of historicalDataArray
+    historicalDataArray.forEach((datasetArray) => {
+      const dataTypeHold = [];
+      // console.log(datasetArray)
+      datasetArray.forEach((node) => {
+        const nodeHold = [];
+        // console.log(Array.isArray(node))
+        node.forEach((dataArray) => {
+          if (Array.isArray(dataArray) && dataArray.length > 100) {
+            nodeHold.push(pruneArray(dataArray, dataArray.length / 3));
+          } else nodeHold.push(dataArray);
+        });
+        dataTypeHold.push(nodeHold);
+      });
+      prunedHistoricalDataArray.push(dataTypeHold);
+    });
+
+
+
     // Send data to backend and update AI response state
     try {
       const response = await fetchData("POST", "ai/askAi", body);
