@@ -220,6 +220,7 @@ const MainContainer = ({ username, backendUrl }) => {
                 podStatuses={allData.podsStatuses}
                 cpuUsageOneValue={allData.cpuUsageOneValue}
                 memoryUsageOneValue={allData.memoryUsageOneValue}
+                requestLimits={allData.requestLimits}
                 latencyAppRequestOneValue={allData.latencyAppRequestOneValue}
                 queryTimeWindow={queryTimeWindow}
                 setQueryTimeWindow={setQueryTimeWindow}
