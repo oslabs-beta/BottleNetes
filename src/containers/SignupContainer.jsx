@@ -5,22 +5,31 @@ import PropTypes from "prop-types";
 import { Hexagon } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
-const SignupContainer = ({
-  username,
-  setUsername,
-  password,
-  setPassword,
-  email,
-  setEmail,
-  firstName,
-  setFirstName,
-  lastName,
-  setLastName,
-  backendUrl,
-}) => {
+import userStore from "../stores/userStore.ts";
+
+const SignupContainer = ({ backendUrl }) => {
+  const {
+    username,
+    setUsername,
+    password,
+    setPassword,
+    email,
+    setEmail,
+    firstName,
+    setFirstName,
+    lastName,
+    setLastName,
+  } = userStore();
+
   const navigate = useNavigate();
   const handleSignup = async () => {
-    const newUserCredential = { username, password, email, firstName, lastName };
+    const newUserCredential = {
+      username,
+      password,
+      email,
+      firstName,
+      lastName,
+    };
     console.log(`🔄 Sending request to ${backendUrl}user/signup`);
 
     try {
@@ -37,7 +46,7 @@ const SignupContainer = ({
       const data = await response.json();
       alert(data.message);
       console.log(data.data);
-      navigate('/');
+      navigate("/");
     } catch (error) {
       console.log(`🤬 Failed to fetch data: ${error}`);
       alert("Failed to fetch data");
@@ -70,7 +79,7 @@ const SignupContainer = ({
       <img src="/src/assets/logo.png" className="mt-2 size-60" />
       <div
         id="signup-display"
-        className="relative my-10 3xl:w-1/5 3xl:h-1/4 content-center rounded-2xl border-2 border-slate-950 bg-slate-950 text-center align-middle shadow-2xl shadow-slate-950 2xl:w-1/4 2xl:h-1/3 lg:w-1/3 lg:h-1/2 sm:w-1/2"
+        className="relative my-10 content-center rounded-2xl border-2 border-slate-950 bg-slate-950 text-center align-middle shadow-2xl shadow-slate-950 sm:w-1/2 lg:h-1/2 lg:w-1/3 2xl:h-1/3 2xl:w-1/4 3xl:h-1/4 3xl:w-1/5"
       >
         <h2 className="pb-5 text-3xl text-slate-300">Sign Up</h2>
         <form className="mx-5 grid grid-cols-2 gap-2">
@@ -81,7 +90,7 @@ const SignupContainer = ({
             value={username}
             autoComplete="username"
             onChange={(e) => setUsername(e.target.value)}
-            className="rounded-md bg-slate-900 p-1 px-10 text-center text-slate-300 focus:bg-slate-800 col-span-2"
+            className="col-span-2 rounded-md bg-slate-900 p-1 px-10 text-center text-slate-300 focus:bg-slate-800"
           />
           <input
             type="password"
@@ -89,7 +98,7 @@ const SignupContainer = ({
             id="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="rounded-md bg-slate-900 p-1 px-10 text-center text-slate-300 focus:bg-slate-800 col-span-2"
+            className="col-span-2 rounded-md bg-slate-900 p-1 px-10 text-center text-slate-300 focus:bg-slate-800"
           />
           <input
             type="email"
@@ -98,7 +107,7 @@ const SignupContainer = ({
             value={email}
             autoComplete="email"
             onChange={(e) => setEmail(e.target.value)}
-            className="rounded-md bg-slate-900 p-1 px-10 text-center text-slate-300 focus:bg-slate-800 col-span-2"
+            className="col-span-2 rounded-md bg-slate-900 p-1 px-10 text-center text-slate-300 focus:bg-slate-800"
           />
           <input
             type="text"
@@ -106,7 +115,7 @@ const SignupContainer = ({
             id="first-name"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
-            className="rounded-md bg-slate-900 p-1 px-10 text-center text-slate-300 focus:bg-slate-800 3xl:col-span-1 sm:col-span-2"
+            className="rounded-md bg-slate-900 p-1 px-10 text-center text-slate-300 focus:bg-slate-800 sm:col-span-2 3xl:col-span-1"
           />
           <input
             type="text"
@@ -136,16 +145,6 @@ const SignupContainer = ({
 };
 
 SignupContainer.propTypes = {
-  username: PropTypes.string,
-  setUsername: PropTypes.func,
-  password: PropTypes.string,
-  setPassword: PropTypes.func,
-  email: PropTypes.string,
-  setEmail: PropTypes.func,
-  firstName: PropTypes.string,
-  setFirstName: PropTypes.func,
-  lastName: PropTypes.string,
-  setLastName: PropTypes.func,
   backendUrl: PropTypes.string,
 };
 

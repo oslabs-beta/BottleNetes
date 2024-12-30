@@ -2,39 +2,25 @@
  * This component contains the security logics
  */
 
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import {
   Navigate,
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
 
-import SigninContainer from "./containers/SigninContainer";
-import MainContainer from "./containers/MainContainer";
-import SignupContainer from "./containers/SignupContainer";
+import SigninContainer from "./containers/SigninContainer.jsx";
+import MainContainer from "./containers/MainContainer.jsx";
+import SignupContainer from "./containers/SignupContainer.jsx";
 import LoadingContainer from "./containers/LoadingContainer.jsx";
-import useStore from "./hooks/store.js";
+
+import userStore from "./stores/userStore.ts";
 
 const App = () => {
-  const {
-    isSignedIn,
-    signIn,
-    signOut,
-    loading,
-    setLoading,
-    username,
-    setUsername,
-    password,
-    setPassword,
-    email,
-    setEmail,
-    firstName,
-    setFirstName,
-    lastName,
-    setLastName,
-    backendUrl,
-  } = useStore();
+  const { signedIn, setSignedIn, loading, setLoading, setUsername } =
+    userStore();
 
+  const backendUrl = "http://localhost:3000/" as const;
   // This hook fires whenever you go to the home page (Sign In Page)
   useEffect(() => {
     // Setting up a controller to stop the useEffect from running when closing the application
@@ -73,17 +59,17 @@ const App = () => {
          */
         if (data.signedIn) {
           setUsername(data.username);
-          signIn();
+          setSignedIn(true);
         }
         // Otherwise, make sure they are signed out
-        else signOut();
+        else setSignedIn(false);
 
         setLoading(false);
       } catch (error) {
         // added this to bypass the AbortError in browser console (may not be the best solution)
         if (error.name != "AbortError") {
           console.error(error);
-          signOut();
+          setSignedIn(false);
         }
       } finally {
         setLoading(false);
@@ -94,7 +80,7 @@ const App = () => {
 
     // useEffect clean up function. Abort the fetch request when shutting down the application
     return () => controller.abort();
-  }, [signIn, signOut, setLoading, setUsername, backendUrl]);
+  }, [setSignedIn, setLoading, setUsername]);
 
   if (loading) return <LoadingContainer />;
 
@@ -102,42 +88,20 @@ const App = () => {
   const router = createBrowserRouter([
     {
       path: "/dashboard",
-      element: isSignedIn ? (
-        <MainContainer username={username} backendUrl={backendUrl} />
-      ) : (
-        <Navigate to={"/"} />
-      ),
+      element: signedIn ? <MainContainer /> : <Navigate to={"/"} />,
     },
     {
       path: "/user/signup",
       element: (
-        <SignupContainer
-          username={username}
-          setUsername={setUsername}
-          password={password}
-          setPassword={setPassword}
-          email={email}
-          setEmail={setEmail}
-          firstName={firstName}
-          setFirstName={setFirstName}
-          lastName={lastName}
-          setLastName={setLastName}
-          backendUrl={backendUrl}
-        />
+        <SignupContainer backendUrl={backendUrl}/>
       ),
     },
     {
       path: "/",
-      element: isSignedIn ? (
+      element: signedIn ? (
         <Navigate to={"/dashboard"} />
       ) : (
-        <SigninContainer
-          username={username}
-          setUsername={setUsername}
-          signIn={signIn}
-          signOut={signOut}
-          backendUrl={backendUrl}
-        />
+        <SigninContainer backendUrl={backendUrl}/>
       ),
     },
   ]);
