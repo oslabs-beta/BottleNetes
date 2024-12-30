@@ -2,7 +2,6 @@
  * This component renders the menu sidebar
  */
 
-import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 import React from "react";
 
@@ -136,18 +135,6 @@ const MenuContainer = ({ backendUrl }: Props) => {
       </button>
     </div>
   );
-};
-
-MenuContainer.propTypes = {
-  refreshFrequency: PropTypes.number.isRequired,
-  setRefreshFrequency: PropTypes.func.isRequired,
-  showRefreshPopup: PropTypes.bool.isRequired,
-  setShowRefreshPopup: PropTypes.func.isRequired,
-  refreshInput: PropTypes.string.isRequired,
-  setRefreshInput: PropTypes.func.isRequired,
-  manualRefreshCount: PropTypes.number.isRequired,
-  setManualRefreshCount: PropTypes.func.isRequired,
-  backendUrl: PropTypes.string,
 };
 
 export default MenuContainer;

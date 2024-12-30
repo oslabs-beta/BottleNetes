@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 
 import { connectDB } from "./db/db.js";
 import sequelize from "./db/db.js";
+import askAiRouter from './routes/askAiRouter.js';
 
 // Config path for usability in ES Module
 const __filename = fileURLToPath(import.meta.url);
@@ -25,9 +26,20 @@ dotenv.config();
 
 const app = express();
 
+// Request Logging Middleware
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
+
+// increase limits
+app.use(express.json({ limit: "750mb" }));
+app.use(express.urlencoded({ extended: true, limit: "750mb" }));
 
 // CORS stuffs
 app.use(
@@ -52,6 +64,7 @@ app.use("/user", userRouter);
 app.use("/api", apiRouter);
 app.use("/oauth", oAuthRouter);
 app.use("/k8s", k8sRouter);
+app.use('/ai', askAiRouter);
 
 // Serves static files
 app.use(express.static(path.resolve(__dirname, "../index.html")));
@@ -60,6 +73,11 @@ app.use(express.static(path.resolve(__dirname, "../src/")));
 
 app.get("/", (_req, res) => {
   return res.status(200).sendFile(path.resolve(__dirname, "../index.html"));
+});
+
+// Health Check Route
+app.get('/health', (_req, res) => {
+  res.status(200).json({ message: 'Server is running!' });
 });
 
 // Catch All Route
