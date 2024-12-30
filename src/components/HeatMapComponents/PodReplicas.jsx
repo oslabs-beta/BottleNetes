@@ -1,8 +1,14 @@
+/**
+ * This component renders the 'Modify Replicas' button and its popup and functionalities
+ */
+
 import PropTypes from "prop-types";
 import { useState } from "react";
 
 const PodReplicas = ({ clickedPod, backendUrl }) => {
+  // State to determine the visibility of the popup when clicking the button
   const [showReplicasPopup, setShowReplicasPopup] = useState(false);
+  // State to set the new amount of replicas
   const [newReplicas, setNewReplicas] = useState(1);
 
   const handleReplicas = async () => {
@@ -75,7 +81,7 @@ const PodReplicas = ({ clickedPod, backendUrl }) => {
           <br />
           <div
             id="replicas-popup-info-display"
-            className="border-1 rounded-xl border-slate-300 bg-slate-300 p-4 text-left"
+            className="border rounded-xl border-slate-300 bg-slate-300 p-4 text-left"
           >
             <p>
               Selected Pod: <strong>{clickedPod.podName}</strong>
@@ -91,7 +97,7 @@ const PodReplicas = ({ clickedPod, backendUrl }) => {
             value={newReplicas}
             type="number"
             onChange={(e) => setNewReplicas(e.target.value)}
-            className="my-6 w-full rounded-lg bg-slate-300 p-2 text-slate-800 focus:bg-slate-400"
+            className="my-6 w-full rounded-lg bg-slate-300 p-2 text-slate-800 focus:brightness-90 hover:brightness-110 transition duration-300"
           />
           <div
             id="button-container"

@@ -1,3 +1,7 @@
+/**
+ * This component renders the 'Select a Pod' dropdown
+ */
+
 import PropTypes from "prop-types";
 import { useState, useEffect } from "react";
 
@@ -8,6 +12,7 @@ const PodSelector = ({
   setDefaultView,
   clickedPod,
 }) => {
+  // State to set the selected value in the dropdown
   const [selectedValue, setSelectedValue] = useState("");
 
   // Update selectedValue when user clicks on a pod in the heatmap

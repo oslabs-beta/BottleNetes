@@ -15,17 +15,22 @@ import {
 } from "@mui/material";
 
 const PodAdjustRequestsLimits = ({ clickedPod, backendUrl }) => {
+  // State to determine the visibility of the popup when pressing the button
   const [showRequestsLimitsPopup, setShowRequestsLimitsPopup] = useState(false);
+  // State to save the newRequests values when selecting an option in the dropdown
   const [newRequests, setNewRequests] = useState({
     memory: "",
     cpu: "",
   });
+  // State to save the newLimits values when selecting an option in the dropdown
   const [newLimits, setNewLimits] = useState({
     memory: "",
     cpu: "",
   });
+  // State to render the selected option for the dropdown
   const [selectedOption, setSelectedOption] = useState("");
 
+  // Click on the button to render the dropdown after selecting a pod. Otherwise, show an alert instead
   const handleRequestsLimits = async () => {
     if (!clickedPod.podName || !clickedPod.namespace) {
       alert("Please select a pod first");
@@ -71,6 +76,7 @@ const PodAdjustRequestsLimits = ({ clickedPod, backendUrl }) => {
     }
   };
 
+  // If Cancel is pressed, popup will disappear
   const cancelRequestsLimits = () => {
     setShowRequestsLimitsPopup(false);
     // reset to default when closed
@@ -79,6 +85,7 @@ const PodAdjustRequestsLimits = ({ clickedPod, backendUrl }) => {
     setNewLimits({ memory: "", cpu: "" });
   };
 
+  // Pre-config options for the dropdown and fetch request
   const preConfigOptions = [
     {
       configName: "Please select a config",
@@ -151,6 +158,11 @@ const PodAdjustRequestsLimits = ({ clickedPod, backendUrl }) => {
     },
   ];
 
+  /**
+   * When selecting an option in the dropdown
+   * It will find the corresponding value inside preConfigOptions and save those value in selectedPreConfigOption
+   * Then it will reassign the state of newRequests, newLimits and selectedOption using those data
+   */
   const handleSelectedValue = (event) => {
     const selectedPreConfigOption = preConfigOptions.find(
       (option) => option.configName === event.target.value,
@@ -217,6 +229,7 @@ const PodAdjustRequestsLimits = ({ clickedPod, backendUrl }) => {
             id="requests-limits-specs-display"
             className="relative flex items-center justify-evenly rounded-xl border-2 border-slate-300 bg-slate-300"
           >
+          {/* Render the tooltip when hovering the mouse over the button */}
             <Tooltip placement="left" title={<ToolTipDescription />} arrow>
               <div
                 id="resources-config-help-info"

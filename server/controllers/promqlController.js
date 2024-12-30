@@ -1,3 +1,11 @@
+/**
+ * Controller contains:
+ * generateQueryAllPodsStatus: Prepare queries for generic info for all pods
+ * generateQueryAllPodsRequestLimit" Prepare queries for requests and limits info for all pods
+ * generateQueryResourceUsage: Prepare queries for the usage of resources in each pod
+ * generateQueryLatencyAppRequest: Prepare queries for inbound and outbound latencies for each pod
+ */
+
 export const generateQueryAllPodsStatus = async (_req, res, next) => {
   const query1 = "kube_pod_status_phase == 1";
   const query2 = "kube_pod_status_ready == 1";
