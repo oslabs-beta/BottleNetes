@@ -49,7 +49,7 @@ const MainContainer = ({ username, backendUrl }) => {
 
   // State hooks for refresh control in MenuContainer
   const [manualRefreshCount, setManualRefreshCount] = useState(0);
-  const [refreshFrequency, setRefreshFrequency] = useState(30000);
+  const [refreshFrequency, setRefreshFrequency] = useState(30 * 1000);
   const [showRefreshPopup, setShowRefreshPopup] = useState(false);
   const [refreshInput, setRefreshInput] = useState("");
 
