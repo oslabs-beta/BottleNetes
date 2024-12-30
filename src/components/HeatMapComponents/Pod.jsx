@@ -39,7 +39,7 @@ const Pod = ({ podInfo, selectedMetric, onClick, isClicked }) => {
   const buttonStyle = `m-[0.5px] relative aspect-square rounded-xl brightness-90 transition ${isShowing ? "z-[9999]" : "z-0"} ${isClicked ? "shadow-custom-lg border-[5px] border-blue-600" : "border-blue-600"} hover:border-[5px] hover:filter`;
 
   // Style for the tooltip
-  const hoverStyle = `pointer-events-none absolute z-[99999] rounded-lg bg-slate-100/95 text-slate-900/90 shadow-xl w-[300px] p-3 space-y-1 transition-opacity duration-300 ${isShowing ? "opacity-100" : "opacity-0"}`;
+  const hoverStyle = `pointer-events-none absolute z-[99999] rounded-lg bg-slate-100/95 text-slate-900/90 shadow-xl w-[350px] p-3 space-y-1 transition-opacity duration-300 ${isShowing ? "opacity-100" : "opacity-0"}`;
 
   // If readiness is true then render this
   if (podInfo.readiness) {
