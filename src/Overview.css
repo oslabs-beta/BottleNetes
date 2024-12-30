@@ -157,3 +157,70 @@
     color: #e2e8f0;
 }
 
+
+@property --angle{
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+#login-display::after, #login-display::before{
+  content: '';
+  position: absolute;
+  height: 102%;
+  width: 102%;
+  background-image: conic-gradient(from var(--angle), transparent 80%, rgb(8, 145, 178));
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  z-index: -1;
+  border-radius: 1rem;
+  pointer-events: none;
+  animation: 3s rotate linear infinite;
+}
+
+#login-display::before{
+  filter: blur(1.5rem);
+  opacity: 0.5;
+}
+
+#signup-display::after, #signup-display::before{
+  content: '';
+  position: absolute;
+  height: 103%;
+  width: 101%;
+  background-image: conic-gradient(from var(--angle), transparent 80%, rgb(8, 145, 178));
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  z-index: -1;
+  border-radius: 1rem;
+  pointer-events: none;
+  animation: 3s rotate linear infinite;
+}
+
+#signup-display::before{
+  filter: blur(1.5rem);
+  opacity: 0.5;
+}
+
+@keyframes rotate{
+  from{
+    --angle: 0deg;
+  }
+  to{
+    --angle: 360deg;
+  }
+}
+
+svg#success path{
+  stroke-dashoffset: 55;
+  stroke-dasharray: 55;
+  animation: draw 2s forwards;
+}
+
+@keyframes draw{
+  to{
+    stroke-dashoffset: 0;
+  }
+}

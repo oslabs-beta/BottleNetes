@@ -1,219 +1,95 @@
-import PropTypes from "prop-types";
-import { useState, useEffect } from "react";
+/**
+ * This component renders the main page with the following components:
+ * - MenuContainer.jsx: Display the menu section
+ * - Latency.jsx: Display the Latency chart
+ * - Metrics.jsx: Display historical data for resource usages
+ * - Overview.jsx: Display the overview
+ * - RequestLimit.jsx: Display the Request vs. Limit chart
+ * - PodGrid.jsx: Display the heatmap
+ * - PodNameDisplay.jsx: Display the Namespace, Pod Name and Deployment
+ */
 
+import PropTypes from "prop-types";
+import { useState, useRef, useEffect } from "react";
+
+// Hooks Folder
+import useFetchData from "../hooks/useFetchData";
+
+// Container Folder
 import MenuContainer from "./MenuContainer";
-import Overview from "../components/Overview";
-import PodNameDisplay from "../components/PodNameDisplay";
+
+// Component Folder
 import Latency from "../components/Latency";
 import Metrics from "../components/Metrics";
-import PodGrid from "../components/PodGrid";
+import Overview from "../components/Overview";
 import RequestLimit from "../components/RequestLimit";
 import DarkMode from "../components/DarkMode";
 
-const MainContainer = ({ username }) => {
-  console.log("main container rendering");
-  const url = "http://localhost:3000/";
+// Component/HeatMapComponent Folder
+import PodGrid from "../components/HeatMapComponents/PodGrid";
+import PodNameDisplay from "../components/HeatMapComponents/PodNameDisplay";
 
-  // State for when the menu button is clicked
-  const [menu, setMenu] = useState(false);
-
+const MainContainer = ({ username, backendUrl }) => {
   // Determines if the graphs display node data or pod specific data
   const [defaultView, setDefaultView] = useState(true);
 
-  // Which pod has been clicked-  manage selected pod
-  const [clickedPod, setClickedPod] = useState("");
+  // State hook for time window in PodGrid
+  const [queryTimeWindow, setQueryTimeWindow] = useState("1m");
 
-  // Data of selected pod
-  // const [podData, setPodData] = useState([]);
-
-  // Function to reset views and clear selected pod
-  const resetView = () => {
-    setDefaultView(true);
-    // Reset to default view
-    setClickedPod("");
-    // Clear selected pod
-    setSelectedMetric("cpu");
-    // Reset metric selection
-  };
-
-  // Data of all pods
-  const [allData, setAllData] = useState({
-    podsStatuses: { podsStatuses: [] },
-    requestLimits: { allPodsRequestLimit: [] },
-    allNodes: { allNodes: [] },
-    cpuUsageOneValue: { resourceUsageOneValue: [] },
-    memoryUsageOneValue: { resourceUsageOneValue: [] },
-    cpuUsageHistorical: null,
-    memoryUsageHistorical: null,
-    latencyAppRequestOneValue: { latencyAppRequestOneValue: [] },
+  // state hooks for clicked pod and selected metric in PodGrid (will also be passed down to other components)
+  const [clickedPod, setClickedPod] = useState({
+    podName: "",
+    namespace: "",
+    containers: [],
+    deployment: "",
   });
-
-  const [isLoading, setIsLoading] = useState(true);
-
   const [selectedMetric, setSelectedMetric] = useState("cpu");
 
-  //helper function
-  const fetchData = async (method, endpoint, body = null) => {
-    try {
-      const request = {
-        method: method,
-        headers: { "Content-Type": "application/json" },
-      };
-      if (body) request.body = JSON.stringify(body);
-      const response = await fetch(url + endpoint, request);
+  // State hook for pod restarts in PodGrid
+  const [podRestartCount, setPodRestartCount] = useState(0);
 
-      return await response.json();
-    } catch (error) {
-      console.error("Fetch error:", error);
-      return null;
-    }
-  };
+  // State hooks for refresh control in MenuContainer
+  const [manualRefreshCount, setManualRefreshCount] = useState(0);
+  const [refreshFrequency, setRefreshFrequency] = useState(30000);
+  const [showRefreshPopup, setShowRefreshPopup] = useState(false);
+  const [refreshInput, setRefreshInput] = useState("");
 
-  // Populate all pod status and pods request limit
-  // Run big fetch once every 30 seconds
+  // State hook for set the menu sidebar's visibility
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuRef = useRef(null);
+  const buttonRef = useRef(null);
+
+  const { allData } = useFetchData({
+    backendUrl,
+    refreshFrequency,
+    queryTimeWindow,
+    podRestartCount,
+    manualRefreshCount,
+  });
+
+  // Handle the click outside of the menu to close the menu
   useEffect(() => {
-    const bigFetch = async () => {
-      setIsLoading(true);
+    // Close the menu when clicking outside of the menu
+    const handleClickOutside = (event) => {
+      if (buttonRef.current?.contains(event.target)) return; // if the button is clicked, bypass
 
-      console.log("Fetching data...");
-
-      const bodyResourceUsageOnevalueCPU = {
-        type: "cpu",
-        time: "1h",
-        level: "pod",
-      };
-
-      const bodyResourceUsageOnevalueMemory = {
-        type: "memory",
-        time: "1h",
-        level: "pod",
-      };
-
-      const bodyResourceUsageHistoricalCPU = {
-        type: "cpu",
-        timeEnd: Math.floor(Date.now() / 1000).toString(),
-        timeStart: (Math.floor(Date.now() / 1000) - 1200).toString(),
-        timeStep: "60",
-        level: "pod",
-      };
-
-      const bodyResourceUsageHistoricalMemory = {
-        type: "memory",
-        timeEnd: Math.floor(Date.now() / 1000).toString(),
-        timeStart: (Math.floor(Date.now() / 1000) - 1200).toString(),
-        timeStep: "60",
-        level: "pod",
-      };
-
-      const bodyLatencyAppRequestOneValue = {
-        time: "1h",
-        level: "pod",
-      };
-
-      const bodyLatencyAppRequestHistorical = {
-        timeEnd: Math.floor(Date.now() / 1000).toString(),
-        timeStart: (Math.floor(Date.now() / 1000) - 1200).toString(),
-        timeStep: "60",
-        level: "pod",
-      };
-
-      try {
-        const fakeNodeData = {
-          allNodes: [
-            {
-              nodeName: "Minikube",
-              clusterName: "Minikube",
-            },
-          ],
-        };
-
-        const [
-          status,
-          requestLimits,
-          cpuUsageOneValue,
-          memoryUsageOneValue,
-          cpuUsageHistorical,
-          memoryUsageHistorical,
-          latencyAppRequestOneValue,
-          latencyAppRequestHistorical,
-        ] = await Promise.all([
-          fetchData("GET", "api/all-pods-status"),
-          fetchData("GET", "api/all-pods-request-limit"),
-          // fetchData("GET", "api/allnodes") CURRENTLY POPULATED WITH FAKE DATA
-          fetchData(
-            "POST",
-            "api/resource-usage-onevalue",
-            bodyResourceUsageOnevalueCPU,
-          ),
-          fetchData(
-            "POST",
-            "api/resource-usage-onevalue",
-            bodyResourceUsageOnevalueMemory,
-          ),
-          fetchData(
-            "POST",
-            "api/resource-usage-historical",
-            bodyResourceUsageHistoricalCPU,
-          ),
-          fetchData(
-            "POST",
-            "api/resource-usage-historical",
-            bodyResourceUsageHistoricalMemory,
-          ),
-          fetchData(
-            "POST",
-            "api/latency-app-request-onevalue",
-            bodyLatencyAppRequestOneValue,
-          ),
-          fetchData(
-            "POST",
-            "api/latency-app-request-historical",
-            bodyLatencyAppRequestHistorical,
-          ),
-        ]);
-        // console.log( "DATA FROM BACKEND",
-        //   status,
-        //   requestLimits,
-        //   cpuUsageOneValue,
-        //   memoryUsageOneValue,
-        //   cpuUsageHistorical,
-        // );
-        setAllData({
-          podsStatuses: status || [],
-          requestLimits: requestLimits || [],
-          allNodes: fakeNodeData,
-          cpuUsageOneValue: cpuUsageOneValue || [],
-          memoryUsageOneValue: memoryUsageOneValue || [],
-          cpuUsageHistorical: cpuUsageHistorical || [],
-          memoryUsageHistorical: memoryUsageHistorical || [],
-          latencyAppRequestOneValue: latencyAppRequestOneValue || [],
-          latencyAppRequestHistorical: latencyAppRequestHistorical || [],
-        });
-      } catch (error) {
-        console.error("Error fetching initial data:", error);
-      } finally {
-        setIsLoading(false);
+      // Close the menu bar if clicking outside menu and menu is open
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setIsMenuOpen(false);
       }
     };
-    bigFetch();
-
-    const intervalID = setInterval(bigFetch, 30000);
-    return () => {
-      clearInterval(intervalID);
-    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  useEffect(() => {
-    console.log("All data: ", allData);
-  }, [allData]);
-
   return (
-    <div>
-      <header className="header sticky top-0 z-50 flex flex-col items-center justify-between gap-4 border-b-2 border-slate-600 bg-slate-950 py-4 sm:flex-row">
+    <div id='main-container'>
+      <header className="header sticky top-0 z-50 flex flex-col items-center justify-between gap-4 border-b-2 bg-gradient-to-r from-[#0f172a] to-[#1e40af] py-4 sm:flex-row">
         <div id="leftside" className="flex items-center">
           <div className="flex items-center gap-0 px-5">
             <button
-              onClick={() => setMenu(true)}
+              ref={buttonRef}
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
               className="group inline-flex h-12 w-12 items-center justify-center rounded border-2 border-slate-500 bg-slate-950 text-center text-slate-300"
             >
               <span className="sr-only">Menu</span>
@@ -222,26 +98,53 @@ const MainContainer = ({ username }) => {
                 viewBox="0 0 16 16"
               >
                 <rect
-                  className="origin-center -translate-y-[5px] translate-x-[7px]"
-                  y="7"
-                  width="9"
-                  height="2"
-                ></rect>
-                <rect
-                  className="origin-center"
+                  className={`origin-center transition-transform duration-300 ${
+                    isMenuOpen
+                      ? "-translate-x-[0px] translate-y-[0px] rotate-45"
+                      : // : "-translate-y-[5px] translate-x-[7px]"
+                        "-translate-y-[5px]"
+                  }`}
                   y="7"
                   width="16"
                   height="2"
                 ></rect>
                 <rect
-                  className="origin-center translate-y-[5px]"
+                  className={`origin-center transition-opacity duration-300 ${
+                    isMenuOpen ? "opacity-0" : "opacity-100"
+                  }`}
                   y="7"
-                  width="9"
+                  width="16"
+                  height="2"
+                ></rect>
+                <rect
+                  className={`origin-center transition-transform duration-300 ${
+                    isMenuOpen
+                      ? "-translate-x-[0px] -translate-y-[0px] -rotate-45"
+                      : "translate-y-[5px]"
+                  }`}
+                  y="7"
+                  width="16"
                   height="2"
                 ></rect>
               </svg>
             </button>
-            {!menu && <MenuContainer />}
+            <div
+              ref={menuRef}
+              className={`fixed left-0 top-20 h-screen w-64 transform bg-slate-900 p-4 shadow-lg transition-transform duration-300 ease-in-out ${
+                isMenuOpen ? "translate-x-0" : "-translate-x-full"
+              }`}
+            >
+              <MenuContainer
+                refreshFrequency={refreshFrequency}
+                setRefreshFrequency={setRefreshFrequency}
+                showRefreshPopup={showRefreshPopup}
+                setShowRefreshPopup={setShowRefreshPopup}
+                refreshInput={refreshInput}
+                setRefreshInput={setRefreshInput}
+                manualRefreshCount={manualRefreshCount}
+                setManualRefreshCount={setManualRefreshCount}
+              />
+            </div>
           </div>
           <h1 className="bg-gradient-to-bl from-blue-500 to-blue-600 bg-clip-text px-5 font-sans text-5xl font-bold text-transparent transition duration-300 hover:scale-105">
             BottleNetes
@@ -258,26 +161,32 @@ const MainContainer = ({ username }) => {
           <Overview
             podsStatuses={allData.podsStatuses}
             allNodes={allData.allNodes}
-            isLoading={isLoading}
+            // isLoading={isLoading}
           />
         </div>
 
         {/* PodNameDisplay */}
         <div className="border-b-2 border-slate-300 dark:border-slate-600">
-          <PodNameDisplay clickedPod={clickedPod} />
+          <PodNameDisplay
+            clickedPod={clickedPod}
+            setClickedPod={setClickedPod}
+          />
         </div>
 
-        {/* main container */}
+        {/* Main Container */}
         <div
-          id="main-container"
-          className="flex min-h-screen flex-col gap-4 p-6 mt-2 text-slate-100"
+          id="graph-container"
+          className="mt-2 flex min-h-screen flex-col gap-4 p-6 text-slate-100"
         >
           {/*Arrange components in columns for a larger screen, and stack vertically if the screen is smaller*/}
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 xl:grid-cols-4">
             {/* Pod Grid */}
-            <div className="flex max-h-[100%] flex-col bg-slate-100 border-4 border-slate-400 rounded-3xl p-4 xl:col-span-2 dark:bg-transparent dark:shadow-custom-lg dark:border-2 dark:border-slate-600">
+            <div
+              id="pod-grid"
+              className="flex max-h-[100%] flex-col rounded-3xl bg-slate-100 p-4 xl:col-span-2 dark:bg-transparent dark:shadow-custom-lg dark:border-2 dark:border-slate-600"
+            >
               <h2 className="text-center text-2xl font-bold text-slate-900 dark:text-slate-300">
-                Select Pod
+                Heat Map
               </h2>
               <PodGrid
                 defaultView={defaultView}
@@ -286,15 +195,23 @@ const MainContainer = ({ username }) => {
                 setClickedPod={setClickedPod}
                 selectedMetric={selectedMetric}
                 setSelectedMetric={setSelectedMetric}
+                podRestartCount={podRestartCount}
+                setPodRestartCount={setPodRestartCount}
                 podStatuses={allData.podsStatuses}
                 cpuUsageOneValue={allData.cpuUsageOneValue}
                 memoryUsageOneValue={allData.memoryUsageOneValue}
                 latencyAppRequestOneValue={allData.latencyAppRequestOneValue}
+                queryTimeWindow={queryTimeWindow}
+                setQueryTimeWindow={setQueryTimeWindow}
+                backendUrl={backendUrl}
               />
             </div>
 
             {/* Historical Tracing */}
-            <div className="max-h-[100%] rounded-3xl bg-slate-100 p-4 xl:col-span-2 dark:bg-transparent dark:shadow-custom-lg">
+            <div
+              id="historical-tracing"
+              className="max-h-[100%] rounded-3xl bg-slate-100 p-4 xl:col-span-2 dark:bg-transparent dark:shadow-custom-lg"
+            >
               <h2 className="text-center text-2xl font-semibold text-slate-900 dark:text-slate-300">
                 Historical Tracing
               </h2>
@@ -307,7 +224,10 @@ const MainContainer = ({ username }) => {
             </div>
 
             {/* Request vs. Limit */}
-            <div className="relative flex-auto rounded-3xl bg-slate-100 p-4 xl:col-span-2 dark:bg-transparent dark:shadow-custom-lg">
+            <div
+              id="request-vs-limit"
+              className=" rounded-3xl bg-slate-100 p-4 xl:col-span-2 dark:bg-transparent dark:shadow-custom-lg overflow-y-auto w-full h-[500px]"
+            >
               <h2 className="text-center text-2xl font-semibold text-slate-900 dark:text-slate-300">
                 Request vs. Limit
               </h2>
@@ -320,22 +240,36 @@ const MainContainer = ({ username }) => {
             </div>
 
             {/* Latency */}
-            <div className="rounded-3xl bg-slate-100 p-4 xl:col-span-2 dark:bg-transparent dark:shadow-custom-lg">
+            <div
+              id="latency"
+              className="rounded-3xl bg-slate-100 p-4 xl:col-span-2 dark:bg-transparent dark:shadow-custom-lg"
+            >
               <h2 className="text-center text-2xl font-semibold text-slate-900 dark:text-slate-300">
                 Request Latency
               </h2>
               <Latency
                 defaultView={defaultView}
                 clickedPod={clickedPod}
+                cpuUsageHistorical={allData.cpuUsageHistorical}
                 latencyAppRequestHistorical={
                   allData.latencyAppRequestHistorical
                 }
               />
             </div>
 
-            <div className="flex justify-end gap-4">
+            <div id="bottom-buttons" className="mt-4 flex justify-end gap-4">
+              {/* removed the reset button because it's redundant */}
               {/* Reset Button with Reset Function */}
-              <button className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter">
+              {/* <button
+                onClick={resetView}
+                className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter"
+              >
+                Reset to default
+              </button> */}
+              <button
+                id="ask-ai-button"
+                className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90 hover:filter"
+              >
                 Ask AI
               </button>
             </div>
@@ -348,6 +282,7 @@ const MainContainer = ({ username }) => {
 
 MainContainer.propTypes = {
   username: PropTypes.string,
+  backendUrl: PropTypes.string.isRequired,
 };
 
 export default MainContainer;
