@@ -22,7 +22,7 @@ import MenuContainer from "./MenuContainer";
 import Latency from "../components/Latency";
 import Metrics from "../components/Metrics";
 import Overview from "../components/Overview";
-import RequestLimit from "../components/RequestLimit";
+import RequestLimit from "../components/RequestLimitComponents/RequestLimit";
 
 // Component/HeatMapComponent Folder
 import PodGrid from "../components/HeatMapComponents/PodGrid";

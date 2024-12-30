@@ -6,9 +6,9 @@ const PodSorter = ({ setMetricToSort, defaultView, setDefaultView }) => {
 
   const sortOptions = [
     { metricType: "", label: "Sort by..." },
-    { metricType: "cpuDataRelative", label: "CPU Usage %" },
-    { metricType: "memoryDataRelative", label: "Memory Usage %" },
-    { metricType: "latencyData", label: "Latency" },
+    { metricType: "cpuDataRelative", label: "CPU Usage (% of Request)" },
+    { metricType: "memoryDataRelative", label: "Memory Usage (% of Request)" },
+    { metricType: "latencyData", label: "Latency (ms)" },
     { metricType: "podName", label: "Pod Name" },
   ];
 
