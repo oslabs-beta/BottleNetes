@@ -93,7 +93,7 @@ const App: FC = (): JSX.Element => {
   const router = createBrowserRouter([
     {
       path: "/dashboard",
-      element: signedIn ? <MainContainer /> : <Navigate to={"/"} />,
+      element: signedIn ? <MainContainer backendUrl={backendUrl} /> : <Navigate to={"/"} />,
     },
     {
       path: "/user/signup",

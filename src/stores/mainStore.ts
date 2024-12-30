@@ -78,3 +78,5 @@ const mainStore = create<State & Action>()((set) => ({
   isMenuOpen: false,
   setIsMenuOpen: (isMenuOpen) => set({ isMenuOpen }),
 }));
+
+export default mainStore;
