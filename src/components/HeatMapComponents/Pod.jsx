@@ -60,8 +60,8 @@ const Pod = ({ podInfo, selectedMetric, onClick, isClicked }) => {
           <p className="text-left font-semibold">
             Namespace:
             <span className="font-normal">{podInfo.namespace}</span>
-            <hr className="border-1 my-0.5 border-gray-400" />
           </p>
+          <hr className="border-1 my-0.5 border-gray-400" />
           <p className="text-left font-semibold">
             Pod Status: <span className="font-normal">{podInfo.status}</span>
           </p>
@@ -70,8 +70,8 @@ const Pod = ({ podInfo, selectedMetric, onClick, isClicked }) => {
             <span className="font-normal">
               {podInfo.readiness ? "Yes" : "No"}
             </span>
-            <hr className="border-1 my-0.5 border-gray-400" />
           </p>
+          <hr className="border-1 my-0.5 border-gray-400" />
           <p className="text-left font-semibold">
             Deployment:{" "}
             <span className="font-normal">{podInfo.deploymentName}</span>
@@ -82,8 +82,8 @@ const Pod = ({ podInfo, selectedMetric, onClick, isClicked }) => {
           <p className="text-left font-semibold">
             Containers:
             <span className="font-normal">{podInfo.containers.join(", ")}</span>
-            <hr className="border-1 my-0.5 border-gray-400" />
           </p>
+          <hr className="border-1 my-0.5 border-gray-400" />
           <p className="text-left font-semibold">
             CPU Usage (% of request):{" "}
             <span className="font-normal">
@@ -99,8 +99,8 @@ const Pod = ({ podInfo, selectedMetric, onClick, isClicked }) => {
                 ? podInfo.memoryDataRelative.toFixed(2) + "%"
                 : "N/A"}
             </span>
-            <hr className="border-1 my-0.5 border-gray-400" />
           </p>
+          <hr className="border-1 my-0.5 border-gray-400" />
           <p className="text-left font-semibold">
             CPU Usage (cpu cores):{" "}
             <span className="font-normal">
@@ -116,8 +116,8 @@ const Pod = ({ podInfo, selectedMetric, onClick, isClicked }) => {
                 ? (podInfo.memoryDataAbsolute / 1024 / 1024).toFixed(2)
                 : "N/A"}
             </span>
-            <hr className="border-1 my-0.5 border-gray-400" />
           </p>
+          <hr className="border-1 my-0.5 border-gray-400" />
           <p className="text-left font-semibold">
             CPU Request vs. Limit (cpu cores):{" "}
             <span className="font-normal">

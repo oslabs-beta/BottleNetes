@@ -19,9 +19,9 @@ import useFetchData from "../hooks/useFetchData";
 import MenuContainer from "./MenuContainer";
 
 // Component Folder
-import Latency from "../components/LatencyComponents/Latency";
-import Metrics from "../components/Metrics";
 import Overview from "../components/Overview";
+import Latency from "../components/LatencyComponents/Latency";
+import Metrics from "../components/HistoricalMetricsComponents/Metrics";
 import RequestLimit from "../components/RequestLimitComponents/RequestLimit";
 
 // Component/HeatMapComponent Folder
