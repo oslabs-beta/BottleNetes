@@ -59,8 +59,8 @@ const Metrics = ({
     datasets.push({
       label: "RAM Usage (% of requested)",
       data: memory,
-      borderColor: "#3730a3",
-      backgroundColor: "#3730a3",
+      borderColor: "#93c5fd",
+      backgroundColor: "#93c5fd",
       tension: 0.4,
     });
   }

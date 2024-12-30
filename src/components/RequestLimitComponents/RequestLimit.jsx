@@ -40,7 +40,7 @@ const RequestLimit = ({ selectedMetric, requestLimits }) => {
       {
         label: "Requested Resources",
         data: requestData,
-        backgroundColor: "rgba(191, 219, 254)",
+        backgroundColor: "#93c5fd",
         borderRadius: 5,
       },
       {
