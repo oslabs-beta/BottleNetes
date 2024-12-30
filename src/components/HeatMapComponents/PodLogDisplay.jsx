@@ -6,10 +6,11 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 
 const PodLogDisplay = ({ clickedPod, backendUrl }) => {
+  // State to determine the visibility of the log popup
   const [showPodLog, setShowPodLog] = useState(false);
+  // State to determine the visibility of the initial popup to select container to show its log
   const [showContainerSelect, setShowContainerSelect] = useState(false);
   const [podLog, setPodLog] = useState("No logs available");
-  // const [selectedContainer, setSelectedContainer] = useState("");
 
   const handleViewPodLog = async () => {
     if (
