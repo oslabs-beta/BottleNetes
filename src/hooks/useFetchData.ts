@@ -2,7 +2,35 @@
  * Hooks run when fetching data to display in the Main Page
  */
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
+
+import mainStore from "../stores/mainStore.ts";
+import dataStore from "../stores/dataStore.ts";
+
+const backendUrl = dataStore((state) => state.backendUrl);
+
+const {
+  refreshFrequency,
+  queryTimeWindow,
+  podRestartCount,
+  manualRefreshCount,
+} = mainStore();
+
+// Types for useFetchData params
+interface FetchDataParams {
+  backendUrl: typeof backendUrl;
+  refreshFrequency: typeof refreshFrequency;
+  queryTimeWindow: typeof queryTimeWindow;
+  podRestartCount: typeof podRestartCount;
+  manualRefreshCount: typeof manualRefreshCount;
+}
+
+// Type for fetchData params
+type Request = {
+  method: string;
+  headers: Record<string, string>;
+  body?: string;
+};
 
 const useFetchData = ({
   backendUrl,
@@ -10,24 +38,18 @@ const useFetchData = ({
   queryTimeWindow,
   podRestartCount,
   manualRefreshCount,
-}) => {
-  const [isLoading, setIsLoading] = useState(true);
-  const [allData, setAllData] = useState({
-    podsStatuses: { podsStatuses: [] },
-    requestLimits: { allPodsRequestLimit: [] },
-    allNodes: { allNodes: [] },
-    cpuUsageOneValue: { resourceUsageOneValue: [] },
-    memoryUsageOneValue: { resourceUsageOneValue: [] },
-    cpuUsageHistorical: null,
-    memoryUsageHistorical: null,
-    latencyAppRequestOneValue: { latencyAppRequestOneValue: [] },
-    latencyAppRequestHistorical: null,
-  });
+}: FetchDataParams) => {
+  const { isFetchingData, setIsFetchingData, allData, setAllData } =
+    dataStore();
 
   useEffect(() => {
-    const fetchData = async (method, endpoint, body = null) => {
+    const fetchData = async (
+      method: string,
+      endpoint: string,
+      body: Record<string, unknown> | null = null,
+    ): Promise<Record<string, unknown> | null> => {
       try {
-        const request = {
+        const request: Request = {
           method: method,
           headers: { "Content-Type": "application/json" },
         };
@@ -41,7 +63,7 @@ const useFetchData = ({
     };
 
     const bigFetch = async () => {
-      setIsLoading(true);
+      setIsFetchingData(true);
       console.log("Fetching data...");
 
       const metricsConfig = {
@@ -126,7 +148,7 @@ const useFetchData = ({
       } catch (error) {
         console.error("Error fetching initial data:", error);
       } finally {
-        setIsLoading(false);
+        setIsFetchingData(false);
       }
     };
 
@@ -142,7 +164,7 @@ const useFetchData = ({
     backendUrl,
   ]);
 
-  return { isLoading, allData };
+  return { isFetchingData, allData };
 };
 
 export default useFetchData;

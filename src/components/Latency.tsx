@@ -1,7 +1,7 @@
 /**
  * This component renders the line graph representing the Latency
  */
-
+import React from 'react';
 import PropTypes from "prop-types";
 import { Line } from "react-chartjs-2";
 import {

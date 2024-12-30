@@ -53,7 +53,10 @@ const mainStore = create<State & Action>()((set) => ({
     set((state) => ({
       clickedPod: {
         ...state.clickedPod,
-        ...clickedPod,
+        podName: clickedPod.podName,
+        namespace: clickedPod.namespace,
+        containers: clickedPod.containers,
+        deployment: clickedPod.deployment,
       },
     })),
 

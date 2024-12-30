@@ -15,6 +15,7 @@ import SignupContainer from "./containers/SignupContainer.tsx";
 import LoadingContainer from "./containers/LoadingContainer.tsx";
 
 import userStore from "./stores/userStore.ts";
+import dataStore from "./stores/dataStore.ts";
 
 type Data = {
   signedIn: boolean;
@@ -25,7 +26,7 @@ const App = () => {
   const { signedIn, setSignedIn, loading, setLoading, setUsername } =
     userStore();
 
-  const backendUrl: "http://localhost:3000/" = "http://localhost:3000/";
+  const backendUrl = dataStore((state) => state.backendUrl);
   // This hook fires whenever you go to the home page (Sign In Page)
   useEffect(() => {
     // Setting up a controller to stop the useEffect from running when closing the application
@@ -93,18 +94,18 @@ const App = () => {
   const router = createBrowserRouter([
     {
       path: "/dashboard",
-      element: signedIn ? <MainContainer backendUrl={backendUrl} /> : <Navigate to={"/"} />,
+      element: signedIn ? <MainContainer /> : <Navigate to={"/"} />,
     },
     {
       path: "/user/signup",
-      element: <SignupContainer backendUrl={backendUrl} />,
+      element: <SignupContainer />,
     },
     {
       path: "/",
       element: signedIn ? (
         <Navigate to={"/dashboard"} />
       ) : (
-        <SigninContainer backendUrl={backendUrl} />
+        <SigninContainer />
       ),
     },
   ]);
