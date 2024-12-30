@@ -35,6 +35,10 @@ const PodAdjustRequestsLimits = ({ clickedPod, backendUrl }) => {
   };
 
   const proceedAdjustRequestsLimits = async () => {
+    if (selectedOption === "Please select a config" || selectedOption === "") {
+      alert("Please select a resource configuration first");
+      return;
+    }
     console.log(`Sending request to '${backendUrl}k8s/requestsLimits'...`);
 
     try {
@@ -69,9 +73,24 @@ const PodAdjustRequestsLimits = ({ clickedPod, backendUrl }) => {
 
   const cancelRequestsLimits = () => {
     setShowRequestsLimitsPopup(false);
+    // reset to default when closed
+    setSelectedOption("Please select a config");
+    setNewRequests({ memory: "", cpu: "" });
+    setNewLimits({ memory: "", cpu: "" });
   };
 
   const preConfigOptions = [
+    {
+      configName: "Please select a config",
+      requests: {
+        memory: "",
+        cpu: "",
+      },
+      limits: {
+        memory: "",
+        cpu: "",
+      },
+    },
     {
       configName: "Minimal",
       requests: {
@@ -119,6 +138,17 @@ const PodAdjustRequestsLimits = ({ clickedPod, backendUrl }) => {
         cpu: "4",
       },
     },
+    {
+      configName: "Custom",
+      requests: {
+        memory: "",
+        cpu: "",
+      },
+      limits: {
+        memory: "",
+        cpu: "",
+      },
+    },
   ];
 
   const handleSelectedValue = (event) => {
@@ -137,11 +167,21 @@ const PodAdjustRequestsLimits = ({ clickedPod, backendUrl }) => {
       cpu: selectedPreConfigOption?.limits.cpu,
     }));
   };
+  // handle input change for custom option
+  const handleInputChange = (type, field, value) => {
+    if (selectedOption === "Custom") {
+      if (type === "requests") {
+        setNewRequests((prev) => ({ ...prev, [field]: value }));
+      } else {
+        setNewLimits((prev) => ({ ...prev, [field]: value }));
+      }
+    }
+  };
 
   return (
     <div id="pod-adjust-requests-limits">
       <button
-        className="border-1 rounded-lg border-slate-200 bg-gradient-to-r from-[#e8eef4] to-slate-100 px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90"
+        className="w-full rounded-lg border-2 border-slate-200 bg-gradient-to-r from-slate-200 to-slate-100 px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90"
         onClick={handleRequestsLimits}
       >
         Adjust Requests/Limits
@@ -154,7 +194,7 @@ const PodAdjustRequestsLimits = ({ clickedPod, backendUrl }) => {
       >
         <div
           id="requests-limits-popup"
-          className="w-1/6 rounded-lg bg-slate-200 p-6 text-center text-slate-800"
+          className="w-1/4 rounded-lg bg-slate-200 p-6 text-center text-slate-800"
         >
           <h2>Select a desired resources configuration for your deployment</h2>
           <br />
@@ -164,6 +204,9 @@ const PodAdjustRequestsLimits = ({ clickedPod, backendUrl }) => {
           >
             <p>
               Selected Pod: <strong>{clickedPod.podName}</strong>
+            </p>
+            <p>
+              Namespace: <strong>{clickedPod.namespace}</strong>
             </p>
             <p>
               Deployment: <strong>{clickedPod.deploymentName}</strong>
@@ -217,18 +260,34 @@ const PodAdjustRequestsLimits = ({ clickedPod, backendUrl }) => {
             >
               <p className="leading-10">Memory</p>
               <TextField
-                disabled
+                disabled={selectedOption !== "Custom"} // disable input if not custom
                 id="memory-requests"
                 label="Requests"
                 value={newRequests.memory}
-                sx={{ margin: 1 }}
+                onChange={
+                  (e) => handleInputChange("requests", "memory", e.target.value) // handle input change for custom option
+                }
+                sx={{
+                  margin: 1,
+                  "& .MuiInputBase-input": {
+                    bgcolor: selectedOption === "Custom" ? "white" : "inherit",
+                  }, // change input background color if custom option is selected
+                }}
               />
               <TextField
-                disabled
+                disabled={selectedOption !== "Custom"}
                 id="memory-limits"
                 label="Limits"
                 value={newLimits.memory}
-                sx={{ margin: 1 }}
+                onChange={(e) =>
+                  handleInputChange("limits", "memory", e.target.value)
+                }
+                sx={{
+                  margin: 1,
+                  "& .MuiInputBase-input": {
+                    bgcolor: selectedOption === "Custom" ? "white" : "inherit",
+                  },
+                }}
               />
             </div>
             <div
@@ -237,18 +296,34 @@ const PodAdjustRequestsLimits = ({ clickedPod, backendUrl }) => {
             >
               <p className="leading-10">CPU</p>
               <TextField
-                disabled
+                disabled={selectedOption !== "Custom"}
                 id="cpu-requests"
                 label="Requests"
                 value={newRequests.cpu}
-                sx={{ margin: 1 }}
+                onChange={(e) =>
+                  handleInputChange("requests", "cpu", e.target.value)
+                }
+                sx={{
+                  margin: 1,
+                  "& .MuiInputBase-input": {
+                    bgcolor: selectedOption === "Custom" ? "white" : "inherit",
+                  },
+                }}
               />
               <TextField
-                disabled
+                disabled={selectedOption !== "Custom"}
                 id="cpu-limits"
                 label="Limits"
                 value={newLimits.cpu}
-                sx={{ margin: 1 }}
+                onChange={(e) =>
+                  handleInputChange("limits", "cpu", e.target.value)
+                }
+                sx={{
+                  margin: 1,
+                  "& .MuiInputBase-input": {
+                    bgcolor: selectedOption === "Custom" ? "white" : "inherit",
+                  },
+                }}
               />
             </div>
           </div>
@@ -286,27 +361,40 @@ PodAdjustRequestsLimits.propTypes = {
 const ToolTipDescription = () => {
   return (
     <div className="text-sm">
-      <p className=' text-center text-base text-slate-100 leading-10'>Suitability for each Configuration</p>
+      <p className="text-center text-base leading-10 text-slate-100">
+        Suitability for each Configuration
+      </p>
       <ul className="my-2 list-disc pl-4 text-slate-200">
         <li>
           <strong>Minimal (Lightweight):</strong> For small services like simple
           APIs or workers;
         </li>
+        <br />
         <li>
           <strong>Medium (Standard):</strong>
           For regular web applications or small microservices;
         </li>
+        <br />
         <li>
           <strong>Memory-Intensive:</strong>
           For data processing, ML or in-memory databases;
         </li>
+        <br />
         <li>
           <strong>Compute-Intensive:</strong> For video processing or scientific
           computing
         </li>
+        <br />
+        <li>
+          <strong>Custom:</strong> Manually set resources:
+          <br />
+          Memory format: 100Mi, 512Mi, 1Gi, 2Gi, etc.
+          <br />
+          CPU format: 100m (0.1 core), 500m (0.5 core), 1 (1 core), etc.
+        </li>
       </ul>
     </div>
   );
-}
+};
 
 export default PodAdjustRequestsLimits;

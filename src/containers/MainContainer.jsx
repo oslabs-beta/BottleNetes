@@ -22,10 +22,10 @@ import useFetchData from "../hooks/useFetchData";
 import MenuContainer from "./MenuContainer";
 
 // Component Folder
-import Latency from "../components/Latency";
-import Metrics from "../components/Metrics";
 import Overview from "../components/Overview";
-import RequestLimit from "../components/RequestLimit";
+import Latency from "../components/LatencyComponents/Latency";
+import Metrics from "../components/HistoricalMetricsComponents/Metrics";
+import RequestLimit from "../components/RequestLimitComponents/RequestLimit";
 import Chatbot from "../components/Chatbot";
 
 // HeatMap Component Folder
@@ -46,7 +46,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
   const [selectedMetric, setSelectedMetric] = useState("cpu");
   const [podRestartCount, setPodRestartCount] = useState(0);
   const [manualRefreshCount, setManualRefreshCount] = useState(0);
-  const [refreshFrequency, setRefreshFrequency] = useState(30000);
+  const [refreshFrequency, setRefreshFrequency] = useState(30 * 1000);
   const [showRefreshPopup, setShowRefreshPopup] = useState(false);
   const [refreshInput, setRefreshInput] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -54,8 +54,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
 
-  // Fetch data using a custom hook
-  const { allData = {} } = useFetchData({
+  const { allData } = useFetchData({
     backendUrl,
     refreshFrequency,
     queryTimeWindow,
@@ -63,7 +62,29 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
     manualRefreshCount,
   });
 
-  // Automatically close the menu when clicking outside
+  // ensure the clickedPod state stays valid after each refresh
+  useEffect(() => {
+    if (allData.podsStatuses?.allPodsStatus?.length > 0 && clickedPod.podName) {
+      // Check if the clicked pod still exists in the updated data
+      const podStillExists = allData.podsStatuses.allPodsStatus.some(
+        (pod) =>
+          pod.podName === clickedPod.podName &&
+          pod.namespace === clickedPod.namespace,
+      );
+      // Only reset the clickedPod state if it no longer exists in the updated data
+      if (!podStillExists) {
+        setClickedPod({
+          podName: "",
+          namespace: "",
+          containers: [],
+          deployment: "",
+        });
+        setDefaultView(true);
+      }
+    }
+  }, [allData.podsStatuses, clickedPod]);
+
+  // Handle the click outside of the menu to close the menu
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (buttonRef.current?.contains(event.target)) return;
@@ -76,7 +97,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
   }, []);
 
   return (
-    <div>
+    <div id="main-container">
       <header className="header sticky top-0 z-50 flex flex-col items-center justify-between gap-4 border-b-2 bg-gradient-to-r from-[#0f172a] to-[#1e40af] py-4 sm:flex-row">
         <div id="leftside" className="flex items-center">
           {/* Menu drop down */}
@@ -168,17 +189,17 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
 
         {/* Main Container */}
         <div
-          id="main-container"
+          id="graph-container"
           className="mt-2 flex min-h-screen flex-col gap-4 p-6 text-slate-100"
         >
           <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 xl:grid-cols-4">
             {/* Pod Grid */}
             <div
               id="pod-grid"
-              className="flex max-h-[100%] flex-col rounded-3xl border-4 border-slate-400 bg-slate-100 p-4 xl:col-span-2"
+              className="flex max-h-[100%] flex-col rounded-3xl bg-slate-100 p-4 xl:col-span-2"
             >
               <h2 className="text-center text-2xl font-bold text-slate-900">
-                Select Pod
+                Heat Map
               </h2>
               <PodGrid
                 defaultView={defaultView}
@@ -192,6 +213,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
                 podStatuses={allData.podsStatuses || []}
                 cpuUsageOneValue={allData.cpuUsageOneValue || []}
                 memoryUsageOneValue={allData.memoryUsageOneValue || []}
+                requestLimits={allData.requestLimits}
                 latencyAppRequestOneValue={
                   allData.latencyAppRequestOneValue || []
                 }
@@ -220,7 +242,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
             {/* Request vs. Limit */}
             <div
               id="request-vs-limit"
-              className="relative flex-auto rounded-3xl bg-slate-100 p-4 xl:col-span-2"
+              className="h-[500px] w-full overflow-y-auto rounded-3xl bg-slate-100 p-4 xl:col-span-2"
             >
               <h2 className="text-center text-2xl font-semibold text-slate-900">
                 Request vs. Limit

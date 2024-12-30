@@ -59,7 +59,7 @@ const PodLogDisplay = ({ clickedPod, backendUrl }) => {
     <div id="pod-log-display">
       <button
         onClick={handleViewPodLog}
-        className="border-1 rounded-lg border-slate-200 bg-slate-200 px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90"
+        className="w-full rounded-lg border-2 border-slate-200 bg-gradient-to-br from-slate-200 to-slate-100 px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-105 active:brightness-90"
       >
         View Pod Log
       </button>
@@ -82,7 +82,7 @@ const PodLogDisplay = ({ clickedPod, backendUrl }) => {
               <button
                 key={containerName}
                 onClick={() => fetchContainerLogs(containerName)}
-                className="rounded-lg bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+                className="rounded-lg bg-blue-500 px-4 py-2 text-white transition duration-200 hover:brightness-110 active:brightness-90"
               >
                 {containerName}
               </button>
@@ -90,7 +90,7 @@ const PodLogDisplay = ({ clickedPod, backendUrl }) => {
           </div>
           <button
             onClick={() => setShowContainerSelect(false)}
-            className="mt-4 w-full rounded-lg bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+            className="mt-4 w-full rounded-lg bg-red-500 px-4 py-2 text-white transition duration-200 hover:brightness-110 active:brightness-90"
           >
             Cancel
           </button>
@@ -108,17 +108,21 @@ const PodLogDisplay = ({ clickedPod, backendUrl }) => {
       >
         <div
           id="pod-log-content"
-          className="relative h-[80vh] w-[80vw] overflow-auto rounded-lg bg-slate-200 p-6"
+          className="relative h-4/5 w-4/5 overflow-auto rounded-lg bg-slate-200 p-6"
         >
+          <div className="sticky top-0 z-10 flex justify-end">
+            <div className="inline-block rounded-lg bg-slate-200 px-2">
+              <button
+                onClick={() => setShowPodLog(false)}
+                className="rounded-lg bg-red-500 px-4 py-2 text-slate-200 transition duration-200 hover:brightness-110 active:brightness-90"
+              >
+                Close Log
+              </button>
+            </div>
+          </div>
           <pre className="whitespace-pre-wrap text-xs text-slate-900">
             {podLog}
           </pre>
-          <button
-            onClick={() => setShowPodLog(false)}
-            className="fixed top-20 rounded-lg bg-red-500 px-4 py-2 text-slate-200 hover:bg-red-700 hover:text-slate-300"
-          >
-            Close Log
-          </button>
         </div>
       </div>
     </div>
