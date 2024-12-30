@@ -2,7 +2,7 @@
  * This component renders the Sign In Page
  */
 
-import React, { FC } from "react";
+import React from "react";
 import { Hexagon } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -17,7 +17,7 @@ type Data = {
   username: string;
 };
 
-const SigninContainer: FC<Props> = ({ backendUrl }): JSX.Element => {
+const SigninContainer = ({ backendUrl }: Props) => {
   const { setSignedIn, username, setUsername, password, setPassword } =
     userStore();
 

@@ -4,24 +4,30 @@
 
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
+import React from "react";
 
-import userStore from '../stores/userStore.ts';
+import mainStore from "../stores/mainStore.ts";
+import userStore from "../stores/userStore.ts";
 
-const MenuContainer = ({
-  refreshFrequency,
-  setRefreshFrequency,
-  showRefreshPopup,
-  setShowRefreshPopup,
-  refreshInput,
-  setRefreshInput,
-  manualRefreshCount,
-  setManualRefreshCount,
-  backendUrl,
-}) => {
+type Props = {
+  backendUrl: "http://localhost:3000/";
+};
+
+const MenuContainer = ({ backendUrl }: Props) => {
   const navigate = useNavigate();
-  const signOut = userStore((state) => state.signOut);
+  const setSignedIn = userStore((state) => state.setSignedIn);
+  const {
+    refreshFrequency,
+    setRefreshFrequency,
+    showRefreshPopup,
+    setShowRefreshPopup,
+    refreshInput,
+    setRefreshInput,
+    manualRefreshCount,
+    setManualRefreshCount,
+  } = mainStore();
 
-  const handleRefreshSubmit = (e) => {
+  const handleRefreshSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const value = parseInt(refreshInput);
     if (value && value > 0) {
@@ -31,7 +37,7 @@ const MenuContainer = ({
     }
   };
 
-  const handleSignOut = async (e) => {
+  const handleSignOut = async (e: React.MouseEvent<HTMLButtonElement>) => {
     console.log(`Now sending request to '${backendUrl}user/signout'...`);
     e.preventDefault();
 
@@ -44,9 +50,9 @@ const MenuContainer = ({
       if (!response.ok) {
         console.error("Unable to send request");
       } else {
-        const data = await response.json();
+        const data: string = await response.json();
         console.log(data);
-        signOut();
+        setSignedIn(false);
         navigate("/");
       }
     } catch (error) {

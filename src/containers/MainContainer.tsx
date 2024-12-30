@@ -9,8 +9,7 @@
  * - PodNameDisplay.jsx: Display the Namespace, Pod Name and Deployment
  */
 
-import PropTypes from "prop-types";
-import React, { useState, useRef, useEffect, FC } from "react";
+import React, { useRef, useEffect, FC } from "react";
 
 // Container Folder
 import MenuContainer from "./MenuContainer";

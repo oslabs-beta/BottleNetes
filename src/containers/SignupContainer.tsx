@@ -2,7 +2,7 @@
  * This component renders the Sign Up Page
  */
 
-import React, { FC } from "react";
+import React from "react";
 import { Hexagon } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -22,7 +22,7 @@ type Data = {
   };
 };
 
-const SignupContainer: FC<Props> = ({ backendUrl }): JSX.Element => {
+const SignupContainer = ({ backendUrl }: Props) => {
   const {
     username,
     setUsername,

@@ -28,7 +28,7 @@ import PodFilter from "./PodFilter";
 import usePodListProcessor from "../../hooks/usePodListProcessor";
 
 // Component from 'containers' folder
-import LoadingContainer from '../../containers/LoadingContainer';
+import LoadingContainer from '../../containers/LoadingContainer.tsx';
 
 const PodGrid = ({
   // Props from MainContainer.jsx
