@@ -110,7 +110,22 @@ const useFetchData = ({
         ]);
 
         setAllData({
-          podsStatuses: status || [],
+          podsStatuses:
+            // preserve the pod state during data refresh by merging existing pod data with new data
+            (status && {
+              allPodsStatus: status.allPodsStatus?.map((pod) => {
+                // check if pod is found in existing data
+                const existingPod = allData.podsStatuses?.allPodsStatus?.find(
+                  (existing) =>
+                    existing.podName === pod.podName &&
+                    existing.namespace === pod.namespace,
+                );
+                // if pod is found in existing data, update it with new data (if any)
+                // if pod is not found in existing data, add it
+                return existingPod ? { ...pod, ...existingPod } : pod;
+              }),
+            }) ||
+            [], // if status is null, set to empty array
           requestLimits: requestLimits || [],
           allNodes: {
             allNodes: [{ nodeName: "Minikube", clusterName: "Minikube" }],
@@ -139,6 +154,7 @@ const useFetchData = ({
     queryTimeWindow,
     podRestartCount,
     backendUrl,
+    allData.podsStatuses.allPodsStatus,
   ]);
 
   return { isLoading, allData };
