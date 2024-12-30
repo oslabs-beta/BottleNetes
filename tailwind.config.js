@@ -42,6 +42,22 @@ export default {
           "100%": { backgroundPosition: "100 50%" },
         },
       },
+      
+      screens: {
+        "md-lg": "900px",
+        "xl-2xl": "1400px",
+        "3xl": "1750px",
+      },
+
+      boxShadow: {
+        "custom-lg":
+          "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05), 0 -10px 15px -3px rgba(0, 0, 0, 0.1), 0 -4px 6px -2px rgba(0, 0, 0, 0.05)",
+      },
+
+      backgroundImage: {
+        "custom-gradient":
+          "linear-gradient(225deg, #e2e8f0 35%, #dbeafe 50%, #ede9fe 65%, #e2e8f0)",
+      },
 
       animation: {
         "text-color-animation": "colorChange 5s linear infinite",

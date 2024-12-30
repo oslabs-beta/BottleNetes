@@ -38,7 +38,7 @@ const PodFilter = ({
   }
 
   return (
-    <div className="flex space-x-2">
+    <div className="pod-filter col-span-4 gap-4 grid grid-cols-3">
       <select
         value={filterType}
         // when selecting a filter type, reset filter value and change default view to false
@@ -47,48 +47,42 @@ const PodFilter = ({
           setFilterValue("");
           setDefaultView(false);
         }}
-        className="rounded-lg bg-gradient-to-r from-slate-200 to-slate-100 px-3 py-2 text-sm font-medium text-slate-500"
+        className="w-full rounded-lg border-2 border-slate-200 bg-gradient-to-r from-slate-200 to-slate-100 px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90"
       >
         {
           // Map through filter types and create dropdown options
-          filterTypes.map((type) => (
-            <option key={type.value} value={type.value}>
+          filterTypes.map((type, i) => (
+            <option key={i} value={type.value}>
               {type.label}
             </option>
           ))
         }
       </select>
 
-      {
-        // Show filter value dropdown only when filter type is selected and defaultView is false
-        filterType && !defaultView && (
-          <div>
-            <select
-              value={filterValue}
-              onChange={(e) => setFilterValue(e.target.value)}
-              className="rounded-lg bg-gradient-to-r from-slate-200 to-slate-100 px-3 py-2 text-sm font-medium text-slate-500"
-            >
-              <option value="">Select {filterType}...</option>
-              {
-                // For each filter type, map through unique values of selected filter type and create dropdown options
-                getUniqueValues(filterType).map((value) => (
-                  <option key={value} value={value}>
-                    {value}
-                  </option>
-                ))
-              }
-            </select>
+      {/* Show filter value dropdown only when filter type is selected and defaultView is false */}
+        <select
+          value={filterValue}
+          onChange={(e) => setFilterValue(e.target.value)}
+          className={`w-full rounded-lg border-2 border-slate-200 bg-gradient-to-r from-slate-200 to-slate-100 px-3 py-2 text-sm font-medium text-slate-500 transition duration-300 hover:brightness-90 ${filterType && !defaultView ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
+        >
+          <option value="">Select {filterType}...</option>
+          {
+            // For each filter type, map through unique values of selected filter type and create dropdown options
+            getUniqueValues(filterType).map((value, i) => (
+              <option key={i} value={value}>
+                {value}
+              </option>
+            ))
+          }
+        </select>
 
-            <button
-              onClick={handleFilterChange}
-              className="rounded-lg bg-blue-500 px-3 py-2 text-sm font-medium text-white hover:bg-blue-600"
-            >
-              Apply Filter
-            </button>
-          </div>
-        )
-      }
-    </div>
+        <button
+          onClick={handleFilterChange}
+          className={`w-full rounded-lg border-2 border-[#2563eb] bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] px-3 py-2 text-sm font-medium text-slate-100 transition duration-300 hover:brightness-90 ${filterType && !defaultView ? "pointer-event-auto opacity-100" : "pointer-events-none opacity-0"}`}
+        >
+          Apply Filter
+        </button>
+      </div>
   );
 };
 

@@ -20,7 +20,7 @@ const PodGridMetricSelection = ({ selectedMetric, setSelectedMetric }) => {
           className={`rounded-2xl px-2 py-4 text-lg font-semibold transition duration-200 ${
             selectedMetric === metric.type
               ? "border-2 border-[#2563eb] bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] text-slate-100 hover:brightness-90"
-              : "border-2 border-slate-100 bg-gradient-to-r from-slate-200 to-slate-100 text-slate-500 hover:brightness-90"
+              : "border-2 border-slate-200 bg-gradient-to-r from-slate-200 to-slate-100 text-slate-500 hover:brightness-90"
           }`}
         >
           {metric.displayLabel}
