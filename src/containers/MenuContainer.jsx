@@ -5,7 +5,7 @@
 import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 
-import useStore from "../hooks/store.js";
+import userStore from '../stores/userStore.ts';
 
 const MenuContainer = ({
   refreshFrequency,
@@ -19,7 +19,7 @@ const MenuContainer = ({
   backendUrl,
 }) => {
   const navigate = useNavigate();
-  const signOut = useStore((state) => state.signOut);
+  const signOut = userStore((state) => state.signOut);
 
   const handleRefreshSubmit = (e) => {
     e.preventDefault();

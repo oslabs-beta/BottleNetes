@@ -2,22 +2,21 @@
  * This component renders the Sign In Page
  */
 
-import { useState } from "react";
 import PropTypes from "prop-types";
 import { Hexagon } from "lucide-react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-const SigninContainer = ({
-  signIn,
-  signOut,
-  username,
-  setUsername,
-  backendUrl,
-}) => {
-  // const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+import userStore from "../stores/userStore.ts";
 
-  const navigate = useNavigate();
+const SigninContainer = ({ backendUrl }) => {
+  const {
+    signIn,
+    signOut,
+    username,
+    setUsername,
+    password,
+    setPassword,
+  } = userStore();
 
   const credential = { username, password };
 
@@ -176,6 +175,8 @@ SigninContainer.propTypes = {
   signOut: PropTypes.func,
   username: PropTypes.string,
   setUsername: PropTypes.func,
+  password: PropTypes.string,
+  setPassword: PropTypes.func,
   backendUrl: PropTypes.string,
 };
 

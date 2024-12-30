@@ -12,9 +12,6 @@
 import PropTypes from "prop-types";
 import { useState, useRef, useEffect } from "react";
 
-// Hooks Folder
-import useFetchData from "../hooks/useFetchData";
-
 // Container Folder
 import MenuContainer from "./MenuContainer";
 
@@ -28,7 +25,10 @@ import RequestLimit from "../components/RequestLimit";
 import PodGrid from "../components/HeatMapComponents/PodGrid";
 import PodNameDisplay from "../components/HeatMapComponents/PodNameDisplay";
 
-const MainContainer = ({ username, backendUrl }) => {
+// Hooks Folder
+import useFetchData from "../hooks/useFetchData";
+
+const MainContainer = () => {
   // Determines if the graphs display node data or pod specific data
   const [defaultView, setDefaultView] = useState(true);
 
@@ -281,7 +281,6 @@ const MainContainer = ({ username, backendUrl }) => {
 
 MainContainer.propTypes = {
   username: PropTypes.string,
-  backendUrl: PropTypes.string.isRequired,
 };
 
 export default MainContainer;
