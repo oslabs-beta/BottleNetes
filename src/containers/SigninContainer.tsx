@@ -9,22 +9,17 @@ import { Link } from "react-router-dom";
 import userStore from "../stores/userStore.ts";
 
 type Props = {
-  backendUrl: 'http://localhost:3000/',
-}
+  backendUrl: "http://localhost:3000/";
+};
 
 type Data = {
-  success: boolean,
-  username: string,
+  success: boolean;
+  username: string;
 };
 
 const SigninContainer: FC<Props> = ({ backendUrl }): JSX.Element => {
-  const {
-    setSignedIn,
-    username,
-    setUsername,
-    password,
-    setPassword,
-  } = userStore();
+  const { setSignedIn, username, setUsername, password, setPassword } =
+    userStore();
 
   const credential = { username, password };
 
@@ -39,16 +34,17 @@ const SigninContainer: FC<Props> = ({ backendUrl }): JSX.Element => {
       body: JSON.stringify(credential),
     });
 
-    const data: Data = await response.json();
-    console.log(data);
-
-    if (response.ok) {
-      setUsername(data.username);
-      setSignedIn(true);
-    } else {
+    if (!response.ok) {
       setSignedIn(false);
+      console.error(
+        `Server responded with a ${response.status} code: ${response.statusText}`,
+      );
       alert("Credential not found");
     }
+    const data: Data = await response.json();
+    console.log(data);
+    setUsername(data.username);
+    setSignedIn(true);
   };
 
   const initiateOAuth = (provider: string) => {

@@ -11,7 +11,7 @@ userRouter.post(
   cookieController.createCookie,
   (_req, res) => {
     if (res.locals.validated) {
-      return res.status(200).send({
+      return res.status(200).json({
         success: true,
         username: res.locals.username,
       });
@@ -23,7 +23,7 @@ userRouter.get(
   "/signin/checkSignin",
   cookieController.verifyCookie,
   (_req, res) => {
-    return res.status(200).send({
+    return res.status(200).json({
       signedIn: res.locals.signedIn,
       username: res.locals.username,
     });
