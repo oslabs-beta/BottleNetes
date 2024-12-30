@@ -2,7 +2,7 @@
  * This component contains the security logics
  */
 
-import React, { useEffect } from "react";
+import React, { FC, useEffect } from "react";
 import {
   Navigate,
   createBrowserRouter,
@@ -11,12 +11,12 @@ import {
 
 import SigninContainer from "./containers/SigninContainer.tsx";
 import MainContainer from "./containers/MainContainer.jsx";
-import SignupContainer from "./containers/SignupContainer.jsx";
+import SignupContainer from "./containers/SignupContainer.tsx";
 import LoadingContainer from "./containers/LoadingContainer.jsx";
 
 import userStore from "./stores/userStore.ts";
 
-const App = () => {
+const App: FC = (): JSX.Element => {
   const { signedIn, setSignedIn, loading, setLoading, setUsername } =
     userStore();
 

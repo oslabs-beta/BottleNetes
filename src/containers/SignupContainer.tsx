@@ -1,13 +1,28 @@
 /**
  * This component renders the Sign Up Page
  */
-import PropTypes from "prop-types";
+
+import React, { FC } from 'react';
 import { Hexagon } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
 import userStore from "../stores/userStore.ts";
 
-const SignupContainer = ({ backendUrl }) => {
+type Props = {
+  backendUrl: 'http://localhost:3000/'
+};
+
+type Data = {
+  message: string,
+  data: {
+    username: string,
+    firstName: string,
+    lastName: string,
+    email: string
+  },
+};
+
+const SignupContainer: FC<Props> = ({ backendUrl }): JSX.Element => {
   const {
     username,
     setUsername,
@@ -43,7 +58,7 @@ const SignupContainer = ({ backendUrl }) => {
         alert("Something is wrong... Please try again later.");
       }
 
-      const data = await response.json();
+      const data: Data = await response.json();
       alert(data.message);
       console.log(data.data);
       navigate("/");
@@ -142,10 +157,6 @@ const SignupContainer = ({ backendUrl }) => {
       </div>
     </div>
   );
-};
-
-SignupContainer.propTypes = {
-  backendUrl: PropTypes.string,
 };
 
 export default SignupContainer;
