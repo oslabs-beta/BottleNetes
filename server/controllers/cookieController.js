@@ -1,3 +1,9 @@
+/**
+ * Contains middlewares:
+ * createCookie: Create Cookie when user sign in
+ * verifyCookie: Check if the user has already signed in
+ */
+
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import process from "node:process";
@@ -106,6 +112,25 @@ cookieController.verifyCookie = async (req, res, next) => {
       message: "Error while verifying session...",
     });
   }
+};
+
+cookieController.deleteCookie = async (req, res, next) => {
+  console.log('🍪🔥 Now running deleteCookie middleware...');
+
+  try {
+    res.clearCookie('jwt', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+    });
+    return next();
+  } catch (error) {
+    return next({
+      log: `Error occurred in deleteCookie middleware: ${error}`,
+      status: 500,
+      message: 'Error while clearing your session',
+    });
+  };
 };
 
 export default cookieController;
