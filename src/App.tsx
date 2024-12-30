@@ -9,7 +9,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
-import SigninContainer from "./containers/SigninContainer.jsx";
+import SigninContainer from "./containers/SigninContainer.tsx";
 import MainContainer from "./containers/MainContainer.jsx";
 import SignupContainer from "./containers/SignupContainer.jsx";
 import LoadingContainer from "./containers/LoadingContainer.jsx";
@@ -20,7 +20,7 @@ const App = () => {
   const { signedIn, setSignedIn, loading, setLoading, setUsername } =
     userStore();
 
-  const backendUrl = "http://localhost:3000/" as const;
+  const backendUrl: "http://localhost:3000/" = "http://localhost:3000/";
   // This hook fires whenever you go to the home page (Sign In Page)
   useEffect(() => {
     // Setting up a controller to stop the useEffect from running when closing the application
@@ -92,16 +92,14 @@ const App = () => {
     },
     {
       path: "/user/signup",
-      element: (
-        <SignupContainer backendUrl={backendUrl}/>
-      ),
+      element: <SignupContainer backendUrl={backendUrl} />,
     },
     {
       path: "/",
       element: signedIn ? (
         <Navigate to={"/dashboard"} />
       ) : (
-        <SigninContainer backendUrl={backendUrl}/>
+        <SigninContainer backendUrl={backendUrl} />
       ),
     },
   ]);

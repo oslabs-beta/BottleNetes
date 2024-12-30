@@ -2,7 +2,7 @@
  * This component renders the Sign In Page
  */
 
-import PropTypes from "prop-types";
+import React from "react";
 import { Hexagon } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -10,8 +10,7 @@ import userStore from "../stores/userStore.ts";
 
 const SigninContainer = ({ backendUrl }) => {
   const {
-    signIn,
-    signOut,
+    setSignedIn,
     username,
     setUsername,
     password,
@@ -36,9 +35,9 @@ const SigninContainer = ({ backendUrl }) => {
 
     if (response.ok) {
       setUsername(data.username);
-      signIn();
+      setSignedIn(true);
     } else {
-      signOut();
+      setSignedIn(false);
       alert("Credential not found");
     }
   };
@@ -168,16 +167,6 @@ const SigninContainer = ({ backendUrl }) => {
       </div>
     </div>
   );
-};
-
-SigninContainer.propTypes = {
-  signIn: PropTypes.func,
-  signOut: PropTypes.func,
-  username: PropTypes.string,
-  setUsername: PropTypes.func,
-  password: PropTypes.string,
-  setPassword: PropTypes.func,
-  backendUrl: PropTypes.string,
 };
 
 export default SigninContainer;
