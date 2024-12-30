@@ -83,7 +83,7 @@ const PodLogDisplay = ({ clickedPod, backendUrl }) => {
               <button
                 key={containerName}
                 onClick={() => fetchContainerLogs(containerName)}
-                className="rounded-lg bg-blue-500 px-4 py-2 text-white hover:brightness-110 active:brightness-90 transition duration-200"
+                className="rounded-lg bg-blue-500 px-4 py-2 text-white transition duration-200 hover:brightness-110 active:brightness-90"
               >
                 {containerName}
               </button>
@@ -91,7 +91,7 @@ const PodLogDisplay = ({ clickedPod, backendUrl }) => {
           </div>
           <button
             onClick={() => setShowContainerSelect(false)}
-            className="mt-4 w-full rounded-lg bg-red-500 px-4 py-2 text-white hover:brightness-110 active:brightness-90 transition duration-200"
+            className="mt-4 w-full rounded-lg bg-red-500 px-4 py-2 text-white transition duration-200 hover:brightness-110 active:brightness-90"
           >
             Cancel
           </button>
@@ -101,7 +101,7 @@ const PodLogDisplay = ({ clickedPod, backendUrl }) => {
       {/* Log Display Popup */}
       <div
         id="pod-log-popup"
-        className={`fixed inset-0 z-50 items-center justify-center bg-black bg-opacity-70 transition-opacity duration-300 ${
+        className={`fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 transition-opacity duration-300 ${
           showPodLog
             ? "pointer-events-auto opacity-100"
             : "pointer-events-none opacity-0"
@@ -109,18 +109,20 @@ const PodLogDisplay = ({ clickedPod, backendUrl }) => {
       >
         <div
           id="pod-log-content"
-          className="relative left-1/2 top-1/2 size-4/5 -translate-x-1/2 -translate-y-1/2 overflow-auto rounded-lg bg-slate-200 px-6 py-3"
+          className="relative h-4/5 w-4/5 overflow-auto rounded-lg bg-slate-200 p-6"
         >
-          <button
-            onClick={() => setShowPodLog(false)}
-            className="sticky left-full top-0 rounded-lg bg-red-500 px-4 py-2 text-slate-200 hover:brightness-110 active:brightness-90 transition duration-200"
-          >
-            Close Log
-          </button>
-          <pre className="absolute top-0 whitespace-pre-wrap text-xs text-slate-900">
-            <br />
+          <div className="sticky top-0 z-10 flex justify-end">
+            <div className="inline-block rounded-lg bg-slate-200 px-2">
+              <button
+                onClick={() => setShowPodLog(false)}
+                className="rounded-lg bg-red-500 px-4 py-2 text-slate-200 transition duration-200 hover:brightness-110 active:brightness-90"
+              >
+                Close Log
+              </button>
+            </div>
+          </div>
+          <pre className="whitespace-pre-wrap text-xs text-slate-900">
             {podLog}
-            <br />
           </pre>
         </div>
       </div>

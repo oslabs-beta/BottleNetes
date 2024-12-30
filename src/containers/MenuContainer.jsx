@@ -28,6 +28,8 @@ const MenuContainer = ({
       setRefreshFrequency(value * 1000);
       setShowRefreshPopup(false);
       setRefreshInput("");
+    } else {
+      alert("Please enter a valid number");
     }
   };
 
