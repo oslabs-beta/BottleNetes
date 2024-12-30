@@ -122,7 +122,7 @@ const MainContainer = () => {
 
   return (
     <div id="main-container">
-      <header className="header sticky top-0 z-50 flex flex-col items-center justify-between gap-4 border-b-2 bg-gradient-to-r from-slate-900 to-[#1e40af] py-4 sm:flex-row">
+      <header className="header sticky top-0 z-50 flex flex-col items-center justify-between gap-4 border-b-2 bg-gradient-to-r from-[#0f172a] to-[#1e40af] py-4 sm:flex-row">
         <div id="leftside" className="flex items-center">
           {/* Menu drop down */}
           <div className="flex items-center gap-0 px-5">
