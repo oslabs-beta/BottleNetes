@@ -1,3 +1,7 @@
+/**
+ * This component renders 'Filter by...' dropdown and its buttons based on some conditions
+ */
+
 import PropTypes from "prop-types";
 import { useState } from "react";
 

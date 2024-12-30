@@ -15,10 +15,10 @@ const SignupContainer = () => {
 
   const handleSignup = async () => {
     const newUserCredential = { username, password, email };
-    console.log(`🔄 Sending request to ${url}signup`);
+    console.log(`🔄 Sending request to ${url}user/signup`);
 
     try {
-      const response = await fetch(url + "signup", {
+      const response = await fetch(url + "user/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newUserCredential),
@@ -40,7 +40,7 @@ const SignupContainer = () => {
   return (
     <div
       id="signup-container"
-      className="flex h-screen w-screen flex-col items-center justify-center bg-gradient-to-bl from-slate-950 from-10% via-slate-800 via-70% to-cyan-950 to-90% text-center align-middle font-mono absolute -z-10"
+      className="absolute -z-10 flex h-screen w-screen flex-col items-center justify-center bg-gradient-to-bl from-slate-950 from-10% via-slate-800 via-70% to-cyan-950 to-90% text-center align-middle font-mono"
     >
       <h1 className="animate-text-color-animation font-sans text-7xl font-black transition duration-300 hover:scale-105">
         <a
@@ -60,10 +60,10 @@ const SignupContainer = () => {
         color="rgb(8 145 178)"
         strokeWidth={1}
       />
-      <img src="src/assets/logo.png" className="mt-2 size-60" />
+      <img src="/src/assets/logo.png" className="mt-2 size-60" />
       <div
         id="signup-display"
-        className="my-10 size-1/5 content-center rounded-2xl border-2 border-slate-950 bg-slate-950 text-center align-middle relative shadow-2xl shadow-slate-950"
+        className="relative my-10 size-1/5 content-center rounded-2xl border-2 border-slate-950 bg-slate-950 text-center align-middle shadow-2xl shadow-slate-950"
       >
         <h2 className="pb-5 text-3xl text-slate-300">Sign Up</h2>
         <form className="mx-5 flex flex-col gap-y-2">
