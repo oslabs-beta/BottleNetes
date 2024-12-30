@@ -21,6 +21,7 @@ const useFetchData = ({
     cpuUsageHistorical: null,
     memoryUsageHistorical: null,
     latencyAppRequestOneValue: { latencyAppRequestOneValue: [] },
+    latencyAppRequestHistorical: null,
   });
 
   useEffect(() => {

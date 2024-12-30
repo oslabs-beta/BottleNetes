@@ -10,7 +10,7 @@
  */
 
 import PropTypes from "prop-types";
-import { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, FC } from "react";
 
 // Container Folder
 import MenuContainer from "./MenuContainer";
@@ -28,35 +28,48 @@ import PodNameDisplay from "../components/HeatMapComponents/PodNameDisplay";
 // Hooks Folder
 import useFetchData from "../hooks/useFetchData";
 
-const MainContainer = () => {
-  // Determines if the graphs display node data or pod specific data
-  const [defaultView, setDefaultView] = useState(true);
+// Stores Folder
+import mainStore from "../stores/mainStore.ts";
+import userStore from "../stores/userStore.ts";
 
-  // State hook for time window in PodGrid
-  const [queryTimeWindow, setQueryTimeWindow] = useState("1m");
+type Props = {
+  backendUrl: "http://localhost:3000/";
+};
 
-  // state hooks for clicked pod and selected metric in PodGrid (will also be passed down to other components)
-  const [clickedPod, setClickedPod] = useState({
-    podName: "",
-    namespace: "",
-    containers: [],
-    deployment: "",
-  });
-  const [selectedMetric, setSelectedMetric] = useState("cpu");
+const MainContainer: FC<Props> = ({ backendUrl }): JSX.Element => {
+  const {
+    // Determines if the graphs display node data or pod specific data
+    defaultView,
+    setDefaultView,
+    // State hook for time window in PodGrid
+    queryTimeWindow,
+    setQueryTimeWindow,
+    // state hooks for clicked pod and selected metric in PodGrid (will also be passed down to other components)
+    clickedPod,
+    setClickedPod,
+    selectedMetric,
+    setSelectedMetric,
+    // State hook for pod restarts in PodGrid
+    podRestartCount,
+    setPodRestartCount,
+    // State hooks for refresh control in MenuContainer
+    manualRefreshCount,
+    setManualRefreshCount,
+    refreshFrequency,
+    setRefreshFrequency,
+    showRefreshPopup,
+    setShowRefreshPopup,
+    refreshInput,
+    setRefreshInput,
+    // State hook for set the menu sidebar's visibility
+    isMenuOpen,
+    setIsMenuOpen,
+  } = mainStore();
 
-  // State hook for pod restarts in PodGrid
-  const [podRestartCount, setPodRestartCount] = useState(0);
+  const { username } = userStore();
 
-  // State hooks for refresh control in MenuContainer
-  const [manualRefreshCount, setManualRefreshCount] = useState(0);
-  const [refreshFrequency, setRefreshFrequency] = useState(30000);
-  const [showRefreshPopup, setShowRefreshPopup] = useState(false);
-  const [refreshInput, setRefreshInput] = useState("");
-
-  // State hook for set the menu sidebar's visibility
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const menuRef = useRef(null);
-  const buttonRef = useRef(null);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
 
   const { allData } = useFetchData({
     backendUrl,
@@ -69,11 +82,11 @@ const MainContainer = () => {
   // Handle the click outside of the menu to close the menu
   useEffect(() => {
     // Close the menu when clicking outside of the menu
-    const handleClickOutside = (event) => {
-      if (buttonRef.current?.contains(event.target)) return; // if the button is clicked, bypass
+    const handleClickOutside = (event: MouseEvent) => {
+      if (buttonRef.current?.contains(event.target as Node)) return; // if the button is clicked, bypass
 
       // Close the menu bar if clicking outside menu and menu is open
-      if (menuRef.current && !menuRef.current.contains(event.target)) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsMenuOpen(false);
       }
     };
@@ -82,7 +95,7 @@ const MainContainer = () => {
   }, []);
 
   return (
-    <div id='main-container'>
+    <div id="main-container">
       <header className="header sticky top-0 z-50 flex flex-col items-center justify-between gap-4 border-b-2 bg-gradient-to-r from-slate-900 to-[#1e40af] py-4 sm:flex-row">
         <div id="leftside" className="flex items-center">
           <div className="flex items-center gap-0 px-5">
@@ -129,7 +142,7 @@ const MainContainer = () => {
             </button>
             <div
               ref={menuRef}
-              className={`fixed left-0 top-20 h-screen w-80 transform bg-gradient-to-r from-slate-900 to-[#101b38] p-4 shadow-lg transition-transform duration-300 ease-in-out overflow-y-auto ${
+              className={`fixed left-0 top-20 h-screen w-80 transform overflow-y-auto bg-gradient-to-r from-slate-900 to-[#101b38] p-4 shadow-lg transition-transform duration-300 ease-in-out ${
                 isMenuOpen ? "translate-x-0" : "-translate-x-full"
               }`}
             >
@@ -225,7 +238,7 @@ const MainContainer = () => {
             {/* Request vs. Limit */}
             <div
               id="request-vs-limit"
-              className=" rounded-3xl bg-slate-100 p-4 xl:col-span-2 overflow-y-auto w-full h-[500px]"
+              className="h-[500px] w-full overflow-y-auto rounded-3xl bg-slate-100 p-4 xl:col-span-2"
             >
               <h2 className="text-center text-2xl font-semibold text-slate-900">
                 Request vs. Limit
@@ -277,10 +290,6 @@ const MainContainer = () => {
       </div>
     </div>
   );
-};
-
-MainContainer.propTypes = {
-  username: PropTypes.string,
 };
 
 export default MainContainer;
