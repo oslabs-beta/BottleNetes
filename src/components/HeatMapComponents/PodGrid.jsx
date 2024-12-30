@@ -46,6 +46,7 @@ const PodGrid = ({
   podStatuses,
   cpuUsageOneValue,
   memoryUsageOneValue,
+  requestLimits,
   latencyAppRequestOneValue,
   // Props from App.jsx
   backendUrl,
@@ -70,6 +71,7 @@ const PodGrid = ({
     cpuUsageOneValue,
     memoryUsageOneValue,
     latencyAppRequestOneValue,
+    requestLimits,
     selectedMetric,
     filterConfig,
     metricToSort,

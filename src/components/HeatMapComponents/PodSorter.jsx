@@ -11,9 +11,10 @@ const PodSorter = ({ setMetricToSort, defaultView, setDefaultView }) => {
 
   const sortOptions = [
     { metricType: "", label: "Sort by..." },
-    { metricType: "cpuDataRelative", label: "CPU Usage %" },
-    { metricType: "memoryDataRelative", label: "Memory Usage %" },
-    { metricType: "latencyData", label: "Latency" },
+    { metricType: "cpuDataRelative", label: "CPU Usage (% of Request)" },
+    { metricType: "memoryDataRelative", label: "Memory Usage (% of Request)" },
+    { metricType: "latencyData", label: "Latency (ms)" },
+    { metricType: "podName", label: "Pod Name" },
   ];
 
   // Reset selected label when defaultView changes to true
@@ -22,7 +23,7 @@ const PodSorter = ({ setMetricToSort, defaultView, setDefaultView }) => {
   }
 
   return (
-    <div id='pod-sorter'>
+    <div id="pod-sorter">
       <select
         value=""
         onChange={(e) => {
@@ -43,7 +44,7 @@ const PodSorter = ({ setMetricToSort, defaultView, setDefaultView }) => {
             setDefaultView(false);
           }
         }}
-        className="rounded-lg bg-gradient-to-r from-slate-200 to-slate-100 px-3 py-2 text-sm font-medium text-slate-500 border-2 border-slate-200 w-full transition duration-200 hover:brightness-90"
+        className="w-full rounded-lg border-2 border-slate-200 bg-gradient-to-r from-slate-200 to-slate-100 px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90"
       >
         <option value="" disabled hidden>
           {
