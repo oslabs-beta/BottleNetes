@@ -1,8 +1,9 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable no-unused-vars */
+/**
+ * This component renders the bar graph representing Resource Requests and Limits for each pod
+ */
+
 import PropTypes from "prop-types";
 import { Bar } from "react-chartjs-2";
-import { useEffect } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -24,12 +25,7 @@ ChartJS.register(
   Legend,
 );
 
-const RequestLimit = ({
-  defaultView,
-  clickedPod,
-  selectedMetric,
-  requestLimits,
-}) => {
+const RequestLimit = ({ selectedMetric, requestLimits }) => {
   const podList = requestLimits?.allPodsRequestLimit.map((pod) => ({
     podName: pod.podName,
     cpuRequest: pod.cpuRequest,
@@ -46,10 +42,13 @@ const RequestLimit = ({
     indexAxis: "y", // maybe making it horizontal?
     responsive: true,
     maintainAspectRatio: false,
+    barThickness: 30,
+    maxBarThickness: 30,
     scales: {
       x: {
         stacked: false,
         grid: { color: "transparent" },
+        beginAtZero: true,
         ticks: {
           color: isDarkMode ? "#94a3b8" : "#1e293b",
           font: {
@@ -58,15 +57,16 @@ const RequestLimit = ({
         },
         title: {
           display: true,
-          text: selectedMetric === "cpu" ? "CPU (cores)" : "Memory (MB)",
+          text: selectedMetric === "cpu" ? "CPU (Cores)" : "Memory (Mi)",
           color: isDarkMode ? "#94a3b8" : "#1e293b",
           font: { size: 14 },
         },
       },
       y: {
-        stacked: false,
+        stacked: true,
         grid: { color: "transparent" },
         ticks: {
+          autoSkip: false,
           color: isDarkMode ? "#94a3b8" : "#1e293b",
           font: {
             size: 14,
@@ -76,7 +76,7 @@ const RequestLimit = ({
     },
     plugins: {
       legend: {
-        position: "bottom",
+        position: "top",
         labels: {
           color: isDarkMode ? "#94a3b8" : "#1e293b",
           font: {
@@ -105,9 +105,6 @@ const RequestLimit = ({
         caretSize: 10,
       },
     },
-    barThickness: 20, // Control bar thickness
-    barPercentage: 0.8, // Control bar width
-    categoryPercentage: 0.9, // Control spacing between bar groups
   };
 
   const formatMemoryToMB = (memoryInBytes) => {
@@ -145,22 +142,22 @@ const RequestLimit = ({
       {
         label: "Requested Resources",
         data: requestDataToUse,
-        backgroundColor: "rgba(191, 219, 254, 1)",
+        backgroundColor: "rgba(191, 219, 254)",
         borderRadius: 5,
-        maxBarThickness: 20,
       },
       {
         label: "Resource Limits",
         data: limitDataToUse,
-        backgroundColor: "rgba(59, 130, 246, 1)",
+        backgroundColor: "rgba(59, 130, 246)",
         borderRadius: 5,
-        maxBarThickness: 20,
       },
     ],
   };
 
+  const chartHeight = podList.length * 50
+
   return (
-    <div className="min-h-[400px] w-full p-4">
+    <div className="p-4 overflow-y-auto" style={{height: chartHeight}}>
       {podList.length > 0 ? (
         <Bar options={options} data={data} />
       ) : (
@@ -173,10 +170,10 @@ const RequestLimit = ({
 };
 
 RequestLimit.propTypes = {
-  defaultView: PropTypes.bool,
-  clickedPod: PropTypes.string,
-  selectedMetric: PropTypes.string,
-  requestLimits: PropTypes.object,
+  defaultView: PropTypes.bool.isRequired,
+  clickedPod: PropTypes.object.isRequired,
+  selectedMetric: PropTypes.string.isRequired,
+  requestLimits: PropTypes.object.isRequired,
 };
 
 export default RequestLimit;

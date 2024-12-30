@@ -68,3 +68,50 @@ const TestRequestLimit = () => {
 };
 
 export default TestRequestLimit;
+
+export const ScrollableBarChart = () => {
+  const data = {
+    labels: Array.from({ length: 50 }, (_, i) => `Label ${i + 1}`), // Example labels
+    datasets: [
+      {
+        label: "Dataset",
+        data: Array.from({ length: 50 }, () => Math.floor(Math.random() * 100) + 1),
+        backgroundColor: "rgba(75, 192, 192, 0.2)",
+        borderColor: "rgba(75, 192, 192, 1)",
+        borderWidth: 1,
+        maxBarThickness: 30, // Control bar size
+      },
+    ],
+  };
+
+  const options = {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        ticks: {
+          autoSkip: false, // Ensure all labels are displayed
+        },
+      },
+      y: {
+        beginAtZero: true,
+      },
+    },
+    plugins: {
+      legend: {
+        display: true,
+      },
+    },
+  };
+
+  const chartWidth = data.labels.length * 50; // Adjust based on label count
+
+  return (
+    <div style={{ overflowX: "auto", height: "400px" }}>
+      <div style={{ height: chartWidth }}>
+        <Bar data={data} options={options} />
+      </div>
+    </div>
+  );
+};
