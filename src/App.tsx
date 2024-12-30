@@ -10,7 +10,7 @@ import {
 } from "react-router-dom";
 
 import SigninContainer from "./containers/SigninContainer.tsx";
-import MainContainer from "./containers/MainContainer.jsx";
+import MainContainer from "./containers/MainContainer.tsx";
 import SignupContainer from "./containers/SignupContainer.tsx";
 import LoadingContainer from "./containers/LoadingContainer.tsx";
 

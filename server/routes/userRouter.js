@@ -9,13 +9,15 @@ userRouter.post(
   "/signin",
   userController.verifyUser,
   cookieController.createCookie,
-  (_req, res) => {
+  async (_req, res) => {
     if (res.locals.validated) {
-      return res.status(200).json({
+      res.status(200).json({
         success: true,
         username: res.locals.username,
       });
-    } else return res.redirect("/");
+    } else {
+      res.redirect("/");
+    }
   },
 );
 

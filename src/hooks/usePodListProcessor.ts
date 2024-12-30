@@ -4,6 +4,16 @@
 
 import { useMemo } from "react";
 
+import dataStore from "../stores/dataStore.ts";
+import mainStore from "../stores/mainStore.ts";
+
+const { podStatuses. cpuUsageOneValue, memoryUsageOneValue, latencyAppRequestOneValue } = dataStore();
+const { selectedMetric,  }
+
+interface ParamTypes {
+  podStatuses: 
+}
+
 const usePodListProcessor = ({
   podStatuses,
   cpuUsageOneValue,
