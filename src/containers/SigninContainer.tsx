@@ -2,13 +2,22 @@
  * This component renders the Sign In Page
  */
 
-import React from "react";
+import React, { FC } from "react";
 import { Hexagon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import userStore from "../stores/userStore.ts";
 
-const SigninContainer = ({ backendUrl }) => {
+type Props = {
+  backendUrl: 'http://localhost:3000/',
+}
+
+type Data = {
+  success: boolean,
+  username: string,
+};
+
+const SigninContainer: FC<Props> = ({ backendUrl }): JSX.Element => {
   const {
     setSignedIn,
     username,
@@ -19,7 +28,7 @@ const SigninContainer = ({ backendUrl }) => {
 
   const credential = { username, password };
 
-  const handleLogIn = async (e) => {
+  const handleLogIn = async (e: React.MouseEvent<HTMLButtonElement>) => {
     console.log(`🔄 Sending request to ${backendUrl}user/signin`);
     e.preventDefault();
 
@@ -30,7 +39,7 @@ const SigninContainer = ({ backendUrl }) => {
       body: JSON.stringify(credential),
     });
 
-    const data = await response.json();
+    const data: Data = await response.json();
     console.log(data);
 
     if (response.ok) {
@@ -42,7 +51,7 @@ const SigninContainer = ({ backendUrl }) => {
     }
   };
 
-  const initiateOAuth = (provider) => {
+  const initiateOAuth = (provider: string) => {
     window.location.href = backendUrl + provider;
   };
 
