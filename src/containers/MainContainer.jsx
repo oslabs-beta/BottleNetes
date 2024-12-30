@@ -144,7 +144,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
             </button>
             <div
               ref={menuRef}
-              className={`fixed left-0 top-20 h-screen w-64 transform bg-slate-900 p-4 shadow-lg transition-transform duration-300 ease-in-out ${
+              className={`fixed left-0 top-20 h-screen w-80 transform bg-gradient-to-r from-slate-900 to-[#101b38] p-4 shadow-lg transition-transform duration-300 ease-in-out overflow-y-auto ${
                 isMenuOpen ? "translate-x-0" : "-translate-x-full"
               }`}
             >
@@ -157,6 +157,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
                 setRefreshInput={setRefreshInput}
                 manualRefreshCount={manualRefreshCount}
                 setManualRefreshCount={setManualRefreshCount}
+                backendUrl={backendUrl}
               />
             </div>
           </div>
