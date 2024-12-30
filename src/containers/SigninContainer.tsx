@@ -7,19 +7,17 @@ import { Hexagon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import userStore from "../stores/userStore.ts";
-
-type Props = {
-  backendUrl: "http://localhost:3000/";
-};
+import dataStore from "../stores/dataStore.ts";
 
 type Data = {
   success: boolean;
   username: string;
 };
 
-const SigninContainer = ({ backendUrl }: Props) => {
+const SigninContainer = () => {
   const { setSignedIn, username, setUsername, password, setPassword } =
     userStore();
+  const backendUrl = dataStore((state) => state.backendUrl);
 
   const credential = { username, password };
 

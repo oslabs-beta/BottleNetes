@@ -9,10 +9,11 @@
  * - PodNameDisplay.jsx: Display the Namespace, Pod Name and Deployment
  */
 
-import React, { useRef, useEffect, FC } from "react";
+import React, { useRef, useEffect } from "react";
 
 // Container Folder
-import MenuContainer from "./MenuContainer";
+import MenuContainer from "./MenuContainer.tsx";
+import LoadingContainer from "./LoadingContainer.tsx";
 
 // Component Folder
 import Latency from "../components/Latency";
@@ -25,17 +26,14 @@ import PodGrid from "../components/HeatMapComponents/PodGrid";
 import PodNameDisplay from "../components/HeatMapComponents/PodNameDisplay";
 
 // Hooks Folder
-import useFetchData from "../hooks/useFetchData";
+import useFetchData from "../hooks/useFetchData.ts";
 
 // Stores Folder
 import mainStore from "../stores/mainStore.ts";
 import userStore from "../stores/userStore.ts";
+import dataStore from "../stores/dataStore.ts";
 
-type Props = {
-  backendUrl: "http://localhost:3000/";
-};
-
-const MainContainer: FC<Props> = ({ backendUrl }): JSX.Element => {
+const MainContainer = () => {
   const {
     // Determines if the graphs display node data or pod specific data
     defaultView,
@@ -65,12 +63,13 @@ const MainContainer: FC<Props> = ({ backendUrl }): JSX.Element => {
     setIsMenuOpen,
   } = mainStore();
 
-  const { username } = userStore();
+  const username = userStore((state) => state.username);
+  const backendUrl = dataStore((state) => state.backendUrl);
 
   const menuRef = useRef<HTMLDivElement | null>(null);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
-  const { allData } = useFetchData({
+  const { isFetchingData, allData } = useFetchData({
     backendUrl,
     refreshFrequency,
     queryTimeWindow,
@@ -92,6 +91,8 @@ const MainContainer: FC<Props> = ({ backendUrl }): JSX.Element => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  if (isFetchingData) return <LoadingContainer />
 
   return (
     <div id="main-container">

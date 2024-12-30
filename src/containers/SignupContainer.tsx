@@ -7,10 +7,7 @@ import { Hexagon } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
 import userStore from "../stores/userStore.ts";
-
-type Props = {
-  backendUrl: "http://localhost:3000/";
-};
+import dataStore from "../stores/dataStore.ts";
 
 type Data = {
   message: string;
@@ -22,7 +19,7 @@ type Data = {
   };
 };
 
-const SignupContainer = ({ backendUrl }: Props) => {
+const SignupContainer = () => {
   const {
     username,
     setUsername,
@@ -35,6 +32,8 @@ const SignupContainer = ({ backendUrl }: Props) => {
     lastName,
     setLastName,
   } = userStore();
+
+  const backendUrl = dataStore((state) => state.backendUrl);
 
   const navigate = useNavigate();
   const handleSignup = async () => {
