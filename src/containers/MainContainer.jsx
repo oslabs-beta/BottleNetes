@@ -66,6 +66,28 @@ const MainContainer = ({ username, backendUrl }) => {
     manualRefreshCount,
   });
 
+  // ensure the clickedPod state stays valid after each refresh
+  useEffect(() => {
+    if (allData.podsStatuses?.allPodsStatus?.length > 0 && clickedPod.podName) {
+      // Check if the clicked pod still exists in the updated data
+      const podStillExists = allData.podsStatuses.allPodsStatus.some(
+        (pod) =>
+          pod.podName === clickedPod.podName &&
+          pod.namespace === clickedPod.namespace,
+      );
+      // Only reset the clickedPod state if it no longer exists in the updated data
+      if (!podStillExists) {
+        setClickedPod({
+          podName: "",
+          namespace: "",
+          containers: [],
+          deployment: "",
+        });
+        setDefaultView(true);
+      }
+    }
+  }, [allData.podsStatuses, clickedPod]);
+
   // Handle the click outside of the menu to close the menu
   useEffect(() => {
     // Close the menu when clicking outside of the menu
@@ -82,7 +104,7 @@ const MainContainer = ({ username, backendUrl }) => {
   }, []);
 
   return (
-    <div id='main-container'>
+    <div id="main-container">
       <header className="header sticky top-0 z-50 flex flex-col items-center justify-between gap-4 border-b-2 bg-gradient-to-r from-[#0f172a] to-[#1e40af] py-4 sm:flex-row">
         <div id="leftside" className="flex items-center">
           <div className="flex items-center gap-0 px-5">
@@ -224,7 +246,7 @@ const MainContainer = ({ username, backendUrl }) => {
             {/* Request vs. Limit */}
             <div
               id="request-vs-limit"
-              className=" rounded-3xl bg-slate-100 p-4 xl:col-span-2 overflow-y-auto w-full h-[500px]"
+              className="h-[500px] w-full overflow-y-auto rounded-3xl bg-slate-100 p-4 xl:col-span-2"
             >
               <h2 className="text-center text-2xl font-semibold text-slate-900">
                 Request vs. Limit
