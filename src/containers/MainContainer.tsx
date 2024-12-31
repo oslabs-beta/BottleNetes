@@ -19,15 +19,15 @@ import MenuContainer from "./MenuContainer.tsx";
 import LoadingContainer from "./LoadingContainer.tsx";
 
 // Component Folder
-import Overview from "../components/Overview";
-import Latency from "../components/LatencyComponents/Latency";
-import Metrics from "../components/HistoricalMetricsComponents/Metrics";
-import RequestLimit from "../components/RequestLimitComponents/RequestLimit";
-import Chatbot from "../components/Chatbot";
+import Overview from "../components/Overview.tsx";
+import Latency from "../components/LatencyComponents/Latency.tsx";
+import Metrics from "../components/HistoricalMetricsComponents/Metrics.tsx";
+import RequestLimit from "../components/RequestLimitComponents/RequestLimit.tsx";
+import Chatbot from "../components/Chatbot.tsx";
 
 // HeatMap Component Folder
-import PodGrid from "../components/HeatMapComponents/PodGrid";
-import PodNameDisplay from "../components/HeatMapComponents/PodNameDisplay";
+import PodGrid from "../components/HeatMapComponents/PodGrid.tsx";
+import PodNameDisplay from "../components/HeatMapComponents/PodNameDisplay.tsx";
 
 // Hooks Folder
 import useFetchData from "../hooks/useFetchData.ts";
@@ -40,7 +40,6 @@ import dataStore from "../stores/dataStore.ts";
 const MainContainer = () => {
   const {
     // Determines if the graphs display node data or pod specific data
-    defaultView,
     setDefaultView,
     // State hook for time window in PodGrid
     queryTimeWindow,
@@ -250,29 +249,10 @@ const MainContainer = () => {
           <div
             className={`absolute bottom-[100%] right-0 mb-3 w-96 rounded-2xl transition-opacity duration-300 ${aiVisibility ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
           >
-            <Chatbot
-              className="text-gradient font-poppins text-2xl font-bold shadow-lg"
-              logoStyle={{
-                width: "70px",
-                height: "70px",
-                borderRadius: "50%",
-                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                backgroundImage: "linear-gradient(to right, #1e90ff, #87ceeb)",
-                color: "#fff",
-                fontSize: "18px",
-                fontWeight: "bold",
-                textTransform: "uppercase",
-              }}
-            />
+            <Chatbot />
           </div>
           {/* Reset and Ask AI buttons */}
           <div className="flex justify-between pb-5">
-            <button
-              onClick={resetView}
-              className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90"
-            >
-              Reset to Default
-            </button>
             <button
               onClick={() => setAiVisibility(!aiVisibility)}
               className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90"
