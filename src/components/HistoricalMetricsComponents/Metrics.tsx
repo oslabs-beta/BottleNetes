@@ -1,8 +1,7 @@
 /**
  * This component renders the line graph representing historical CPU and Memory Usage data
  */
-
-import PropTypes from "prop-types";
+import React from "react";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -16,8 +15,11 @@ import {
   Legend,
 } from "chart.js";
 
-import { historicalMetricsChartOptions } from "../../config/historicalMetricsChartOptions";
-import useMetricsData from "../../hooks/useMetricsData";
+import { historicalMetricsChartOptions } from "../../config/historicalMetricsChartOptions.ts";
+import useMetricsData from "../../hooks/useMetricsData.ts";
+
+import mainStore from "../../stores/mainStore.ts";
+import dataStore from "../../stores/dataStore.ts";
 
 ChartJS.register(
   CategoryScale,
@@ -30,12 +32,11 @@ ChartJS.register(
   Legend,
 );
 
-const Metrics = ({
-  defaultView,
-  clickedPod,
-  cpuUsageHistorical,
-  memoryUsageHistorical,
-}) => {
+const Metrics = () => {
+  const { defaultView, clickedPod } = mainStore();
+  const cpuUsageHistorical = dataStore((state) => state.allData.cpuUsageHistorical);
+  const memoryUsageHistorical = dataStore((state) => state.allData.memoryUsageHistorical);
+
   const { timeStamps, cpu, memory } = useMetricsData(
     defaultView,
     clickedPod,
@@ -75,13 +76,6 @@ const Metrics = ({
       <Line options={historicalMetricsChartOptions} data={data} />
     </div>
   );
-};
-
-Metrics.propTypes = {
-  defaultView: PropTypes.bool,
-  clickedPod: PropTypes.object,
-  cpuUsageHistorical: PropTypes.object,
-  memoryUsageHistorical: PropTypes.object,
 };
 
 export default Metrics;

@@ -1,7 +1,7 @@
 export const historicalMetricsChartOptions = {
   responsive: true,
   interaction: {
-    mode: "nearest",
+    mode: "nearest" as const,
     intersect: false,
   },
   maintainAspectRatio: false,
@@ -40,7 +40,7 @@ export const historicalMetricsChartOptions = {
   },
   plugins: {
     legend: {
-      position: "bottom",
+      position: "bottom" as const,
       title: {
         display: true,
         text: "CPU and Memory Usage over time",
@@ -60,7 +60,7 @@ export const historicalMetricsChartOptions = {
       },
       titleFont: {
         size: 20,
-        weight: "bold",
+        weight: "bold" as const,
       },
       bodyColor: "#1f1f1f",
       titleColor: "#404040",

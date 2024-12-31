@@ -44,15 +44,11 @@ const MainContainer = () => {
     setDefaultView,
     // State hook for time window in PodGrid
     queryTimeWindow,
-    setQueryTimeWindow,
     // state hooks for clicked pod and selected metric in PodGrid (will also be passed down to other components)
     clickedPod,
     setClickedPod,
-    selectedMetric,
-    setSelectedMetric,
     // State hook for pod restarts in PodGrid
     podRestartCount,
-    setPodRestartCount,
     // State hooks for refresh control in MenuContainer
     manualRefreshCount,
     refreshFrequency,
@@ -222,12 +218,7 @@ const MainContainer = () => {
               <h2 className="text-center text-2xl font-semibold text-slate-900">
                 Historical Tracing
               </h2>
-              <Metrics
-                defaultView={defaultView}
-                clickedPod={clickedPod}
-                cpuUsageHistorical={allData.cpuUsageHistorical || []}
-                memoryUsageHistorical={allData.memoryUsageHistorical || []}
-              />
+              <Metrics />
             </div>
 
             {/* Request vs. Limit */}
