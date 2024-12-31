@@ -2,16 +2,27 @@
  * This component render each pod in the heatmap with the popup when hovering over each pod
  */
 
-import PropTypes from "prop-types";
-import { useState } from "react";
+import React from "react";
 
-const Pod = ({ podInfo, selectedMetric, onClick, isClicked }) => {
-  // State to determine the visibility of the tooltip when the mouse is hovering on a pod in the heat map
-  const [isShowing, setIsShowing] = useState(false);
+import mainStore from "../../stores/mainStore.ts";
+import podStore from "../../stores/podStore.ts";
+import { podObj } from "../../hooks/usePodListProcessor.ts";
+
+interface PodProps {
+  podInfo: podObj;
+  onClick: () => void;
+  isClicked: boolean;
+}
+
+const Pod = (props: PodProps) => {
+  const { podInfo, onClick, isClicked } = props;
+  const selectedMetric = mainStore((state) => state.selectedMetric);
+  const { isShowing, setIsShowing } = podStore();
 
   // Determine the color for each pod based on the value of selected metric
-  const color = (value, minVal = 0, maxVal = 100) => {
-    const normalizedValue = 1 - (value - minVal) / (maxVal - minVal);
+  const color = (value: number | undefined, minVal = 0, maxVal = 100) => {
+    if (value === undefined) return `#E0E0E0`;
+    const normalizedValue = 1 - (value as number - minVal) / (maxVal - minVal);
     const r = 238 - Math.floor(normalizedValue * 204);
 
     if (r) return `rgb(${r}, 197, 94)`;
@@ -141,7 +152,7 @@ const Pod = ({ podInfo, selectedMetric, onClick, isClicked }) => {
       </button>
     );
     // Otherwise render the pod with the red color
-  } else if (podInfo.readiness == false) {
+  } else {
     return (
       <button
         className="m-0.5 aspect-square rounded-xl border-blue-600 bg-[#db6451] transition hover:border-[5px] hover:filter"
@@ -158,13 +169,6 @@ const Pod = ({ podInfo, selectedMetric, onClick, isClicked }) => {
       </button>
     );
   }
-};
-
-Pod.propTypes = {
-  podInfo: PropTypes.object,
-  onClick: PropTypes.func,
-  selectedMetric: PropTypes.string,
-  isClicked: PropTypes.bool,
 };
 
 export default Pod;
