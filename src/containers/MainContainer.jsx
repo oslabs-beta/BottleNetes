@@ -25,6 +25,7 @@ import MenuContainer from "./MenuContainer";
 import Overview from "../components/Overview";
 import Latency from "../components/LatencyComponents/Latency";
 import Metrics from "../components/HistoricalMetricsComponents/Metrics";
+import TimeWindowSelector from "../components/HistoricalMetricsComponents/TimeWindowSelector";
 import RequestLimit from "../components/RequestLimitComponents/RequestLimit";
 import Chatbot from "../components/Chatbot";
 import DarkMode from "../components/DarkMode";
@@ -51,6 +52,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
   const [showRefreshPopup, setShowRefreshPopup] = useState(false);
   const [refreshInput, setRefreshInput] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [historicalTimeWindow, setHistoricalTimeWindow] = useState("24h");
 
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
@@ -61,6 +63,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
     queryTimeWindow,
     podRestartCount,
     manualRefreshCount,
+    historicalTimeWindow,
   });
 
   // ensure the clickedPod state stays valid after each refresh
@@ -99,7 +102,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
 
   return (
     <div id="main-container">
-      <header className="header sticky top-0 z-50 flex flex-col items-center justify-between gap-4 border-b-2 bg-gradient-to-r from-[#0f172a] to-[#1e40af] py-4 sm:flex-row dark:border-slate-600 dark:bg-gradient-to-r dark:from-slate-950 dark:to-slate-900">
+      <header className="header sticky top-0 z-50 flex flex-col items-center justify-between gap-4 border-b-2 bg-gradient-to-r from-[#0f172a] to-[#1e40af] py-4 dark:border-slate-600 dark:bg-gradient-to-r dark:from-slate-950 dark:to-slate-900 sm:flex-row">
         <div id="leftside" className="flex items-center">
           {/* Menu drop down */}
           <div className="flex items-center gap-0 px-5">
@@ -145,7 +148,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
             </button>
             <div
               ref={menuRef}
-              className={`fixed left-0 top-20 h-screen w-80 transform bg-gradient-to-r from-slate-900 to-[#101b38] p-4 shadow-lg transition-transform duration-300 ease-in-out overflow-y-auto ${
+              className={`fixed left-0 top-20 h-screen w-80 transform overflow-y-auto bg-gradient-to-r from-slate-900 to-[#101b38] p-4 shadow-lg transition-transform duration-300 ease-in-out ${
                 isMenuOpen ? "translate-x-0" : "-translate-x-full"
               }`}
             >
@@ -169,7 +172,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
         </div>
         {/* Welcome text */}
         <div className="flex items-center space-x-[50px]">
-        <DarkMode />
+          <DarkMode />
           <h1 className="mr-5 px-5 text-2xl font-semibold text-slate-300">{`Welcome, ${username}`}</h1>
         </div>
       </header>
@@ -199,9 +202,9 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
             {/* Pod Grid */}
             <div
               id="pod-grid"
-              className="flex max-h-[100%] flex-col rounded-3xl bg-slate-100 p-4 xl:col-span-2 dark:bg-transparent dark:shadow-custom-lg dark:border-2 dark:border-transparent"
+              className="flex max-h-[100%] flex-col rounded-3xl bg-slate-100 p-4 dark:border-2 dark:border-transparent dark:bg-transparent dark:shadow-custom-lg xl:col-span-2"
             >
-              <h2 className="text-center text-2xl font-bold text-slate-900 dark:text-slate-300 mb-[5px]">
+              <h2 className="mb-[5px] text-center text-2xl font-bold text-slate-900 dark:text-slate-300">
                 Heat Map
               </h2>
               <PodGrid
@@ -229,11 +232,18 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
             {/* Historical Tracing */}
             <div
               id="historical-tracing"
-              className="max-h-[100%] rounded-3xl bg-slate-100 p-4 xl:col-span-2 dark:bg-transparent dark:shadow-custom-lg"
+              className="max-h-[100%] rounded-3xl bg-slate-100 p-4 dark:bg-transparent dark:shadow-custom-lg xl:col-span-2"
             >
               <h2 className="text-center text-2xl font-semibold text-slate-900 dark:text-slate-300">
                 Historical Tracing
               </h2>
+              <div className="p-4">
+                <div className="flex justify-end">
+                  <TimeWindowSelector
+                    onTimeWindowChange={(val) => setHistoricalTimeWindow(val)}
+                  />
+                </div>
+              </div>
               <Metrics
                 defaultView={defaultView}
                 clickedPod={clickedPod}
@@ -245,7 +255,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
             {/* Request vs. Limit */}
             <div
               id="request-vs-limit"
-              className="h-[500px] w-full overflow-y-auto rounded-3xl bg-slate-100 p-4 xl:col-span-2 dark:bg-transparent dark:shadow-custom-lg"
+              className="h-[500px] w-full overflow-y-auto rounded-3xl bg-slate-100 p-4 dark:bg-transparent dark:shadow-custom-lg xl:col-span-2"
             >
               <h2 className="text-center text-2xl font-semibold text-slate-900 dark:text-slate-300">
                 Request vs. Limit
@@ -261,7 +271,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
             {/* Latency */}
             <div
               id="latency"
-              className="rounded-3xl bg-slate-100 p-4 xl:col-span-2 dark:bg-transparent dark:shadow-custom-lg"
+              className="rounded-3xl bg-slate-100 p-4 dark:bg-transparent dark:shadow-custom-lg xl:col-span-2"
             >
               <h2 className="text-center text-2xl font-semibold text-slate-900 dark:text-slate-300">
                 Request Latency

@@ -80,7 +80,7 @@ const PodGrid = ({
 
   // If Pod Statuses are still being fetched, return the Loading Screen
   if (!podStatuses.allPodsStatus) {
-    return <LoadingContainer />;
+    return <div className="text-slate-800 dark:text-slate-300 font-semibold">Loading...</div>;
   }
 
   // Extract data from processedPodList for each Pod
