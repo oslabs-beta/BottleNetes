@@ -44,8 +44,6 @@ const PodGrid = () => {
     setClickedPod,
     selectedMetric,
     setSelectedMetric,
-    podRestartCount,
-    setPodRestartCount,
   } = mainStore();
   
   // Data from useFetchData hook and state from dataStore.tsx
@@ -126,14 +124,7 @@ const PodGrid = () => {
         id="control-buttons-row"
         className="grid grid-cols-4 gap-x-4 gap-y-2 px-4 py-2"
       >
-        <PodRestart
-          clickedPod={clickedPod}
-          setClickedPod={setClickedPod}
-          podRestartCount={podRestartCount}
-          setPodRestartCount={setPodRestartCount}
-          setDefaultView={setDefaultView}
-          backendUrl={backendUrl}
-        />
+        <PodRestart />
         <PodLogDisplay clickedPod={clickedPod} backendUrl={backendUrl} />
         <PodReplicas clickedPod={clickedPod} backendUrl={backendUrl} />
         <PodAdjustRequestsLimits
