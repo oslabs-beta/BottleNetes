@@ -2,20 +2,28 @@
  * This component renders 'Restart Pod' button with its Popups
  */
 
-import PropTypes from "prop-types";
-import { useState } from "react";
+import React from "react";
 
-const PodRestart = ({
-  clickedPod,
-  setClickedPod,
-  podRestartCount,
-  setPodRestartCount,
-  setDefaultView,
-  backendUrl,
-}) => {
-  // State to determine the visibility of the popup when clicking the button
-  const [showRestartPopup, setShowRestartPopup] = useState(false);
-  const [restartStatus, setRestartStatus] = useState("confirm"); // other state: 'loading', 'error', 'success'
+import mainStore from "../../stores/mainStore.ts";
+import dataStore from "../../stores/dataStore.ts";
+import podStore from "../../stores/podStore.ts";
+
+const PodRestart = () => {
+  const {
+    setDefaultView,
+    clickedPod,
+    setClickedPod,
+    podRestartCount,
+    setPodRestartCount,
+  } = mainStore();
+  const backendUrl = dataStore((state) => state.backendUrl);
+
+  const {
+    showRestartPopup,
+    setShowRestartPopup,
+    restartStatus,
+    setRestartStatus,
+  } = podStore();
 
   const handleRestartPod = () => {
     if (!clickedPod.podName || !clickedPod.namespace) {
@@ -198,19 +206,6 @@ const PodRestart = ({
       </div>
     </div>
   );
-};
-
-PodRestart.propTypes = {
-  clickedPod: PropTypes.shape({
-    podName: PropTypes.string,
-    namespace: PropTypes.string,
-    containers: PropTypes.array,
-  }).isRequired,
-  setClickedPod: PropTypes.func.isRequired,
-  podRestartCount: PropTypes.number.isRequired,
-  setPodRestartCount: PropTypes.func.isRequired,
-  setDefaultView: PropTypes.func,
-  backendUrl: PropTypes.string.isRequired,
 };
 
 export default PodRestart;

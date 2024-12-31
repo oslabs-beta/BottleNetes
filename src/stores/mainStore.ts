@@ -4,7 +4,7 @@ export type ClickedPod = {
   podName: string;
   namespace: string;
   containers: any[];
-  deployment: string;
+  deployment?: string;
   [key: string]: any;
 };
 
