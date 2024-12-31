@@ -20,12 +20,12 @@ function getWindowInSeconds(selectedTimeWindow) {
 function getTimeStep(selectedTimeWindow) {
   switch (selectedTimeWindow) {
     case "5m":
-      return "10";
+      return "5";
     case "1h":
       return "60";
     case "24h":
     default:
-      return "600";
+      return "1440";
   }
 }
 
@@ -95,7 +95,9 @@ const useFetchData = ({
           },
           bodyResourceUsageHistorical: {
             timeEnd: Math.floor(Date.now() / 1000).toString(),
-            timeStart: (Math.floor(Date.now() / 1000) - metricsTimeWindow).toString(),
+            timeStart: (
+              Math.floor(Date.now() / 1000) - metricsTimeWindow
+            ).toString(),
             timeStep,
             level: "pod",
           },

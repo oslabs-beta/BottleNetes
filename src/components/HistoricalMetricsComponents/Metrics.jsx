@@ -3,7 +3,7 @@
  */
 
 import PropTypes from "prop-types";
-import TimeWindowSelector from "./TimeWindowSelector"
+import TimeWindowSelector from "./TimeWindowSelector";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -103,8 +103,11 @@ const Metrics = ({
 Metrics.propTypes = {
   defaultView: PropTypes.bool,
   clickedPod: PropTypes.object,
-  cpuUsageHistorical: PropTypes.object,
-  memoryUsageHistorical: PropTypes.object,
+  cpuUsageHistorical: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  memoryUsageHistorical: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.object,
+  ]),
   historicalTimeWindow: PropTypes.string,
   setHistoricalTimeWindow: PropTypes.func,
 };

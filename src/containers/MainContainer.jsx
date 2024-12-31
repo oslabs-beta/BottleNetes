@@ -25,7 +25,7 @@ import MenuContainer from "./MenuContainer";
 import Overview from "../components/Overview";
 import Latency from "../components/LatencyComponents/Latency";
 import Metrics from "../components/HistoricalMetricsComponents/Metrics";
-import TimeWindowSelector from "../components/HistoricalMetricsComponents/TimeWindowSelector";
+// import TimeWindowSelector from "../components/HistoricalMetricsComponents/TimeWindowSelector";
 import RequestLimit from "../components/RequestLimitComponents/RequestLimit";
 import Chatbot from "../components/Chatbot";
 import DarkMode from "../components/DarkMode";
@@ -34,6 +34,7 @@ import DarkMode from "../components/DarkMode";
 import PodGrid from "../components/HeatMapComponents/PodGrid";
 import PodNameDisplay from "../components/HeatMapComponents/PodNameDisplay";
 
+// eslint-disable-next-line no-unused-vars
 const MainContainer = ({ username, backendUrl, resetView }) => {
   // State management
   const [defaultView, setDefaultView] = useState(true);
@@ -176,7 +177,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
           <h1 className="mr-5 px-5 text-2xl font-semibold text-slate-300">{`Welcome, ${username}`}</h1>
         </div>
       </header>
-      <div className="bg-custom-gradient dark:bg-custom-gradient-dark">
+      <div className="dark:bg-custom-gradient-dark bg-custom-gradient">
         <div className="border-b-2 border-slate-300 p-6 dark:border-slate-600">
           {/* Overview Display */}
           <Overview
@@ -198,7 +199,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
           id="graph-container"
           className="mt-2 flex min-h-screen flex-col gap-4 p-6 text-slate-100"
         >
-          <div className="grid grid-cols-1 gap-10 lg-xl:grid-cols-2 xl:grid-cols-4">
+          <div className="lg-xl:grid-cols-2 grid grid-cols-1 gap-10 xl:grid-cols-4">
             {/* Pod Grid */}
             <div
               id="pod-grid"
@@ -285,25 +286,26 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
         {/* Bottom row of buttons */}
         <div className="relative mx-6">
           {/* AI Chatbot */}
-            <div className={`absolute bottom-[100%] right-0 mb-3 w-96 rounded-2xl transition duration-100 ${aiVisibility ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
-              <Chatbot
-                allData={allData}
-                username={username}
-                className="text-gradient font-poppins text-2xl font-bold shadow-lg"
-                logoStyle={{
-                  width: "70px",
-                  height: "70px",
-                  borderRadius: "50%",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                  backgroundImage:
-                    "linear-gradient(to right, #1e90ff, #87ceeb)",
-                  color: "#fff",
-                  fontSize: "18px",
-                  fontWeight: "bold",
-                  textTransform: "uppercase",
-                }}
-              />
-            </div>
+          <div
+            className={`absolute bottom-[100%] right-0 mb-3 w-96 rounded-2xl transition duration-100 ${aiVisibility ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
+          >
+            <Chatbot
+              allData={allData}
+              username={username}
+              className="text-gradient font-poppins text-2xl font-bold shadow-lg"
+              logoStyle={{
+                width: "70px",
+                height: "70px",
+                borderRadius: "50%",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                backgroundImage: "linear-gradient(to right, #1e90ff, #87ceeb)",
+                color: "#fff",
+                fontSize: "18px",
+                fontWeight: "bold",
+                textTransform: "uppercase",
+              }}
+            />
+          </div>
 
           {/* Reset and Ask AI buttons */}
           <div className="flex justify-between pb-5">
