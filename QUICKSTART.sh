@@ -151,16 +151,16 @@ echo "✅ Sidecar injection enabled."
 
 #########################################
 echo "-----------------------------------------"
-echo "Step 8 📝🚀 Applying DEMO.yaml file..."
-kubectl apply -f DEMO.yaml
-echo "✅ DEMO.yaml applied."
+echo "Step 8 📝🚀 Applying kubernetes yaml file..."
+kubectl apply -f demo-app.yaml
+echo "✅ yaml file applied."
 
 #########################################
 echo "-----------------------------------------"
 echo "Step 8.5 ⏳🤔 Waiting for all pods to become ready..."
 echo "🔍 Opening a new terminal to watch pods status..."
 osascript -e 'tell application "Terminal" to do script "echo Waiting for all pods to become Ready...; kubectl get pods -w"'
-kubectl wait --for=condition=Ready pods --all --timeout=5000s
+kubectl wait --for=condition=Ready pods --all --timeout=300s
 
 if [ $? -eq 0 ]; then
     echo "✅ All pods are now ready! Proceeding to the next steps..."
@@ -191,7 +191,7 @@ kill_port_processes() {
 echo "-----------------------------------------"
 echo "Step 10 🚪💻 Port-forwarding the frontend service to localhost:8080 in a new terminal."
 kill_port_processes 8080
-osascript -e 'tell application "Terminal" to do script "kubectl port-forward service/ai-daffy-frontend-service 8080:80"'
+osascript -e 'tell application "Terminal" to do script "kubectl port-forward service/demo-app-on-bottlenetes-frontend-service 8080:80"'
 echo "✅ Frontend service is now available on http://localhost:8080. Keep that terminal open."
 
 #########################################
