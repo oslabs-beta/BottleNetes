@@ -27,6 +27,7 @@ import Latency from "../components/LatencyComponents/Latency";
 import Metrics from "../components/HistoricalMetricsComponents/Metrics";
 import RequestLimit from "../components/RequestLimitComponents/RequestLimit";
 import Chatbot from "../components/Chatbot";
+import DarkMode from "../components/DarkMode";
 
 // HeatMap Component Folder
 import PodGrid from "../components/HeatMapComponents/PodGrid";
@@ -98,7 +99,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
 
   return (
     <div id="main-container">
-      <header className="header sticky top-0 z-50 flex flex-col items-center justify-between gap-4 border-b-2 bg-gradient-to-r from-[#0f172a] to-[#1e40af] py-4 sm:flex-row">
+      <header className="header sticky top-0 z-50 flex flex-col items-center justify-between gap-4 border-b-2 bg-gradient-to-r from-[#0f172a] to-[#1e40af] py-4 sm:flex-row dark:border-slate-600 dark:bg-gradient-to-r dark:from-slate-950 dark:to-slate-900">
         <div id="leftside" className="flex items-center">
           {/* Menu drop down */}
           <div className="flex items-center gap-0 px-5">
@@ -167,12 +168,13 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
           </h1>
         </div>
         {/* Welcome text */}
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-[50px]">
+        <DarkMode />
           <h1 className="mr-5 px-5 text-2xl font-semibold text-slate-300">{`Welcome, ${username}`}</h1>
         </div>
       </header>
-      <div className="bg-custom-gradient">
-        <div className="border-b-2 border-slate-300 p-6">
+      <div className="bg-custom-gradient dark:bg-custom-gradient-dark">
+        <div className="border-b-2 border-slate-300 p-6 dark:border-slate-600">
           {/* Overview Display */}
           <Overview
             podsStatuses={allData.podsStatuses || []}
@@ -181,7 +183,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
         </div>
 
         {/* Pod Name Display */}
-        <div className="border-b-2 border-slate-300">
+        <div className="border-b-2 border-slate-300 dark:border-slate-600">
           <PodNameDisplay
             clickedPod={clickedPod}
             setClickedPod={setClickedPod}
@@ -197,9 +199,9 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
             {/* Pod Grid */}
             <div
               id="pod-grid"
-              className="flex max-h-[100%] flex-col rounded-3xl bg-slate-100 p-4 xl:col-span-2"
+              className="flex max-h-[100%] flex-col rounded-3xl bg-slate-100 p-4 xl:col-span-2 dark:bg-transparent dark:shadow-custom-lg dark:border-2 dark:border-transparent"
             >
-              <h2 className="text-center text-2xl font-bold text-slate-900">
+              <h2 className="text-center text-2xl font-bold text-slate-900 dark:text-slate-300 mb-[5px]">
                 Heat Map
               </h2>
               <PodGrid
@@ -227,9 +229,9 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
             {/* Historical Tracing */}
             <div
               id="historical-tracing"
-              className="max-h-[100%] rounded-3xl bg-slate-100 p-4 xl:col-span-2"
+              className="max-h-[100%] rounded-3xl bg-slate-100 p-4 xl:col-span-2 dark:bg-transparent dark:shadow-custom-lg"
             >
-              <h2 className="text-center text-2xl font-semibold text-slate-900">
+              <h2 className="text-center text-2xl font-semibold text-slate-900 dark:text-slate-300">
                 Historical Tracing
               </h2>
               <Metrics
@@ -243,9 +245,9 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
             {/* Request vs. Limit */}
             <div
               id="request-vs-limit"
-              className="h-[500px] w-full overflow-y-auto rounded-3xl bg-slate-100 p-4 xl:col-span-2"
+              className="h-[500px] w-full overflow-y-auto rounded-3xl bg-slate-100 p-4 xl:col-span-2 dark:bg-transparent dark:shadow-custom-lg"
             >
-              <h2 className="text-center text-2xl font-semibold text-slate-900">
+              <h2 className="text-center text-2xl font-semibold text-slate-900 dark:text-slate-300">
                 Request vs. Limit
               </h2>
               <RequestLimit
@@ -259,9 +261,9 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
             {/* Latency */}
             <div
               id="latency"
-              className="rounded-3xl bg-slate-100 p-4 xl:col-span-2"
+              className="rounded-3xl bg-slate-100 p-4 xl:col-span-2 dark:bg-transparent dark:shadow-custom-lg"
             >
-              <h2 className="text-center text-2xl font-semibold text-slate-900">
+              <h2 className="text-center text-2xl font-semibold text-slate-900 dark:text-slate-300">
                 Request Latency
               </h2>
               <Latency
@@ -309,12 +311,6 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
 
           {/* Reset and Ask AI buttons */}
           <div className="flex justify-between pb-5">
-            <button
-              onClick={resetView}
-              className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90"
-            >
-              Reset to Default
-            </button>
             <button
               onClick={() => setAiVisibility(!aiVisibility)}
               className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90"

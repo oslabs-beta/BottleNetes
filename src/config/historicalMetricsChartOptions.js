@@ -12,7 +12,7 @@ export const historicalMetricsChartOptions = {
         display: false,
       },
       ticks: {
-        color: "#1e293b",
+        color: "#64748b",
         font: { size: 14 },
         maxRotation: 45,
         minRotation: 45,
@@ -24,7 +24,7 @@ export const historicalMetricsChartOptions = {
         display: false,
       },
       ticks: {
-        color: "#1e293b",
+        color: "#64748b",
         font: { size: 14 },
         callback: function (value) {
           return value + "%";
@@ -44,11 +44,11 @@ export const historicalMetricsChartOptions = {
       title: {
         display: true,
         text: "CPU and Memory Usage over time",
-        color: "#1e293b",
+        color: "#64748b",
         padding: 5,
       },
       labels: {
-        color: "#1e293b",
+        color: "#64748b",
         font: { size: 15 },
       },
     },
