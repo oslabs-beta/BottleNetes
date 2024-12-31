@@ -237,13 +237,6 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
               <h2 className="text-center text-2xl font-semibold text-slate-900 dark:text-slate-300">
                 Historical Tracing
               </h2>
-              <div className="p-4">
-                <div className="flex justify-end">
-                  <TimeWindowSelector
-                    onTimeWindowChange={(val) => setHistoricalTimeWindow(val)}
-                  />
-                </div>
-              </div>
               <Metrics
                 defaultView={defaultView}
                 clickedPod={clickedPod}
