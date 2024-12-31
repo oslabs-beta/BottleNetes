@@ -3,6 +3,7 @@
  */
 
 import PropTypes from "prop-types";
+import TimeWindowSelector from "./TimeWindowSelector"
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -79,8 +80,11 @@ const Metrics = ({
   };
 
   return (
+    <div>
+      <div><TimeWindowSelector onTimeWindowChange={onTimeWindowChange}/></div>
     <div className="relative max-h-fit min-h-[600px] w-full p-4">
       <Line options={historicalMetricsChartOptions} data={data} />
+    </div>
     </div>
   );
 };

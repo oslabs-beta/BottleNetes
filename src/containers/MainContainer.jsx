@@ -51,6 +51,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
   const [showRefreshPopup, setShowRefreshPopup] = useState(false);
   const [refreshInput, setRefreshInput] = useState("");
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [historicalTimeWindow, setHistoricalTimeWindow] = useState("24h");
 
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
@@ -61,6 +62,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
     queryTimeWindow,
     podRestartCount,
     manualRefreshCount,
+    historicalTimeWindow,
   });
 
   // ensure the clickedPod state stays valid after each refresh

@@ -4,12 +4,38 @@
 
 import { useState, useEffect } from "react";
 
+// For metrics graph: get time window from user query (dropdown)
+function getWindowInSeconds(selectedTimeWindow) {
+  switch (selectedTimeWindow) {
+    case "5m":
+      return 300;
+    case "1h":
+      return 3600;
+    case "24h":
+    default:
+      return 86400;
+  }
+}
+// Get time step corresponding to selected time window
+function getTimeStep(selectedTimeWindow) {
+  switch (selectedTimeWindow) {
+    case "5m":
+      return "15";
+    case "1h":
+      return "120";
+    case "24h":
+    default:
+      return "1000";
+  }
+}
+
 const useFetchData = ({
   backendUrl,
   refreshFrequency,
   queryTimeWindow,
   podRestartCount,
   manualRefreshCount,
+  historicalTimeWindow,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [allData, setAllData] = useState({
@@ -53,6 +79,9 @@ const useFetchData = ({
           return;
         }
 
+        const metricsTimeWindow = getWindowInSeconds(historicalTimeWindow);
+        const timeStep = getTimeStep(historicalTimeWindow);
+
         const metricsConfig = {
           bodyResourceUsageOnevalueCPU: {
             type: "cpu",
@@ -66,8 +95,8 @@ const useFetchData = ({
           },
           bodyResourceUsageHistorical: {
             timeEnd: Math.floor(Date.now() / 1000).toString(),
-            timeStart: (Math.floor(Date.now() / 1000) - 86400).toString(),
-            timeStep: "60",
+            timeStart: (Math.floor(Date.now() / 1000) - metricsTimeWindow).toString(),
+            timeStep,
             level: "pod",
           },
           bodyLatencyAppRequestOneValue: {
@@ -171,6 +200,7 @@ const useFetchData = ({
       queryTimeWindow,
       podRestartCount,
       backendUrl,
+      historicalTimeWindow,
       // note: Do not include allData.podsStatuses.allPodsStatus from dependencies! (will cause crazy fast refresh)
     ],
   );
