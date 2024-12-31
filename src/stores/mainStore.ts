@@ -51,16 +51,7 @@ const mainStore = create<State & Action>()((set) => ({
     containers: [],
     deployment: "",
   },
-  setClickedPod: (clickedPod) =>
-    set((state) => ({
-      clickedPod: {
-        ...state.clickedPod,
-        podName: clickedPod.podName,
-        namespace: clickedPod.namespace,
-        containers: clickedPod.containers,
-        deployment: clickedPod.deployment,
-      },
-    })),
+  setClickedPod: (clickedPod) => set(() => ({ clickedPod })),
 
   selectedMetric: "cpu",
   setSelectedMetric: (selectedMetric) => set({ selectedMetric }),

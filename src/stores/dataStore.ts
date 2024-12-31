@@ -12,7 +12,7 @@ export type allPodsStatusObj = {
   containers: any[];
   readiness: boolean;
   deployment: string;
-  [key: string]: string | number | boolean | any[] | Record<string, unknown>;
+  // [key: string]: string | number | boolean | any[] | Record<string, unknown>;
 };
 
 export type allPodsRequestLimitObj = {
@@ -26,13 +26,13 @@ export type allPodsRequestLimitObj = {
   [key: string]: string | number | boolean | any[] | Record<string, unknown>;
 };
 
-type allNodesObj = {
+export type allNodesObj = {
   nodeName: string;
   clusterName: string;
   [key: string]: string;
 };
 
-type resourceUsageOneValueObj = {
+export type resourceUsageOneValueObj = {
   name: string;
   usageRelativeToRequest: number;
   usageAbsolute: number;
@@ -48,7 +48,7 @@ export type resourceUsageHistoricalObj = {
   [key: string]: string | number | boolean | any[] | Record<string, unknown>;
 };
 
-type latencyAppRequestOneValueObj = {
+export type latencyAppRequestOneValueObj = {
   name: string;
   numRequest: number;
   avgInboundLatency: number;
@@ -59,7 +59,7 @@ type latencyAppRequestOneValueObj = {
   [key: string]: string | number | boolean | any[] | Record<string, unknown>;
 };
 
-type latencyAppRequestHistoricalObj = {
+export type latencyAppRequestHistoricalObj = {
   name: string;
   timestampsUnix: number[];
   timestampsReadable: number[];
@@ -138,44 +138,7 @@ const dataStore = create<State & Action>()((set) => ({
     latencyAppRequestOneValue: { latencyAppRequestOneValue: [] },
     latencyAppRequestHistorical: null,
   },
-  setAllData: (allData) =>
-    set((state) => ({
-      allData: {
-        ...state.allData,
-        podsStatuses: Array.isArray(allData.podsStatuses)
-          ? []
-          : { allPodsStatus: allData.podsStatuses.allPodsStatus },
-        requestLimits: Array.isArray(allData.requestLimits)
-          ? []
-          : { allPodsRequestLimit: allData.requestLimits.allPodsRequestLimit },
-        allNodes: Array.isArray(allData.allNodes)
-          ? []
-          : { allNodes: allData.allNodes.allNodes },
-        cpuUsageOneValue: Array.isArray(allData.cpuUsageOneValue)
-          ? []
-          : {
-              resourceUsageOneValue:
-                allData.cpuUsageOneValue.resourceUsageOneValue,
-            },
-        memoryUsageOneValue: Array.isArray(allData.memoryUsageOneValue)
-          ? []
-          : {
-              resourceUsageOneValue:
-                allData.memoryUsageOneValue.resourceUsageOneValue,
-            },
-        cpuUsageHistorical: allData.cpuUsageHistorical,
-        memoryUsageHistorical: allData.memoryUsageHistorical,
-        latencyAppRequestOneValue: Array.isArray(
-          allData.latencyAppRequestOneValue,
-        )
-          ? []
-          : {
-              latencyAppRequestOneValue:
-                allData.latencyAppRequestOneValue.latencyAppRequestOneValue,
-            },
-        latencyAppRequestHistorical: allData.latencyAppRequestHistorical,
-      },
-    })),
+  setAllData: (allData) => set(() => ({ allData })),
 
   backendUrl: "http://localhost:3000/",
 
@@ -200,3 +163,36 @@ const dataStore = create<State & Action>()((set) => ({
 }));
 
 export default dataStore;
+
+// podsStatuses: Array.isArray(allData.podsStatuses)
+//   ? []
+//   : { allPodsStatus: allData.podsStatuses.allPodsStatus },
+// requestLimits: Array.isArray(allData.requestLimits)
+//   ? []
+//   : { allPodsRequestLimit: allData.requestLimits.allPodsRequestLimit },
+// allNodes: Array.isArray(allData.allNodes)
+//   ? []
+//   : { allNodes: allData.allNodes.allNodes },
+// cpuUsageOneValue: Array.isArray(allData.cpuUsageOneValue)
+//   ? []
+//   : {
+//       resourceUsageOneValue:
+//         allData.cpuUsageOneValue.resourceUsageOneValue,
+//     },
+// memoryUsageOneValue: Array.isArray(allData.memoryUsageOneValue)
+//   ? []
+//   : {
+//       resourceUsageOneValue:
+//         allData.memoryUsageOneValue.resourceUsageOneValue,
+//     },
+// cpuUsageHistorical: allData.cpuUsageHistorical,
+// memoryUsageHistorical: allData.memoryUsageHistorical,
+// latencyAppRequestOneValue: Array.isArray(
+//   allData.latencyAppRequestOneValue,
+// )
+//   ? []
+//   : {
+//       latencyAppRequestOneValue:
+//         allData.latencyAppRequestOneValue.latencyAppRequestOneValue,
+//     },
+// latencyAppRequestHistorical: allData.latencyAppRequestHistorical,
