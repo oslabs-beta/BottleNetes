@@ -32,15 +32,24 @@ interface ParamTypes {
 }
 
 type podObj = {
-  [key: string]:
-    | string
-    | number
-    | boolean
-    | null
-    | undefined
-    | string[]
-    | number[]
-    | Record<string, unknown>;
+  podName: string;
+  namespace: string;
+  status: string;
+  readiness: boolean;
+  containers: any[];
+  service: string;
+  deployment: string;
+  selectedMetric: "cpu" | "memory" | "latency";
+  cpuDataRelative?: number;
+  cpuDataAbsolute?: number;
+  memoryDataRelative?: number;
+  memoryDataAbsolute?: number;
+  cpuRequest?: number | null;
+  cpuLimit?: number | null;
+  memoryRequest?: number | null;
+  memoryLimit?: number | null;
+  latencyData?: number;
+  [key: string]: string | number | boolean | any[] | Record<string, unknown> | null | undefined;
 };
 
 const usePodListProcessor = ({
@@ -72,7 +81,7 @@ const usePodListProcessor = ({
         readiness: pod.readiness,
         containers: pod.containers,
         service: pod.service,
-        deploymentName: pod.deployment,
+        deployment: pod.deployment,
         selectedMetric,
       };
 

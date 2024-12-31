@@ -11,46 +11,55 @@
  * usePodListProcessor.jsx: A hook to extract and memoize data for pods
  */
 
-import PropTypes from "prop-types";
+import React from "react";
 import { useState } from "react";
 
 // Components from 'HeatMapComponents' folder
-import Pod from "./Pod";
-import PodAdjustRequestsLimits from "./PodAdjustRequestsLimits";
-import PodGridMetricSelection from "./PodGridMetricSelection";
-import PodLogDisplay from "./PodLogDisplay";
-import PodReplicas from "./PodReplicas";
-import PodRestart from "./PodRestart";
-import QueryTimeWindowConfiguration from "./QueryTimeWindowConfiguration";
-import PodSelector from "./PodSelector";
-import PodSorter from "./PodSorter";
-import PodFilter from "./PodFilter";
-import usePodListProcessor from "../../hooks/usePodListProcessor";
+import Pod from "./Pod.jsx";
+import PodAdjustRequestsLimits from "./PodAdjustRequestsLimits.jsx";
+import PodGridMetricSelection from "./PodGridMetricSelection.jsx";
+import PodLogDisplay from "./PodLogDisplay.jsx";
+import PodReplicas from "./PodReplicas.jsx";
+import PodRestart from "./PodRestart.jsx";
+import QueryTimeWindowConfiguration from "./QueryTimeWindowConfiguration.jsx";
+import PodSelector from "./PodSelector.jsx";
+import PodSorter from "./PodSorter.jsx";
+import PodFilter from "./PodFilter.jsx";
+import usePodListProcessor from "../../hooks/usePodListProcessor.ts";
 
 // Component from 'containers' folder
-import LoadingContainer from '../../containers/LoadingContainer.tsx';
+import LoadingContainer from "../../containers/LoadingContainer.tsx";
 
-const PodGrid = ({
-  // Props from MainContainer.jsx
-  defaultView,
-  setDefaultView,
-  queryTimeWindow,
-  setQueryTimeWindow,
-  clickedPod,
-  setClickedPod,
-  selectedMetric,
-  setSelectedMetric,
-  podRestartCount,
-  setPodRestartCount,
-  // Data from useFetchData hook
-  podStatuses,
-  cpuUsageOneValue,
-  memoryUsageOneValue,
-  requestLimits,
-  latencyAppRequestOneValue,
-  // Props from App.jsx
-  backendUrl,
-}) => {
+import dataStore from "../../stores/dataStore.ts";
+import mainStore from "../../stores/mainStore.ts";
+
+const PodGrid = () => {
+  // States from mainStore.tsx
+  const {
+    defaultView,
+    setDefaultView,
+    queryTimeWindow,
+    setQueryTimeWindow,
+    clickedPod,
+    setClickedPod,
+    selectedMetric,
+    setSelectedMetric,
+    podRestartCount,
+    setPodRestartCount,
+  } = mainStore();
+  
+  // Data from useFetchData hook and state from dataStore.tsx
+  const podStatuses = dataStore((state) => state.allData.podsStatuses);
+  const cpuUsageOneValue = dataStore((state) => state.allData.cpuUsageOneValue);
+  const memoryUsageOneValue = dataStore(
+    (state) => state.allData.memoryUsageOneValue
+  );
+  const requestLimits = dataStore((state) => state.allData.requestLimits);
+  const latencyAppRequestOneValue = dataStore(
+    (state) => state.allData.latencyAppRequestOneValue
+  );  
+  const backendUrl = dataStore((state) => state.backendUrl);
+
   /**
    * State to render sorted Pods by selected metric
    * Available metrics: CPU Usage (%), Memory Usage (%), Latency
@@ -79,16 +88,15 @@ const PodGrid = ({
   });
 
   // If Pod Statuses are still being fetched, return the Loading Screen
-  if (!podStatuses.allPodsStatus) {
+  if (!Array.isArray(podStatuses) && !podStatuses.allPodsStatus) {
     return <LoadingContainer />;
   }
 
   // Extract data from processedPodList for each Pod
-  const buttonArray = processedPodList.map((podObj) => (
+  const buttonArray = processedPodList.map((podObj, index) => (
     <Pod
       podInfo={podObj}
-      key={podObj.podName}
-      type="button"
+      key={index}
       selectedMetric={selectedMetric}
       isClicked={
         clickedPod.podName === podObj.podName &&
@@ -100,7 +108,7 @@ const PodGrid = ({
           podName: podObj.podName,
           namespace: podObj.namespace,
           containers: podObj.containers,
-          deploymentName: podObj.deploymentName,
+          deployment: podObj.deployment,
         });
         setDefaultView(false);
       }}
@@ -113,7 +121,6 @@ const PodGrid = ({
 
   return (
     <div className="flex h-full flex-col overflow-visible">
-
       {/* Configuring buttons on top of the heat map */}
       <div
         id="control-buttons-row"
@@ -160,7 +167,6 @@ const PodGrid = ({
           <QueryTimeWindowConfiguration
             queryTimeWindow={queryTimeWindow}
             setQueryTimeWindow={setQueryTimeWindow}
-            id="query-time-window-configuration"
           />
           <PodGridMetricSelection
             selectedMetric={selectedMetric}
@@ -203,32 +209,6 @@ const PodGrid = ({
       </div>
     </div>
   );
-};
-
-PodGrid.propTypes = {
-  defaultView: PropTypes.bool.isRequired,
-  setDefaultView: PropTypes.func.isRequired,
-  clickedPod: PropTypes.shape({
-    podName: PropTypes.string,
-    namespace: PropTypes.string,
-    containers: PropTypes.array,
-    deploymentName: PropTypes.string,
-  }).isRequired,
-  setClickedPod: PropTypes.func.isRequired,
-  selectedMetric: PropTypes.string.isRequired,
-  setSelectedMetric: PropTypes.func.isRequired,
-  podRestartCount: PropTypes.number.isRequired,
-  setPodRestartCount: PropTypes.func.isRequired,
-  podStatuses: PropTypes.shape({
-    allPodsStatus: PropTypes.array,
-  }),
-  requestLimits: PropTypes.object,
-  cpuUsageOneValue: PropTypes.object,
-  memoryUsageOneValue: PropTypes.object,
-  latencyAppRequestOneValue: PropTypes.object,
-  queryTimeWindow: PropTypes.string.isRequired,
-  setQueryTimeWindow: PropTypes.func.isRequired,
-  backendUrl: PropTypes.string.isRequired,
 };
 
 export default PodGrid;

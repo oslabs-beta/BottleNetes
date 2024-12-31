@@ -211,26 +211,7 @@ const MainContainer = () => {
               <h2 className="text-center text-2xl font-bold text-slate-900">
                 Heat Map
               </h2>
-              <PodGrid
-                defaultView={defaultView}
-                setDefaultView={setDefaultView}
-                clickedPod={clickedPod}
-                setClickedPod={setClickedPod}
-                selectedMetric={selectedMetric}
-                setSelectedMetric={setSelectedMetric}
-                podRestartCount={podRestartCount}
-                setPodRestartCount={setPodRestartCount}
-                podStatuses={allData.podsStatuses || []}
-                cpuUsageOneValue={allData.cpuUsageOneValue || []}
-                memoryUsageOneValue={allData.memoryUsageOneValue || []}
-                requestLimits={allData.requestLimits}
-                latencyAppRequestOneValue={
-                  allData.latencyAppRequestOneValue || []
-                }
-                queryTimeWindow={queryTimeWindow}
-                setQueryTimeWindow={setQueryTimeWindow}
-                backendUrl={backendUrl}
-              />
+              <PodGrid />
             </div>
 
             {/* Historical Tracing */}
