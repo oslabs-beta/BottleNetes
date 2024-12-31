@@ -2,12 +2,15 @@
  * This component renders the 'Sort by...' dropdown
  */
 
-import PropTypes from "prop-types";
-import { useState } from "react";
+import React from "react";
 
-const PodSorter = ({ setMetricToSort, defaultView, setDefaultView }) => {
-  // State to set the selected label in the dropdown
-  const [selectedLabel, setSelectedLabel] = useState("Sort by...");
+import mainStore from "../../stores/mainStore.ts";
+import dataStore from "../../stores/dataStore.ts";
+
+const PodSorter = () => {
+  const setMetricToSort = dataStore((state) => state.setMetricToSort);
+  const {  defaultView, setDefaultView } = mainStore();
+  const { selectedLabel, setSelectedLabel } = mainStore();
 
   const sortOptions = [
     { metricType: "", label: "Sort by..." },
@@ -63,12 +66,6 @@ const PodSorter = ({ setMetricToSort, defaultView, setDefaultView }) => {
       </select>
     </div>
   );
-};
-
-PodSorter.propTypes = {
-  setMetricToSort: PropTypes.func.isRequired,
-  defaultView: PropTypes.bool.isRequired,
-  setDefaultView: PropTypes.func.isRequired,
 };
 
 export default PodSorter;
