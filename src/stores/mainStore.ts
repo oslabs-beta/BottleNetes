@@ -4,7 +4,7 @@ export type ClickedPod = {
   podName: string;
   namespace: string;
   containers: any[];
-  deployment?: string;
+  deploymentName?: string;
   [key: string]: any;
 };
 
@@ -49,7 +49,7 @@ const mainStore = create<State & Action>()((set) => ({
     podName: "",
     namespace: "",
     containers: [],
-    deployment: "",
+    deploymentName: "",
   },
   setClickedPod: (clickedPod) => set(() => ({ clickedPod })),
 

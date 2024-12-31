@@ -96,7 +96,7 @@ const SignupContainer = () => {
       <img src="/src/assets/logo.png" className="mt-2 size-60" />
       <div
         id="signup-display"
-        className="relative my-10 content-center rounded-2xl border-2 border-slate-950 bg-slate-950 text-center align-middle shadow-2xl shadow-slate-950 sm:w-1/2 lg:h-1/2 lg:w-1/3 2xl:h-1/3 2xl:w-1/4 3xl:h-1/4 3xl:w-1/5"
+        className="relative my-10 content-center rounded-2xl border-2 border-slate-950 bg-slate-950 text-center align-middle shadow-2xl shadow-slate-950 sm:w-3/4 md:w-2/3 md-lg:w-2/3 lg:w-1/2 2xl:w-2/5 3xl:w-1/5 py-3"
       >
         <h2 className="pb-5 text-3xl text-slate-300">Sign Up</h2>
         <form className="mx-5 grid grid-cols-2 gap-2">

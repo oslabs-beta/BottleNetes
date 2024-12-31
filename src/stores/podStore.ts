@@ -6,6 +6,8 @@ type State = {
   showPodLog: boolean;
   showContainerSelect: boolean;
   podLog: string;
+  showReplicasPopup: boolean;
+  newReplicas: number;
 };
 
 type Action = {
@@ -14,6 +16,8 @@ type Action = {
   setShowPodLog: (showPodLog: State["showPodLog"]) => void;
   setShowContainerSelect: (showContainerSelect: State["showContainerSelect"]) => void;
   setPodLog: (podLog: State["podLog"]) => void;
+  setShowReplicasPopup: (showReplicasPopup: State["showReplicasPopup"]) => void;
+  setNewReplicas: (newReplicas: State["newReplicas"]) => void;
 };
 
 const podStore = create<State & Action>((set) => ({
@@ -31,6 +35,12 @@ const podStore = create<State & Action>((set) => ({
 
   podLog: "No logs available",
   setPodLog: (podLog) => set({ podLog }),
+
+  showReplicasPopup: false,
+  setShowReplicasPopup: (showReplicasPopup) => set({ showReplicasPopup }),
+
+  newReplicas: 1,
+  setNewReplicas: (newReplicas) => set({ newReplicas }),
 }));
 
 export default podStore;

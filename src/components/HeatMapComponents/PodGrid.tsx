@@ -106,7 +106,7 @@ const PodGrid = () => {
           podName: podObj.podName,
           namespace: podObj.namespace,
           containers: podObj.containers,
-          deployment: podObj.deployment,
+          deploymentName: podObj.deploymentName,
         });
         setDefaultView(false);
       }}
@@ -172,7 +172,7 @@ const PodGrid = () => {
                 podName: "-",
                 namespace: "-",
                 containers: [],
-                deployment: "-",
+                deploymentName: "-",
               });
               setSelectedMetric("cpu");
               setQueryTimeWindow("1m");

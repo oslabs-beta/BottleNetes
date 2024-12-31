@@ -3,7 +3,6 @@
  */
 
 import React from "react";
-import { useState } from "react";
 
 import mainStore from "../../stores/mainStore.ts";
 import dataStore from "../../stores/dataStore.ts";
@@ -12,11 +11,7 @@ import podStore from "../../stores/podStore.ts";
 const PodReplicas = () => {
   const clickedPod = mainStore((state) => state.clickedPod);
   const backendUrl = dataStore((state) => state.backendUrl);
-
-  // State to determine the visibility of the popup when clicking the button
-  const [showReplicasPopup, setShowReplicasPopup] = useState(false);
-  // State to set the new amount of replicas
-  const [newReplicas, setNewReplicas] = useState(1);
+  const {showReplicasPopup, setShowReplicasPopup, newReplicas, setNewReplicas} = podStore();
 
   const handleReplicas = async () => {
     if (!clickedPod.podName || !clickedPod.namespace) {
@@ -56,7 +51,11 @@ const PodReplicas = () => {
       );
     } catch (error) {
       console.error(`Could not send request: ${error}`);
-      alert(`Failed to send request: ${error.message}`);
+      if (error instanceof Error) {
+        alert(`Failed to send request: ${error.message}`);
+      } else {
+        alert("Failed to send request: An unknown error occurred.");
+      }
     } finally {
       setShowReplicasPopup(false);
     }
@@ -103,7 +102,7 @@ const PodReplicas = () => {
           <input
             value={newReplicas}
             type="number"
-            onChange={(e) => setNewReplicas(e.target.value)}
+            onChange={(e) => setNewReplicas(Number(e.target.value))}
             className="my-6 w-full rounded-lg bg-slate-300 p-2 text-slate-800 focus:brightness-90 hover:brightness-110 transition duration-300"
           />
           <div
