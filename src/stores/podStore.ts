@@ -29,8 +29,6 @@ type State = {
   showTimeWindow: boolean;
   timeInput: string;
   timeUnit: string;
-  // Pod
-  isShowing: boolean;
 };
 
 type Action = {
@@ -61,8 +59,6 @@ type Action = {
   setShowTimeWindow: (showTimeWindow: State["showTimeWindow"]) => void;
   setTimeInput: (timeInput: State["timeInput"]) => void;
   setTimeUnit: (timeUnit: State["timeUnit"]) => void;
-  // Pod
-  setIsShowing: (isShowing: State["isShowing"]) => void;
 };
 
 const podStore = create<State & Action>((set) => ({
@@ -134,9 +130,6 @@ const podStore = create<State & Action>((set) => ({
 
   timeUnit: "m",
   setTimeUnit: (timeUnit) => set({ timeUnit }),
-
-  isShowing: false,
-  setIsShowing: (isShowing) => set({ isShowing }),
 }));
 
 export default podStore;

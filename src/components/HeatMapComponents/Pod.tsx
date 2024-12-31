@@ -5,7 +5,6 @@
 import React from "react";
 
 import mainStore from "../../stores/mainStore.ts";
-import podStore from "../../stores/podStore.ts";
 import { podObj } from "../../hooks/usePodListProcessor.ts";
 
 interface PodProps {
@@ -17,7 +16,7 @@ interface PodProps {
 const Pod = (props: PodProps) => {
   const { podInfo, onClick, isClicked } = props;
   const selectedMetric = mainStore((state) => state.selectedMetric);
-  const { isShowing, setIsShowing } = podStore();
+  const [isShowing, setIsShowing] = React.useState(false);
 
   // Determine the color for each pod based on the value of selected metric
   const color = (value: number | undefined, minVal = 0, maxVal = 100) => {
@@ -50,7 +49,7 @@ const Pod = (props: PodProps) => {
   const buttonStyle = `m-[0.5px] relative aspect-square rounded-xl brightness-90 transition ${isShowing ? "z-[9999]" : "z-0"} ${isClicked ? "shadow-custom-lg border-[5px] border-blue-600" : "border-blue-600"} hover:border-[5px] hover:filter`;
 
   // Style for the tooltip
-  const hoverStyle = `pointer-events-none absolute z-[99999] rounded-lg bg-slate-100/95 text-slate-900/90 shadow-xl w-[350px] p-3 space-y-1 transition-opacity duration-300 ${isShowing ? "opacity-100" : "opacity-0"}`;
+  const hoverStyle = `pointer-events-none absolute z-[99999] rounded-lg bg-slate-100/95 text-slate-900/90 shadow-xl w-[350px] p-3 space-y-1 transition-opacity duration-300 ${isShowing ? "opacity-100 pointer-event-auto" : "opacity-0 pointer-event-none"}`;
 
   // If readiness is true then render this
   if (podInfo.readiness) {
