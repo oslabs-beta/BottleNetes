@@ -11,8 +11,8 @@ const RequestLimitChart = ({ data, selectedMetric, podList }) => {
       {podList.length > 0 ? (
         <Bar options={options} data={data} />
       ) : (
-        <div className="flex h-full items-center justify-center">
-          <p className="text-slate-900">No data available</p>
+        <div className="text-slate-800 dark:text-slate-200">
+          Loading...
         </div>
       )}
     </div>
