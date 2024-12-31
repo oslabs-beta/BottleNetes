@@ -11,13 +11,6 @@ const formatRelativeTime = (timestamp) => {
   return `${Math.floor(secondsAgo / 3600)} hr ago`; // 1 hour or more
 };
 
-// A previous formatTimestamp function was used, but the relative time approach is more user-friendly.
-// Old code for comparison:
-// const formatTimestamp = (timestamp) => {
-//   const date = new Date(timestamp);
-//   return `${date.getHours()}:${date.getMinutes().toString().padStart(2, "0")}`;
-// };
-
 const Chatbot = ({ allData, fetchData, username }) => {
   // State to hold AI responses
   const [aiContent, setAiContent] = useState([
@@ -59,12 +52,6 @@ const Chatbot = ({ allData, fetchData, username }) => {
 
     setUserInput(""); // Clear the input field after submission
 
-    // Format request body
-    const body = {
-      // allData: allData,
-      userMessage: userInput,
-    };
-
     function pruneArray(arr, targetLength) {
       const originalLength = arr.length;
       if (originalLength <= targetLength) return arr;
@@ -98,31 +85,31 @@ const Chatbot = ({ allData, fetchData, username }) => {
       return prunedArray;
     }
 
-    const historicalDataArray = [
-      allData.cpuUsageHistorical.resourceUsageHistorical, // array of 12 elements
-      allData.latencyAppRequestHistorical.latencyAppRequestHistorical, // array of 1 elements
-      allData.memoryUsageHistorical.resourceUsageHistorical, // array of 10 elements
-    ];
-    console.log(allData.cpuUsageHistorical.resourceUsageHistorical);
+    const prunedCpuUsageHistorical = loopedPrune(
+      allData.cpuUsageHistorical.resourceUsageHistorical,
+    );
+    const prunedLatencyAppRequestHistorical = loopedPrune(allData.latencyAppRequestHistorical.latencyAppRequestHistorical)
+    const prunedMemoryUsageHistorical = loopedPrune(
+      allData.memoryUsageHistorical.resourceUsageHistorical,
+    );
+
+
+    // console.log(allData.cpuUsageHistorical.resourceUsageHistorical);
+
+    const dataToSendBack = {
+      prunedCpuUsageHistorical: prunedCpuUsageHistorical,
+      prunedLatencyAppRequestHistorical: prunedLatencyAppRequestHistorical,
+      prunedMemoryUsageHistorical: prunedMemoryUsageHistorical,
+      rawAllPodsStatus: allData.podsStatuses.allPodsStatus,
+      rawAllPodsRequestLimit: allData.requestLimits.allPodsRequestLimit
+    };
 
     
-    const prunedCpuUsageHistorical = [];
-    allData.cpuUsageHistorical.resourceUsageHistorical.forEach((node) => {
-        const prunedData = {
-          timestampsUnix: pruneArray(node.timestampsUnix, node.timestampsUnix/3)
-
-        }
-        const prunedNode = {...node, ...prunedData}
-        prunedCpuUsageHistorical.push(prunedNode);
-    });
-
-    // const singlePointArray = [
-    //   allData.podsStatuses.allPodsStatus, // array of 20 elements
-    //   allData.requestLimits.allPodsRequestLimit, // array of 12 elements
-    // ];
-
-    // const prunedHistoricalDataArray = [];
-
+   // Format request body
+    const body = {
+      data: dataToSendBack,
+      userMessage: userInput,
+    };
 
     // Send data to backend and update AI response state
     try {
