@@ -2,16 +2,17 @@
 //Original Code (Commented Out)
 
 import express from "express";
-const apiRouter = express.Router();
 import askAiController from "../controllers/askAiController.js";
+
+const askAiRouter = express.Router();
 
 const check = (req, res, next) => {
   console.log("askAi router hit");
   return next();
 };
 
-apiRouter.post("/askAi", check, askAiController.queryOpenAI, (req, res) => {
+askAiRouter.post("/askAi", check, askAiController.queryOpenAI, (req, res) => {
   return res.status(200).json({ success: true, analysis: res.locals.analysis });
 });
 
-export default apiRouter;
+export default askAiRouter;
