@@ -11,13 +11,6 @@ const formatRelativeTime = (timestamp) => {
   return `${Math.floor(secondsAgo / 3600)} hr ago`; // 1 hour or more
 };
 
-// A previous formatTimestamp function was used, but the relative time approach is more user-friendly.
-// Old code for comparison:
-// const formatTimestamp = (timestamp) => {
-//   const date = new Date(timestamp);
-//   return `${date.getHours()}:${date.getMinutes().toString().padStart(2, "0")}`;
-// };
-
 const Chatbot = ({ allData, fetchData, username }) => {
   // State to hold AI responses
   const [aiContent, setAiContent] = useState([
@@ -59,9 +52,62 @@ const Chatbot = ({ allData, fetchData, username }) => {
 
     setUserInput(""); // Clear the input field after submission
 
-    // Format request body
+    function pruneArray(arr, targetLength) {
+      const originalLength = arr.length;
+      if (originalLength <= targetLength) return arr;
+      // If the array is already short enough, no need to prune }
+      const step = Math.floor(originalLength / targetLength);
+      const prunedArray = [];
+      for (let i = 0; i < originalLength; i += step) {
+        prunedArray.push(arr[i]);
+        if (prunedArray.length === targetLength) break; // Stop when we have the desired number of elements
+      }
+      // }
+      return prunedArray;
+    }
+
+    function loopedPrune(arrOfArrs) {
+      const prunedArray = []
+      arrOfArrs.forEach(node => {
+        const prunedNode = {};
+        for(let key in node) {
+          // HARD CODE ALERT
+          if (Array.isArray(node[key]) && node[key].length >= 300) {
+            prunedNode[key] = pruneArray(
+              node[key],
+              // HARD CODE ALERT
+              Math.floor(node[key].length / 3),
+            );
+          }
+        }
+        prunedArray.push(prunedNode)
+      })
+      return prunedArray;
+    }
+
+    const prunedCpuUsageHistorical = loopedPrune(
+      allData.cpuUsageHistorical.resourceUsageHistorical,
+    );
+    const prunedLatencyAppRequestHistorical = loopedPrune(allData.latencyAppRequestHistorical.latencyAppRequestHistorical)
+    const prunedMemoryUsageHistorical = loopedPrune(
+      allData.memoryUsageHistorical.resourceUsageHistorical,
+    );
+
+
+    // console.log(allData.cpuUsageHistorical.resourceUsageHistorical);
+
+    const dataToSendBack = {
+      prunedCpuUsageHistorical: prunedCpuUsageHistorical,
+      prunedLatencyAppRequestHistorical: prunedLatencyAppRequestHistorical,
+      prunedMemoryUsageHistorical: prunedMemoryUsageHistorical,
+      rawAllPodsStatus: allData.podsStatuses.allPodsStatus,
+      rawAllPodsRequestLimit: allData.requestLimits.allPodsRequestLimit
+    };
+
+    
+   // Format request body
     const body = {
-      // allData: allData,
+      data: dataToSendBack,
       userMessage: userInput,
     };
 
@@ -97,44 +143,46 @@ const Chatbot = ({ allData, fetchData, username }) => {
     const userMessage = historicalUserInput[i];
     const aiMessage = aiContent[i];
 
-    // Render user messages
     conversationArr.push(
-      // Render AI messages
-      aiMessage && (
-        <div className="mt-1 flex w-full max-w-xs space-x-3">
-          <div className="h-10 w-10 flex-shrink-0">
-            <img
-              src={logo}
-              alt="AI Logo"
-              className="h-full w-full rounded-full object-cover"
-            />
-          </div>
-          <div>
-            <div className="rounded-r-lg rounded-bl-lg bg-gradient-to-br from-gray-400 to-gray-200 p-2">
-              <p className="text-sm">{aiMessage.text}</p>
+      <div key={i}>
+        {/* Render user messages */}
+        {aiMessage && (
+          <div className="mt-1 flex w-full max-w-xs space-x-3">
+            <div className="h-10 w-10 flex-shrink-0">
+              <img
+                src={logo}
+                alt="AI Logo"
+                className="h-full w-full rounded-full object-cover"
+              />
             </div>
-            <span className="text-xs font-bold leading-none text-gray-500">
-              {formatRelativeTime(aiMessage.timestamp)}
-            </span>
-          </div>
-        </div>
-      ),
-      userMessage && (
-        <div className="ml-auto mt-2 flex w-full max-w-xs justify-end space-x-3">
-          <div>
-            <div className="rounded-l-lg rounded-br-lg bg-gradient-to-br from-[#6699e1] to-[#2229f4] p-2 text-white">
-              <p className="text-sm">{userMessage.text}</p>
+            <div>
+              <div className="rounded-r-lg rounded-bl-lg bg-gradient-to-br from-gray-400 to-gray-200 p-2">
+                <p className="text-sm">{aiMessage.text}</p>
+              </div>
+              <span className="text-xs font-bold leading-none text-gray-500">
+                {formatRelativeTime(aiMessage.timestamp)}
+              </span>
             </div>
-            <span className="text-xs leading-none text-gray-500">
-              {formatRelativeTime(userMessage.timestamp)}
-            </span>
           </div>
-          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-800 to-indigo-600 font-bold text-white">
-            {username[0].toUpperCase()}{" "}
-            {/* Display the first letter of the username */}
+        )}
+        ,{/* Render ai messages */}
+        {userMessage && (
+          <div className="ml-auto mt-2 flex w-full max-w-xs justify-end space-x-3">
+            <div>
+              <div className="rounded-l-lg rounded-br-lg bg-gradient-to-br from-[#6699e1] to-[#2229f4] p-2 text-white">
+                <p className="text-sm">{userMessage.text}</p>
+              </div>
+              <span className="text-xs leading-none text-gray-500">
+                {formatRelativeTime(userMessage.timestamp)}
+              </span>
+            </div>
+            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-800 to-indigo-600 font-bold text-white">
+              {username[0].toUpperCase()}{" "}
+              {/* Display the first letter of the username */}
+            </div>
           </div>
-        </div>
-      ),
+        )}
+      </div>,
     );
   }
 
@@ -146,23 +194,6 @@ const Chatbot = ({ allData, fetchData, username }) => {
           className="flex h-0 flex-grow flex-col overflow-auto p-3"
           ref={chatRef}
         >
-          {/* <div className="flex w-full max-w-xs space-x-3">
-            <div className="h-20 w-20 flex-shrink-0">
-              <img
-                src={logo}
-                alt="AI Logo"
-                className="h-full w-full rounded-full object-cover"
-              />
-            </div>
-            <div>
-              <div className="rounded-r-lg rounded-bl-lg bg-gray-300 p-3">
-                <p className="text-sm">How can I help you?</p>
-              </div>
-              <span className="text-xs leading-none text-gray-500">
-                {formatRelativeTime(Date.now())}
-              </span>
-            </div>
-          </div> */}
           {conversationArr}
         </div>
         <span className="bg flex w-full items-center justify-between">

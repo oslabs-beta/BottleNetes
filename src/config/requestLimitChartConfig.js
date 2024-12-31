@@ -11,7 +11,7 @@ export const getRequestLimitChartOptions = (selectedMetric) => ({
       grid: { color: "transparent" },
       beginAtZero: true,
       ticks: {
-        color: "#1e293b",
+        color: "#64748b",
         font: { size: 14 },
         callback: function (value) {
           return value === null ? "No data" : value;
@@ -20,7 +20,7 @@ export const getRequestLimitChartOptions = (selectedMetric) => ({
       title: {
         display: true,
         text: selectedMetric === "cpu" ? "CPU (Cores)" : "Memory (Mi)",
-        color: "#1e293b",
+        color: "#64748b",
         font: { size: 14 },
       },
     },
@@ -29,7 +29,7 @@ export const getRequestLimitChartOptions = (selectedMetric) => ({
       grid: { color: "transparent" },
       ticks: {
         autoSkip: false,
-        color: "#1e293b",
+        color: "#64748b",
         font: { size: 14 },
       },
     },
@@ -38,7 +38,7 @@ export const getRequestLimitChartOptions = (selectedMetric) => ({
     legend: {
       position: "top",
       labels: {
-        color: "#1e293b",
+        color: "#64748b",
         font: { size: 15 },
       },
     },
