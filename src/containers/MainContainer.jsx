@@ -102,7 +102,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
 
   return (
     <div id="main-container">
-      <header className="header sticky top-0 z-50 flex flex-col items-center justify-between gap-4 border-b-2 bg-gradient-to-r from-[#0f172a] to-[#1e40af] py-4 dark:border-slate-600 dark:bg-gradient-to-r dark:from-slate-950 dark:to-slate-900 sm:flex-row">
+      <header className="header sticky top-0 z-50 flex flex-col items-center justify-between gap-4 border-b-2 bg-gradient-to-r from-slate-950 to-slate-900 py-4 dark:border-slate-600 dark:bg-gradient-to-r dark:from-slate-950 dark:to-slate-900 sm:flex-row">
         <div id="leftside" className="flex items-center">
           {/* Menu drop down */}
           <div className="flex items-center gap-0 px-5">
@@ -210,7 +210,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
             {/* Pod Grid */}
             <div
               id="pod-grid"
-              className="flex max-h-[100%] flex-col rounded-3xl bg-slate-100 p-4 dark:border-2 dark:border-transparent dark:bg-transparent dark:shadow-custom-lg xl:col-span-2"
+              className="flex max-h-[100%] flex-col rounded-3xl bg-slate-100 p-4 dark:border-2 dark:border-transparent dark:bg-slate-900 dark:shadow-custom-lg xl:col-span-2"
             >
               <h2 className="mb-[5px] text-center text-2xl font-bold text-slate-900 dark:text-slate-300">
                 Heat Map
@@ -240,7 +240,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
             {/* Historical Tracing */}
             <div
               id="historical-tracing"
-              className="max-h-[100%] rounded-3xl bg-slate-100 p-4 dark:bg-transparent dark:shadow-custom-lg xl:col-span-2"
+              className="max-h-[100%] rounded-3xl bg-slate-100 p-4 dark:bg-slate-900 dark:shadow-custom-lg xl:col-span-2"
             >
               <h2 className="text-center text-2xl font-semibold text-slate-900 dark:text-slate-300">
                 Historical Tracing
@@ -258,7 +258,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
             {/* Request vs. Limit */}
             <div
               id="request-vs-limit"
-              className="h-[500px] w-full overflow-y-auto rounded-3xl bg-slate-100 p-4 dark:bg-transparent dark:shadow-custom-lg xl:col-span-2"
+              className="h-[500px] w-full overflow-y-auto rounded-3xl bg-slate-100 p-4 dark:bg-slate-900 dark:shadow-custom-lg xl:col-span-2"
             >
               <h2 className="text-center text-2xl font-semibold text-slate-900 dark:text-slate-300">
                 Request vs. Limit
@@ -274,7 +274,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
             {/* Latency */}
             <div
               id="latency"
-              className="rounded-3xl bg-slate-100 p-4 dark:bg-transparent dark:shadow-custom-lg xl:col-span-2"
+              className="rounded-3xl bg-slate-100 p-4 dark:bg-slate-900 dark:shadow-custom-lg xl:col-span-2"
             >
               <h2 className="text-center text-2xl font-semibold text-slate-900 dark:text-slate-300">
                 Request Latency
