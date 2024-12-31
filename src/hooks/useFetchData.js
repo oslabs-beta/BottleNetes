@@ -20,12 +20,12 @@ function getWindowInSeconds(selectedTimeWindow) {
 function getTimeStep(selectedTimeWindow) {
   switch (selectedTimeWindow) {
     case "5m":
-      return "15";
+      return "10";
     case "1h":
-      return "120";
+      return "60";
     case "24h":
     default:
-      return "1000";
+      return "600";
   }
 }
 

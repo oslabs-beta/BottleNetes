@@ -34,7 +34,7 @@ const QueryTimeWindowConfiguration = ({
       <div id="time-window-config-button" className="flex items-center">
         <button
           onClick={() => setShowTimeWindow(true)}
-          className="transition-color rounded-2xl border-2 border-transparent bg-slate-200 border-2 px-4 py-2 text-lg font-semibold text-slate-500 duration-300 hover:brightness-90 w-full dark:text-slate-300 dark:bg-slate-800"
+          className="transition-color rounded-2xl border-2 border-transparent bg-transparent border-2 px-4 py-2 text-lg font-semibold text-slate-500 underline duration-100 hover:brightness-50 w-full dark:text-slate-300"
         >
           Time Window: {queryTimeWindow}
         </button>

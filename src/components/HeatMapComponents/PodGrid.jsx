@@ -109,7 +109,7 @@ const PodGrid = ({
 
   // Dynamic Grid Style for the heatmap
   const gridStyle =
-    "grid gap-[2px] grid-cols-5 overflow-visible md:grid-cols-7 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 3xl:grid-cols-9 relative z-20";
+    "grid gap-[2px] grid-cols-5 overflow-visible md:grid-cols-7 lg:grid-cols-8 xl:grid-cols-5 2xl:grid-cols-7 3xl:grid-cols-9 relative z-20";
 
   return (
     <div className="flex h-full flex-col overflow-visible">
@@ -117,7 +117,7 @@ const PodGrid = ({
       {/* Configuring buttons on top of the heat map */}
       <div
         id="control-buttons-row"
-        className="grid grid-cols-4 gap-x-4 gap-y-2 px-4 py-2"
+        className="grid grid-cols-4 gap-x-2 gap-y-2 px-4 py-2"
       >
         <PodRestart
           clickedPod={clickedPod}
@@ -185,7 +185,7 @@ const PodGrid = ({
               });
               setMetricToSort("");
             }}
-            className="rounded-2xl border-4 border-blue-600 bg-slate-100 px-4 py-2 py-5 text-lg font-semibold text-blue-600 transition transition-colors duration-200 hover:brightness-90 dark:bg-transparent dark:border-2 dark:border-slate-300 dark:text-slate-300"
+            className="rounded-2xl border-4 border-blue-600 bg-slate-100 px-4 py-[15px] py-5 text-lg font-semibold text-blue-600 transition transition-colors duration-200 hover:brightness-90 dark:bg-transparent dark:border-2 dark:border-slate-300 dark:text-slate-300"
           >
             Reset
           </button>
