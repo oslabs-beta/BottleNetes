@@ -1,9 +1,9 @@
-import PropTypes from "prop-types";
-import { useState } from "react";
-import { useRequestLimitData } from "../../hooks/useRequestLimitData";
-import { prepareRequestLimitChartData } from "../../utils/requestLimitUtils";
-import RequestLimitSorter from "./RequestLimitSorter";
-import RequestLimitChart from "./RequestLimitChart";
+import React from 'react';
+
+import { useRequestLimitData } from "../../hooks/useRequestLimitData.ts";
+import { prepareRequestLimitChartData } from "../../utils/requestLimitUtils.ts";
+import RequestLimitSorter from "./RequestLimitSorter.jsx";
+import RequestLimitChart from "./RequestLimitChart.jsx";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -25,8 +25,14 @@ ChartJS.register(
   Legend,
 );
 
-const RequestLimit = ({ selectedMetric, requestLimits }) => {
-  const [sortType, setSortType] = useState("");
+import mainStore from "../../stores/mainStore.ts";
+import dataStore from "../../stores/dataStore.ts";
+
+const RequestLimit = () => {
+
+  const { selectedMetric } = mainStore();
+  const requestLimits = dataStore((state) => state.allData.requestLimits);
+  const { sortType, setSortType } = dataStore();
 
   const podList = useRequestLimitData(requestLimits, sortType, selectedMetric);
   const [limitData, requestData] = prepareRequestLimitChartData(
@@ -64,11 +70,6 @@ const RequestLimit = ({ selectedMetric, requestLimits }) => {
       />
     </div>
   );
-};
-
-RequestLimit.propTypes = {
-  selectedMetric: PropTypes.string.isRequired,
-  requestLimits: PropTypes.object.isRequired,
 };
 
 export default RequestLimit;

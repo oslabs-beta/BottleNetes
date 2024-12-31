@@ -42,25 +42,26 @@ const useFetchData = ({
   const { isFetchingData, setIsFetchingData, allData, setAllData } =
     dataStore();
 
-  useEffect(() => {
-    const fetchData = async (
-      method: string,
-      endpoint: string,
-      body: Record<string, unknown> | null = null,
-    ): Promise<Record<string, unknown> | null> => {
-      try {
-        const request: Request = {
-          method: method,
-          headers: { "Content-Type": "application/json" },
-        };
-        if (body) request.body = JSON.stringify(body);
-        const response = await fetch(backendUrl + endpoint, request);
-        return await response.json();
-      } catch (error) {
-        console.error("Fetch error:", error);
-        return null;
-      }
-    };
+  useEffect(
+    () => {
+      const fetchData = async (
+        method: string,
+        endpoint: string,
+        body: Record<string, unknown> | null = null,
+      ): Promise<Record<string, unknown> | null> => {
+        try {
+          const request: Request = {
+            method: method,
+            headers: { "Content-Type": "application/json" },
+          };
+          if (body) request.body = JSON.stringify(body);
+          const response = await fetch(backendUrl + endpoint, request);
+          return await response.json();
+        } catch (error) {
+          console.error("Fetch error:", error);
+          return null;
+        }
+      };
 
       const bigFetch = async () => {
         setIsFetchingData(true);
@@ -144,30 +145,79 @@ const useFetchData = ({
           setAllData({
             podsStatuses:
               // preserve the pod state during data refresh by merging existing pod data with new data
-              (status && {
-                allPodsStatus: status.allPodsStatus?.map((pod) => {
-                  // check if pod is found in existing data
-                  const existingPod = allData.podsStatuses?.allPodsStatus?.find(
-                    (existing) =>
-                      existing.podName === pod.podName &&
-                      existing.namespace === pod.namespace,
-                  );
-                  // if pod is found in existing data, update it with new data (if any)
-                  // if pod is not found in existing data, add it
-                  return existingPod ? { ...pod, ...existingPod } : pod;
-                }),
-              }) ||
+              (status &&
+                Array.isArray(status.allPodsStatus) && {
+                  allPodsStatus: status.allPodsStatus.map((pod) => {
+                    // check if pod is found in existing data
+                    const existingPod = Array.isArray(allData.podsStatuses)
+                      ? undefined
+                      : allData.podsStatuses?.allPodsStatus?.find(
+                          (existing) =>
+                            existing.podName === pod.podName &&
+                            existing.namespace === pod.namespace,
+                        );
+                    // if pod is found in existing data, update it with new data (if any)
+                    // if pod is not found in existing data, add it
+                    return existingPod ? { ...existingPod, ...pod } : pod;
+                  }),
+                }) ||
               [], // if status is null, set to empty array
-            requestLimits: requestLimits || [],
+            requestLimits:
+              (requestLimits &&
+                Array.isArray(requestLimits.allPodsRequestLimit) && {
+                  allPodsRequestLimit: requestLimits.allPodsRequestLimit,
+                }) ||
+              [],
             allNodes: {
               allNodes: [{ nodeName: "Minikube", clusterName: "Minikube" }],
             },
-            cpuUsageOneValue: cpuUsageOneValue || [],
-            memoryUsageOneValue: memoryUsageOneValue || [],
-            cpuUsageHistorical: cpuUsageHistorical || [],
-            memoryUsageHistorical: memoryUsageHistorical || [],
-            latencyAppRequestOneValue: latencyAppRequestOneValue || [],
-            latencyAppRequestHistorical: latencyAppRequestHistorical || [],
+            cpuUsageOneValue:
+              (cpuUsageOneValue &&
+                Array.isArray(cpuUsageOneValue.resourceUsageOneValue) && {
+                  resourceUsageOneValue: cpuUsageOneValue.resourceUsageOneValue,
+                }) ||
+              [],
+            memoryUsageOneValue:
+              (memoryUsageOneValue &&
+                Array.isArray(memoryUsageOneValue.resourceUsageOneValue) && {
+                  resourceUsageOneValue:
+                    memoryUsageOneValue.resourceUsageOneValue,
+                }) ||
+              [],
+            cpuUsageHistorical:
+              (cpuUsageHistorical &&
+                Array.isArray(cpuUsageHistorical.resourceUsageHistorical) && {
+                  resourceUsageHistorical:
+                    cpuUsageHistorical.resourceUsageHistorical,
+                }) ||
+              [],
+            memoryUsageHistorical:
+              (memoryUsageHistorical &&
+                Array.isArray(
+                  memoryUsageHistorical.resourceUsageHistorical,
+                ) && {
+                  resourceUsageHistorical:
+                    memoryUsageHistorical.resourceUsageHistorical,
+                }) ||
+              [],
+            latencyAppRequestOneValue:
+              (latencyAppRequestOneValue &&
+                Array.isArray(
+                  latencyAppRequestOneValue.latencyAppRequestOneValue,
+                ) && {
+                  latencyAppRequestOneValue:
+                    latencyAppRequestOneValue.latencyAppRequestOneValue,
+                }) ||
+              [],
+            latencyAppRequestHistorical:
+              (latencyAppRequestHistorical &&
+                Array.isArray(
+                  latencyAppRequestHistorical.latencyAppRequestHistorical,
+                ) && {
+                  latencyAppRequestHistorical:
+                    latencyAppRequestHistorical.latencyAppRequestHistorical,
+                }) ||
+              [],
           });
         } catch (error) {
           console.error("Error fetching initial data:", error);

@@ -8,7 +8,7 @@ type ClickedPod = {
   [key: string]: any;
 };
 
-type State = {
+export type State = {
   defaultView: boolean;
   queryTimeWindow: string;
   clickedPod: ClickedPod;
@@ -19,6 +19,7 @@ type State = {
   showRefreshPopup: boolean;
   refreshInput: string;
   isMenuOpen: boolean;
+  aiVisibility: boolean;
 };
 
 type Action = {
@@ -34,6 +35,7 @@ type Action = {
   setShowRefreshPopup: (boolean: State["showRefreshPopup"]) => void;
   setRefreshInput: (refreshInput: State["refreshInput"]) => void;
   setIsMenuOpen: (boolean: State["isMenuOpen"]) => void;
+  setAiVisibility: (boolean: State["aiVisibility"]) => void;
 };
 
 const mainStore = create<State & Action>()((set) => ({
@@ -80,6 +82,9 @@ const mainStore = create<State & Action>()((set) => ({
 
   isMenuOpen: false,
   setIsMenuOpen: (isMenuOpen) => set({ isMenuOpen }),
+
+  aiVisibility: false,
+  setAiVisibility: (aiVisibility) => set({ aiVisibility }),
 }));
 
 export default mainStore;

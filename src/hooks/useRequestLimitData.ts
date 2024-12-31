@@ -1,14 +1,31 @@
 import { useMemo } from "react";
 import { bytesToMb } from "../utils/requestLimitUtils";
 
+import { allData, State } from "../stores/dataStore.ts";
+import { State as mainState} from "../stores/mainStore.ts";
+
+type requestLimit = allData["requestLimits"];
+type sortType = State["sortType"];
+type selectedMetric = mainState["selectedMetric"];
+interface Pod {
+  podName: string;
+  cpuRequest: number | null;
+  memoryRequest: number | null;
+  cpuLimit: number | null;
+  memoryLimit: number | null;
+  cpuRequestLimitRatio: number | null;
+  memoryRequestLimitRatio: number | null;
+};
+
 export const useRequestLimitData = (
-  requestLimits,
-  sortType,
-  selectedMetric,
+  requestLimits: requestLimit,
+  sortType: sortType,
+  selectedMetric: selectedMetric,
 ) => {
   const podList = useMemo(() => {
-    let pods =
-      requestLimits?.allPodsRequestLimit?.map((pod) => ({
+    let pods = Array.isArray(requestLimits)
+      ? []
+      : requestLimits?.allPodsRequestLimit?.map((pod) => ({
         podName: pod.podName || "",
         cpuRequest: typeof pod.cpuRequest === "number" ? pod.cpuRequest : null,
         memoryRequest:
@@ -28,27 +45,29 @@ export const useRequestLimitData = (
 
     if (sortType) {
       pods.sort((a, b) => {
-        const getValue = (pod, type) => {
+        const getValue = (pod: Pod, type: string): number | null => {
           if (selectedMetric === "cpu") {
-            const metricMap = {
+            const metricMap: { [key: string]: number | null } = {
               request: pod.cpuRequest,
               limit: pod.cpuLimit,
               ratio: pod.cpuRequestLimitRatio,
             };
             return typeof metricMap[type] === "number" ? metricMap[type] : null;
           } else {
-            const metricMap = {
+            const metricMap: { [key: string]: number | null } = {
               request: pod.memoryRequest,
               limit: pod.memoryLimit,
               ratio: pod.memoryRequestLimitRatio,
             };
             return typeof metricMap[type] === "number"
               ? type === "ratio"
-                ? metricMap[type]
-                : bytesToMb(metricMap[type])
+          ? metricMap[type]
+          : bytesToMb(metricMap[type]!)
               : null;
           }
         };
+
+        
 
         if (sortType === "podName") return a.podName.localeCompare(b.podName);
 

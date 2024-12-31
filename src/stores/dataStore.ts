@@ -1,16 +1,101 @@
 import { create } from "zustand";
 
-// Type for allData Obj. Index Signature is included to possibly add more props later
-type allData = {
-  podsStatuses: Record<string, unknown> | [];
-  requestLimits: Record<string, unknown> | [];
-  allNodes: Record<string, unknown> | [];
-  cpuUsageOneValue: Record<string, unknown> | [];
-  memoryUsageOneValue: Record<string, unknown> | [];
-  cpuUsageHistorical: Record<string, unknown> | any[] | null;
-  memoryUsageHistorical: Record<string, unknown> | any[] | null;
-  latencyAppRequestOneValue: Record<string, unknown> | [];
-  latencyAppRequestHistorical: Record<string, unknown> | any[] | null;
+export type allPodsStatusObj = {
+  podName: string;
+  namespace: string;
+  status: string;
+  nodeName: string;
+  service: string;
+  clusterName: string;
+  restartCount: number;
+  containerCount: number;
+  containers: any[];
+  readiness: boolean;
+  deployment: string;
+  [key: string]: string | number | boolean | any[] | Record<string, unknown>;
+};
+
+export type allPodsRequestLimitObj = {
+  podName: string;
+  cpuRequest: number;
+  memoryRequest: number;
+  cpuLimit: number;
+  memoryLimit: number;
+  cpuRequestLimitRatio: number;
+  memoryRequestLimitRatio: number;
+  [key: string]: string | number | boolean | any[] | Record<string, unknown>;
+};
+
+type allNodesObj = {
+  nodeName: string;
+  clusterName: string;
+  [key: string]: string;
+};
+
+type resourceUsageOneValueObj = {
+  name: string;
+  usageRelativeToRequest: number;
+  usageAbsolute: number;
+  [key: string]: string | number | boolean | any[] | Record<string, unknown>;
+};
+
+type resourceUsageHistoricalObj = {
+  name: string;
+  timestampsUnix: number[];
+  timestampsReadable: number[];
+  usageRelative: number[];
+  usageAbsolute: number[];
+  [key: string]: string | number | boolean | any[] | Record<string, unknown>;
+};
+
+type latencyAppRequestOneValueObj = {
+  name: string;
+  numRequest: number;
+  avgInboundLatency: number;
+  avgOutboundLatency: number;
+  avgCombinedLatency: number;
+  peakInboundLatency: number;
+  peakOutboundLatency: number;
+  [key: string]: string | number | boolean | any[] | Record<string, unknown>;
+};
+
+type latencyAppRequestHistoricalObj = {
+  name: string;
+  timestampsUnix: number[];
+  timestampsReadable: number[];
+  avgInboundLatency: number[];
+  avgOutboundLatency: number[];
+  avgCombinedLatency: number[];
+  peakInboundLatency: number[];
+  peakOutboundLatency: number[];
+  [key: string]: string | number | boolean | any[] | Record<string, unknown>;
+};
+
+export type allData = {
+  podsStatuses: { allPodsStatus: allPodsStatusObj[] } | any[];
+  requestLimits: { allPodsRequestLimit: allPodsRequestLimitObj[] } | any[];
+  allNodes: { allNodes: allNodesObj[] } | any[];
+  cpuUsageOneValue:
+    | { resourceUsageOneValue: resourceUsageOneValueObj[] }
+    | any[];
+  memoryUsageOneValue:
+    | { resourceUsageOneValue: resourceUsageOneValueObj[] }
+    | any[];
+  cpuUsageHistorical:
+    | { resourceUsageHistorical: resourceUsageHistoricalObj[] }
+    | any[]
+    | null;
+  memoryUsageHistorical:
+    | { resourceUsageHistorical: resourceUsageHistoricalObj[] }
+    | any[]
+    | null;
+  latencyAppRequestOneValue:
+    | { latencyAppRequestOneValue: latencyAppRequestOneValueObj[] }
+    | any[];
+  latencyAppRequestHistorical:
+    | { latencyAppRequestHistorical: latencyAppRequestHistoricalObj[] }
+    | any[]
+    | null;
   [key: string]: Record<string, unknown> | any[] | null;
 };
 
@@ -19,13 +104,14 @@ type filterConfig = {
   value: string;
 };
 
-type State = {
+export type State = {
   isFetchingData: boolean;
   allData: allData;
   backendUrl: "http://localhost:3000/";
   // PodGrid States
   metricToSort: string;
   filterConfig: filterConfig;
+  sortType: string;
 };
 
 type Action = {
@@ -34,6 +120,7 @@ type Action = {
   // PodGrid States
   setMetricToSort: (metricToSort: State["metricToSort"]) => void;
   setFilterConfig: (filterConfig: State["filterConfig"]) => void;
+  setSortType: (sortType: State["sortType"]) => void;
 };
 
 const dataStore = create<State & Action>()((set) => ({
@@ -41,7 +128,7 @@ const dataStore = create<State & Action>()((set) => ({
   setIsFetchingData: (boolean) => set({ isFetchingData: boolean }),
 
   allData: {
-    podsStatuses: { podsStatuses: [] },
+    podsStatuses: { allPodsStatus: [] },
     requestLimits: { allPodsRequestLimit: [] },
     allNodes: { allNodes: [] },
     cpuUsageOneValue: { resourceUsageOneValue: [] },
@@ -57,24 +144,35 @@ const dataStore = create<State & Action>()((set) => ({
         ...state.allData,
         podsStatuses: Array.isArray(allData.podsStatuses)
           ? []
-          : allData.podsStatuses,
+          : { allPodsStatus: allData.podsStatuses.allPodsStatus },
         requestLimits: Array.isArray(allData.requestLimits)
           ? []
-          : allData.requestLimits,
-        allNodes: Array.isArray(allData.allNodes) ? [] : allData.allNodes,
+          : { allPodsRequestLimit: allData.requestLimits.allPodsRequestLimit },
+        allNodes: Array.isArray(allData.allNodes)
+          ? []
+          : { allNodes: allData.allNodes.allNodes },
         cpuUsageOneValue: Array.isArray(allData.cpuUsageOneValue)
           ? []
-          : allData.cpuUsageOneValue,
+          : {
+              resourceUsageOneValue:
+                allData.cpuUsageOneValue.resourceUsageOneValue,
+            },
         memoryUsageOneValue: Array.isArray(allData.memoryUsageOneValue)
           ? []
-          : allData.memoryUsageOneValue,
+          : {
+              resourceUsageOneValue:
+                allData.memoryUsageOneValue.resourceUsageOneValue,
+            },
         cpuUsageHistorical: allData.cpuUsageHistorical,
         memoryUsageHistorical: allData.memoryUsageHistorical,
         latencyAppRequestOneValue: Array.isArray(
           allData.latencyAppRequestOneValue,
         )
           ? []
-          : allData.latencyAppRequestOneValue,
+          : {
+              latencyAppRequestOneValue:
+                allData.latencyAppRequestOneValue.latencyAppRequestOneValue,
+            },
         latencyAppRequestHistorical: allData.latencyAppRequestHistorical,
       },
     })),
@@ -96,6 +194,9 @@ const dataStore = create<State & Action>()((set) => ({
         value: filterConfig.value,
       },
     })),
+
+  sortType: "",
+  setSortType: (sortType) => set({ sortType }),
 }));
 
 export default dataStore;

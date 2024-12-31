@@ -7,12 +7,41 @@ import { useMemo } from "react";
 import dataStore from "../stores/dataStore.ts";
 import mainStore from "../stores/mainStore.ts";
 
-const { podStatuses. cpuUsageOneValue, memoryUsageOneValue, latencyAppRequestOneValue } = dataStore();
-const { selectedMetric,  }
+const { filterConfig, metricToSort } = dataStore();
+const { selectedMetric, defaultView } = mainStore();
+const podStatuses = dataStore((state) => state.allData.podsStatuses);
+const cpuUsageOneValue = dataStore((state) => state.allData.cpuUsageOneValue);
+const memoryUsageOneValue = dataStore(
+  (state) => state.allData.memoryUsageOneValue,
+);
+const latencyAppRequestOneValue = dataStore(
+  (state) => state.allData.latencyAppRequestOneValue,
+);
+const requestLimits = dataStore((state) => state.allData.requestLimits);
 
 interface ParamTypes {
-  podStatuses: 
+  podStatuses: typeof podStatuses;
+  cpuUsageOneValue: typeof cpuUsageOneValue;
+  memoryUsageOneValue: typeof memoryUsageOneValue;
+  latencyAppRequestOneValue: typeof latencyAppRequestOneValue;
+  requestLimits: typeof requestLimits;
+  selectedMetric: typeof selectedMetric;
+  filterConfig: typeof filterConfig;
+  metricToSort: typeof metricToSort;
+  defaultView: typeof defaultView;
 }
+
+type podObj = {
+  [key: string]:
+    | string
+    | number
+    | boolean
+    | null
+    | undefined
+    | string[]
+    | number[]
+    | Record<string, unknown>;
+};
 
 const usePodListProcessor = ({
   podStatuses,
@@ -24,19 +53,19 @@ const usePodListProcessor = ({
   filterConfig,
   metricToSort,
   defaultView,
-}) => {
+}: ParamTypes) => {
   // useMemo is used to optimize performance by memoizing the result of a function so that the function does not have to recompute the result every time it is called with the same inputs.
   // In this case, the usePodListProcessor hook is memoized so that the result of the hook is cached and returned when the hook is called with the same inputs.
   // This can help improve performance by avoiding unnecessary re-renders when the inputs to the hook have not changed.
   return useMemo(() => {
     // Early return if no pod status data
-    if (!podStatuses?.allPodsStatus) {
+    if (Array.isArray(podStatuses) || !podStatuses?.allPodsStatus) {
       return [];
     }
 
     const podList = podStatuses.allPodsStatus.map((pod) => {
       // Base pod object with static properties
-      const podObj = {
+      const podObj: podObj = {
         podName: pod.podName,
         namespace: pod.namespace,
         status: pod.status,
@@ -48,23 +77,29 @@ const usePodListProcessor = ({
       };
 
       // CPU metrics
-      const cpuData = cpuUsageOneValue?.resourceUsageOneValue?.find(
-        (obj) => obj.name === pod.podName,
-      );
+      const cpuData = Array.isArray(cpuUsageOneValue)
+        ? undefined
+        : cpuUsageOneValue?.resourceUsageOneValue?.find(
+            (obj) => obj.name === pod.podName,
+          );
       podObj.cpuDataRelative = cpuData?.usageRelativeToRequest;
       podObj.cpuDataAbsolute = cpuData?.usageAbsolute;
 
       // Memory metrics
-      const memoryData = memoryUsageOneValue?.resourceUsageOneValue?.find(
-        (obj) => obj.name === pod.podName,
-      );
+      const memoryData = Array.isArray(memoryUsageOneValue)
+        ? undefined
+        : memoryUsageOneValue?.resourceUsageOneValue?.find(
+            (obj) => obj.name === pod.podName,
+          );
       podObj.memoryDataRelative = memoryData?.usageRelativeToRequest;
       podObj.memoryDataAbsolute = memoryData?.usageAbsolute;
 
       // Request and Limits data
-      const requestLimit = requestLimits?.allPodsRequestLimit?.find(
-        (obj) => obj.podName === pod.podName,
-      );
+      const requestLimit = Array.isArray(requestLimits)
+        ? undefined
+        : requestLimits?.allPodsRequestLimit?.find(
+            (obj) => obj.podName === pod.podName,
+          );
       podObj.cpuRequest = requestLimit?.cpuRequest || null;
       podObj.cpuLimit = requestLimit?.cpuLimit || null;
       podObj.memoryRequest = requestLimit?.memoryRequest
@@ -75,10 +110,11 @@ const usePodListProcessor = ({
         : null;
 
       // Latency metrics
-      const latencyData =
-        latencyAppRequestOneValue?.latencyAppRequestOneValue?.find(
-          (obj) => obj.name === pod.podName,
-        );
+      const latencyData = Array.isArray(latencyAppRequestOneValue)
+        ? undefined
+        : latencyAppRequestOneValue?.latencyAppRequestOneValue?.find(
+            (obj) => obj.name === pod.podName,
+          );
       podObj.latencyData = latencyData?.avgCombinedLatency;
 
       return podObj;
@@ -126,11 +162,13 @@ const usePodListProcessor = ({
       processedPods.sort((a, b) => {
         if (metricToSort === "podName") {
           // when sorting by pod name, use localeCompare method for string comparison
-          return a[metricToSort].localeCompare(b[metricToSort]);
+          return typeof a[metricToSort] === 'string' && typeof b[metricToSort] === 'string'
+            ? a[metricToSort].localeCompare(b[metricToSort])
+            : 0;
         }
         // when sorting by other metrics, use numeric comparison,
         // if the metric is not available, default to 0
-        return (b[metricToSort] || 0) - (a[metricToSort] || 0);
+        return (Number(b[metricToSort]) || 0) - (Number(a[metricToSort]) || 0);
       });
     }
 
