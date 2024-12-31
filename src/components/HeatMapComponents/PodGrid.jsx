@@ -60,7 +60,7 @@ const PodGrid = ({
   });
 
   if (!podStatuses.allPodsStatus) {
-    return <div>loading...</div>;
+    return <div className="font-semibold text-slate-800 dark:text-slate-200">Loading...</div>;
   }
 
   const buttonArray = processedPodList.map((podObj) => (
@@ -134,7 +134,7 @@ const PodGrid = ({
       {/* Bottom Container */}
       <div className="flex flex-1">
         {/* Left Column - Selection Buttons */}
-        <div className="flex w-1/4 min-w-[207px] flex-col justify-start gap-2 p-4 mr-4">
+        <div className="flex w-1/4 min-w-[207px] flex-col justify-start gap-2 p-4 mr-2">
           <QueryTimeWindowConfiguration
             queryTimeWindow={queryTimeWindow}
             setQueryTimeWindow={setQueryTimeWindow}
@@ -172,7 +172,7 @@ const PodGrid = ({
         {/* Right Column - Pod Heat Map */}
         <div
           id="pod-heat-map"
-          className="z-10 my-4 mr-3 w-3/4 overflow-visible rounded-xl border-4 border-blue-500 dark:border-2 dark:border-slate-300 bg-transparent p-4"
+          className="z-10 my-4 mr-3 w-3/4 overflow-visible rounded-xl border-4 border-transparent bg-blue-500/10 p-4"
         >
           <div id="pod-grid" className={gridStyle}>
             {buttonArray}
