@@ -49,7 +49,7 @@ spec:
     spec:
       containers:
         - name: demo-app-on-bottlenetes-backend
-          image: randomlettergenerator/demo-app-on-bottlenetes-backend:test
+          image: randomlettergenerator/demo-app-on-bottlenetes-backend:v0.1
           imagePullPolicy: Always
           resources:
             requests:
