@@ -1,10 +1,13 @@
-import PropTypes from "prop-types";
-import { useState, useEffect, useRef } from "react";
-import logo from "../assets/logo.png"; // Importing the AI logo image for branding purposes
+import React from "react";
+import { useEffect, useRef } from "react";
+
+import dataStore from "../stores/dataStore.ts";
+import userStore from "../stores/userStore.ts";
+import chatBotStore from "../stores/chatBotStore.ts";
 
 // Helper function to calculate relative time
 // This version calculates a human-readable timestamp format like "5 min ago"
-const formatRelativeTime = (timestamp) => {
+const formatRelativeTime = (timestamp: number) => {
   const secondsAgo = Math.floor((Date.now() - timestamp) / 1000); // Calculate the difference in seconds
   if (secondsAgo < 60) return `${secondsAgo} sec ago`; // Less than 1 minute
   if (secondsAgo < 3600) return `${Math.floor(secondsAgo / 60)} min ago`; // Less than 1 hour
@@ -18,44 +21,77 @@ const formatRelativeTime = (timestamp) => {
 //   return `${date.getHours()}:${date.getMinutes().toString().padStart(2, "0")}`;
 // };
 
-const Chatbot = ({ allData, fetchData, username }) => {
-  // State to hold AI responses
-  const [aiContent, setAiContent] = useState([
-    { text: "How can I help you?", timestamp: Date.now() },
-  ]);
-  // State to hold user input text
-  const [userInput, setUserInput] = useState("");
-  // State to store user message history
-  const [historicalUserInput, setHistoricalUserInput] = useState([]);
-  // State to track timestamps for messages
-  const [timestamps, setTimestamps] = useState([]); // Added for displaying relative timestamps
+type Body = {
+  [key: string]: string | number | any[] | Record<string, unknown>;
+};
+
+const Chatbot = () => {
+  const backendUrl = dataStore((state) => state.backendUrl);
+  const username = userStore((state) => state.username);
+  const {
+    // State to hold user input text
+    userInput,
+    setUserInput,
+    // State to store user message history
+    historicalUserInput,
+    setHistoricalUserInput,
+    // State to track timestamps for messages
+    timestamps,
+    setTimestamps,
+    // State to hold AI responses
+    aiContent,
+    setAiContent,
+  } = chatBotStore();
+
+  const fetchData = async (method: string, endpoint: string, body: Body) => {
+    console.log(`Sending ${method} request to ${backendUrl}${endpoint}...`);
+
+    try {
+      const response = await fetch(`${backendUrl}${endpoint}`, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error("😵 Error:", error);
+    }
+  };
+
   // Scrollbar reference for auto-scrolling
-  const chatRef = useRef(null);
+  const chatRef = useRef<HTMLDivElement>(null);
 
   // Handle input changes for the text field
-  const handleInputChange = (event) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setUserInput(event.target.value); // Updates the state with user input
   };
 
   // Event handler for pressing Enter to submit
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault(); // Prevents default form submission
-      handleSubmit(e); // Calls handleSubmit
+      handleSubmit(e as React.KeyboardEvent<HTMLInputElement>); // Calls handleSubmit
     }
   };
 
   // Handle form submission to send user input and fetch AI response
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLInputElement>) => {
     event.preventDefault();
 
     if (!userInput.trim()) return; // Prevent empty submissions
 
-    const timestamp = Date.now(); // Record the current timestamp
+    const timestamp = new Date(Date.now()); // Record the current timestamp
 
     // Update historical user input and timestamps states
-    setHistoricalUserInput((prev) => [...prev, { text: userInput, timestamp }]);
-    setTimestamps((prev) => [...prev, timestamp]);
+    setHistoricalUserInput([{...historicalUserInput, text: userInput, timestamp }]);
+    setTimestamps([...timestamps, timestamp]);
 
     setUserInput(""); // Clear the input field after submission
 
@@ -68,13 +104,10 @@ const Chatbot = ({ allData, fetchData, username }) => {
     // Send data to backend and update AI response state
     try {
       const response = await fetchData("POST", "ai/askAi", body);
-      const { analysis } = response;
+      const { analysis } = await response.json();
 
       // Append the AI response and its timestamp to aiContent state
-      setAiContent((prev) => [
-        ...prev,
-        { text: analysis || "❌ No response received", timestamp },
-      ]);
+      setAiContent([...aiContent, { text: analysis || "❌ No response received", timestamp }]);
     } catch (error) {
       console.error("😵 Error:", error);
     }
@@ -104,7 +137,7 @@ const Chatbot = ({ allData, fetchData, username }) => {
         <div className="mt-1 flex w-full max-w-xs space-x-3">
           <div className="h-10 w-10 flex-shrink-0">
             <img
-              src={logo}
+              src={"/src/assets/logo.png"}
               alt="AI Logo"
               className="h-full w-full rounded-full object-cover"
             />
@@ -114,7 +147,7 @@ const Chatbot = ({ allData, fetchData, username }) => {
               <p className="text-sm">{aiMessage.text}</p>
             </div>
             <span className="text-xs font-bold leading-none text-gray-500">
-              {formatRelativeTime(aiMessage.timestamp)}
+              {formatRelativeTime(aiMessage.timestamp.getTime())}
             </span>
           </div>
         </div>
@@ -126,7 +159,7 @@ const Chatbot = ({ allData, fetchData, username }) => {
               <p className="text-sm">{userMessage.text}</p>
             </div>
             <span className="text-xs leading-none text-gray-500">
-              {formatRelativeTime(userMessage.timestamp)}
+              {formatRelativeTime(userMessage.timestamp.getTime())}
             </span>
           </div>
           <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-800 to-indigo-600 font-bold text-white">
@@ -183,13 +216,6 @@ const Chatbot = ({ allData, fetchData, username }) => {
       </div>
     </div>
   );
-};
-
-// PropTypes validation
-Chatbot.propTypes = {
-  allData: PropTypes.object,
-  fetchData: PropTypes.func.isRequired,
-  username: PropTypes.string.isRequired, // New username prop for displaying initials
 };
 
 export default Chatbot;

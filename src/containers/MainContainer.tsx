@@ -251,15 +251,6 @@ const MainContainer = () => {
             className={`absolute bottom-[100%] right-0 mb-3 w-96 rounded-2xl transition-opacity duration-300 ${aiVisibility ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
           >
             <Chatbot
-              allData={allData}
-              fetchData={(method, endpoint, body) =>
-                fetch(`${backendUrl}${endpoint}`, {
-                  method,
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify(body),
-                }).then((res) => res.json())
-              }
-              username={username}
               className="text-gradient font-poppins text-2xl font-bold shadow-lg"
               logoStyle={{
                 width: "70px",
