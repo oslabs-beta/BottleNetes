@@ -7,7 +7,7 @@ const RequestLimitChart = ({ data, selectedMetric, podList }) => {
   const options = getRequestLimitChartOptions(selectedMetric);
 
   return (
-    <div className="overflow-y-auto p-4" style={{ height: chartHeight }}>
+    <div className="overflow-y-auto p-4 -mt-2" style={{ height: chartHeight }}>
       {podList.length > 0 ? (
         <Bar options={options} data={data} />
       ) : (

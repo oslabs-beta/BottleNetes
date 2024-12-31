@@ -68,9 +68,9 @@ const QueryTimeWindowConfiguration = ({
       >
         <div
           id="time-window-popup-content"
-          className="flex size-1/6 flex-col items-center justify-center rounded-lg bg-slate-200 p-6 text-slate-700"
+          className="flex size-1/6 flex-col items-center justify-center rounded-lg bg-slate-200 p-6 h-[250px] text-slate-700"
         >
-          <p>Select a Time Window that best suited your monitoring need</p>
+          <p>Select a Monitoring Time Window</p>
           <br />
           <form
             onSubmit={handleTimeWindowSubmit}
