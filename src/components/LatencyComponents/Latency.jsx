@@ -44,7 +44,7 @@ const Latency = ({
 
   // console.log("latency data:", chartData);
   return (
-    <div className="min-h-[400px] w-full rounded p-4">
+    <div className="min-h-[450px] w-full rounded p-4">
       <Line options={latencyChartOptions} data={chartData} />
     </div>
   );
