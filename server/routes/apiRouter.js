@@ -44,7 +44,12 @@ const cacheDataToFile = (location) => {
     try {
       const dataToStore = res.locals.parsedData || {};
       // Configure path to data file
-      const dataFilePath = path.join(__dirname, "..", "data", `${location}.json`);
+      const dataFilePath = path.join(
+        __dirname,
+        "..",
+        "data",
+        `${location}.json`,
+      );
 
       // Format data
       const dataToWrite = JSON.stringify(dataToStore, null, 2);
@@ -64,7 +69,7 @@ const cacheDataToFile = (location) => {
 };
 
 const check = (req, res, next) => {
-  console.log("DONE DONE DONE DONE");
+  // console.log("DONE DONE DONE DONE");
   return next();
 };
 
