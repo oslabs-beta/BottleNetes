@@ -36,7 +36,6 @@ import { podObj } from "../../hooks/usePodListProcessor.ts";
 const PodGrid = () => {
   // States from mainStore.tsx
   const {
-    defaultView,
     setDefaultView,
     queryTimeWindow,
     setQueryTimeWindow,
@@ -97,17 +96,8 @@ const PodGrid = () => {
         <PodReplicas />
         <PodAdjustRequestsLimits />
         <PodSelector podList={processedPodList} />
-        <PodSorter
-          setMetricToSort={setMetricToSort}
-          defaultView={defaultView}
-          setDefaultView={setDefaultView}
-        />
-        <PodFilter
-          podList={processedPodList}
-          setFilterConfig={setFilterConfig}
-          defaultView={defaultView}
-          setDefaultView={setDefaultView}
-        />
+        <PodSorter />
+        <PodFilter podList={processedPodList} />
       </div>
 
       {/* Bottom Container: Contains buttons to render graphs based on select metric and the heat map*/}

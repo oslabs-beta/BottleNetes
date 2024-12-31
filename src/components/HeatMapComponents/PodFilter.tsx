@@ -2,15 +2,17 @@
  * This component renders 'Filter by...' dropdown and its buttons based on some conditions
  */
 
-import PropTypes from "prop-types";
+import React from "react";
 import { useState } from "react";
 
-const PodFilter = ({
-  podList,
-  setFilterConfig,
-  defaultView,
-  setDefaultView,
-}) => {
+import { podObj } from "../../hooks/usePodListProcessor.ts";
+import dataStore from "../../stores/dataStore.ts";
+import mainStore from "../../stores/mainStore.ts";
+
+const PodFilter = (props: { podList: podObj[] }) => {
+  const podList = props.podList;
+  const setFilterConfig = dataStore((state) => state.setFilterConfig);
+  const { defaultView, setDefaultView } = mainStore();
   const [filterType, setFilterType] = useState("");
   const [filterValue, setFilterValue] = useState("");
 
@@ -22,7 +24,7 @@ const PodFilter = ({
   ];
 
   // Get unique values for dropdown options
-  const getUniqueValues = (field) => [
+  const getUniqueValues = (field: string) => [
     ...new Set(podList.map((pod) => pod[field])),
   ];
 
@@ -73,8 +75,8 @@ const PodFilter = ({
           {
             // For each filter type, map through unique values of selected filter type and create dropdown options
             getUniqueValues(filterType).map((value, i) => (
-              <option key={i} value={value}>
-                {value}
+              <option key={i} value={String(value)}>
+                {String(value)}
               </option>
             ))
           }
@@ -88,20 +90,6 @@ const PodFilter = ({
         </button>
       </div>
   );
-};
-
-PodFilter.propTypes = {
-  podList: PropTypes.arrayOf(
-    PropTypes.shape({
-      podName: PropTypes.string.isRequired,
-      namespace: PropTypes.string.isRequired,
-      service: PropTypes.string.isRequired,
-      deploymentName: PropTypes.string,
-    }),
-  ).isRequired,
-  setFilterConfig: PropTypes.func.isRequired,
-  defaultView: PropTypes.bool.isRequired,
-  setDefaultView: PropTypes.func.isRequired,
 };
 
 export default PodFilter;

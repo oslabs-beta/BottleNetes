@@ -6,11 +6,12 @@ import React from "react";
 
 import mainStore from "../../stores/mainStore.ts";
 import dataStore from "../../stores/dataStore.ts";
+import podStore from "../../stores/podStore.ts";
 
 const PodSorter = () => {
   const setMetricToSort = dataStore((state) => state.setMetricToSort);
   const {  defaultView, setDefaultView } = mainStore();
-  const { selectedLabel, setSelectedLabel } = mainStore();
+  const { selectedLabel, setSelectedLabel } = podStore();
 
   const sortOptions = [
     { metricType: "", label: "Sort by..." },
