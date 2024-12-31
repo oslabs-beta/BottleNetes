@@ -203,7 +203,8 @@ const Chatbot = ({ allData, username }) => {
   // Render the chatbot component
   return (
     <div className="flex min-h-[500px] flex-col items-center">
-      <div className="flex w-full max-w-xl flex-grow flex-col overflow-hidden rounded-lg bg-white p-1.5 shadow-xl">
+      <div className="bg-gradient-to-r from-blue-900 to-blue-700 text-slate-100 w-full items-center flex-center font-semibold px-2 pt-2 pb-1 pl-[140px] rounded-t-lg border-b-2 border-slate-300">BottleNetes AI</div>
+      <div className="flex w-full max-w-xl flex-grow flex-col overflow-hidden rounded-lg bg-slate-200 p-1.5 shadow-xl">
         <div
           className="flex h-0 flex-grow flex-col overflow-auto p-3"
           ref={chatRef}
