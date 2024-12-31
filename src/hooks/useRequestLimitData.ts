@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { bytesToMb } from "../utils/requestLimitUtils";
+import { bytesToMb } from "../utils/requestLimitUtils.ts";
 
 import { State } from "../stores/dataStore.ts";
 import { State as mainState } from "../stores/mainStore.ts";

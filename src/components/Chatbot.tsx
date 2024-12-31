@@ -173,7 +173,20 @@ const Chatbot = () => {
 
   // Render the chatbot component
   return (
-    <div className="flex min-h-[500px] flex-col items-center">
+    <div
+      // logoStyle={{
+      //   width: "70px",
+      //   height: "70px",
+      //   borderRadius: "50%",
+      //   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+      //   backgroundImage: "linear-gradient(to right, #1e90ff, #87ceeb)",
+      //   color: "#fff",
+      //   fontSize: "18px",
+      //   fontWeight: "bold",
+      //   textTransform: "uppercase",
+      // }}
+      className="text-gradient font-poppins flex min-h-[500px] flex-col items-center text-2xl font-bold shadow-lg"
+    >
       <div className="flex w-full max-w-xl flex-grow flex-col overflow-hidden rounded-lg bg-white p-1.5 shadow-xl">
         <div
           className="flex h-0 flex-grow flex-col overflow-auto p-3"

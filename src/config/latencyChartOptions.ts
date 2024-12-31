@@ -1,7 +1,7 @@
 export const latencyChartOptions = {
   responsive: true,
   interaction: {
-    mode: "nearest",
+    mode: "nearest" as const,
     intersect: false,
   },
   maintainAspectRatio: false,
@@ -40,7 +40,7 @@ export const latencyChartOptions = {
   },
   plugins: {
     legend: {
-      position: "bottom",
+      position: "bottom" as const,
       labels: {
         color: "#1e293b",
         font: { size: 15 },
