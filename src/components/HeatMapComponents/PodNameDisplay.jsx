@@ -11,10 +11,10 @@ const PodNameDisplay = ({ clickedPod, setClickedPod }) => {
 
   // move setClickedPod inside an useEffect to avoid calling setClickedPod directly during render (warning in console).
   useEffect(() => {
-    if (deploymentName === "deployment not found") {
+    if (deploymentName === "Deployment Not Found") {
       setClickedPod((prev) => ({
         ...prev,
-        deploymentName: "undefined",
+        deploymentName: "Deployment Not Found",
       }));
     }
   }, [deploymentName, setClickedPod]);
@@ -27,31 +27,31 @@ const PodNameDisplay = ({ clickedPod, setClickedPod }) => {
       >
         <div
           id="namespace"
-          className="rounded-xl border-2 p-4 transition duration-500 h-full dark:border-slate-300"
+          className="rounded-xl border-2 p-4 transition duration-500 h-full border-transparent ml-10"
         >
           <h2 className="text-xl font-extrabold dark:text-slate-300">Namespace</h2>
           <br />
-          <p className="text-2xl font-semibold dark:text-slate-300">{podName ? namespace : "-"}</p>
+          <p className="text-2xl font-semibold dark:text-slate-300 -mt-2">{podName ? namespace : "-"}</p>
         </div>
         <div
           id="pod-name"
-          className="rounded-xl border-2 p-4 transition duration-500 col-span-2 h-full dark:border-slate-300"
+          className="rounded-xl border-2 p-4 transition duration-500 col-span-2 h-full border-transparent"
         >
           <h2 className="text-xl font-semibold dark:text-slate-300">
             {podName ? "Selected Pod" : "No Pod Selected"}
           </h2>
           <br />
-          <p className="text-2xl font-semibold dark:text-slate-300">
+          <p className="text-2xl font-semibold dark:text-slate-300 -mt-2">
             {podName ? podName : "Displaying Node Average Metrics"}
           </p>
         </div>
         <div
           id="deployment"
-          className="rounded-xl border-2 p-4 transition duration-500 h-full dark:border-slate-300"
+          className="rounded-xl border-2 p-4 transition duration-500 h-full border-transparent mr-10"
         >
           <h2 className="text-xl font-extrabold dark:text-slate-300">Deployment</h2>
           <br />
-          <p className="text-2xl font-semibold dark:text-slate-300">
+          <p className="text-2xl font-semibold dark:text-slate-300 -mt-2">
             {podName ? deploymentName : "-"}
           </p>
         </div>
