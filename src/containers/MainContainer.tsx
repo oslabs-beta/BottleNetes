@@ -194,10 +194,7 @@ const MainContainer = () => {
 
         {/* Pod Name Display */}
         <div className="border-b-2 border-slate-300">
-          <PodNameDisplay
-            clickedPod={clickedPod}
-            setClickedPod={setClickedPod}
-          />
+          <PodNameDisplay />
         </div>
 
         {/* Main Container */}

@@ -6,6 +6,7 @@ import { useEffect } from "react";
 
 import mainStore from "../stores/mainStore.ts";
 import dataStore from "../stores/dataStore.ts";
+import { allData } from "../stores/dataStore.ts";
 
 const backendUrl = dataStore((state) => state.backendUrl);
 
@@ -32,6 +33,14 @@ type Request = {
   body?: string;
 };
 
+type Body = {
+  [key: string]: string;
+};
+
+type BodyObj = {
+  [key: string]: Body;
+};
+
 const useFetchData = ({
   backendUrl,
   refreshFrequency,
@@ -44,11 +53,11 @@ const useFetchData = ({
 
   useEffect(
     () => {
-      const fetchData = async (
+      const fetchData = async <T>(
         method: string,
         endpoint: string,
-        body: Record<string, unknown> | null = null,
-      ): Promise<Record<string, unknown> | null> => {
+        body?: Body,
+      ): Promise<T | null> => {
         try {
           const request: Request = {
             method: method,
@@ -76,7 +85,7 @@ const useFetchData = ({
           return;
         }
 
-        const metricsConfig = {
+        const metricsConfig: BodyObj = {
           bodyResourceUsageOnevalueCPU: {
             type: "cpu",
             time: queryTimeWindow,
@@ -110,32 +119,43 @@ const useFetchData = ({
             latencyAppRequestOneValue,
             latencyAppRequestHistorical,
           ] = await Promise.all([
-            fetchData("GET", "api/all-pods-status"),
-            fetchData("GET", "api/all-pods-request-limit"),
-            fetchData(
+            fetchData<allData["podsStatuses"]>("GET", "api/all-pods-status"),
+            fetchData<allData["requestLimits"]>(
+              "GET",
+              "api/all-pods-request-limit",
+            ),
+            fetchData<allData["cpuUsageOneValue"]>(
               "POST",
               "api/resource-usage-onevalue",
               metricsConfig.bodyResourceUsageOnevalueCPU,
             ),
-            fetchData(
+            fetchData<allData["memoryUsageOneValue"]>(
               "POST",
               "api/resource-usage-onevalue",
               metricsConfig.bodyResourceUsageOnevalueMemory,
             ),
-            fetchData("POST", "api/resource-usage-historical", {
-              ...metricsConfig.bodyResourceUsageHistorical,
-              type: "cpu",
-            }),
-            fetchData("POST", "api/resource-usage-historical", {
-              ...metricsConfig.bodyResourceUsageHistorical,
-              type: "memory",
-            }),
-            fetchData(
+            fetchData<allData["cpuUsageHistorical"]>(
+              "POST",
+              "api/resource-usage-historical",
+              {
+                ...metricsConfig.bodyResourceUsageHistorical,
+                type: "cpu",
+              },
+            ),
+            fetchData<allData["memoryUsageHistorical"]>(
+              "POST",
+              "api/resource-usage-historical",
+              {
+                ...metricsConfig.bodyResourceUsageHistorical,
+                type: "memory",
+              },
+            ),
+            fetchData<allData["latencyAppRequestOneValue"]>(
               "POST",
               "api/latency-app-request-onevalue",
               metricsConfig.bodyLatencyAppRequestOneValue,
             ),
-            fetchData(
+            fetchData<allData["latencyAppRequestHistorical"]>(
               "POST",
               "api/latency-app-request-historical",
               metricsConfig.bodyResourceUsageHistorical,
@@ -146,11 +166,11 @@ const useFetchData = ({
             podsStatuses:
               // preserve the pod state during data refresh by merging existing pod data with new data
               (status &&
-                Array.isArray(status.allPodsStatus) && {
+                !Array.isArray(status) && {
                   allPodsStatus: status.allPodsStatus.map((pod) => {
                     // check if pod is found in existing data
                     const existingPod = Array.isArray(allData.podsStatuses)
-                      ? undefined
+                      ? []
                       : allData.podsStatuses?.allPodsStatus?.find(
                           (existing) =>
                             existing.podName === pod.podName &&
@@ -163,60 +183,60 @@ const useFetchData = ({
                 }) ||
               [], // if status is null, set to empty array
             requestLimits:
-              (requestLimits &&
-                Array.isArray(requestLimits.allPodsRequestLimit) && {
-                  allPodsRequestLimit: requestLimits.allPodsRequestLimit,
-                }) ||
+              (requestLimits && {
+                allPodsRequestLimit: Array.isArray(requestLimits)
+                  ? []
+                  : requestLimits.allPodsRequestLimit,
+              }) ||
               [],
             allNodes: {
               allNodes: [{ nodeName: "Minikube", clusterName: "Minikube" }],
             },
             cpuUsageOneValue:
-              (cpuUsageOneValue &&
-                Array.isArray(cpuUsageOneValue.resourceUsageOneValue) && {
-                  resourceUsageOneValue: cpuUsageOneValue.resourceUsageOneValue,
-                }) ||
+              (cpuUsageOneValue && {
+                resourceUsageOneValue: Array.isArray(cpuUsageOneValue)
+                  ? []
+                  : cpuUsageOneValue.resourceUsageOneValue,
+              }) ||
               [],
             memoryUsageOneValue:
-              (memoryUsageOneValue &&
-                Array.isArray(memoryUsageOneValue.resourceUsageOneValue) && {
-                  resourceUsageOneValue:
-                    memoryUsageOneValue.resourceUsageOneValue,
-                }) ||
+              (memoryUsageOneValue && {
+                resourceUsageOneValue: Array.isArray(memoryUsageOneValue)
+                  ? []
+                  : memoryUsageOneValue.resourceUsageOneValue,
+              }) ||
               [],
             cpuUsageHistorical:
-              (cpuUsageHistorical &&
-                Array.isArray(cpuUsageHistorical.resourceUsageHistorical) && {
-                  resourceUsageHistorical:
-                    cpuUsageHistorical.resourceUsageHistorical,
-                }) ||
+              (cpuUsageHistorical && {
+                resourceUsageHistorical: Array.isArray(cpuUsageHistorical)
+                  ? []
+                  : cpuUsageHistorical.resourceUsageHistorical,
+              }) ||
               [],
             memoryUsageHistorical:
-              (memoryUsageHistorical &&
-                Array.isArray(
-                  memoryUsageHistorical.resourceUsageHistorical,
-                ) && {
-                  resourceUsageHistorical:
-                    memoryUsageHistorical.resourceUsageHistorical,
-                }) ||
+              (memoryUsageHistorical && {
+                resourceUsageHistorical: Array.isArray(memoryUsageHistorical)
+                  ? []
+                  : memoryUsageHistorical.resourceUsageHistorical,
+              }) ||
               [],
             latencyAppRequestOneValue:
-              (latencyAppRequestOneValue &&
-                Array.isArray(
-                  latencyAppRequestOneValue.latencyAppRequestOneValue,
-                ) && {
-                  latencyAppRequestOneValue:
-                    latencyAppRequestOneValue.latencyAppRequestOneValue,
-                }) ||
+              (latencyAppRequestOneValue && {
+                latencyAppRequestOneValue: Array.isArray(
+                  latencyAppRequestOneValue,
+                )
+                  ? []
+                  : latencyAppRequestOneValue.latencyAppRequestOneValue,
+              }) ||
               [],
             latencyAppRequestHistorical:
-              (latencyAppRequestHistorical &&
-                Array.isArray(
-                  latencyAppRequestHistorical.latencyAppRequestHistorical,
-                ) && {
-                  latencyAppRequestHistorical:
-                    latencyAppRequestHistorical.latencyAppRequestHistorical,
-                }) ||
+              (latencyAppRequestHistorical && {
+                latencyAppRequestHistorical: Array.isArray(
+                  latencyAppRequestHistorical,
+                )
+                  ? []
+                  : latencyAppRequestHistorical.latencyAppRequestHistorical,
+              }) ||
               [],
           });
         } catch (error) {

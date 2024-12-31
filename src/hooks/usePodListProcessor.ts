@@ -72,7 +72,7 @@ const usePodListProcessor = ({
         readiness: pod.readiness,
         containers: pod.containers,
         service: pod.service,
-        deploymentName: pod.deploymentName,
+        deploymentName: pod.deployment,
         selectedMetric,
       };
 
