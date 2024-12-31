@@ -106,7 +106,7 @@ const Pod = ({ podInfo, selectedMetric, onClick, isClicked }) => {
           <p className="text-left font-semibold">
             CPU Usage (cpu cores):{" "}
             <span className="font-normal">
-              {podInfo.cpuDataAbsolute
+              {typeof podInfo.cpuDataAbsolute === "number" && !isNaN(podInfo.cpuDataAbsolute)
                 ? podInfo.cpuDataAbsolute.toFixed(3)
                 : "N/A"}
             </span>
