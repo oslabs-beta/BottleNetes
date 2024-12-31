@@ -11,7 +11,7 @@ const formatRelativeTime = (timestamp) => {
   return `${Math.floor(secondsAgo / 3600)} hr ago`; // 1 hour or more
 };
 
-const Chatbot = ({ allData, fetchData, username }) => {
+const Chatbot = ({ allData, username }) => {
   // State to hold AI responses
   const [aiContent, setAiContent] = useState([
     { text: "How can I help you?", timestamp: Date.now() },
@@ -72,11 +72,11 @@ const Chatbot = ({ allData, fetchData, username }) => {
         const prunedNode = {};
         for(let key in node) {
           // HARD CODE ALERT
-          if (Array.isArray(node[key]) && node[key].length >= 300) {
+          if (Array.isArray(node[key]) && node[key].length >= 300 && (key != "timestampsUnix"|| "timestampsREadable")) {
             prunedNode[key] = pruneArray(
               node[key],
               // HARD CODE ALERT
-              Math.floor(node[key].length / 3),
+              Math.floor(node[key].length / 50),
             );
           }
         }
@@ -105,21 +105,31 @@ const Chatbot = ({ allData, fetchData, username }) => {
     };
 
     
-   // Format request body
+    // Format request body
     const body = {
       data: dataToSendBack,
       userMessage: userInput,
     };
 
     // Send data to backend and update AI response state
+    
     try {
-      const response = await fetchData("POST", "ai/askAi", body);
-      const { analysis } = response;
+      const response = await fetch('http://localhost:3000/ai/askAi', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      };
 
+      const data = await response.json();
       // Append the AI response and its timestamp to aiContent state
       setAiContent((prev) => [
         ...prev,
-        { text: analysis || "❌ No response received", timestamp },
+        { text: data.analysis || "❌ No response received", timestamp },
       ]);
     } catch (error) {
       console.error("😵 Error:", error);
@@ -165,7 +175,7 @@ const Chatbot = ({ allData, fetchData, username }) => {
             </div>
           </div>
         )}
-        ,{/* Render ai messages */}
+        {/* Render ai messages */}
         {userMessage && (
           <div className="ml-auto mt-2 flex w-full max-w-xs justify-end space-x-3">
             <div>
@@ -182,7 +192,7 @@ const Chatbot = ({ allData, fetchData, username }) => {
             </div>
           </div>
         )}
-      </div>,
+      </div>
     );
   }
 
@@ -219,7 +229,6 @@ const Chatbot = ({ allData, fetchData, username }) => {
 // PropTypes validation
 Chatbot.propTypes = {
   allData: PropTypes.object,
-  fetchData: PropTypes.func.isRequired,
   username: PropTypes.string.isRequired, // New username prop for displaying initials
 };
 
