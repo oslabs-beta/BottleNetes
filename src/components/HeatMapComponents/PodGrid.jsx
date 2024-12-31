@@ -172,7 +172,7 @@ const PodGrid = ({
         {/* Right Column - Pod Heat Map */}
         <div
           id="pod-heat-map"
-          className="z-10 my-4 mr-3 w-3/4 overflow-visible rounded-xl border-2 border-transparent bg-slate-200 dark:bg-slate-800 p-2"
+          className="z-10 my-4 mr-3 w-3/4 overflow-visible rounded-xl border-4 border-blue-500 dark:border-2 dark:border-slate-300 bg-transparent p-4"
         >
           <div id="pod-grid" className={gridStyle}>
             {buttonArray}
