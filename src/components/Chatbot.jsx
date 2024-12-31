@@ -79,40 +79,49 @@ const Chatbot = ({ allData, fetchData, username }) => {
       return prunedArray;
     }
 
+    function loopedPrune(arrOfArrs) {
+      const prunedArray = []
+      arrOfArrs.forEach(node => {
+        const prunedNode = {};
+        for(let key in node) {
+          // HARD CODE ALERT
+          if (Array.isArray(node[key]) && node[key].length >= 300) {
+            prunedNode[key] = pruneArray(
+              node[key],
+              // HARD CODE ALERT
+              Math.floor(node[key].length / 3),
+            );
+          }
+        }
+        prunedArray.push(prunedNode)
+      })
+      return prunedArray;
+    }
+
     const historicalDataArray = [
       allData.cpuUsageHistorical.resourceUsageHistorical, // array of 12 elements
       allData.latencyAppRequestHistorical.latencyAppRequestHistorical, // array of 1 elements
       allData.memoryUsageHistorical.resourceUsageHistorical, // array of 10 elements
     ];
-    console.log(
-      allData.latencyAppRequestHistorical.latencyAppRequestHistorical,
-    );
+    console.log(allData.cpuUsageHistorical.resourceUsageHistorical);
 
-    const singlePointArray = [
-      allData.podsStatuses.allPodsStatus, // array of 20 elements
-      allData.requestLimits.allPodsRequestLimit, // array of 12 elements
-    ];
+    
+    const prunedCpuUsageHistorical = [];
+    allData.cpuUsageHistorical.resourceUsageHistorical.forEach((node) => {
+        const prunedData = {
+          timestampsUnix: pruneArray(node.timestampsUnix, node.timestampsUnix/3)
 
-    const prunedHistoricalDataArray = [];
-    //  console.log(singlePointArray)
-
-    //loop through each individual element of historicalDataArray
-    historicalDataArray.forEach((datasetArray) => {
-      const dataTypeHold = [];
-      // console.log(datasetArray)
-      datasetArray.forEach((node) => {
-        const nodeHold = [];
-        // console.log(Array.isArray(node))
-        node.forEach((dataArray) => {
-          if (Array.isArray(dataArray) && dataArray.length > 100) {
-            nodeHold.push(pruneArray(dataArray, dataArray.length / 3));
-          } else nodeHold.push(dataArray);
-        });
-        dataTypeHold.push(nodeHold);
-      });
-      prunedHistoricalDataArray.push(dataTypeHold);
+        }
+        const prunedNode = {...node, ...prunedData}
+        prunedCpuUsageHistorical.push(prunedNode);
     });
 
+    // const singlePointArray = [
+    //   allData.podsStatuses.allPodsStatus, // array of 20 elements
+    //   allData.requestLimits.allPodsRequestLimit, // array of 12 elements
+    // ];
+
+    // const prunedHistoricalDataArray = [];
 
 
     // Send data to backend and update AI response state
@@ -147,44 +156,46 @@ const Chatbot = ({ allData, fetchData, username }) => {
     const userMessage = historicalUserInput[i];
     const aiMessage = aiContent[i];
 
-    // Render user messages
     conversationArr.push(
-      // Render AI messages
-      aiMessage && (
-        <div className="mt-1 flex w-full max-w-xs space-x-3">
-          <div className="h-10 w-10 flex-shrink-0">
-            <img
-              src={logo}
-              alt="AI Logo"
-              className="h-full w-full rounded-full object-cover"
-            />
-          </div>
-          <div>
-            <div className="rounded-r-lg rounded-bl-lg bg-gradient-to-br from-gray-400 to-gray-200 p-2">
-              <p className="text-sm">{aiMessage.text}</p>
+      <div key={i}>
+        {/* Render user messages */}
+        {aiMessage && (
+          <div className="mt-1 flex w-full max-w-xs space-x-3">
+            <div className="h-10 w-10 flex-shrink-0">
+              <img
+                src={logo}
+                alt="AI Logo"
+                className="h-full w-full rounded-full object-cover"
+              />
             </div>
-            <span className="text-xs font-bold leading-none text-gray-500">
-              {formatRelativeTime(aiMessage.timestamp)}
-            </span>
-          </div>
-        </div>
-      ),
-      userMessage && (
-        <div className="ml-auto mt-2 flex w-full max-w-xs justify-end space-x-3">
-          <div>
-            <div className="rounded-l-lg rounded-br-lg bg-gradient-to-br from-[#6699e1] to-[#2229f4] p-2 text-white">
-              <p className="text-sm">{userMessage.text}</p>
+            <div>
+              <div className="rounded-r-lg rounded-bl-lg bg-gradient-to-br from-gray-400 to-gray-200 p-2">
+                <p className="text-sm">{aiMessage.text}</p>
+              </div>
+              <span className="text-xs font-bold leading-none text-gray-500">
+                {formatRelativeTime(aiMessage.timestamp)}
+              </span>
             </div>
-            <span className="text-xs leading-none text-gray-500">
-              {formatRelativeTime(userMessage.timestamp)}
-            </span>
           </div>
-          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-800 to-indigo-600 font-bold text-white">
-            {username[0].toUpperCase()}{" "}
-            {/* Display the first letter of the username */}
+        )}
+        ,{/* Render ai messages */}
+        {userMessage && (
+          <div className="ml-auto mt-2 flex w-full max-w-xs justify-end space-x-3">
+            <div>
+              <div className="rounded-l-lg rounded-br-lg bg-gradient-to-br from-[#6699e1] to-[#2229f4] p-2 text-white">
+                <p className="text-sm">{userMessage.text}</p>
+              </div>
+              <span className="text-xs leading-none text-gray-500">
+                {formatRelativeTime(userMessage.timestamp)}
+              </span>
+            </div>
+            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-800 to-indigo-600 font-bold text-white">
+              {username[0].toUpperCase()}{" "}
+              {/* Display the first letter of the username */}
+            </div>
           </div>
-        </div>
-      ),
+        )}
+      </div>,
     );
   }
 
@@ -196,23 +207,6 @@ const Chatbot = ({ allData, fetchData, username }) => {
           className="flex h-0 flex-grow flex-col overflow-auto p-3"
           ref={chatRef}
         >
-          {/* <div className="flex w-full max-w-xs space-x-3">
-            <div className="h-20 w-20 flex-shrink-0">
-              <img
-                src={logo}
-                alt="AI Logo"
-                className="h-full w-full rounded-full object-cover"
-              />
-            </div>
-            <div>
-              <div className="rounded-r-lg rounded-bl-lg bg-gray-300 p-3">
-                <p className="text-sm">How can I help you?</p>
-              </div>
-              <span className="text-xs leading-none text-gray-500">
-                {formatRelativeTime(Date.now())}
-              </span>
-            </div>
-          </div> */}
           {conversationArr}
         </div>
         <span className="bg flex w-full items-center justify-between">

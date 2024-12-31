@@ -2,7 +2,7 @@
 //Original Code (Commented Out)
 
 import express from "express";
-const router = express.Router();
+const apiRouter = express.Router();
 import askAiController from "../controllers/askAiController.js";
 
 const check = (req, res, next) => {
@@ -10,8 +10,8 @@ const check = (req, res, next) => {
   return next();
 };
 
-router.post("/askAi", check, askAiController.queryOpenAI, (req, res) => {
+apiRouter.post("/askAi", check, askAiController.queryOpenAI, (req, res) => {
   return res.status(200).json({ success: true, analysis: res.locals.analysis });
 });
 
-export default router;
+export default apiRouter;
