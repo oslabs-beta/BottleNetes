@@ -1,3 +1,7 @@
+/**
+ * Use Sequelize to define the model of users table in DB
+ */
+
 import { DataTypes, Sequelize } from "sequelize";
 import bcrypt from "bcrypt";
 
