@@ -40,7 +40,7 @@ const RequestLimit = ({ selectedMetric, requestLimits }) => {
       {
         label: "Requested Resources",
         data: requestData,
-        backgroundColor: "rgba(191, 219, 254)",
+        backgroundColor: "#93c5fd",
         borderRadius: 5,
       },
       {
@@ -51,6 +51,10 @@ const RequestLimit = ({ selectedMetric, requestLimits }) => {
       },
     ],
   };
+
+  if (podList.length === 0) {
+    return <div className="font-semibold text-slate-800 dark:text-slate-200">Loading...</div>;
+  }
 
   return (
     <div className="flex flex-col gap-4">

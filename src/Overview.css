@@ -20,6 +20,12 @@
   color: #2563eb;
 }
 
+
+.dark .dynamic-text {
+  color: #e2e8f0;
+}
+
+
 /* Metrics Row */
 .overview-metrics-row {
   display: flex;
@@ -114,34 +120,43 @@
 
 /* Unique Background Colors for Metrics */
 .overview-nodes {
-  background: linear-gradient(135deg, #2563eb, #1d4ed8); /* Bright Blue */
+  background: linear-gradient(135deg, #2563eb, #1d4ed8);
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 
               0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .overview-pods {
-  background: linear-gradient(135deg, #1e3a8a, #4338ca); /* Deep Indigo */
+  background: linear-gradient(135deg, #1e3a8a, #4338ca);
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 
               0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 .overview-containers {
-  background: linear-gradient(135deg, #3730a3, #312e81); /* Violet */
+  background: linear-gradient(135deg, #3730a3, #312e81);
   box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 
               0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 /* Cluster Name as a Thin Line */
-.thin-line {
+.cluster-name {
   width: 30%;
   padding: 1rem 1rem;
-  background: transparent; /* Light Blue */
+  background: transparent;
   text-align: center;
   border-radius: 20px;
   border: 4px solid #2563eb;
   color: #2563eb;
   
 }
+
+/* Dark mode */
+.dark .cluster-name {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    color: #e2e8f0;
+}
+
 
 @property --angle{
   syntax: "<angle>";

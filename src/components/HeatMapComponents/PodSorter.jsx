@@ -1,7 +1,12 @@
+/**
+ * This component renders the 'Sort by...' dropdown
+ */
+
 import PropTypes from "prop-types";
 import { useState } from "react";
 
 const PodSorter = ({ setMetricToSort, defaultView, setDefaultView }) => {
+  // State to set the selected label in the dropdown
   const [selectedLabel, setSelectedLabel] = useState("Sort by...");
 
   const sortOptions = [
@@ -39,7 +44,7 @@ const PodSorter = ({ setMetricToSort, defaultView, setDefaultView }) => {
             setDefaultView(false);
           }
         }}
-        className="w-full rounded-lg border-2 border-slate-200 bg-gradient-to-r from-slate-200 to-slate-100 px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90"
+        className="w-full rounded-lg border-2 border-transparent bg-slate-200 px-3 py-2 text-sm font-medium font-semibold text-slate-500 transition duration-200 hover:brightness-90 dark:bg-slate-800 dark:text-slate-300"
       >
         <option value="" disabled hidden>
           {

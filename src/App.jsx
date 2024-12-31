@@ -35,7 +35,7 @@ const App = () => {
     const signal = controller.signal;
 
     const checkSigninStatus = async () => {
-      console.log(`Sending request to '${backendUrl}signin/checkSignin'...`);
+      console.log(`Sending request to '${backendUrl}user/signin/checkSignin'...`);
 
       try {
         /**
@@ -45,7 +45,7 @@ const App = () => {
          * Cookie format:
          * { "jwt": "jwt_encoded_string" }
          **/
-        const response = await fetch(backendUrl + "signin/checkSignin", {
+        const response = await fetch(backendUrl + "user/signin/checkSignin", {
           credentials: "include",
           signal, // Adding signal to the fetch request
         });
@@ -100,7 +100,7 @@ const App = () => {
       ),
     },
     {
-      path: "/signup",
+      path: "/user/signup",
       element: <SignupContainer />,
     },
     {
