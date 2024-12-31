@@ -39,7 +39,11 @@ const Latency = ({
   );
 
   if (isLoading) {
-    return <div className="font-semibold text-slate-800 dark:text-slate-200">Loading...</div>;
+    return (
+      <div className="font-semibold text-slate-800 dark:text-slate-200">
+        Loading...
+      </div>
+    );
   }
 
   // console.log("latency data:", chartData);
@@ -53,8 +57,11 @@ const Latency = ({
 Latency.propTypes = {
   defaultView: PropTypes.bool,
   clickedPod: PropTypes.object,
-  cpuUsageHistorical: PropTypes.object,
-  latencyAppRequestHistorical: PropTypes.object,
+  cpuUsageHistorical: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
+  latencyAppRequestHistorical: PropTypes.oneOfType([
+    PropTypes.array,
+    PropTypes.object,
+  ]),
 };
 
 export default Latency;

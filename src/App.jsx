@@ -28,6 +28,12 @@ const App = () => {
 
   const [backendUrl] = useState("http://localhost:3000/");
 
+  // Add resetView function
+  const resetView = () => {
+    // Add any reset logic here if needed
+    console.log("View reset");
+  };
+
   // This hook fires whenever you go to the home page (Sign In Page)
   useEffect(() => {
     // Setting up a controller to stop the useEffect from running when closing the application
@@ -35,7 +41,9 @@ const App = () => {
     const signal = controller.signal;
 
     const checkSigninStatus = async () => {
-      console.log(`Sending request to '${backendUrl}user/signin/checkSignin'...`);
+      console.log(
+        `Sending request to '${backendUrl}user/signin/checkSignin'...`,
+      );
 
       try {
         /**
@@ -94,7 +102,11 @@ const App = () => {
     {
       path: "/dashboard",
       element: isSignedIn ? (
-        <MainContainer username={username} backendUrl={backendUrl} />
+        <MainContainer
+          username={username}
+          backendUrl={backendUrl}
+          resetView={resetView}
+        />
       ) : (
         <Navigate to={"/"} />
       ),
