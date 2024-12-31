@@ -1,4 +1,4 @@
-export const historicalMetricsChartOptions = {
+export const latencyChartOptions = {
   responsive: true,
   interaction: {
     mode: "nearest",
@@ -26,27 +26,21 @@ export const historicalMetricsChartOptions = {
       ticks: {
         color: "#1e293b",
         font: { size: 14 },
-        callback: function (value) {
-          return value + "%";
+        callback: function (value: string | number) {
+          return value + "ms";
         },
       },
     },
   },
   elements: {
     point: {
-      radius: 1,
+      radius: 0,
       hoverRadius: 6,
     },
   },
   plugins: {
     legend: {
       position: "bottom",
-      title: {
-        display: true,
-        text: "CPU and Memory Usage over time",
-        color: "#1e293b",
-        padding: 5,
-      },
       labels: {
         color: "#1e293b",
         font: { size: 15 },
@@ -54,17 +48,15 @@ export const historicalMetricsChartOptions = {
     },
     tooltip: {
       padding: 16,
-      boxPadding: 10,
       bodyFont: {
-        size: 14,
+        size: 16,
+        color: "#cbd5e1",
       },
       titleFont: {
-        size: 20,
-        weight: "bold",
+        size: 16,
+        color: "#cbd5e1",
       },
-      bodyColor: "#1f1f1f",
-      titleColor: "#404040",
-      backgroundColor: "#e9e9e9",
+      backgroundColor: "#020617",
       caretSize: 10,
     },
   },

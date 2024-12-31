@@ -7,12 +7,9 @@ import React from "react";
 
 import mainStore from "../stores/mainStore.ts";
 import userStore from "../stores/userStore.ts";
+import dataStore from "../stores/dataStore.ts";
 
-type Props = {
-  backendUrl: "http://localhost:3000/";
-};
-
-const MenuContainer = ({ backendUrl }: Props) => {
+const MenuContainer = () => {
   const navigate = useNavigate();
   const setSignedIn = userStore((state) => state.setSignedIn);
   const {
@@ -25,6 +22,8 @@ const MenuContainer = ({ backendUrl }: Props) => {
     manualRefreshCount,
     setManualRefreshCount,
   } = mainStore();
+
+  const backendUrl = dataStore((state) => state.backendUrl);
 
   const handleRefreshSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

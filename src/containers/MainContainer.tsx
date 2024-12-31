@@ -55,16 +55,13 @@ const MainContainer = () => {
     setPodRestartCount,
     // State hooks for refresh control in MenuContainer
     manualRefreshCount,
-    setManualRefreshCount,
     refreshFrequency,
-    setRefreshFrequency,
-    showRefreshPopup,
-    setShowRefreshPopup,
-    refreshInput,
-    setRefreshInput,
     // State hook for set the menu sidebar's visibility
     isMenuOpen,
     setIsMenuOpen,
+    // State hook for AI chatbot visibility
+    aiVisibility,
+    setAiVisibility,
   } = mainStore();
 
   const username = userStore((state) => state.username);
@@ -83,7 +80,11 @@ const MainContainer = () => {
 
   // ensure the clickedPod state stays valid after each refresh
   useEffect(() => {
-    if (allData.podsStatuses?.allPodsStatus?.length > 0 && clickedPod.podName) {
+    if (
+      !Array.isArray(allData.podsStatuses) &&
+      allData.podsStatuses?.allPodsStatus?.length > 0 &&
+      clickedPod.podName
+    ) {
       // Check if the clicked pod still exists in the updated data
       const podStillExists = allData.podsStatuses.allPodsStatus.some(
         (pod) =>
@@ -118,7 +119,7 @@ const MainContainer = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  if (isFetchingData) return <LoadingContainer />
+  if (isFetchingData) return <LoadingContainer />;
 
   return (
     <div id="main-container">
@@ -172,17 +173,7 @@ const MainContainer = () => {
                 isMenuOpen ? "translate-x-0" : "-translate-x-full"
               }`}
             >
-              <MenuContainer
-                refreshFrequency={refreshFrequency}
-                setRefreshFrequency={setRefreshFrequency}
-                showRefreshPopup={showRefreshPopup}
-                setShowRefreshPopup={setShowRefreshPopup}
-                refreshInput={refreshInput}
-                setRefreshInput={setRefreshInput}
-                manualRefreshCount={manualRefreshCount}
-                setManualRefreshCount={setManualRefreshCount}
-                backendUrl={backendUrl}
-              />
+              <MenuContainer />
             </div>
           </div>
           {/* Title */}
@@ -272,12 +263,7 @@ const MainContainer = () => {
               <h2 className="text-center text-2xl font-semibold text-slate-900">
                 Request vs. Limit
               </h2>
-              <RequestLimit
-                defaultView={defaultView}
-                clickedPod={clickedPod}
-                selectedMetric={selectedMetric}
-                requestLimits={allData.requestLimits || []}
-              />
+              <RequestLimit />
             </div>
 
             {/* Latency */}
@@ -288,49 +274,40 @@ const MainContainer = () => {
               <h2 className="text-center text-2xl font-semibold text-slate-900">
                 Request Latency
               </h2>
-              <Latency
-                defaultView={defaultView}
-                clickedPod={clickedPod}
-                cpuUsageHistorical={allData.cpuUsageHistorical || []}
-                latencyAppRequestHistorical={
-                  allData.latencyAppRequestHistorical || []
-                }
-              />
+              <Latency />
             </div>
           </div>
         </div>
         {/* Bottom row of buttons */}
         <div className="relative mx-6">
           {/* AI Chatbot */}
-          {aiVisibility && (
-            <div className="absolute bottom-[100%] right-0 mb-3 w-96 rounded-2xl">
-              <Chatbot
-                allData={allData}
-                fetchData={(method, endpoint, body) =>
-                  fetch(`${backendUrl}${endpoint}`, {
-                    method,
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(body),
-                  }).then((res) => res.json())
-                }
-                username={username}
-                className="text-gradient font-poppins text-2xl font-bold shadow-lg"
-                logoStyle={{
-                  width: "70px",
-                  height: "70px",
-                  borderRadius: "50%",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                  backgroundImage:
-                    "linear-gradient(to right, #1e90ff, #87ceeb)",
-                  color: "#fff",
-                  fontSize: "18px",
-                  fontWeight: "bold",
-                  textTransform: "uppercase",
-                }}
-              />
-            </div>
-          )}
-
+          <div
+            className={`absolute bottom-[100%] right-0 mb-3 w-96 rounded-2xl transition-opacity duration-300 ${aiVisibility ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
+          >
+            <Chatbot
+              allData={allData}
+              fetchData={(method, endpoint, body) =>
+                fetch(`${backendUrl}${endpoint}`, {
+                  method,
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(body),
+                }).then((res) => res.json())
+              }
+              username={username}
+              className="text-gradient font-poppins text-2xl font-bold shadow-lg"
+              logoStyle={{
+                width: "70px",
+                height: "70px",
+                borderRadius: "50%",
+                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
+                backgroundImage: "linear-gradient(to right, #1e90ff, #87ceeb)",
+                color: "#fff",
+                fontSize: "18px",
+                fontWeight: "bold",
+                textTransform: "uppercase",
+              }}
+            />
+          </div>
           {/* Reset and Ask AI buttons */}
           <div className="flex justify-between pb-5">
             <button

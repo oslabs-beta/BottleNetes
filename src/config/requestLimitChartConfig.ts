@@ -1,4 +1,8 @@
-export const getRequestLimitChartOptions = (selectedMetric) => ({
+import { State } from "../stores/mainStore.ts";
+
+export const getRequestLimitChartOptions = (
+  selectedMetric: State["selectedMetric"],
+) => ({
   indexAxis: "y",
   responsive: true,
   maintainAspectRatio: false,
@@ -13,7 +17,7 @@ export const getRequestLimitChartOptions = (selectedMetric) => ({
       ticks: {
         color: "#1e293b",
         font: { size: 14 },
-        callback: function (value) {
+        callback: function (value: string | number) {
           return value === null ? "No data" : value;
         },
       },

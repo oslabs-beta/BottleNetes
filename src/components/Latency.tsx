@@ -14,6 +14,12 @@ import {
   Title,
   Tooltip,
   Legend,
+  DatasetChartOptions,
+  CoreChartOptions,
+  ElementChartOptions,
+  LineControllerChartOptions,
+  PluginChartOptions,
+  ScaleChartOptions,
 } from "chart.js";
 
 ChartJS.register(
@@ -27,31 +33,38 @@ ChartJS.register(
   Legend,
 );
 
-const Latency = ({
-  defaultView,
-  clickedPod,
-  cpuUsageHistorical,
-  latencyAppRequestHistorical,
-}) => {
+import LoadingContainer from '../containers/LoadingContainer.tsx';
+
+import mainStore from '../stores/mainStore.ts';
+import dataStore from '../stores/dataStore.ts';
+import { _DeepPartialObject } from 'chart.js/dist/types/utils';
+
+const Latency = () => {
+  const { defaultView, clickedPod } = mainStore();
+  const cpuUsageHistorical = dataStore((state) => state.allData.cpuUsageHistorical);
+  const latencyAppRequestHistorical = dataStore((state) => state.allData.latencyAppRequestHistorical);
+
   // First check if we have at least the CPU historical data for timestamps
-  if (!cpuUsageHistorical?.resourceUsageHistorical?.[0]) {
-    return <div>Loading...</div>;
+  if (!Array.isArray(cpuUsageHistorical) && !cpuUsageHistorical?.resourceUsageHistorical?.[0]) {
+    return <LoadingContainer />;
   }
 
-  let timeStamps = [];
-  let avgLatencyInboundAtEachTimestamp = [];
-  let avgLatencyOutboundAtEachTimestamp = [];
-  let peakLatencyOutboundAtEachTimestamp = [];
-  let peakLatencyInboundAtEachTimestamp = [];
+  let timeStamps: any[] = [];
+  let avgLatencyInboundAtEachTimestamp: any[] = [];
+  let avgLatencyOutboundAtEachTimestamp: any[] = [];
+  let peakLatencyOutboundAtEachTimestamp: any[] = [];
+  let peakLatencyInboundAtEachTimestamp: any[] = [];
 
   // Use latency data if available, otherwise fall back to CPU data for timestamps
   const hasLatencyData =
-    latencyAppRequestHistorical?.latencyAppRequestHistorical?.length > 0;
+    (!Array.isArray(latencyAppRequestHistorical) &&
+    (latencyAppRequestHistorical?.latencyAppRequestHistorical?.length ?? 0) > 0);
+    
   const timeStampsDataToUse = hasLatencyData
-    ? latencyAppRequestHistorical.latencyAppRequestHistorical[0]
-    : cpuUsageHistorical.resourceUsageHistorical[0];
+    ? latencyAppRequestHistorical?.latencyAppRequestHistorical[0]
+    : !Array.isArray(cpuUsageHistorical) && cpuUsageHistorical.resourceUsageHistorical[0];
 
-  timeStamps = timeStampsDataToUse.timestampsReadable.map((timestamp) => {
+  timeStamps = timeStampsDataToUse && 'timestampsReadable' in timeStampsDataToUse ? timeStampsDataToUse.timestampsReadable.map((timestamp) => {
     const date = new Date(timestamp);
     return date.toLocaleTimeString([], {
       hour: "2-digit",
@@ -59,7 +72,7 @@ const Latency = ({
       second: "2-digit",
       hour12: false,
     });
-  });
+  }) : [];
 
   // If no latency data, use undefined as default values for all latencies
   if (!hasLatencyData) {
@@ -71,7 +84,7 @@ const Latency = ({
   } else {
     if (defaultView) {
       const PodCount =
-        latencyAppRequestHistorical.latencyAppRequestHistorical.length;
+        latencyAppRequestHistorical?.latencyAppRequestHistorical.length ?? 0;
 
       // Calculate average for each timestamp
       for (let i = 0; i < timeStamps.length; i++) {
@@ -80,7 +93,7 @@ const Latency = ({
         let totalPeakLatencyOutboundAtEachTimestamp = 0;
         let totalPeakLatencyInboundAtEachTimestamp = 0;
 
-        latencyAppRequestHistorical.latencyAppRequestHistorical.forEach(
+        latencyAppRequestHistorical?.latencyAppRequestHistorical.forEach(
           (pod) => {
             totalAvgLatencyInboundAtEachTimestamp +=
               Number(pod.avgInboundLatency[i]) || 0;
@@ -115,7 +128,7 @@ const Latency = ({
     if (!defaultView && clickedPod.podName) {
       // Find the clicked pod
       const clickedLatencyPod =
-        latencyAppRequestHistorical.latencyAppRequestHistorical.find(
+        latencyAppRequestHistorical?.latencyAppRequestHistorical.find(
           (pod) => pod.name === clickedPod.podName,
         );
 
@@ -138,7 +151,7 @@ const Latency = ({
     }
   }
 
-  const options = {
+  const options: _DeepPartialObject<CoreChartOptions<"line"> & ElementChartOptions<"line"> & PluginChartOptions<"line"> & DatasetChartOptions<"line"> & ScaleChartOptions<"line"> & LineControllerChartOptions> = {
     responsive: true,
     interaction: {
       mode: "nearest",
@@ -190,11 +203,9 @@ const Latency = ({
         padding: 16,
         bodyFont: {
           size: 16,
-          color: "#cbd5e1",
         },
         titleFont: {
           size: 16,
-          color: "#cbd5e1",
         },
         backgroundColor: "#020617",
         caretSize: 10,
