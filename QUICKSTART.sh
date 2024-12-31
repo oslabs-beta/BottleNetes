@@ -152,7 +152,7 @@ echo "✅ Sidecar injection enabled."
 #########################################
 echo "-----------------------------------------"
 echo "Step 8 📝🚀 Applying kubernetes yaml file..."
-kubectl apply -f demo-app.yaml
+kubectl apply -f demo-app-default.yaml
 echo "✅ yaml file applied."
 
 #########################################

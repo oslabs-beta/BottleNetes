@@ -1,6 +1,6 @@
 To build the docker images and push them to the docker hub.
 
-1. Login to the docker hub, if you are not already logged in. Then create a builder instance.
+1. Make sure your current working directory is demo-app-on-bottlenetes. Login to the docker hub, if you are not already logged in. Then create a builder instance.
 
 ```bash
 docker login
