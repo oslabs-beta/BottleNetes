@@ -2,15 +2,23 @@
  * This component render 'View Pod Log' button with its Popups
  */
 
-import PropTypes from "prop-types";
-import { useState } from "react";
+import React from "react";
 
-const PodLogDisplay = ({ clickedPod, backendUrl }) => {
-  // State to determine the visibility of the log popup
-  const [showPodLog, setShowPodLog] = useState(false);
-  // State to determine the visibility of the initial popup to select container to show its log
-  const [showContainerSelect, setShowContainerSelect] = useState(false);
-  const [podLog, setPodLog] = useState("No logs available");
+import mainStore from "../../stores/mainStore.ts";
+import dataStore from "../../stores/dataStore.ts";
+import podStore from "../../stores/podStore.ts";
+
+const PodLogDisplay = () => {
+  const clickedPod = mainStore((state) => state.clickedPod);
+  const backendUrl = dataStore((state) => state.backendUrl);
+  const {
+    showPodLog,
+    setShowPodLog,
+    showContainerSelect,
+    setShowContainerSelect,
+    podLog,
+    setPodLog,
+  } = podStore();
 
   const handleViewPodLog = async () => {
     if (
@@ -30,7 +38,7 @@ const PodLogDisplay = ({ clickedPod, backendUrl }) => {
     setShowContainerSelect(true);
   };
 
-  const fetchContainerLogs = async (selectedContainer) => {
+  const fetchContainerLogs = async (selectedContainer: string) => {
     console.log(`Sending request to '${backendUrl}k8s/viewPodLogs'...`);
 
     try {
@@ -52,7 +60,11 @@ const PodLogDisplay = ({ clickedPod, backendUrl }) => {
       setShowPodLog(true);
     } catch (error) {
       console.error("Error fetching pod logs:", error);
-      alert(`Failed to fetch pod logs: ${error.message}`);
+      if (error instanceof Error) {
+        alert(`Failed to fetch pod logs: ${error.message}`);
+      } else {
+        alert("Failed to fetch pod logs: An unknown error occurred");
+      }
     }
   };
 
@@ -79,7 +91,7 @@ const PodLogDisplay = ({ clickedPod, backendUrl }) => {
             Select A Container To View Logs
           </h2>
           <div id="container-select-buttons" className="flex flex-col gap-2">
-            {clickedPod.containers.map((containerName) => (
+            {clickedPod.containers.map((containerName: string) => (
               <button
                 key={containerName}
                 onClick={() => fetchContainerLogs(containerName)}
@@ -128,15 +140,6 @@ const PodLogDisplay = ({ clickedPod, backendUrl }) => {
       </div>
     </div>
   );
-};
-
-PodLogDisplay.propTypes = {
-  clickedPod: PropTypes.shape({
-    podName: PropTypes.string,
-    namespace: PropTypes.string,
-    containers: PropTypes.array,
-  }).isRequired,
-  backendUrl: PropTypes.string.isRequired,
 };
 
 export default PodLogDisplay;
