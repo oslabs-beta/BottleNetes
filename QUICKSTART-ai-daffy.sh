@@ -151,9 +151,9 @@ echo "✅ Sidecar injection enabled."
 
 #########################################
 echo "-----------------------------------------"
-echo "Step 8 📝🚀 Applying DEMO.yaml file..."
-kubectl apply -f DEMO.yaml
-echo "✅ DEMO.yaml applied."
+echo "Step 8 📝🚀 Applying kubernetes yaml file..."
+kubectl apply -f demo-app-ai-daffy.yaml
+echo "✅ yaml applied."
 
 #########################################
 echo "-----------------------------------------"
