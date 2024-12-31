@@ -1,3 +1,9 @@
+/**
+ * Controller contains:
+ * runSinglePromQLQuery: process single query
+ * runMultiplePromQLQueries: process multiple queries in the array
+ */
+
 import fetch from "node-fetch";
 
 export const runSinglePromQLQuery = async (_req, res, next) => {
