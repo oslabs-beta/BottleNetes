@@ -40,7 +40,6 @@ const PodGrid = () => {
     setQueryTimeWindow,
     clickedPod,
     setClickedPod,
-    selectedMetric,
     setSelectedMetric,
   } = mainStore();
 
@@ -61,7 +60,6 @@ const PodGrid = () => {
     <Pod
       podInfo={podObj}
       key={index}
-      selectedMetric={selectedMetric}
       isClicked={
         clickedPod.podName === podObj.podName &&
         clickedPod.namespace === podObj.namespace &&
