@@ -27,14 +27,14 @@ const Chatbot = ({ allData, username }) => {
 
   // Handle input changes for the text field
   const handleInputChange = (event) => {
-    setUserInput(event.target.value); // Updates the state with user input
+    setUserInput(event.target.value); 
   };
 
   // Event handler for pressing Enter to submit
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
-      e.preventDefault(); // Prevents default form submission
-      handleSubmit(e); // Calls handleSubmit
+      e.preventDefault(); 
+      handleSubmit(e); 
     }
   };
 
@@ -42,30 +42,35 @@ const Chatbot = ({ allData, username }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!userInput.trim()) return; // Prevent empty submissions
 
-    const timestamp = Date.now(); // Record the current timestamp
+  // Prevent empty submissions
+    if (!userInput.trim()) return; 
+
+  // Record the current timestamp
+    const timestamp = Date.now(); 
 
     // Update historical user input and timestamps states
     setHistoricalUserInput((prev) => [...prev, { text: userInput, timestamp }]);
     setTimestamps((prev) => [...prev, timestamp]);
 
-    setUserInput(""); // Clear the input field after submission
+    // Clear the input field after submission
+    setUserInput(""); 
 
+    // Prune helper function
     function pruneArray(arr, targetLength) {
       const originalLength = arr.length;
       if (originalLength <= targetLength) return arr;
-      // If the array is already short enough, no need to prune }
       const step = Math.floor(originalLength / targetLength);
       const prunedArray = [];
       for (let i = 0; i < originalLength; i += step) {
         prunedArray.push(arr[i]);
-        if (prunedArray.length === targetLength) break; // Stop when we have the desired number of elements
+        if (prunedArray.length === targetLength) break; 
       }
       // }
       return prunedArray;
     }
 
+    // Loop through nested structures and prune
     function loopedPrune(arrOfArrs) {
       const prunedArray = []
       arrOfArrs.forEach(node => {
@@ -85,6 +90,7 @@ const Chatbot = ({ allData, username }) => {
       return prunedArray;
     }
 
+    // Prune data
     const prunedCpuUsageHistorical = loopedPrune(
       allData.cpuUsageHistorical.resourceUsageHistorical,
     );
@@ -94,8 +100,7 @@ const Chatbot = ({ allData, username }) => {
     );
 
 
-    // console.log(allData.cpuUsageHistorical.resourceUsageHistorical);
-
+    // Format data to send back with pruned data
     const dataToSendBack = {
       prunedCpuUsageHistorical: prunedCpuUsageHistorical,
       prunedLatencyAppRequestHistorical: prunedLatencyAppRequestHistorical,
@@ -103,7 +108,6 @@ const Chatbot = ({ allData, username }) => {
       rawAllPodsStatus: allData.podsStatuses.allPodsStatus,
       rawAllPodsRequestLimit: allData.requestLimits.allPodsRequestLimit
     };
-
     
     // Format request body
     const body = {
