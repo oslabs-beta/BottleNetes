@@ -3,17 +3,24 @@ import {
   processCpuData,
   processMemoryData,
   getTimeStamps,
-} from "../utils/historicalMetricsUtils";
+} from "../utils/historicalMetricsUtils.ts";
+
+import { State as mainState } from "../stores/mainStore.ts";
+import { State } from "../stores/dataStore.ts";
 
 export default function useMetricsData(
-  defaultView,
-  clickedPod,
-  cpuUsageHistorical,
-  memoryUsageHistorical,
+  defaultView: mainState["defaultView"],
+  clickedPod: mainState["clickedPod"],
+  cpuUsageHistorical: State["allData"]["cpuUsageHistorical"],
+  memoryUsageHistorical: State["allData"]["memoryUsageHistorical"],
 ) {
   const data = useMemo(() => {
-    const cpuData = cpuUsageHistorical?.resourceUsageHistorical?.[0];
-    const memoryData = memoryUsageHistorical?.resourceUsageHistorical?.[0];
+    const cpuData = Array.isArray(cpuUsageHistorical)
+      ? undefined
+      : cpuUsageHistorical?.resourceUsageHistorical?.[0];
+    const memoryData = Array.isArray(memoryUsageHistorical)
+      ? undefined
+      : memoryUsageHistorical?.resourceUsageHistorical?.[0];
 
     // Bail early if no data is available
     if (!cpuData && !memoryData) {
@@ -26,8 +33,8 @@ export default function useMetricsData(
     }
 
     const timeStamps = getTimeStamps(availableData);
-    let CpuUsageAtEachTimestamp = [];
-    let MemoryUsageAtEachTimestamp = [];
+    let CpuUsageAtEachTimestamp: number[] = [];
+    let MemoryUsageAtEachTimestamp: number[] = [];
 
     if (defaultView) {
       CpuUsageAtEachTimestamp = processCpuData(cpuUsageHistorical, timeStamps);
@@ -37,14 +44,17 @@ export default function useMetricsData(
       );
     }
     if (!defaultView && clickedPod.podName) {
-      const clickedCpuPod = cpuUsageHistorical?.resourceUsageHistorical?.find(
-        (pod) => pod.name === clickedPod.podName,
-      );
+      const clickedCpuPod = Array.isArray(cpuUsageHistorical)
+        ? undefined
+        : cpuUsageHistorical?.resourceUsageHistorical?.find(
+            (pod) => pod.name === clickedPod.podName,
+          );
       CpuUsageAtEachTimestamp = clickedCpuPod?.usageRelative || [];
-      const clickedMemoryPod =
-        memoryUsageHistorical?.resourceUsageHistorical?.find(
-          (pod) => pod.name === clickedPod.podName,
-        );
+      const clickedMemoryPod = Array.isArray(memoryUsageHistorical)
+        ? undefined
+        : memoryUsageHistorical?.resourceUsageHistorical?.find(
+            (pod) => pod.name === clickedPod.podName,
+          );
       MemoryUsageAtEachTimestamp = clickedMemoryPod?.usageRelative || [];
     }
 

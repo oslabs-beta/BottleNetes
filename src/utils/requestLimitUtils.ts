@@ -1,4 +1,4 @@
-export const bytesToMb = (memoryInBytes) => {
+export const bytesToMb = (memoryInBytes: number | null): number | null => {
   return memoryInBytes ? memoryInBytes / (1024 * 1024) : null;
 };
 
