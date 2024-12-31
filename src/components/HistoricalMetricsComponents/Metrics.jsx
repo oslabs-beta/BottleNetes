@@ -3,6 +3,7 @@
  */
 
 import PropTypes from "prop-types";
+import TimeWindowSelector from "./TimeWindowSelector"
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -35,13 +36,18 @@ const Metrics = ({
   clickedPod,
   cpuUsageHistorical,
   memoryUsageHistorical,
+  historicalTimeWindow,
+  setHistoricalTimeWindow,
 }) => {
-
   if (
     !cpuUsageHistorical?.resourceUsageHistorical &&
     !memoryUsageHistorical?.resourceUsageHistorical
   ) {
-    return <div className="font-semibold text-slate-800 dark:text-slate-200">Loading...</div>;
+    return (
+      <div className="font-semibold text-slate-800 dark:text-slate-200">
+        Loading...
+      </div>
+    );
   }
 
   const { timeStamps, cpu, memory } = useMetricsData(
@@ -79,8 +85,17 @@ const Metrics = ({
   };
 
   return (
-    <div className="relative max-h-fit min-h-[600px] w-full p-4">
-      <Line options={historicalMetricsChartOptions} data={data} />
+    <div>
+      <div className="p-4">
+        <div className="flex justify-end">
+          <TimeWindowSelector
+            onTimeWindowChange={(val) => setHistoricalTimeWindow(val)}
+          />
+        </div>
+      </div>
+      <div className="relative max-h-fit min-h-[600px] w-full p-4">
+        <Line options={historicalMetricsChartOptions} data={data} />
+      </div>
     </div>
   );
 };
@@ -90,6 +105,8 @@ Metrics.propTypes = {
   clickedPod: PropTypes.object,
   cpuUsageHistorical: PropTypes.object,
   memoryUsageHistorical: PropTypes.object,
+  historicalTimeWindow: PropTypes.string,
+  setHistoricalTimeWindow: PropTypes.func,
 };
 
 export default Metrics;
