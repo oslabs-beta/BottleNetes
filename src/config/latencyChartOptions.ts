@@ -12,7 +12,7 @@ export const latencyChartOptions = {
         display: false,
       },
       ticks: {
-        color: "#1e293b",
+        color: "#64748b",
         font: { size: 14 },
         maxRotation: 45,
         minRotation: 45,
@@ -24,7 +24,7 @@ export const latencyChartOptions = {
         display: false,
       },
       ticks: {
-        color: "#1e293b",
+        color: "#64748b",
         font: { size: 14 },
         callback: function (value: string | number) {
           return value + "ms";
@@ -42,7 +42,7 @@ export const latencyChartOptions = {
     legend: {
       position: "bottom" as const,
       labels: {
-        color: "#1e293b",
+        color: "#64748b",
         font: { size: 15 },
       },
     },

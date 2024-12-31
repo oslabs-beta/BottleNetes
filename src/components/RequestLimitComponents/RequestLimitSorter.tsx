@@ -26,7 +26,7 @@ const RequestLimitSorter = () => {
             setSortType(selected.type);
           }
         }}
-        className="w-fit rounded-lg border-2 border-slate-200 bg-gradient-to-r from-slate-200 to-slate-100 px-3 py-2 text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90"
+        className="w-fit rounded-lg border-2 border-transparent bg-slate-200 px-3 py-2 text-sm font-semibold text-slate-500 transition duration-200 hover:brightness-90 dark:bg-slate-800 dark:text-slate-300"
       >
         <option value="" disabled hidden>
           {selectedLabel}

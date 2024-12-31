@@ -1,7 +1,10 @@
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
-dotenv.config();
+const envFile =
+  process.env.NODE_ENV === "production" ? ".env.production" : ".env";
+dotenv.config({ path: envFile });
+
 
 export const SECRET_KEY = process.env.SECRET_SESSION_KEY || "";
 const EXPIRE_IN = "1d";

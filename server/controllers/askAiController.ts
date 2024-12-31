@@ -1,10 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // askAiController.js - Controller for handling POST /askAi connecting to OpenAI API
 import axios from "axios";
 import dotenv from "dotenv";
 import process from "process";
 import { Request, Response, NextFunction } from "express";
 
-dotenv.config();
+const envFile =
+  process.env.NODE_ENV === "production" ? ".env.production" : ".env";
+dotenv.config({ path: envFile });
+
 
 const openAiApiKey = process.env.OPENAI_API_KEY;
 const openAiEndpoint = "https://api.openai.com/v1/chat/completions";

@@ -36,12 +36,20 @@ const Metrics = () => {
   const cpuUsageHistorical = dataStore((state) => state.allData.cpuUsageHistorical);
   const memoryUsageHistorical = dataStore((state) => state.allData.memoryUsageHistorical);
 
+
   const { timeStamps, cpu, memory } = useMetricsData(
     defaultView,
     clickedPod,
     cpuUsageHistorical,
     memoryUsageHistorical,
   );
+
+  if (
+    (!Array.isArray(cpuUsageHistorical) && !cpuUsageHistorical?.resourceUsageHistorical) &&
+    (!Array.isArray(memoryUsageHistorical) && !memoryUsageHistorical?.resourceUsageHistorical)
+  ) {
+    return <div className="font-semibold text-slate-800 dark:text-slate-200">Loading...</div>;
+  }
 
   const datasets = [];
 
@@ -59,8 +67,8 @@ const Metrics = () => {
     datasets.push({
       label: "RAM Usage (% of requested)",
       data: memory,
-      borderColor: "#3730a3",
-      backgroundColor: "#3730a3",
+      borderColor: "#93c5fd",
+      backgroundColor: "#93c5fd",
       tension: 0.4,
     });
   }
