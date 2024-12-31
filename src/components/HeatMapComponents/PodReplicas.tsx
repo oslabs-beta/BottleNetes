@@ -2,10 +2,17 @@
  * This component renders the 'Modify Replicas' button and its popup and functionalities
  */
 
-import PropTypes from "prop-types";
+import React from "react";
 import { useState } from "react";
 
-const PodReplicas = ({ clickedPod, backendUrl }) => {
+import mainStore from "../../stores/mainStore.ts";
+import dataStore from "../../stores/dataStore.ts";
+import podStore from "../../stores/podStore.ts";
+
+const PodReplicas = () => {
+  const clickedPod = mainStore((state) => state.clickedPod);
+  const backendUrl = dataStore((state) => state.backendUrl);
+
   // State to determine the visibility of the popup when clicking the button
   const [showReplicasPopup, setShowReplicasPopup] = useState(false);
   // State to set the new amount of replicas
@@ -136,16 +143,6 @@ const PodReplicas = ({ clickedPod, backendUrl }) => {
       </div>
     </div>
   );
-};
-
-PodReplicas.propTypes = {
-  clickedPod: PropTypes.shape({
-    podName: PropTypes.string,
-    namespace: PropTypes.string,
-    containers: PropTypes.array,
-    deploymentName: PropTypes.string,
-  }),
-  backendUrl: PropTypes.string,
 };
 
 export default PodReplicas;
