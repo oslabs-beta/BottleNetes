@@ -189,10 +189,7 @@ const MainContainer = () => {
       <div className="bg-custom-gradient">
         <div className="border-b-2 border-slate-300 p-6">
           {/* Overview Display */}
-          <Overview
-            podsStatuses={allData.podsStatuses || []}
-            allNodes={allData.allNodes || []}
-          />
+          <Overview />
         </div>
 
         {/* Pod Name Display */}
