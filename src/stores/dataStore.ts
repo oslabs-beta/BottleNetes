@@ -112,6 +112,7 @@ export type State = {
   metricToSort: string;
   filterConfig: filterConfig;
   sortType: string;
+  selectedLabel: string;
 };
 
 type Action = {
@@ -121,6 +122,7 @@ type Action = {
   setMetricToSort: (metricToSort: State["metricToSort"]) => void;
   setFilterConfig: (filterConfig: State["filterConfig"]) => void;
   setSortType: (sortType: State["sortType"]) => void;
+  setSelectedLabel: (selectedLabeled: State["selectedLabeled"]) => void;
 };
 
 const dataStore = create<State & Action>()((set) => ({
@@ -153,6 +155,9 @@ const dataStore = create<State & Action>()((set) => ({
 
   sortType: "",
   setSortType: (sortType) => set({ sortType }),
+
+  selectedLabel: "Sort by...",
+  setSelectedLabel: (selectedLabeled) => set({ selectedLabeled }),
 }));
 
 export default dataStore;

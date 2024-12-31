@@ -3,14 +3,14 @@ import { State } from "../stores/mainStore.ts";
 export const getRequestLimitChartOptions = (
   selectedMetric: State["selectedMetric"],
 ) => ({
-  indexAxis: "y",
+  indexAxis: "y" as const,
   responsive: true,
   maintainAspectRatio: false,
   barThickness: 30,
   maxBarThickness: 30,
   scales: {
     x: {
-      position: "top",
+      position: "top" as const,
       stacked: false,
       grid: { color: "transparent" },
       beginAtZero: true,
@@ -40,7 +40,7 @@ export const getRequestLimitChartOptions = (
   },
   plugins: {
     legend: {
-      position: "top",
+      position: "top" as const,
       labels: {
         color: "#1e293b",
         font: { size: 15 },

@@ -1,8 +1,9 @@
-import PropTypes from "prop-types";
-import { useState } from "react";
+import React from 'react';
 
-const RequestLimitSorter = ({ setSortType }) => {
-  const [selectedLabel, setSelectedLabel] = useState("Sort by...");
+import dataStore from '../../stores/dataStore.ts';
+
+const RequestLimitSorter = () => {
+  const { setSortType, selectedLabel, setSelectedLabel } = dataStore();
 
   const sortOptions = [
     { type: "", label: "Sort by..." },
@@ -40,10 +41,6 @@ const RequestLimitSorter = ({ setSortType }) => {
       </select>
     </div>
   );
-};
-
-RequestLimitSorter.propTypes = {
-  setSortType: PropTypes.func.isRequired,
 };
 
 export default RequestLimitSorter;
