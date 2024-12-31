@@ -39,7 +39,7 @@ type resourceUsageOneValueObj = {
   [key: string]: string | number | boolean | any[] | Record<string, unknown>;
 };
 
-type resourceUsageHistoricalObj = {
+export type resourceUsageHistoricalObj = {
   name: string;
   timestampsUnix: number[];
   timestampsReadable: number[];

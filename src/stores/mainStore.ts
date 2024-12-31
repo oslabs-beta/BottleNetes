@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-type ClickedPod = {
+export type ClickedPod = {
   podName: string;
   namespace: string;
   containers: [];
