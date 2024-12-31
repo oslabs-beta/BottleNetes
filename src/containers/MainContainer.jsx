@@ -175,7 +175,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
           <div className="flex justify-between">
             <button
               onClick={() => setAiVisibility(!aiVisibility)}
-              className="rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90"
+              className="rounded-full bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90"
             >
               Ask AI
             </button>
