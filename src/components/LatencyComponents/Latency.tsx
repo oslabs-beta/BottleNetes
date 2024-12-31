@@ -11,8 +11,6 @@ import {
   Legend,
 } from "chart.js";
 
-import LoadingContainer from "../../containers/LoadingContainer";
-
 import { useLatencyData } from "../../hooks/useLatencyData";
 import { latencyChartOptions } from "../../config/latencyChartOptions";
 
@@ -43,7 +41,7 @@ const Latency = () => {
   );
 
   if (isLoading) {
-    return <LoadingContainer />;
+    return <div className="font-semibold text-slate-800 dark:text-slate-200">Loading...</div>;
   }
 
   return (

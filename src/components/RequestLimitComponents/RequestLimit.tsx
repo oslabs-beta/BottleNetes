@@ -49,7 +49,7 @@ const RequestLimit = () => {
       {
         label: "Requested Resources",
         data: requestData,
-        backgroundColor: "rgba(191, 219, 254)",
+        backgroundColor: "#93c5fd",
         borderRadius: 5,
       },
       {
@@ -60,6 +60,10 @@ const RequestLimit = () => {
       },
     ],
   };
+
+  if (podList.length === 0) {
+    return <div className="font-semibold text-slate-800 dark:text-slate-200">Loading...</div>;
+  }
 
   const chartHeight = podList.length * 50;
   const options = getRequestLimitChartOptions(selectedMetric);

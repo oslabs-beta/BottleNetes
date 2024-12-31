@@ -9,7 +9,10 @@ import { Strategy as GitHubStrategy } from "passport-github2";
 
 import cookieController from "../controllers/cookieController.js";
 
-dotenv.config();
+const envFile =
+  process.env.NODE_ENV === "production" ? ".env.production" : ".env";
+dotenv.config({ path: envFile });
+
 
 const oAuthRouter = express.Router();
 

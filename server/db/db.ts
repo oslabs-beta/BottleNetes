@@ -3,7 +3,10 @@ import { Sequelize } from "sequelize";
 import dotenv from "dotenv";
 import process from 'node:process';
 
-dotenv.config();
+const envFile =
+  process.env.NODE_ENV === "production" ? ".env.production" : ".env";
+dotenv.config({ path: envFile });
+
 
 const DB_URI = process.env.SUPABASE_URI || "";
 

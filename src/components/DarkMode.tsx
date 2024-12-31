@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { FaSun, FaMoon } from "react-icons/fa"; // Icons for light and dark mode
 
-export default function App() {
+const DarkMode = () => {
   const [darkMode, setDarkMode] = useState(() => {
     // Check user's preferred theme or default to light mode
     return localStorage.getItem("theme") === "dark";
@@ -19,15 +19,14 @@ export default function App() {
   }, [darkMode]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-white text-black dark:bg-gray-900 dark:text-white">
+    <div className="flex items-center bg-transparent text-black dark:text-white">
       <div className="text-center">
-        <h1 className="text-2xl font-bold">Toggle Dark Mode</h1>
-        <p className="mt-2">Current mode: {darkMode ? "Dark" : "Light"}</p>
+        
 
         {/* Toggle Switch */}
         <div
-          className={`mt-4 flex h-8 w-14 cursor-pointer items-center rounded-full p-1 ${
-            darkMode ? "bg-gray-700" : "bg-gray-300"
+          className={`flex h-8 w-14 cursor-pointer items-center rounded-full p-1 ${
+            darkMode ? "bg-slate-700" : "bg-slate-300"
           }`}
           onClick={() => setDarkMode(!darkMode)}
         >
@@ -47,4 +46,6 @@ export default function App() {
       </div>
     </div>
   );
-}
+};
+
+export default DarkMode;

@@ -31,7 +31,10 @@ import Users from "../models/UserModel.js";
 // import UsersGitHub from "../models/UsersGitHubModel";
 // import UsersGoogle from "../models/UsersGoogleModel";
 
-dotenv.config();
+const envFile =
+  process.env.NODE_ENV === "production" ? ".env.production" : ".env";
+dotenv.config({ path: envFile });
+
 
 interface CookieController {
   createCookie: (

@@ -5,13 +5,14 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build:backend": "tsc -b tsconfig.node.json",
-    "build:frontend": "vite build",
-    "build": "npm run build:backend && npm run build:frontend",
+    "dev:front": "vite",
+    "dev:back": "NODE_ENV=development ts-node server/server.ts",
+    "build:front": "vite build",
+    "build:back": "npx tsc -b tsconfig.node.json",
+    "prod:front": "vite preview",
+    "prod:back": "NODE_ENV=production node dist/server/server.js",
     "server": "nodemon",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",

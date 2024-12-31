@@ -21,7 +21,9 @@ import k8sRouter from "./routes/k8sRouter.js";
 import oAuthRouter from "./routes/oAuthRouter.js";
 import userRouter from "./routes/userRouter.js";
 // Allow the use of process.env
-dotenv.config();
+const envFile =
+  process.env.NODE_ENV === "production" ? ".env.production" : ".env";
+dotenv.config({ path: envFile });
 
 const app = express();
 
@@ -42,7 +44,11 @@ app.use(express.urlencoded({ extended: true, limit: "750mb" }));
 // CORS stuffs
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:3000"], //Front-end PORT
+    origin: [
+      "http://localhost:5173",
+      "http://localhost:3000",
+      "http://localhost:4173",
+    ], //Front-end PORT
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true, // Important for cookies/session
   }),
@@ -50,9 +56,10 @@ app.use(
 
 // Connect to PORT 3000
 const PORT = 3000;
-const server = app.listen(PORT, () =>
-  console.log(`🚀 Server running on http://localhost:${PORT}`),
-);
+const server = app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`😉 Environment: ${process.env.NODE_ENV}`);
+});
 
 // Connect to DB
 connectDB();

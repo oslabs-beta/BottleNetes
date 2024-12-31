@@ -48,7 +48,7 @@ const PodSelector = (props: { podList: podObj[]; }) => {
       <select
         id="pod-selector-dropdown"
         value={selectedValue} // This controls what's displayed in the closed select
-        className="w-full rounded-lg border-2 border-slate-200 bg-gradient-to-r from-slate-200 to-slate-100 px-3 py-2 text-center text-sm font-medium text-slate-500 transition duration-200 hover:brightness-90"
+        className="w-full rounded-lg border-2 border-transparent bg-slate-200 px-3 py-2 text-center text-sm font-semibold text-slate-500 transition duration-200 hover:brightness-90 dark:text-slate-300 dark:bg-slate-800"
         onChange={(e) => {
           const value = e.target.value;
           setSelectedValue(value); // Update what's shown in the closed select
