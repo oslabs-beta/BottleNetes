@@ -1,15 +1,22 @@
 /**
  * This component renders the overview such as Cluster Name, number of Nodes, Pods and Containers in that cluster
  */
-
-import PropTypes from "prop-types";
+import React from "react";
 import { useMemo } from "react";
 
 import "../Overview.css";
 
-const Overview = ({ podsStatuses, allNodes }) => {
+import dataStore from "../stores/dataStore.ts";
+
+const Overview = () => {
+  const podsStatuses = dataStore((state) => state.allData.podsStatuses);
+  const allNodes = dataStore((state) => state.allData.allNodes);
+
   const overview = useMemo(() => {
-    if (!podsStatuses?.allPodsStatus || !allNodes?.allNodes) {
+    if (
+      (!Array.isArray(podsStatuses) && !podsStatuses?.allPodsStatus) ||
+      (!Array.isArray(allNodes) && !allNodes?.allNodes)
+    ) {
       return {
         clusterName: "Not Connected",
         nodes: 0,
@@ -19,13 +26,17 @@ const Overview = ({ podsStatuses, allNodes }) => {
     }
 
     return {
-      clusterName: allNodes.allNodes[0]?.clusterName || "Unknown Cluster",
-      nodes: allNodes.allNodes.length,
-      pods: podsStatuses.allPodsStatus.length,
-      containers: podsStatuses.allPodsStatus.reduce(
-        (acc, pod) => acc + pod.containerCount,
-        0,
-      ),
+      clusterName: Array.isArray(allNodes)
+        ? "Unknown Cluster"
+        : allNodes.allNodes[0]?.clusterName,
+      nodes: Array.isArray(allNodes) ? 0 : allNodes.allNodes.length,
+      pods: Array.isArray(podsStatuses) ? 0 : podsStatuses.allPodsStatus.length,
+      containers: Array.isArray(podsStatuses)
+        ? 0
+        : podsStatuses.allPodsStatus.reduce(
+            (acc, pod) => acc + pod.containerCount,
+            0,
+          ),
     };
   }, [podsStatuses, allNodes]);
 
@@ -54,11 +65,6 @@ const Overview = ({ podsStatuses, allNodes }) => {
       </div>
     </div>
   );
-};
-
-Overview.propTypes = {
-  podsStatuses: PropTypes.object,
-  allNodes: PropTypes.object,
 };
 
 export default Overview;
