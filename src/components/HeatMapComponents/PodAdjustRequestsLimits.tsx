@@ -2,8 +2,7 @@
  * This component renders the 'Adjust Resources/Limits' with its Popup
  */
 
-import PropTypes from "prop-types";
-import { useState } from "react";
+import React from "react";
 import {
   FormControl,
   FormHelperText,
@@ -14,21 +13,23 @@ import {
   Tooltip,
 } from "@mui/material";
 
-const PodAdjustRequestsLimits = ({ clickedPod, backendUrl }) => {
-  // State to determine the visibility of the popup when pressing the button
-  const [showRequestsLimitsPopup, setShowRequestsLimitsPopup] = useState(false);
-  // State to save the newRequests values when selecting an option in the dropdown
-  const [newRequests, setNewRequests] = useState({
-    memory: "",
-    cpu: "",
-  });
-  // State to save the newLimits values when selecting an option in the dropdown
-  const [newLimits, setNewLimits] = useState({
-    memory: "",
-    cpu: "",
-  });
-  // State to render the selected option for the dropdown
-  const [selectedOption, setSelectedOption] = useState("");
+import mainStore from "../../stores/mainStore.ts";
+import dataStore from "../../stores/dataStore.ts";
+import podStore from "../../stores/podStore.ts";
+
+const PodAdjustRequestsLimits = () => {
+  const clickedPod = mainStore((state) => state.clickedPod);
+  const backendUrl = dataStore((state) => state.backendUrl);
+  const {
+    showRequestsLimitsPopup,
+    setShowRequestsLimitsPopup,
+    newRequests,
+    setNewRequests,
+    newLimits,
+    setNewLimits,
+    selectedOption,
+    setSelectedOption,
+  } = podStore();
 
   // Click on the button to render the dropdown after selecting a pod. Otherwise, show an alert instead
   const handleRequestsLimits = async () => {
@@ -163,29 +164,27 @@ const PodAdjustRequestsLimits = ({ clickedPod, backendUrl }) => {
    * It will find the corresponding value inside preConfigOptions and save those value in selectedPreConfigOption
    * Then it will reassign the state of newRequests, newLimits and selectedOption using those data
    */
-  const handleSelectedValue = (event) => {
+  const handleSelectedValue = (event: { target: { value: string; }; }) => {
     const selectedPreConfigOption = preConfigOptions.find(
       (option) => option.configName === event.target.value,
     );
     setSelectedOption(event.target.value);
-    setNewRequests((prev) => ({
-      ...prev,
+    setNewRequests({
       memory: selectedPreConfigOption?.requests.memory,
       cpu: selectedPreConfigOption?.requests.cpu,
-    }));
-    setNewLimits((prev) => ({
-      ...prev,
+    });
+    setNewLimits({
       memory: selectedPreConfigOption?.limits.memory,
       cpu: selectedPreConfigOption?.limits.cpu,
-    }));
+    });
   };
   // handle input change for custom option
-  const handleInputChange = (type, field, value) => {
+  const handleInputChange = (type: "requests" | "limits", field: "memory" | "cpu", value: string) => {
     if (selectedOption === "Custom") {
       if (type === "requests") {
-        setNewRequests((prev) => ({ ...prev, [field]: value }));
+        setNewRequests({ ...newRequests, [field]: value });
       } else {
-        setNewLimits((prev) => ({ ...prev, [field]: value }));
+        setNewLimits({ ...newLimits, [field]: value });
       }
     }
   };
@@ -229,7 +228,7 @@ const PodAdjustRequestsLimits = ({ clickedPod, backendUrl }) => {
             id="requests-limits-specs-display"
             className="relative flex items-center justify-evenly rounded-xl border-2 border-slate-300 bg-slate-300"
           >
-          {/* Render the tooltip when hovering the mouse over the button */}
+            {/* Render the tooltip when hovering the mouse over the button */}
             <Tooltip placement="left" title={<ToolTipDescription />} arrow>
               <div
                 id="resources-config-help-info"
@@ -359,16 +358,6 @@ const PodAdjustRequestsLimits = ({ clickedPod, backendUrl }) => {
       </div>
     </div>
   );
-};
-
-PodAdjustRequestsLimits.propTypes = {
-  clickedPod: PropTypes.shape({
-    podName: PropTypes.string,
-    namespace: PropTypes.string,
-    containers: PropTypes.array,
-    deploymentName: PropTypes.string,
-  }),
-  backendUrl: PropTypes.string,
 };
 
 const ToolTipDescription = () => {

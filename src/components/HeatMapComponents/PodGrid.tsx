@@ -127,10 +127,7 @@ const PodGrid = () => {
         <PodRestart />
         <PodLogDisplay />
         <PodReplicas />
-        <PodAdjustRequestsLimits
-          clickedPod={clickedPod}
-          backendUrl={backendUrl}
-        />
+        <PodAdjustRequestsLimits />
         <PodSelector
           podList={processedPodList}
           setClickedPod={setClickedPod}
