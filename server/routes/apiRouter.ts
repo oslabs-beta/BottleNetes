@@ -1,11 +1,11 @@
-import express from "express";
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "node:url";
+import express, { Request, Response, NextFunction } from "express";
+// import fs from "fs";
+// import path from "path";
+// import { fileURLToPath } from "node:url";
 
 // Config path for usability in ES Module
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
 import {
   parseRequestAllPodsStatus,
@@ -39,31 +39,31 @@ import {
 
 const apiRouter = express.Router();
 
-const cacheDataToFile = (location) => {
-  return async (req, res, next) => {
-    try {
-      const dataToStore = res.locals.parsedData || {};
-      // Configure path to data file
-      const dataFilePath = path.join(__dirname, "..", "data", `${location}.json`);
+// const cacheDataToFile = (location: string) => {
+//   return async (_req: Request, res: Response, next: NextFunction) => {
+//     try {
+//       const dataToStore = res.locals.parsedData || {};
+//       // Configure path to data file
+//       const dataFilePath = path.join(__dirname, "..", "data", `${location}.json`);
 
-      // Format data
-      const dataToWrite = JSON.stringify(dataToStore, null, 2);
-      // Write to file
-      await fs.promises.writeFile(dataFilePath, dataToWrite, "utf8");
-      return next();
-    } catch (error) {
-      return next({
-        log: error,
-        status: 500,
-        message: {
-          err: error,
-        },
-      });
-    }
-  };
-};
+//       // Format data
+//       const dataToWrite = JSON.stringify(dataToStore, null, 2);
+//       // Write to file
+//       await fs.promises.writeFile(dataFilePath, dataToWrite, "utf8");
+//       return next();
+//     } catch (error) {
+//       return next({
+//         log: error,
+//         status: 500,
+//         message: {
+//           err: error,
+//         },
+//       });
+//     }
+//   };
+// };
 
-const check = (req, res, next) => {
+const check = (_req: Request, _res: Response, next: NextFunction) => {
   console.log("DONE DONE DONE DONE");
   return next();
 };

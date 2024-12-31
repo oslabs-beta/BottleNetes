@@ -2,7 +2,6 @@
  * This component renders the 'Adjust Resources/Limits' with its Popup
  */
 
-import React from "react";
 import {
   FormControl,
   FormHelperText,
@@ -13,9 +12,9 @@ import {
   Tooltip,
 } from "@mui/material";
 
-import mainStore from "../../stores/mainStore.ts";
-import dataStore from "../../stores/dataStore.ts";
-import podStore from "../../stores/podStore.ts";
+import mainStore from "../../stores/mainStore";
+import dataStore from "../../stores/dataStore";
+import podStore from "../../stores/podStore";
 
 const PodAdjustRequestsLimits = () => {
   const clickedPod = mainStore((state) => state.clickedPod);

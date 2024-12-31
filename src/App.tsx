@@ -2,20 +2,20 @@
  * This component contains the security logics
  */
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import {
   Navigate,
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
 
-import SigninContainer from "./containers/SigninContainer.tsx";
-import MainContainer from "./containers/MainContainer.tsx";
-import SignupContainer from "./containers/SignupContainer.tsx";
-import LoadingContainer from "./containers/LoadingContainer.tsx";
+import SigninContainer from "./containers/SigninContainer";
+import MainContainer from "./containers/MainContainer";
+import SignupContainer from "./containers/SignupContainer";
+import LoadingContainer from "./containers/LoadingContainer";
 
-import userStore from "./stores/userStore.ts";
-import dataStore from "./stores/dataStore.ts";
+import userStore from "./stores/userStore";
+import dataStore from "./stores/dataStore";
 
 type Data = {
   signedIn: boolean;
@@ -86,7 +86,7 @@ const App = () => {
 
     // useEffect clean up function. Abort the fetch request when shutting down the application
     return () => controller.abort();
-  }, [setSignedIn, setLoading, setUsername]);
+  }, [setSignedIn, setLoading, setUsername, backendUrl]);
 
   if (loading) return <LoadingContainer />;
 

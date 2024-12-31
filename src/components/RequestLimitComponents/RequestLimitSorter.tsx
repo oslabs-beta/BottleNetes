@@ -1,6 +1,4 @@
-import React from 'react';
-
-import dataStore from '../../stores/dataStore.ts';
+import dataStore from '../../stores/dataStore';
 
 const RequestLimitSorter = () => {
   const { setSortType, selectedLabel, setSelectedLabel } = dataStore();

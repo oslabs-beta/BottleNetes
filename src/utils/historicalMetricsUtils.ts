@@ -1,4 +1,4 @@
-import { resourceUsageHistoricalObj, allData } from "../stores/dataStore.ts";
+import { resourceUsageHistoricalObj, allData } from "../stores/dataStore";
 
 export const getTimeStamps = (availableData: resourceUsageHistoricalObj) => {
   return availableData.timestampsReadable.map((timestamp) => {
@@ -13,7 +13,7 @@ export const getTimeStamps = (availableData: resourceUsageHistoricalObj) => {
 };
 
 export const processCpuData = (cpuUsageHistorical: allData['cpuUsageHistorical'], timeStamps: string[]) => {
-  let CpuUsageAtEachTimestamp = [];
+  const CpuUsageAtEachTimestamp = [];
   if (!Array.isArray(cpuUsageHistorical) && cpuUsageHistorical?.resourceUsageHistorical) {
     const cpuPodCount = cpuUsageHistorical.resourceUsageHistorical.length;
     for (let i = 0; i < timeStamps.length; i++) {
@@ -28,7 +28,7 @@ export const processCpuData = (cpuUsageHistorical: allData['cpuUsageHistorical']
 };
 
 export const processMemoryData = (memoryUsageHistorical: allData['memoryUsageHistorical'], timeStamps: string[]) => {
-  let MemoryUsageAtEachTimestamp = [];
+  const MemoryUsageAtEachTimestamp = [];
   if (!Array.isArray(memoryUsageHistorical) && memoryUsageHistorical?.resourceUsageHistorical) {
     const memoryPodCount = memoryUsageHistorical.resourceUsageHistorical.length;
     for (let i = 0; i < timeStamps.length; i++) {

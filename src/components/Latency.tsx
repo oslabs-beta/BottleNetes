@@ -1,7 +1,6 @@
 /**
  * This component renders the line graph representing the Latency
  */
-import React from 'react';
 import PropTypes from "prop-types";
 import { Line } from "react-chartjs-2";
 import {
@@ -14,12 +13,6 @@ import {
   Title,
   Tooltip,
   Legend,
-  DatasetChartOptions,
-  CoreChartOptions,
-  ElementChartOptions,
-  LineControllerChartOptions,
-  PluginChartOptions,
-  ScaleChartOptions,
 } from "chart.js";
 
 ChartJS.register(
@@ -33,11 +26,11 @@ ChartJS.register(
   Legend,
 );
 
-import LoadingContainer from '../containers/LoadingContainer.tsx';
+import LoadingContainer from '../containers/LoadingContainer';
 
-import mainStore from '../stores/mainStore.ts';
-import dataStore from '../stores/dataStore.ts';
-import { _DeepPartialObject } from 'chart.js/dist/types/utils';
+import mainStore from '../stores/mainStore';
+import dataStore from '../stores/dataStore';
+
 
 const Latency = () => {
   const { defaultView, clickedPod } = mainStore();
@@ -49,11 +42,11 @@ const Latency = () => {
     return <LoadingContainer />;
   }
 
-  let timeStamps: any[] = [];
-  let avgLatencyInboundAtEachTimestamp: any[] = [];
-  let avgLatencyOutboundAtEachTimestamp: any[] = [];
-  let peakLatencyOutboundAtEachTimestamp: any[] = [];
-  let peakLatencyInboundAtEachTimestamp: any[] = [];
+  let timeStamps: string[] = [];
+  let avgLatencyInboundAtEachTimestamp: number[] = [];
+  let avgLatencyOutboundAtEachTimestamp: number[] = [];
+  let peakLatencyOutboundAtEachTimestamp: number[] = [];
+  let peakLatencyInboundAtEachTimestamp: number[] = [];
 
   // Use latency data if available, otherwise fall back to CPU data for timestamps
   const hasLatencyData =
@@ -151,10 +144,10 @@ const Latency = () => {
     }
   }
 
-  const options: _DeepPartialObject<CoreChartOptions<"line"> & ElementChartOptions<"line"> & PluginChartOptions<"line"> & DatasetChartOptions<"line"> & ScaleChartOptions<"line"> & LineControllerChartOptions> = {
+  const options = {
     responsive: true,
     interaction: {
-      mode: "nearest",
+      mode: "nearest" as const,
       intersect: false,
     },
     maintainAspectRatio: false,
@@ -179,7 +172,7 @@ const Latency = () => {
         ticks: {
           color: "#1e293b",
           font: { size: 14 },
-          callback: function (value) {
+          callback: function (value: string | number) {
             return value + "ms";
           },
         },
@@ -193,7 +186,7 @@ const Latency = () => {
     },
     plugins: {
       legend: {
-        position: "bottom",
+        position: "bottom" as const,
         labels: {
           color: "#1e293b",
           font: { size: 15 },

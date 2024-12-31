@@ -2,17 +2,40 @@
  * Use Sequelize to define the model of users table in DB
  */
 
-import { DataTypes, Sequelize } from "sequelize";
+import {
+  DataTypes,
+  Model,
+  CreationOptional,
+  InferAttributes,
+  InferCreationAttributes,
+} from "sequelize";
 import bcrypt from "bcrypt";
 
 // Import in tables to establish relationship
-import UsersGitHub from './UsersGitHubModel.js';
-import UsersGoogle from './UsersGoogleModel.js';
+import UsersGitHub from "./UsersGitHubModel.js";
+import UsersGoogle from "./UsersGoogleModel.js";
 
 import sequelize from "../db/db.js";
 
+interface UsersModel
+  extends Model<
+    InferAttributes<UsersModel>,
+    InferCreationAttributes<UsersModel>
+  > {
+  id: CreationOptional<string>;
+  username: string;
+  password_hash: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  github_id: CreationOptional<string>;
+  google_id: CreationOptional<string>;
+  created_at: CreationOptional<Date>;
+  updated_at: CreationOptional<Date>;
+}
+
 // Define a model Users using Sequelizq
-const Users = sequelize.define(
+const Users = sequelize.define<UsersModel>(
   "Users",
   {
     id: {
@@ -60,12 +83,12 @@ const Users = sequelize.define(
 
     created_at: {
       type: DataTypes.DATE,
-      defaultValue: Sequelize.NOW,
+      defaultValue: DataTypes.NOW,
     },
 
     updated_at: {
       type: DataTypes.DATE,
-      defaultValue: Sequelize.NOW,
+      defaultValue: DataTypes.NOW,
     },
   },
   {
@@ -83,7 +106,7 @@ UsersGitHub.hasOne(Users, { foreignKey: "github_id" });
 UsersGoogle.hasOne(Users, { foreignKey: "google_id" });
 
 // Hash the password before creating and updating
-Users.addHook("beforeSave", async (users) => {
+Users.addHook("beforeSave", async (users: UsersModel) => {
   console.log("😗 Currently Hashing Password...");
   try {
     const oldPW = users.password_hash;

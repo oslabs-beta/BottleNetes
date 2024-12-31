@@ -5,7 +5,7 @@ import process from 'node:process';
 
 dotenv.config();
 
-const DB_URI = process.env.SUPABASE_URI;
+const DB_URI = process.env.SUPABASE_URI || "";
 
 const sequelize = new Sequelize(DB_URI, {
   dialect: "postgres",

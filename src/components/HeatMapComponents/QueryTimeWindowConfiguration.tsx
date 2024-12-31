@@ -2,10 +2,10 @@
  * This component renders 'Time Window' button with its Popup
  */
 
-import React, { Fragment } from "react";
+import { Fragment } from "react";
 
-import mainStore from "../../stores/mainStore.ts";
-import podStore from "../../stores/podStore.ts";
+import mainStore from "../../stores/mainStore";
+import podStore from "../../stores/podStore";
 
 const QueryTimeWindowConfiguration = () => {
   const { queryTimeWindow, setQueryTimeWindow } = mainStore();

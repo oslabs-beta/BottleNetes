@@ -4,8 +4,8 @@
 
 import React from "react";
 
-import mainStore from "../../stores/mainStore.ts";
-import { podObj } from "../../hooks/usePodListProcessor.ts";
+import mainStore from "../../stores/mainStore";
+import { podObj } from "../../hooks/usePodListProcessor";
 
 interface PodProps {
   podInfo: podObj;

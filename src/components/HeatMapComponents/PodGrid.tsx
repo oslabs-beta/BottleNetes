@@ -11,27 +11,26 @@
  * usePodListProcessor.jsx: A hook to extract and memoize data for pods
  */
 
-import React from "react";
 
 // Components from 'HeatMapComponents' folder
 import Pod from "./Pod.tsx";
-import PodAdjustRequestsLimits from "./PodAdjustRequestsLimits.tsx";
-import PodGridMetricSelection from "./PodGridMetricSelection.tsx";
-import PodLogDisplay from "./PodLogDisplay.tsx";
-import PodReplicas from "./PodReplicas.tsx";
-import PodRestart from "./PodRestart.tsx";
-import QueryTimeWindowConfiguration from "./QueryTimeWindowConfiguration.tsx";
-import PodSelector from "./PodSelector.tsx";
-import PodSorter from "./PodSorter.tsx";
-import PodFilter from "./PodFilter.tsx";
-import usePodListProcessor from "../../hooks/usePodListProcessor.ts";
+import PodAdjustRequestsLimits from "./PodAdjustRequestsLimits";
+import PodGridMetricSelection from "./PodGridMetricSelection";
+import PodLogDisplay from "./PodLogDisplay";
+import PodReplicas from "./PodReplicas";
+import PodRestart from "./PodRestart";
+import QueryTimeWindowConfiguration from "./QueryTimeWindowConfiguration";
+import PodSelector from "./PodSelector";
+import PodSorter from "./PodSorter";
+import PodFilter from "./PodFilter";
+import usePodListProcessor from "../../hooks/usePodListProcessor";
 
 // Component from 'containers' folder
-import LoadingContainer from "../../containers/LoadingContainer.tsx";
+import LoadingContainer from "../../containers/LoadingContainer";
 
-import dataStore from "../../stores/dataStore.ts";
-import mainStore from "../../stores/mainStore.ts";
-import { podObj } from "../../hooks/usePodListProcessor.ts";
+import dataStore from "../../stores/dataStore";
+import mainStore from "../../stores/mainStore";
+import { podObj } from "../../hooks/usePodListProcessor";
 
 const PodGrid = () => {
   // States from mainStore.tsx

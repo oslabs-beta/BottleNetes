@@ -2,11 +2,11 @@
  * This component renders the 'Select a Pod' dropdown
  */
 
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 
-import mainStore from "../../stores/mainStore.ts";
-import { podObj } from "../../hooks/usePodListProcessor.ts";
-import podStore from "../../stores/podStore.ts";
+import mainStore from "../../stores/mainStore";
+import { podObj } from "../../hooks/usePodListProcessor";
+import podStore from "../../stores/podStore";
 
 const PodSelector = (props: { podList: podObj[]; }) => {
   const { podList } = props;
@@ -18,7 +18,7 @@ const PodSelector = (props: { podList: podObj[]; }) => {
     if (clickedPod.podName && clickedPod.namespace) {
       setSelectedValue(`${clickedPod.namespace}||${clickedPod.podName}`);
     }
-  }, [clickedPod]);
+  }, [clickedPod, setSelectedValue]);
 
   // Reset when defaultView becomes true
   useEffect(() => {
@@ -32,7 +32,7 @@ const PodSelector = (props: { podList: podObj[]; }) => {
         deployment: "-",
       });
     }
-  }, [defaultView, setClickedPod]);
+  }, [defaultView, setClickedPod, setSelectedValue]);
 
   // Group pods by namespace
   const podsByNamespace = podList.reduce<Record<string, podObj[]>>((acc, pod) => {

@@ -1,9 +1,28 @@
-import { DataTypes, Sequelize } from "sequelize";
+import {
+  DataTypes,
+  Model,
+  CreationOptional,
+  InferAttributes,
+  InferCreationAttributes,
+} from "sequelize";
 
 import sequelize from "../db/db.js";
 
-const UsersGitHub = sequelize.define(
-  "UsersGitHub",
+interface UsersGoogleModel
+  extends Model<
+    InferAttributes<UsersGoogleModel>,
+    InferCreationAttributes<UsersGoogleModel>
+  > {
+  id: CreationOptional<string>;
+  display_name: string;
+  access_token: string;
+  refresh_token: string;
+  created_at: CreationOptional<Date>;
+  updated_at: CreationOptional<Date>;
+}
+
+const UsersGoogle = sequelize.define<UsersGoogleModel>(
+  "UsersGoogle",
   {
     id: {
       type: DataTypes.UUID,
@@ -30,12 +49,12 @@ const UsersGitHub = sequelize.define(
 
     created_at: {
       type: DataTypes.DATE,
-      defaultValue: Sequelize.NOW,
+      defaultValue: DataTypes.NOW,
     },
 
     updated_at: {
       type: DataTypes.DATE,
-      defaultValue: Sequelize.NOW,
+      defaultValue: DataTypes.NOW,
     },
   },
   {
@@ -46,4 +65,4 @@ const UsersGitHub = sequelize.define(
   },
 );
 
-export default UsersGitHub;
+export default UsersGoogle;

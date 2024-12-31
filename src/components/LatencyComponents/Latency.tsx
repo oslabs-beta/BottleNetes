@@ -1,4 +1,3 @@
-import React from "react";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -12,13 +11,13 @@ import {
   Legend,
 } from "chart.js";
 
-import LoadingContainer from "../../containers/LoadingContainer.tsx";
+import LoadingContainer from "../../containers/LoadingContainer";
 
 import { useLatencyData } from "../../hooks/useLatencyData";
 import { latencyChartOptions } from "../../config/latencyChartOptions";
 
-import mainStore from "../../stores/mainStore.ts"
-import dataStore from "../../stores/dataStore.ts"
+import mainStore from "../../stores/mainStore"
+import dataStore from "../../stores/dataStore"
 
 ChartJS.register(
   CategoryScale,

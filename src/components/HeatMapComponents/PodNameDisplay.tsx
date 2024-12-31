@@ -1,10 +1,9 @@
 /**
  * This component renders Namespace, Pod Name and Deployment data
  */
-import React from "react";
 import "../../Overview.css";
 
-import mainStore from "../../stores/mainStore.ts";
+import mainStore from "../../stores/mainStore";
 
 const PodNameDisplay = () => {
   const { clickedPod } = mainStore();

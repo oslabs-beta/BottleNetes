@@ -1,34 +1,26 @@
 import { useMemo } from "react";
-import { bytesToMb } from "../utils/requestLimitUtils.ts";
+import { bytesToMb } from "../utils/requestLimitUtils";
 
-import { State } from "../stores/dataStore.ts";
-import { State as mainState } from "../stores/mainStore.ts";
+import { State } from "../stores/dataStore";
+import { State as mainState } from "../stores/mainStore";
+import { allPodsRequestLimitObj } from "../stores/dataStore";
 
 export const useRequestLimitData = (
   requestLimits: State["allData"]["requestLimits"],
   sortType: State["sortType"],
   selectedMetric: mainState["selectedMetric"],
-) => {
+) : allPodsRequestLimitObj[] => {
   const podList = useMemo(() => {
-    let pods = Array.isArray(requestLimits)
+    const pods = Array.isArray(requestLimits)
       ? []
       : requestLimits?.allPodsRequestLimit?.map((pod) => ({
           podName: pod.podName || "",
-          cpuRequest:
-            typeof pod.cpuRequest === "number" ? pod.cpuRequest : null,
-          memoryRequest:
-            typeof pod.memoryRequest === "number" ? pod.memoryRequest : null,
-          cpuLimit: typeof pod.cpuLimit === "number" ? pod.cpuLimit : null,
-          memoryLimit:
-            typeof pod.memoryLimit === "number" ? pod.memoryLimit : null,
-          cpuRequestLimitRatio:
-            typeof pod.cpuRequestLimitRatio === "number"
-              ? pod.cpuRequestLimitRatio
-              : null,
-          memoryRequestLimitRatio:
-            typeof pod.memoryRequestLimitRatio === "number"
-              ? pod.memoryRequestLimitRatio
-              : null,
+          cpuRequest: pod.cpuRequest ?? 0,
+          memoryRequest: pod.memoryRequest ?? 0,
+          cpuLimit: pod.cpuLimit ?? 0,
+          memoryLimit: pod.memoryLimit ?? 0,
+          cpuRequestLimitRatio: pod.cpuRequestLimitRatio ?? 0,
+          memoryRequestLimitRatio: pod.memoryRequestLimitRatio ?? 0,
         })) || [];
 
     if (sortType) {

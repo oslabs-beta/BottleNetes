@@ -1,9 +1,11 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import React from "react";
 import { useEffect, useRef } from "react";
 
-import dataStore from "../stores/dataStore.ts";
-import userStore from "../stores/userStore.ts";
-import chatBotStore from "../stores/chatBotStore.ts";
+import logo from "../assets/logo.png";
+import dataStore from "../stores/dataStore";
+import userStore from "../stores/userStore";
+import chatBotStore from "../stores/chatBotStore";
 
 // Helper function to calculate relative time
 // This version calculates a human-readable timestamp format like "5 min ago"
@@ -22,7 +24,7 @@ const formatRelativeTime = (timestamp: number) => {
 // };
 
 type Body = {
-  [key: string]: string | number | any[] | Record<string, unknown>;
+  [key: string]: string | number | Record<string, unknown>;
 };
 
 const Chatbot = () => {
@@ -42,10 +44,10 @@ const Chatbot = () => {
     aiContent,
     setAiContent,
   } = chatBotStore();
-
+  
   const fetchData = async (method: string, endpoint: string, body: Body) => {
     console.log(`Sending ${method} request to ${backendUrl}${endpoint}...`);
-
+    
     try {
       const response = await fetch(`${backendUrl}${endpoint}`, {
         method,
@@ -54,17 +56,17 @@ const Chatbot = () => {
         },
         body: JSON.stringify(body),
       });
-
+      
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-
+      
       return await response.json();
     } catch (error) {
       console.error("😵 Error:", error);
     }
   };
-
+  
   // Scrollbar reference for auto-scrolling
   const chatRef = useRef<HTMLDivElement>(null);
 
@@ -121,7 +123,7 @@ const Chatbot = () => {
   }, [aiContent, historicalUserInput]);
 
   // Construct the conversation array dynamically
-  const conversationArr = [];
+  const conversationArr: JSX.Element[] = [];
   for (
     let i = 0;
     i < Math.max(aiContent.length, historicalUserInput.length);
@@ -137,7 +139,7 @@ const Chatbot = () => {
         <div className="mt-1 flex w-full max-w-xs space-x-3">
           <div className="h-10 w-10 flex-shrink-0">
             <img
-              src={"/src/assets/logo.png"}
+              src={logo}
               alt="AI Logo"
               className="h-full w-full rounded-full object-cover"
             />
