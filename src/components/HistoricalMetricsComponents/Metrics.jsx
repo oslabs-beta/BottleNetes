@@ -36,6 +36,14 @@ const Metrics = ({
   cpuUsageHistorical,
   memoryUsageHistorical,
 }) => {
+
+  if (
+    !cpuUsageHistorical?.resourceUsageHistorical &&
+    !memoryUsageHistorical?.resourceUsageHistorical
+  ) {
+    return <div className="font-semibold text-slate-800 dark:text-slate-200">Loading...</div>;
+  }
+
   const { timeStamps, cpu, memory } = useMetricsData(
     defaultView,
     clickedPod,

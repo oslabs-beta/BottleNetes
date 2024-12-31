@@ -205,9 +205,9 @@ const MainContainer = ({ username, backendUrl }) => {
             {/* Pod Grid */}
             <div
               id="pod-grid"
-              className="flex max-h-[100%] flex-col rounded-3xl bg-slate-100 p-4 xl:col-span-2 dark:bg-transparent dark:shadow-custom-lg dark:border-2 dark:border-slate-600"
+              className="flex max-h-[100%] flex-col rounded-3xl bg-slate-100 p-4 xl:col-span-2 dark:bg-transparent dark:shadow-custom-lg dark:border-2 dark:border-transparent"
             >
-              <h2 className="text-center text-2xl font-bold text-slate-900 dark:text-slate-300">
+              <h2 className="text-center text-2xl font-bold text-slate-900 dark:text-slate-300 mb-[5px]">
                 Heat Map
               </h2>
               <PodGrid
