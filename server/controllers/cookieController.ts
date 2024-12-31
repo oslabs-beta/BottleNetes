@@ -85,7 +85,7 @@ const cookieController: CookieController = {
 
       // If user signed in using our app then run this block
       else {
-        let { username } = await req.body;
+        const { username } = await req.body;
 
         const foundUserID = await Users.findOne({
           where: { username },
