@@ -3,72 +3,33 @@
  * runSinglePromQLQuery: process single query
  * runMultiplePromQLQueries: process multiple queries in the array
  */
+import axios from "axios";
+//import fetch from "node-fetch";
 
-import fetch from "node-fetch";
-
-export const runSinglePromQLQuery = async (_req, res, next) => {
-  const queryStr = res.locals.query;
-  let queryUrl;
-  if (res.locals.isHistorical) {
-    queryUrl = `http://localhost:9090/api/v1/query_range?query=${encodeURIComponent(
-      queryStr,
-    )}&start=${res.locals.timeStart}&end=${res.locals.timeEnd}&step=${res.locals.timeStep}`;
-  } else {
-    queryUrl = `http://localhost:9090/api/v1/query?query=${encodeURIComponent(
-      queryStr,
-    )}`;
-  }
-
+export const fetchPromQLData = async () => {
   try {
-    const response = await fetch(queryUrl);
-    const data = await response.json();
-    res.locals.data = data.data.result;
-    // console.log("queryUrl", queryUrl);
-    return next();
-  } catch (error) {
-    return next({
-      log: "Error in runPromQLQuery middleware" + error,
-      status: 500,
-      message: { err: "An error occurred" },
-    });
-  }
-};
+    const prometheusUrl = process.env.PROMETHEUS_URL;
 
-export const runMultiplePromQLQueries = async (_req, res, next) => {
-  const queryStrArr = res.locals.queries;
-  const queryUrlArr = [];
+    const queries = {
+      podStatuses: "kube_pod_status_phase == 1",
+      cpuUsage: "container_cpu_usage_seconds_total",
+      memoryUsage: "container_memory_usage_bytes",
+      latency: "istio_request_duration_milliseconds_sum",
+    };
 
-  for (const queryStr of queryStrArr) {
-    let queryUrl;
-    if (res.locals.isHistorical) {
-      queryUrl = `http://localhost:9090/api/v1/query_range?query=${encodeURIComponent(
-        queryStr,
-      )}&start=${res.locals.timeStart}&end=${res.locals.timeEnd}&step=${res.locals.timeStep}`;
-    } else {
-      queryUrl = `http://localhost:9090/api/v1/query?query=${encodeURIComponent(
-        queryStr,
-      )}`;
-    }
-    queryUrlArr.push(queryUrl);
-  }
-  // console.log("queryUrlArr: ", queryUrlArr);
-
-  res.locals.data = [];
-  for (const queryUrl of queryUrlArr) {
-    try {
-      const response = await fetch(queryUrl);
-      const data = await response.json();
-      res.locals.data.push(data.data.result);
-      // console.log("\nfetched data from query url: ", queryUrl);
-    } catch (error) {
-      return next({
-        log: "Error in runMultiplePromQLQueries middleware" + error,
-        status: 500,
-        message: { err: "An error occurred" },
+    const results = {};
+    for (const [key, query] of Object.entries(queries)) {
+      const response = await axios.get(`${prometheusUrl}/api/v1/query`, {
+        params: { query },
       });
+      results[key] = response.data.data.result;
     }
+
+    return results;
+  } catch (error) {
+    console.error("❌ Error fetching PromQL data:", error.message);
+    throw new Error("Failed to fetch PromQL data.");
   }
-  return next();
 };
 
 // historical data (use query_range)

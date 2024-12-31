@@ -268,3 +268,12 @@ type: Opaque
 data:
   OPENAI_API_KEY: c2stcHJvai0xSGxBNU1QVUtybWUxbmdsQlJSUkM4YmI3NGhoejFfMGlJQnFWSksyT0R4S1VtMlZRLW10d3NMMEVOTlptbWtoLVBCU2JkM042LVQzQmxia0ZKLXlHWWk2TXFjak0xaGFnSHJoTHV2czg1U0JUX2puOFN0OHhPeXJJSFFVcXZOV2w3a3FoN2RLUmJKcHNJQlVfU2M0ODlHeHptUUE=
 ---
+env:
+  - name: PROMETHEUS_URL
+    value: "http://prometheus-service.default.svc.cluster.local"
+  - name: OPENAI_API_KEY
+    valueFrom:
+      secretKeyRef:
+        name: openai-secret
+        key: c2stcHJvai0xSGxBNU1QVUtybWUxbmdsQlJSUkM4YmI3NGhoejFfMGlJQnFWSksyT0R4S1VtMlZRLW10d3NMMEVOTlptbWtoLVBCU2JkM042LVQzQmxia0ZKLXlHWWk2TXFjak0xaGFnSHJoTHV2czg1U0JUX2puOFN0OHhPeXJJSFFVcXZOV2w3a3FoN2RLUmJKcHNJQlVfU2M0ODlHeHptUUE=
+---

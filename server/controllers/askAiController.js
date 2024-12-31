@@ -2,6 +2,7 @@
 import axios from "axios";
 import dotenv from "dotenv";
 import process from "process";
+import { fetchPromQLData } from "./prometheusController.js";
 
 dotenv.config();
 
@@ -11,75 +12,34 @@ const openAiEndpoint = "https://api.openai.com/v1/chat/completions";
 const askAiController = {};
 
 askAiController.queryOpenAI = async (req, res, next) => {
-  console.log("in queryOpenAI controller");
-  // const { allData } = req.body;
+  console.log("🔥 Querying OpenAI for insights...");
+
   const { userMessage } = req.body;
-  console.log(userMessage);
-  // if (userMessage || allData || typeof allData !== "object") {
-  //   return res
-  //     .status(400)
-  //     .json({ success: false, message: "Invalid request format" });
-  // }
+
   try {
-    //deconstruct prompt based on available data
-    // const {
-    //   podsStatuses,
-    //   requestLimits,
-    //   allNodes,
-    //   cpuUsageOneValue,
-    //   memoryUsageOneValue,
-    //   cpuUsageHistorical,
-    //   memoryUsageHistorical,
-    //   latencyAppRequestOneValue,
-    //   latencyAppRequestHistorical,
-    // } = allData;
+    // Fetch relevant Kubernetes metrics from Prometheus
+    const metrics = await fetchPromQLData();
+    const { podStatuses, cpuUsage, memoryUsage, latency } = metrics;
 
-    //
-    // 1. check to see if we are over or under provisioning
-    // analyze historic request vs limit for cpu and memory
-    // if request always falls very short of limit, decrease limit?
-    // if request often surpasses limit, increase limit?
-    // 2. Look for weird latency patterns
-    // If there is a spike, could possibly be bottleneck?
-    // cpuUsageHistorical, memoryUsageHistorical, latencyAppRequestHistorical,
-    // Need: requestLimits
+    // Construct the AI prompt
+    const prompt = `
+      You are a Kubernetes metrics analysis assistant. Use the following data to answer user questions:
+      - Pod Statuses: ${JSON.stringify(podStatuses)}
+      - CPU Usage: ${JSON.stringify(cpuUsage)}
+      - Memory Usage: ${JSON.stringify(memoryUsage)}
+      - Latency: ${JSON.stringify(latency)}
+      The user asked: ${userMessage}.
+      Provide actionable insights and recommendations.
+    `;
 
-    //Detailed Prompt for OpenAi
-
-    /*
-        All Nodes: ${JSON.stringify(allNodes)}.
-        CPU Usage (Current): ${JSON.stringify(cpuUsageOneValue)}.
-        Memory Usage (Current): ${JSON.stringify(memoryUsageOneValue)}.
-        Latency (Current): ${JSON.stringify(latencyAppRequestOneValue)}.
-        Pods Statuses: ${JSON.stringify(podsStatuses)}.
-        CPU Usage (Historical): ${JSON.stringify(cpuUsageHistorical)}.
-        Latency (Historical): ${JSON.stringify(latencyAppRequestHistorical)}.`;
-        Request Limits: ${JSON.stringify(requestLimits.usageAbsolute)}.
-
-    */
-
-    // const prompt = `You are a Kubernetes metrics analysis assistant.
-    // You must analyze the following information and provide actionable insights:
-    // Memory Usage (Historical): ${JSON.stringify(memoryUsageHistorical.usageAbsolute)}.
-
-    // The user will give you this question: ${JSON.stringify(userMessage)}. Answer their question.
-
-    // Limit your response to 100 words.
-    // `;
-
-    const prompt = `you are nice chatbot. you must chat with the user`;
-
+    // Send request to OpenAI
     const response = await axios.post(
       openAiEndpoint,
       {
-        model: "gpt-4o-mini",
+        model: "gpt-4",
         messages: [
-          { role: "system", content: prompt },
-          {
-            role: "user",
-            content: `please chat with user. here is their input: ${JSON.stringify(userMessage)}`,
-            // content: `Please provide an analysis of the following Kubernetes metrics: ${JSON.stringify(cpuUsageHistorical.usageAbsolute)}`,
-          },
+          { role: "system", content: "You are a Kubernetes expert assistant." },
+          { role: "user", content: prompt },
         ],
       },
       {
@@ -91,12 +51,12 @@ askAiController.queryOpenAI = async (req, res, next) => {
     );
 
     const result = response.data.choices[0].message.content;
-    console.log("OPEN AI RESPONSE :", result);
     res.locals.analysis = result;
-    next();
+    console.log("✅ OpenAI Response:", result);
+    return next();
   } catch (error) {
     console.error(
-      "Error communicating with OpenAI:",
+      "❌ Error querying OpenAI:",
       error.response?.data || error.message,
     );
     return res
@@ -106,3 +66,100 @@ askAiController.queryOpenAI = async (req, res, next) => {
 };
 
 export default askAiController;
+
+// askAiController.queryOpenAI = async (req, res, next) => {
+//   console.log("in queryOpenAI controller");
+//   // const { allData } = req.body;
+//   const { userMessage } = req.body;
+//   console.log(userMessage);
+//   // if (userMessage || allData || typeof allData !== "object") {
+//   //   return res
+//   //     .status(400)
+//   //     .json({ success: false, message: "Invalid request format" });
+//   // }
+//   try {
+//     //deconstruct prompt based on available data
+//     // const {
+//     //   podsStatuses,
+//     //   requestLimits,
+//     //   allNodes,
+//     //   cpuUsageOneValue,
+//     //   memoryUsageOneValue,
+//     //   cpuUsageHistorical,
+//     //   memoryUsageHistorical,
+//     //   latencyAppRequestOneValue,
+//     //   latencyAppRequestHistorical,
+//     // } = allData;
+
+//     //
+//     // 1. check to see if we are over or under provisioning
+//     // analyze historic request vs limit for cpu and memory
+//     // if request always falls very short of limit, decrease limit?
+//     // if request often surpasses limit, increase limit?
+//     // 2. Look for weird latency patterns
+//     // If there is a spike, could possibly be bottleneck?
+//     // cpuUsageHistorical, memoryUsageHistorical, latencyAppRequestHistorical,
+//     // Need: requestLimits
+
+//     //Detailed Prompt for OpenAi
+
+//     /*
+//         All Nodes: ${JSON.stringify(allNodes)}.
+//         CPU Usage (Current): ${JSON.stringify(cpuUsageOneValue)}.
+//         Memory Usage (Current): ${JSON.stringify(memoryUsageOneValue)}.
+//         Latency (Current): ${JSON.stringify(latencyAppRequestOneValue)}.
+//         Pods Statuses: ${JSON.stringify(podsStatuses)}.
+//         CPU Usage (Historical): ${JSON.stringify(cpuUsageHistorical)}.
+//         Latency (Historical): ${JSON.stringify(latencyAppRequestHistorical)}.`;
+//         Request Limits: ${JSON.stringify(requestLimits.usageAbsolute)}.
+
+//     */
+
+//     // const prompt = `You are a Kubernetes metrics analysis assistant.
+//     // You must analyze the following information and provide actionable insights:
+//     // Memory Usage (Historical): ${JSON.stringify(memoryUsageHistorical.usageAbsolute)}.
+
+//     // The user will give you this question: ${JSON.stringify(userMessage)}. Answer their question.
+
+//     // Limit your response to 100 words.
+//     // `;
+
+//     const prompt = `you are nice chatbot. you must chat with the user`;
+
+//     const response = await axios.post(
+//       openAiEndpoint,
+//       {
+//         model: "gpt-4o-mini",
+//         messages: [
+//           { role: "system", content: prompt },
+//           {
+//             role: "user",
+//             content: `please chat with user. here is their input: ${JSON.stringify(userMessage)}`,
+//             // content: `Please provide an analysis of the following Kubernetes metrics: ${JSON.stringify(cpuUsageHistorical.usageAbsolute)}`,
+//           },
+//         ],
+//       },
+//       {
+//         headers: {
+//           Authorization: `Bearer ${openAiApiKey}`,
+//           "Content-Type": "application/json",
+//         },
+//       },
+//     );
+
+//     const result = response.data.choices[0].message.content;
+//     console.log("OPEN AI RESPONSE :", result);
+//     res.locals.analysis = result;
+//     next();
+//   } catch (error) {
+//     console.error(
+//       "Error communicating with OpenAI:",
+//       error.response?.data || error.message,
+//     );
+//     return res
+//       .status(500)
+//       .json({ success: false, message: "Internal Server Error" });
+//   }
+// };
+
+// export default askAiController;
