@@ -1,4 +1,4 @@
-## How to set up
+## How to set up haha
 
 1. Download the docker desktop from [Docker Desktop](https://www.docker.com/products/docker-desktop), install and keep it running.
 2. Clone this repository, cd into the project directory.
