@@ -1,3 +1,83 @@
+// // askAiController.js - Controller for handling POST /askAi connecting to OpenAI API
+// import axios from "axios";
+// import dotenv from "dotenv";
+// import process from "process";
+// // import { fetchPromQLData } from "./prometheusController.js";
+
+// dotenv.config();
+
+// const openAiApiKey = process.env.OPENAI_API_KEY;
+// const openAiEndpoint = "https://api.openai.com/v1/chat/completions";
+
+// const askAiController = {};
+
+// askAiController.fetchRequest = async (req, res, next) => {
+//   return next();
+
+// }
+
+
+// askAiController.queryOpenAI = async (req, res, next) => {
+//   console.log("🔥 Querying OpenAI for insights...");
+
+//   const { userMessage } = req.body;
+
+//   try {
+//     // Fetch relevant Kubernetes metrics from Prometheus
+//     const metrics = await fetchPromQLData();
+//     const { podStatuses, cpuUsage, memoryUsage, latency } = metrics;
+
+//     // Construct the AI prompt
+//     const prompt = `
+//       You are a Kubernetes metrics analysis assistant. Use the following data to answer user questions:
+//       - Pod Statuses: ${JSON.stringify(podStatuses)}
+//       - CPU Usage: ${JSON.stringify(cpuUsage)}
+//       - Memory Usage: ${JSON.stringify(memoryUsage)}
+//       - Latency: ${JSON.stringify(latency)}
+//       The user asked: ${userMessage}.
+//       Provide actionable insights and recommendations.
+//     `;
+
+//     // Send request to OpenAI
+//     const response = await axios.post(
+//       openAiEndpoint,
+//       {
+//         model: "gpt-4",
+//         messages: [
+//           { role: "system", content: "You are a Kubernetes expert assistant." },
+//           { role: "user", content: prompt },
+//         ],
+//       },
+//       {
+//         headers: {
+//           Authorization: `Bearer ${openAiApiKey}`,
+//           "Content-Type": "application/json",
+//         },
+//       },
+//     );
+
+//     const result = response.data.choices[0].message.content;
+//     res.locals.analysis = result;
+//     console.log("✅ OpenAI Response:", result);
+//     return next();
+//   } catch (error) {
+//     console.error(
+//       "❌ Error querying OpenAI:",
+//       error.response?.data || error.message,
+//     );
+//     return res
+//       .status(500)
+//       .json({ success: false, message: "Internal Server Error" });
+//   }
+// };
+
+// export default askAiController;
+
+
+
+
+
+
 // askAiController.js - Controller for handling POST /askAi connecting to OpenAI API
 import axios from "axios";
 import dotenv from "dotenv";
@@ -46,17 +126,16 @@ askAiController.queryOpenAI = async (req, res, next) => {
 
     //Detailed Prompt for OpenAi
 
-    /*
-        All Nodes: ${JSON.stringify(allNodes)}.
-        CPU Usage (Current): ${JSON.stringify(cpuUsageOneValue)}.
-        Memory Usage (Current): ${JSON.stringify(memoryUsageOneValue)}.
-        Latency (Current): ${JSON.stringify(latencyAppRequestOneValue)}.
-        Pods Statuses: ${JSON.stringify(podsStatuses)}.
-        CPU Usage (Historical): ${JSON.stringify(cpuUsageHistorical)}.
-        Latency (Historical): ${JSON.stringify(latencyAppRequestHistorical)}.`;
-        Request Limits: ${JSON.stringify(requestLimits.usageAbsolute)}.
+    
+        // All Nodes: ${JSON.stringify(allNodes)}.
+        // CPU Usage (Current): ${JSON.stringify(cpuUsageOneValue)}.
+        // Memory Usage (Current): ${JSON.stringify(memoryUsageOneValue)}.
+        // Latency (Current): ${JSON.stringify(latencyAppRequestOneValue)}.
+        // Pods Statuses: ${JSON.stringify(podsStatuses)}.
+        // CPU Usage (Historical): ${JSON.stringify(cpuUsageHistorical)}.
+        // Latency (Historical): ${JSON.stringify(latencyAppRequestHistorical)}.`;
+        // Request Limits: ${JSON.stringify(requestLimits.usageAbsolute)}.
 
-    */
 
     // const prompt = `You are a Kubernetes metrics analysis assistant.
     // You must analyze the following information and provide actionable insights:
@@ -66,8 +145,13 @@ askAiController.queryOpenAI = async (req, res, next) => {
 
     // Limit your response to 100 words.
     // `;
+    //
+    // OR
+    //
+    // `you are nice chatbot. you must chat with the user`;
 
-    const prompt = `you are nice chatbot. you must chat with the user`;
+    const prompt =
+      "You are Bottlenetes, an AI chatbot and Kubernetes monitoring assistant. Your role is to analyze real-time and historical Kubernetes data (e.g., pod statuses, CPU/memory usage, latency), detect anomalies, and provide actionable insights and recommendations. You run on other applications or environments using Kubernetes and help users optimize their cluster performance. When assisting users, provide clear, concise, and informative explanations, offering reasons and context for your answers. Maintain a friendly and helpful tone. Additionally, ask clarifying questions to gather context about the applications or environments you are monitoring and the specific goals or challenges the user faces. Tailor your recommendations to the unique use case of the operational goals of applications you are supporting."
 
     const response = await axios.post(
       openAiEndpoint,
@@ -106,3 +190,4 @@ askAiController.queryOpenAI = async (req, res, next) => {
 };
 
 export default askAiController;
+

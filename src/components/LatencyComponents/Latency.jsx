@@ -39,7 +39,7 @@ const Latency = ({
   );
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div className="font-semibold text-slate-800 dark:text-slate-200">Loading...</div>;
   }
 
   // console.log("latency data:", chartData);
