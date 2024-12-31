@@ -99,19 +99,19 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: grad-assessment-app-b
+  name: demo-app-b
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: grad-assessment-app-b
+      app: demo-app-b
   template:
     metadata:
       labels:
-        app: grad-assessment-app-b
+        app: demo-app-b
     spec:
       containers:
-        - name: grad-assessment-app-b
+        - name: demo-app-b
           image: randomlettergenerator/test-docker-app
           imagePullPolicy: Always
           resources:
@@ -127,11 +127,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: grad-assessment-app-b
+  name: demo-app-b
 spec:
   type: NodePort
   selector:
-    app: grad-assessment-app-b
+    app: demo-app-b
   ports:
     - port: 3333
       targetPort: 3333
@@ -140,20 +140,20 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: grad-assessment-app-b-metrics
+  name: demo-app-b-metrics
   namespace: default
   labels:
     istio-prometheus-scrape: "true"
 spec:
   selector:
-    app: grad-assessment-app-b
+    app: demo-app-b
   ports:
     - name: http-envoy-prom
       port: 15020
       targetPort: 15020
 ```
 
-- We added a new second service called `grad-assessment-app-b-metrics` with the selector: app: grad-assessment-app-b, i.e. this service will
+- We added a new second service called `demo-app-b-metrics` with the selector: app: demo-app-b, i.e. this service will
   only target those worker pods that's running the app.
 - We also added a label `istio-prometheus-scrape: 'true'` to indicate that this service should be scraped by Prometheus and istio.
 - port 15020: Merged Prometheus telemetry from Istio agent, Envoy, and application (according to istio documentation).
@@ -197,7 +197,7 @@ kubectl label pods --all istio-prometheus-scrape=true
 apiVersion: networking.istio.io/v1alpha3
 kind: Gateway
 metadata:
-  name: grad-assessment-gateway
+  name: demo-gateway
   namespace: default
 spec:
   selector:
@@ -217,20 +217,20 @@ spec:
 apiVersion: networking.istio.io/v1alpha3
 kind: VirtualService
 metadata:
-  name: grad-assessment-virtualservice
+  name: demo-virtualservice
   namespace: default
 spec:
   hosts:
     - "*"
   gateways:
-    - grad-assessment-gateway
+    - demo-gateway
   http:
     - match:
         - uri:
             prefix: "/"
       route:
         - destination:
-            host: grad-assessment-app-b
+            host: demo-app-b
             port:
               number: 3333
 ```
@@ -272,14 +272,14 @@ curl -v http://localhost:8081/
   First, let's get the container name inside the pod by running the following command:
 
   ```bash
-      kubectl get pod grad-assessment-app-b-7f9858b599-58v6l -n default -o jsonpath='{.spec.containers[*].name}'
+      kubectl get pod demo-app-b-7f9858b599-58v6l -n default -o jsonpath='{.spec.containers[*].name}'
   ```
 
-  - here, the pod name is `grad-assessment-app-b-7f9858b599-58v6l`. Replace it with your pod name.
+  - here, the pod name is `demo-app-b-7f9858b599-58v6l`. Replace it with your pod name.
   - you would get some output like
 
     ```bash
-    grad-assessment-app-b istio-proxy
+    demo-app-b istio-proxy
     ```
 
     the first one is the name for the application container.
@@ -287,20 +287,20 @@ curl -v http://localhost:8081/
     c. Now, you can get into the app container in worker pod by running the following command:
 
     ```bash
-    kubectl exec -it grad-assessment-app-b-7f9858b599-58v6l -n default -c grad-assessment-app-b -- /bin/sh
+    kubectl exec -it demo-app-b-7f9858b599-58v6l -n default -c demo-app-b -- /bin/sh
     ```
 
-    - here, the pod name is `grad-assessment-app-b-7f9858b599-58v6l`. Replace it with your pod name.
-    - the container name is `grad-assessment-app-b`. Replace it with your container name.
+    - here, the pod name is `demo-app-b-7f9858b599-58v6l`. Replace it with your pod name.
+    - the container name is `demo-app-b`. Replace it with your container name.
 
     d. Now, you are inside the container. You can run any command you want with the application (just like you would in a normal terminal).
     Test the application, make sure it is working as expected. For example, you can run the following command to test the "/" endpoint of the application:":
 
     ```bash
-    curl -v http://grad-assessment-app-b.default.svc.cluster.local:3333/
+    curl -v http://demo-app-b.default.svc.cluster.local:3333/
     ```
 
-    - replace the application name ("grad-assessment-app-b") and the port with yours accordingly.
+    - replace the application name ("demo-app-b") and the port with yours accordingly.
 
 6. Now, let's generate some fake external traffic to test the latency metrics.
 
