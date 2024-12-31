@@ -17,6 +17,7 @@ type State = {
   newRequests: NewResources;
   newLimits: NewResources;
   selectedOption: string;
+  selectedValue: string;
 };
 
 type Action = {
@@ -35,6 +36,7 @@ type Action = {
   setNewRequests: (newRequests: State["newRequests"]) => void;
   setNewLimits: (newLimits: State["newLimits"]) => void;
   setSelectedOption: (selectedOption: State["selectedOption"]) => void;
+  setSelectedValue: (selectedValue: State["selectedValue"]) => void;
 };
 
 const podStore = create<State & Action>((set) => ({
@@ -91,6 +93,9 @@ const podStore = create<State & Action>((set) => ({
 
   selectedOption: "",
   setSelectedOption: (selectedOption) => set({ selectedOption }),
+
+  selectedValue: "",
+  setSelectedValue: (selectedValue) => set({ selectedValue }),
 }));
 
 export default podStore;

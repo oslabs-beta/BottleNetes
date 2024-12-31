@@ -12,7 +12,6 @@
  */
 
 import React from "react";
-import { useState } from "react";
 
 // Components from 'HeatMapComponents' folder
 import Pod from "./Pod.jsx";
@@ -32,6 +31,7 @@ import LoadingContainer from "../../containers/LoadingContainer.tsx";
 
 import dataStore from "../../stores/dataStore.ts";
 import mainStore from "../../stores/mainStore.ts";
+import { podObj } from "../../hooks/usePodListProcessor.ts";
 
 const PodGrid = () => {
   // States from mainStore.tsx
@@ -45,45 +45,13 @@ const PodGrid = () => {
     selectedMetric,
     setSelectedMetric,
   } = mainStore();
-  
+
   // Data from useFetchData hook and state from dataStore.tsx
   const podStatuses = dataStore((state) => state.allData.podsStatuses);
-  const cpuUsageOneValue = dataStore((state) => state.allData.cpuUsageOneValue);
-  const memoryUsageOneValue = dataStore(
-    (state) => state.allData.memoryUsageOneValue
-  );
-  const requestLimits = dataStore((state) => state.allData.requestLimits);
-  const latencyAppRequestOneValue = dataStore(
-    (state) => state.allData.latencyAppRequestOneValue
-  );  
-  const backendUrl = dataStore((state) => state.backendUrl);
-
-  /**
-   * State to render sorted Pods by selected metric
-   * Available metrics: CPU Usage (%), Memory Usage (%), Latency
-   **/
-  const [metricToSort, setMetricToSort] = useState("");
-  /**
-   * State to render filtered Pod by selected type
-   * Available types: Namespace, Service, Deployment
-   **/
-  const [filterConfig, setFilterConfig] = useState({
-    type: "",
-    value: "",
-  });
+  const { setMetricToSort, setFilterConfig } = dataStore();
 
   // Funan: separated the preparation of the pod list into a custom hook, usePodListProcessor
-  const processedPodList = usePodListProcessor({
-    podStatuses,
-    cpuUsageOneValue,
-    memoryUsageOneValue,
-    latencyAppRequestOneValue,
-    requestLimits,
-    selectedMetric,
-    filterConfig,
-    metricToSort,
-    defaultView,
-  });
+  const processedPodList: podObj[] = usePodListProcessor();
 
   // If Pod Statuses are still being fetched, return the Loading Screen
   if (!Array.isArray(podStatuses) && !podStatuses.allPodsStatus) {
@@ -128,13 +96,7 @@ const PodGrid = () => {
         <PodLogDisplay />
         <PodReplicas />
         <PodAdjustRequestsLimits />
-        <PodSelector
-          podList={processedPodList}
-          setClickedPod={setClickedPod}
-          defaultView={defaultView}
-          setDefaultView={setDefaultView}
-          clickedPod={clickedPod}
-        />
+        <PodSelector podList={processedPodList} />
         <PodSorter
           setMetricToSort={setMetricToSort}
           defaultView={defaultView}
