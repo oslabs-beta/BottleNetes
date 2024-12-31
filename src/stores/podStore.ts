@@ -25,6 +25,10 @@ type State = {
   selectedValue: string;
   // PodSorter
   selectedLabel: string;
+  // QueryTimeWindowConfiguration
+  showTimeWindow: boolean;
+  timeInput: string;
+  timeUnit: string;
 };
 
 type Action = {
@@ -51,6 +55,10 @@ type Action = {
   setSelectedValue: (selectedValue: State["selectedValue"]) => void;
   // PodSorter
   setSelectedLabel: (selectedLabel: State["selectedLabel"]) => void;
+  // QueryTimeWindowConfiguration
+  setShowTimeWindow: (showTimeWindow: State["showTimeWindow"]) => void;
+  setTimeInput: (timeInput: State["timeInput"]) => void;
+  setTimeUnit: (timeUnit: State["timeUnit"]) => void;
 };
 
 const podStore = create<State & Action>((set) => ({
@@ -113,6 +121,15 @@ const podStore = create<State & Action>((set) => ({
 
   selectedLabel: "Sort by...",
   setSelectedLabel: (selectedLabel) => set({ selectedLabel }),
+
+  showTimeWindow: false,
+  setShowTimeWindow: (showTimeWindow) => set({ showTimeWindow }),
+
+  timeInput: "1",
+  setTimeInput: (timeInput) => set({ timeInput }),
+
+  timeUnit: "m",
+  setTimeUnit: (timeUnit) => set({ timeUnit }),
 }));
 
 export default podStore;

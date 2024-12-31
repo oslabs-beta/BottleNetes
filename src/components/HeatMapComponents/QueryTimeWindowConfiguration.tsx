@@ -2,24 +2,16 @@
  * This component renders 'Time Window' button with its Popup
  */
 
-import PropTypes from "prop-types";
-import { Fragment, useState } from "react";
+import React, { Fragment } from "react";
 
-const QueryTimeWindowConfiguration = ({
-  queryTimeWindow,
-  setQueryTimeWindow,
-}) => {
-  // State to determine the visibility of the popup when clicking the button
-  const [showTimeWindow, setShowTimeWindow] = useState(false);
-  // State to set the inputted time in the popup
-  const [timeInput, setTimeInput] = useState("1");
-  /**
-   * State to set the selected time unit in the popup
-   * Available unit: Seconds, Minutes, Hours
-   **/
-  const [timeUnit, setTimeUnit] = useState("m");
+import mainStore from "../../stores/mainStore.ts";
+import podStore from "../../stores/podStore.ts";
 
-  const handleTimeWindowSubmit = (e) => {
+const QueryTimeWindowConfiguration = () => {
+  const { queryTimeWindow, setQueryTimeWindow } = mainStore();
+  const { showTimeWindow, setShowTimeWindow, timeInput, setTimeInput, timeUnit, setTimeUnit } = podStore();
+
+  const handleTimeWindowSubmit = (e: { preventDefault: () => void; }) => {
     e.preventDefault();
     const value = parseInt(timeInput);
     if (value && value > 0) {
@@ -121,11 +113,6 @@ const QueryTimeWindowConfiguration = ({
       </div>
     </Fragment>
   );
-};
-
-QueryTimeWindowConfiguration.propTypes = {
-  queryTimeWindow: PropTypes.string.isRequired,
-  setQueryTimeWindow: PropTypes.func.isRequired,
 };
 
 export default QueryTimeWindowConfiguration;
