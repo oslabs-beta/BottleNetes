@@ -2,10 +2,12 @@
  * This component renders buttons to configure with metric to display the graph
  */
 
-import PropTypes from "prop-types";
-import { Fragment } from "react";
+import React, { Fragment } from "react";
 
-const PodGridMetricSelection = ({ selectedMetric, setSelectedMetric }) => {
+import mainStore from "../../stores/mainStore.ts";
+
+const PodGridMetricSelection = () => {
+  const { selectedMetric, setSelectedMetric } = mainStore();
   const metrics = [
     { type: "cpu", displayLabel: "CPU Usage (%)" },
     { type: "memory", displayLabel: "Mem. Usage (%)" },
@@ -14,10 +16,10 @@ const PodGridMetricSelection = ({ selectedMetric, setSelectedMetric }) => {
 
   return (
     <Fragment>
-      {metrics.map((metric) => (
+      {metrics.map((metric, index) => (
         <button
-          key={metric.type}
-          onClick={() => setSelectedMetric(metric.type)}
+          key={index}
+          onClick={() => setSelectedMetric(metric.type as "cpu" | "memory" | "latency")}
           className={`rounded-2xl px-2 py-4 text-lg font-semibold transition duration-200 ${
             selectedMetric === metric.type
               ? "border-2 border-[#2563eb] bg-gradient-to-r from-[#1d4ed8] to-[#2563eb] text-slate-100 hover:brightness-90"
@@ -29,11 +31,6 @@ const PodGridMetricSelection = ({ selectedMetric, setSelectedMetric }) => {
       ))}
     </Fragment>
   );
-};
-
-PodGridMetricSelection.propTypes = {
-  selectedMetric: PropTypes.string.isRequired,
-  setSelectedMetric: PropTypes.func.isRequired,
 };
 
 export default PodGridMetricSelection;

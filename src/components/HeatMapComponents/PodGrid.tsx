@@ -37,7 +37,6 @@ const PodGrid = () => {
   // States from mainStore.tsx
   const {
     setDefaultView,
-    queryTimeWindow,
     setQueryTimeWindow,
     clickedPod,
     setClickedPod,
@@ -104,14 +103,8 @@ const PodGrid = () => {
       <div className="flex flex-1">
         {/* Left Column - Selection Buttons */}
         <div className="flex w-1/4 min-w-[207px] flex-col justify-start gap-2 p-4">
-          <QueryTimeWindowConfiguration
-            queryTimeWindow={queryTimeWindow}
-            setQueryTimeWindow={setQueryTimeWindow}
-          />
-          <PodGridMetricSelection
-            selectedMetric={selectedMetric}
-            setSelectedMetric={setSelectedMetric}
-          />
+          <QueryTimeWindowConfiguration />
+          <PodGridMetricSelection />
           {/* Left Side Buttons */}
           <button
             id="reset-button"
