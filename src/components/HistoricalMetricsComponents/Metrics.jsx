@@ -30,15 +30,22 @@ ChartJS.register(
   Tooltip,
   Legend,
 );
-
 const Metrics = ({
   defaultView,
   clickedPod,
   cpuUsageHistorical,
   memoryUsageHistorical,
+  // eslint-disable-next-line no-unused-vars
   historicalTimeWindow,
   setHistoricalTimeWindow,
 }) => {
+  const { timeStamps, cpu, memory } = useMetricsData(
+    defaultView,
+    clickedPod,
+    cpuUsageHistorical,
+    memoryUsageHistorical,
+  );
+
   if (
     !cpuUsageHistorical?.resourceUsageHistorical &&
     !memoryUsageHistorical?.resourceUsageHistorical
@@ -49,13 +56,6 @@ const Metrics = ({
       </div>
     );
   }
-
-  const { timeStamps, cpu, memory } = useMetricsData(
-    defaultView,
-    clickedPod,
-    cpuUsageHistorical,
-    memoryUsageHistorical,
-  );
 
   const datasets = [];
 
