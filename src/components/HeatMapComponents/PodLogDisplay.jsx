@@ -3,13 +3,23 @@
  */
 
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const PodLogDisplay = ({ clickedPod, backendUrl }) => {
+  // State to determine the visibility of the log popup
   const [showPodLog, setShowPodLog] = useState(false);
+  // State to determine the visibility of the initial popup to select container to show its log
   const [showContainerSelect, setShowContainerSelect] = useState(false);
   const [podLog, setPodLog] = useState("No logs available");
-  // const [selectedContainer, setSelectedContainer] = useState("");
+  const [selectedContainer, setSelectedContainer] = useState("");
+  const logContentRef = useRef(null);
+
+  // Scroll to bottom when log content updates
+  useEffect(() => {
+    if (logContentRef.current && showPodLog) {
+      logContentRef.current.scrollTop = logContentRef.current.scrollHeight;
+    }
+  }, [podLog, showPodLog]);
 
   const handleViewPodLog = async () => {
     if (
@@ -29,7 +39,7 @@ const PodLogDisplay = ({ clickedPod, backendUrl }) => {
     setShowContainerSelect(true);
   };
 
-  const fetchContainerLogs = async (selectedContainer) => {
+  const fetchContainerLogs = async (containerName) => {
     console.log(`Sending request to '${backendUrl}k8s/viewPodLogs'...`);
 
     try {
@@ -42,16 +52,23 @@ const PodLogDisplay = ({ clickedPod, backendUrl }) => {
           podName: clickedPod.podName,
           namespace: clickedPod.namespace,
           containers: clickedPod.containers,
-          selectedContainer: selectedContainer,
+          selectedContainer: containerName,
         }),
       });
       const podLogs = await response.json();
       setPodLog(podLogs.logs);
+      setSelectedContainer(containerName);
       setShowContainerSelect(false);
       setShowPodLog(true);
     } catch (error) {
       console.error("Error fetching pod logs:", error);
       alert(`Failed to fetch pod logs: ${error.message}`);
+    }
+  };
+
+  const handleRefreshLogs = () => {
+    if (selectedContainer) {
+      fetchContainerLogs(selectedContainer);
     }
   };
 
@@ -108,9 +125,18 @@ const PodLogDisplay = ({ clickedPod, backendUrl }) => {
       >
         <div
           id="pod-log-content"
+          ref={logContentRef}
           className="relative h-4/5 w-4/5 overflow-auto rounded-lg bg-slate-200 p-6"
         >
           <div className="sticky top-0 z-10 flex justify-end">
+            <div className="inline-block rounded-lg bg-slate-200 px-2">
+              <button
+                onClick={handleRefreshLogs}
+                className="mr-2 rounded-lg bg-blue-500 px-4 py-2 text-slate-200 transition duration-200 hover:brightness-110 active:brightness-90"
+              >
+                Refresh Log
+              </button>
+            </div>
             <div className="inline-block rounded-lg bg-slate-200 px-2">
               <button
                 onClick={() => setShowPodLog(false)}
