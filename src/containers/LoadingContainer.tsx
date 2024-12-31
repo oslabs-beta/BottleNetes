@@ -2,7 +2,7 @@
  * This component will render the loading screen whenever something is fetching or waiting to be rendered
  */
 
-import React, { Hexagon } from 'lucide-react';
+import { Hexagon } from 'lucide-react';
 
 const LoadingContainer = () => {
   return (

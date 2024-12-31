@@ -1,11 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * Hook to memoize pod data
  */
 
 import { useMemo } from "react";
 
-import dataStore from "../stores/dataStore.ts";
-import mainStore from "../stores/mainStore.ts";
+import dataStore from "../stores/dataStore";
+import mainStore from "../stores/mainStore";
 
 export type podObj = {
   podName: string;

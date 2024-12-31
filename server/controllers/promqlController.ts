@@ -6,7 +6,13 @@
  * generateQueryLatencyAppRequest: Prepare queries for inbound and outbound latencies for each pod
  */
 
-export const generateQueryAllPodsStatus = async (_req, res, next) => {
+import { Request, Response, NextFunction } from "express";
+
+export const generateQueryAllPodsStatus = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const query1 = "kube_pod_status_phase == 1";
   const query2 = "kube_pod_status_ready == 1";
   const query3 = "kube_pod_container_info";
@@ -17,7 +23,11 @@ export const generateQueryAllPodsStatus = async (_req, res, next) => {
   return next();
 };
 
-export const generateQueryAllPodsRequestLimit = async (_req, res, next) => {
+export const generateQueryAllPodsRequestLimit = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const query1 = `kube_pod_container_resource_requests{resource="cpu"}`;
   const query2 = `kube_pod_container_resource_requests{resource="memory"}`;
   const query3 = `kube_pod_container_resource_limits{resource="cpu"}`;
@@ -36,7 +46,11 @@ export const generateQueryAllPodsRequestLimit = async (_req, res, next) => {
   return next();
 };
 
-export const generateQueryResourceUsage = async (_req, res, next) => {
+export const generateQueryResourceUsage = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const { type, timeWindow, level } = res.locals;
 
   if (type === "memory") {
@@ -72,7 +86,11 @@ export const generateQueryResourceUsage = async (_req, res, next) => {
   return next();
 };
 
-export const generateQueryLatencyAppRequest = async (_req, res, next) => {
+export const generateQueryLatencyAppRequest = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const { timeWindow, level } = res.locals;
 
   // Total Number of Requests (inbound + outbound traffic) per pod

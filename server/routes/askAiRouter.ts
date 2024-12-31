@@ -1,17 +1,17 @@
 //askAiRouter.js - Router for POST /askAi endpoint
 //Original Code (Commented Out)
 
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 const router = express.Router();
 import askAiController from "../controllers/askAiController.js";
 
-const check = (req, res, next) => {
+const check = (_req: Request, _res: Response, next: NextFunction) => {
   console.log("askAi router hit");
   return next();
 };
 
-router.post("/askAi", check, askAiController.queryOpenAI, (req, res) => {
-  return res.status(200).json({ success: true, analysis: res.locals.analysis });
+router.post("/askAi", check, askAiController.queryOpenAI, (_req, res) => {
+  res.status(200).json({ success: true, analysis: res.locals.analysis });
 });
 
 export default router;

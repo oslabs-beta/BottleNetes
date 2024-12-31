@@ -8,7 +8,9 @@
  * parseRequestLatencyAppRequestHistorical
  */
 
-const isValidLevel = (str) => {
+import { Request, Response, NextFunction } from "express";
+
+const isValidLevel = (str: string) => {
   const allowedLevels = ["pod", "namespace", "node", "cluster"];
   if (!allowedLevels.includes(str)) {
     return false;
@@ -16,7 +18,7 @@ const isValidLevel = (str) => {
   return true;
 };
 
-const isValidType = (str) => {
+const isValidType = (str: string) => {
   const allowedTypes = ["cpu", "memory"];
   if (!allowedTypes.includes(str)) {
     return false;
@@ -24,15 +26,15 @@ const isValidType = (str) => {
   return true;
 };
 
-export const parseRequestAllPodsStatus = (_req, _res, next) => {
+export const parseRequestAllPodsStatus = (_req: Request, _res: Response, next: NextFunction) => {
   return next();
 };
 
-export const parseRequestAllPodsRequestLimit = (_req, _res, next) => {
+export const parseRequestAllPodsRequestLimit = (_req: Request, _res: Response, next: NextFunction) => {
   return next();
 };
 
-export const parseRequestResourceUsageOneValue = (req, res, next) => {
+export const parseRequestResourceUsageOneValue = (req: Request, res: Response, next: NextFunction) => {
   if (!req.body.type || !req.body.time || !req.body.level) {
     return next({
       log: "Error in parseRequestResourceUsageOneValue middleware",
@@ -70,7 +72,7 @@ export const parseRequestResourceUsageOneValue = (req, res, next) => {
   return next();
 };
 
-export const parseRequestResourceUsageHistorical = (req, res, next) => {
+export const parseRequestResourceUsageHistorical = (req: Request, res: Response, next: NextFunction) => {
   if (
     !req.body.type ||
     !req.body.timeStart ||
@@ -127,7 +129,7 @@ export const parseRequestResourceUsageHistorical = (req, res, next) => {
   return next();
 };
 
-export const parseRequestLatencyAppRequestOneValue = (req, res, next) => {
+export const parseRequestLatencyAppRequestOneValue = (req: Request, res: Response, next: NextFunction) => {
   if (!req.body.time.match(/^(\d+)(s|m|h|d)$/)) {
     return next({
       log: "Error in parseRequestLatencyAppRequestOneValue middleware",
@@ -152,7 +154,7 @@ export const parseRequestLatencyAppRequestOneValue = (req, res, next) => {
   return next();
 };
 
-export const parseRequestLatencyAppRequestHistorical = (req, res, next) => {
+export const parseRequestLatencyAppRequestHistorical = (req: Request, res: Response, next: NextFunction) => {
   if (
     !req.body.timeStart ||
     !req.body.timeEnd ||

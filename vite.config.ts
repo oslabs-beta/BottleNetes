@@ -14,6 +14,7 @@ export default defineConfig({
       input: {
         root: resolve(__dirname, "index.html"),
       },
+      external: ["server/**/*.ts"]
     },
   },
   optimizeDeps: {

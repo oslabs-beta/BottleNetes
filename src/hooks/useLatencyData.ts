@@ -1,5 +1,5 @@
-import { State } from "../stores/dataStore.ts";
-import { State as mainState } from "../stores/mainStore.ts";
+import { State } from "../stores/dataStore";
+import { State as mainState } from "../stores/mainStore";
 
 export const useLatencyData = (
   defaultView: mainState["defaultView"],
@@ -66,20 +66,20 @@ export const useLatencyData = (
       let totalPeakLatencyOutboundAtEachTimestamp = 0;
       let totalPeakLatencyInboundAtEachTimestamp = 0;
 
-      Array.isArray(latencyAppRequestHistorical)
-        ? undefined
-        : latencyAppRequestHistorical?.latencyAppRequestHistorical.forEach(
-            (pod) => {
-              totalAvgLatencyInboundAtEachTimestamp +=
-                pod.avgInboundLatency[i] || 0;
-              totalAvgLatencyOutboundAtEachTimestamp +=
-                pod.avgOutboundLatency[i] || 0;
-              totalPeakLatencyOutboundAtEachTimestamp +=
-                pod.peakOutboundLatency[i] || 0;
-              totalPeakLatencyInboundAtEachTimestamp +=
-                pod.peakInboundLatency[i] || 0;
-            },
-          );
+      if (!Array.isArray(latencyAppRequestHistorical)) {
+        latencyAppRequestHistorical?.latencyAppRequestHistorical.forEach(
+          (pod) => {
+            totalAvgLatencyInboundAtEachTimestamp +=
+              pod.avgInboundLatency[i] || 0;
+            totalAvgLatencyOutboundAtEachTimestamp +=
+              pod.avgOutboundLatency[i] || 0;
+            totalPeakLatencyOutboundAtEachTimestamp +=
+              pod.peakOutboundLatency[i] || 0;
+            totalPeakLatencyInboundAtEachTimestamp +=
+              pod.peakInboundLatency[i] || 0;
+          },
+        );
+      }
 
       // Calculate averages
       avgLatencyInboundAtEachTimestamp.push(

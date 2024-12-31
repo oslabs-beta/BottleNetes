@@ -4,9 +4,9 @@
 
 import { useEffect } from "react";
 
-import mainStore from "../stores/mainStore.ts";
-import dataStore from "../stores/dataStore.ts";
-import { allData } from "../stores/dataStore.ts";
+import mainStore from "../stores/mainStore";
+import dataStore from "../stores/dataStore";
+import { allData } from "../stores/dataStore";
 
 // Type for fetchData params
 type Request = {

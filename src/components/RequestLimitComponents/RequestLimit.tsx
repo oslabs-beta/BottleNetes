@@ -1,14 +1,13 @@
-/* eslint-disable no-unused-vars */
-import React from "react";
 
-import { useRequestLimitData } from "../../hooks/useRequestLimitData.ts";
-import { prepareRequestLimitChartData } from "../../utils/requestLimitUtils.ts";
-import RequestLimitSorter from "./RequestLimitSorter.tsx";
+import { useRequestLimitData } from "../../hooks/useRequestLimitData";
+import { prepareRequestLimitChartData } from "../../utils/requestLimitUtils";
 
-import { getRequestLimitChartOptions } from "../../config/requestLimitChartConfig.ts";
+import RequestLimitSorter from "./RequestLimitSorter";
 
-import mainStore from "../../stores/mainStore.ts";
-import dataStore from "../../stores/dataStore.ts";
+import { getRequestLimitChartOptions } from "../../config/requestLimitChartConfig";
+
+import mainStore from "../../stores/mainStore";
+import dataStore from "../../stores/dataStore";
 
 import {
   Chart as ChartJS,

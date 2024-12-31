@@ -1,12 +1,11 @@
 /**
  * This component renders the overview such as Cluster Name, number of Nodes, Pods and Containers in that cluster
  */
-import React from "react";
 import { useMemo } from "react";
 
 import "../Overview.css";
 
-import dataStore from "../stores/dataStore.ts";
+import dataStore from "../stores/dataStore";
 
 const Overview = () => {
   const podsStatuses = dataStore((state) => state.allData.podsStatuses);

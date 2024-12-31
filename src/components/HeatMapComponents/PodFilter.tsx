@@ -2,12 +2,11 @@
  * This component renders 'Filter by...' dropdown and its buttons based on some conditions
  */
 
-import React from "react";
 import { useState } from "react";
 
-import { podObj } from "../../hooks/usePodListProcessor.ts";
-import dataStore from "../../stores/dataStore.ts";
-import mainStore from "../../stores/mainStore.ts";
+import { podObj } from "../../hooks/usePodListProcessor";
+import dataStore from "../../stores/dataStore";
+import mainStore from "../../stores/mainStore";
 
 const PodFilter = (props: { podList: podObj[] }) => {
   const podList = props.podList;

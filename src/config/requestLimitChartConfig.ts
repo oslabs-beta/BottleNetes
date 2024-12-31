@@ -1,4 +1,4 @@
-import { State } from "../stores/mainStore.ts";
+import { State } from "../stores/mainStore";
 
 export const getRequestLimitChartOptions = (
   selectedMetric: State["selectedMetric"],

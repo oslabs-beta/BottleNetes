@@ -5,9 +5,9 @@
 import { useNavigate } from "react-router-dom";
 import React from "react";
 
-import mainStore from "../stores/mainStore.ts";
-import userStore from "../stores/userStore.ts";
-import dataStore from "../stores/dataStore.ts";
+import mainStore from "../stores/mainStore";
+import userStore from "../stores/userStore";
+import dataStore from "../stores/dataStore";
 
 const MenuContainer = () => {
   const navigate = useNavigate();

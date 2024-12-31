@@ -2,9 +2,9 @@
  * This component renders buttons to configure with metric to display the graph
  */
 
-import React, { Fragment } from "react";
+import { Fragment } from "react";
 
-import mainStore from "../../stores/mainStore.ts";
+import mainStore from "../../stores/mainStore";
 
 const PodGridMetricSelection = () => {
   const { selectedMetric, setSelectedMetric } = mainStore();

@@ -12,29 +12,29 @@
  *   - Includes user initials in profile avatars and branded AI logos.
  */
 
-import React, { useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 
 // Container Folder
-import MenuContainer from "./MenuContainer.tsx";
-import LoadingContainer from "./LoadingContainer.tsx";
+import MenuContainer from "./MenuContainer";
+import LoadingContainer from "./LoadingContainer";
 
 // Component Folder
-import Overview from "../components/Overview.tsx";
-import Latency from "../components/LatencyComponents/Latency.tsx";
-import Metrics from "../components/HistoricalMetricsComponents/Metrics.tsx";
-import RequestLimit from "../components/RequestLimitComponents/RequestLimit.tsx";
-import Chatbot from "../components/Chatbot.tsx";
+import Overview from "../components/Overview";
+import Latency from "../components/LatencyComponents/Latency";
+import Metrics from "../components/HistoricalMetricsComponents/Metrics";
+import RequestLimit from "../components/RequestLimitComponents/RequestLimit";
+import Chatbot from "../components/Chatbot";
 
 // HeatMap Component Folder
-import PodGrid from "../components/HeatMapComponents/PodGrid.tsx";
-import PodNameDisplay from "../components/HeatMapComponents/PodNameDisplay.tsx";
+import PodGrid from "../components/HeatMapComponents/PodGrid";
+import PodNameDisplay from "../components/HeatMapComponents/PodNameDisplay";
 
 // Hooks Folder
-import useFetchData from "../hooks/useFetchData.ts";
+import useFetchData from "../hooks/useFetchData";
 
 // Stores Folder
-import mainStore from "../stores/mainStore.ts";
-import userStore from "../stores/userStore.ts";
+import mainStore from "../stores/mainStore";
+import userStore from "../stores/userStore";
 
 const MainContainer = () => {
   const {
@@ -82,7 +82,7 @@ const MainContainer = () => {
         setDefaultView(true);
       }
     }
-  }, [allData.podsStatuses, clickedPod]);
+  }, [allData.podsStatuses, clickedPod, setClickedPod, setDefaultView]);
 
   // Handle the click outside of the menu to close the menu
   useEffect(() => {
@@ -97,7 +97,7 @@ const MainContainer = () => {
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [setIsMenuOpen]);
 
   if (isFetchingData) return <LoadingContainer />;
 

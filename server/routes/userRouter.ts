@@ -25,7 +25,7 @@ userRouter.get(
   "/signin/checkSignin",
   cookieController.verifyCookie,
   (_req, res) => {
-    return res.status(200).json({
+    res.status(200).json({
       signedIn: res.locals.signedIn,
       username: res.locals.username,
     });
@@ -33,12 +33,12 @@ userRouter.get(
 );
 
 userRouter.post("/signout", cookieController.deleteCookie, (_req, res) => {
-  return res.status(200).json("Success. You have successfully signed out.");
+  res.status(200).json("Success. You have successfully signed out.");
 });
 
 userRouter.post("/signup", userController.createNewUser, (_req, res) => {
   if (res.locals.newUser) {
-    return res.status(200).json({
+    res.status(200).json({
       message:
         "🤓 Successfully created new user. Redirecting to Sign In Page...",
       data: {
@@ -49,7 +49,7 @@ userRouter.post("/signup", userController.createNewUser, (_req, res) => {
       },
     });
   }
-  return res.status(400).json("Failed to create new user...");
+  res.status(400).json("Failed to create new user...");
 });
 
 export default userRouter;

@@ -1,7 +1,6 @@
 /**
  * This component renders the line graph representing historical CPU and Memory Usage data
  */
-import React from "react";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -15,11 +14,11 @@ import {
   Legend,
 } from "chart.js";
 
-import { historicalMetricsChartOptions } from "../../config/historicalMetricsChartOptions.ts";
-import useMetricsData from "../../hooks/useMetricsData.ts";
+import { historicalMetricsChartOptions } from "../../config/historicalMetricsChartOptions";
+import useMetricsData from "../../hooks/useMetricsData";
 
-import mainStore from "../../stores/mainStore.ts";
-import dataStore from "../../stores/dataStore.ts";
+import mainStore from "../../stores/mainStore";
+import dataStore from "../../stores/dataStore";
 
 ChartJS.register(
   CategoryScale,

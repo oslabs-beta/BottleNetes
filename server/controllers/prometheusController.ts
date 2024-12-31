@@ -5,8 +5,13 @@
  */
 
 import fetch from "node-fetch";
+import { Request, Response, NextFunction } from "express";
 
-export const runSinglePromQLQuery = async (_req, res, next) => {
+export const runSinglePromQLQuery = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const queryStr = res.locals.query;
   let queryUrl;
   if (res.locals.isHistorical) {
@@ -34,9 +39,13 @@ export const runSinglePromQLQuery = async (_req, res, next) => {
   }
 };
 
-export const runMultiplePromQLQueries = async (_req, res, next) => {
+export const runMultiplePromQLQueries = async (
+  _req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   const queryStrArr = res.locals.queries;
-  const queryUrlArr = [];
+  const queryUrlArr: string[] = [];
 
   for (const queryStr of queryStrArr) {
     let queryUrl;
