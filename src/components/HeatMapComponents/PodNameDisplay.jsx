@@ -23,7 +23,7 @@ const PodNameDisplay = ({ clickedPod, setClickedPod }) => {
     <div className="bg-gradient-to-r from-[#0f172a] to-[#1e40af] py-4 text-center text-[#e2e8f0] dark:bg-gradient-to-r dark:from-slate-950 dark:to-slate-900">
       <div
         id="overview-info"
-        className="mx-10 items-center justify-between gap-5 transition duration-300 grid grid-cols-4"
+        className="mx-20 items-center justify-between gap-5 transition duration-300 grid grid-cols-4"
       >
         <div
           id="namespace"

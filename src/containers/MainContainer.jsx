@@ -170,8 +170,16 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
             BottleNetes
           </h1>
         </div>
-        {/* Welcome text */}
+        {/* Ask AI Button, Dark Mode,and Welcome text */}
         <div className="flex items-center space-x-[50px]">
+          <div className="flex justify-between">
+            <button
+              onClick={() => setAiVisibility(!aiVisibility)}
+              className="rounded-2xl bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90"
+            >
+              Ask AI
+            </button>
+          </div>
           <DarkMode />
           <h1 className="mr-5 px-5 text-2xl font-semibold text-slate-300">{`Welcome, ${username}`}</h1>
         </div>
@@ -304,16 +312,6 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
                 }}
               />
             </div>
-
-          {/* Reset and Ask AI buttons */}
-          <div className="flex justify-between pb-5">
-            <button
-              onClick={() => setAiVisibility(!aiVisibility)}
-              className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90"
-            >
-              Ask AI
-            </button>
-          </div>
         </div>
       </div>
     </div>
