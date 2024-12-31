@@ -1,79 +1,83 @@
-// askAiController.js - Controller for handling POST /askAi connecting to OpenAI API
-import axios from "axios";
-import dotenv from "dotenv";
-import process from "process";
-// import { fetchPromQLData } from "./prometheusController.js";
+// // askAiController.js - Controller for handling POST /askAi connecting to OpenAI API
+// import axios from "axios";
+// import dotenv from "dotenv";
+// import process from "process";
+// // import { fetchPromQLData } from "./prometheusController.js";
 
-dotenv.config();
+// dotenv.config();
 
-const openAiApiKey = process.env.OPENAI_API_KEY;
-const openAiEndpoint = "https://api.openai.com/v1/chat/completions";
+// const openAiApiKey = process.env.OPENAI_API_KEY;
+// const openAiEndpoint = "https://api.openai.com/v1/chat/completions";
 
-const askAiController = {};
+// const askAiController = {};
 
-askAiController.fetchRequest = async (req, res, next) => {
-  return next();
+// askAiController.fetchRequest = async (req, res, next) => {
+//   return next();
 
-}
+// }
 
 
-askAiController.queryOpenAI = async (req, res, next) => {
-  console.log("🔥 Querying OpenAI for insights...");
+// askAiController.queryOpenAI = async (req, res, next) => {
+//   console.log("🔥 Querying OpenAI for insights...");
 
-  const { userMessage } = req.body;
+//   const { userMessage } = req.body;
 
-  try {
-    // Fetch relevant Kubernetes metrics from Prometheus
-    const metrics = await fetchPromQLData();
-    const { podStatuses, cpuUsage, memoryUsage, latency } = metrics;
+//   try {
+//     // Fetch relevant Kubernetes metrics from Prometheus
+//     const metrics = await fetchPromQLData();
+//     const { podStatuses, cpuUsage, memoryUsage, latency } = metrics;
 
-    // Construct the AI prompt
-    const prompt = `
-      You are a Kubernetes metrics analysis assistant. Use the following data to answer user questions:
-      - Pod Statuses: ${JSON.stringify(podStatuses)}
-      - CPU Usage: ${JSON.stringify(cpuUsage)}
-      - Memory Usage: ${JSON.stringify(memoryUsage)}
-      - Latency: ${JSON.stringify(latency)}
-      The user asked: ${userMessage}.
-      Provide actionable insights and recommendations.
-    `;
+//     // Construct the AI prompt
+//     const prompt = `
+//       You are a Kubernetes metrics analysis assistant. Use the following data to answer user questions:
+//       - Pod Statuses: ${JSON.stringify(podStatuses)}
+//       - CPU Usage: ${JSON.stringify(cpuUsage)}
+//       - Memory Usage: ${JSON.stringify(memoryUsage)}
+//       - Latency: ${JSON.stringify(latency)}
+//       The user asked: ${userMessage}.
+//       Provide actionable insights and recommendations.
+//     `;
 
-    // Send request to OpenAI
-    const response = await axios.post(
-      openAiEndpoint,
-      {
-        model: "gpt-4",
-        messages: [
-          { role: "system", content: "You are a Kubernetes expert assistant." },
-          { role: "user", content: prompt },
-        ],
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${openAiApiKey}`,
-          "Content-Type": "application/json",
-        },
-      },
-    );
+//     // Send request to OpenAI
+//     const response = await axios.post(
+//       openAiEndpoint,
+//       {
+//         model: "gpt-4",
+//         messages: [
+//           { role: "system", content: "You are a Kubernetes expert assistant." },
+//           { role: "user", content: prompt },
+//         ],
+//       },
+//       {
+//         headers: {
+//           Authorization: `Bearer ${openAiApiKey}`,
+//           "Content-Type": "application/json",
+//         },
+//       },
+//     );
 
-    const result = response.data.choices[0].message.content;
-    res.locals.analysis = result;
-    console.log("✅ OpenAI Response:", result);
-    return next();
-  } catch (error) {
-    console.error(
-      "❌ Error querying OpenAI:",
-      error.response?.data || error.message,
-    );
-    return res
-      .status(500)
-      .json({ success: false, message: "Internal Server Error" });
-  }
-};
+//     const result = response.data.choices[0].message.content;
+//     res.locals.analysis = result;
+//     console.log("✅ OpenAI Response:", result);
+//     return next();
+//   } catch (error) {
+//     console.error(
+//       "❌ Error querying OpenAI:",
+//       error.response?.data || error.message,
+//     );
+//     return res
+//       .status(500)
+//       .json({ success: false, message: "Internal Server Error" });
+//   }
+// };
 
-export default askAiController;
+// export default askAiController;
 
-/*
+
+
+
+
+
 // askAiController.js - Controller for handling POST /askAi connecting to OpenAI API
 import axios from "axios";
 import dotenv from "dotenv";
@@ -186,4 +190,4 @@ askAiController.queryOpenAI = async (req, res, next) => {
 };
 
 export default askAiController;
-*/
+
