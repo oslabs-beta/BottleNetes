@@ -7,7 +7,7 @@ import { useMemo } from "react";
 import dataStore from "../stores/dataStore.ts";
 import mainStore from "../stores/mainStore.ts";
 
-type podObj = {
+export type podObj = {
   podName: string;
   namespace: string;
   status: string;

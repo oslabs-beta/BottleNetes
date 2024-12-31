@@ -2,18 +2,16 @@
  * This component renders the 'Select a Pod' dropdown
  */
 
-import PropTypes from "prop-types";
-import { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 
-const PodSelector = ({
-  podList,
-  setClickedPod,
-  defaultView,
-  setDefaultView,
-  clickedPod,
-}) => {
-  // State to set the selected value in the dropdown
-  const [selectedValue, setSelectedValue] = useState("");
+import mainStore from "../../stores/mainStore.ts";
+import { podObj } from "src/hooks/usePodListProcessor.ts";
+import podStore from "src/stores/podStore.ts";
+
+const PodSelector = (props: { podList: podObj[]; }) => {
+  const { podList } = props;
+  const { defaultView, setDefaultView, clickedPod, setClickedPod } = mainStore();
+  const { selectedValue, setSelectedValue } = podStore();
 
   // Update selectedValue when user clicks on a pod in the heatmap
   useEffect(() => {
@@ -37,7 +35,7 @@ const PodSelector = ({
   }, [defaultView, setClickedPod]);
 
   // Group pods by namespace
-  const podsByNamespace = podList.reduce((acc, pod) => {
+  const podsByNamespace = podList.reduce<Record<string, podObj[]>>((acc, pod) => {
     if (!acc[pod.namespace]) {
       acc[pod.namespace] = [];
     }
@@ -91,19 +89,6 @@ const PodSelector = ({
       </select>
     </div>
   );
-};
-
-PodSelector.propTypes = {
-  podList: PropTypes.arrayOf(PropTypes.object).isRequired,
-  setClickedPod: PropTypes.func.isRequired,
-  defaultView: PropTypes.bool.isRequired,
-  setDefaultView: PropTypes.func.isRequired,
-  clickedPod: PropTypes.shape({
-    podName: PropTypes.string,
-    namespace: PropTypes.string,
-    containers: PropTypes.array,
-    deployment: PropTypes.string,
-  }).isRequired,
 };
 
 export default PodSelector;
