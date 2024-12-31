@@ -7,30 +7,6 @@ import { useMemo } from "react";
 import dataStore from "../stores/dataStore.ts";
 import mainStore from "../stores/mainStore.ts";
 
-const { filterConfig, metricToSort } = dataStore();
-const { selectedMetric, defaultView } = mainStore();
-const podStatuses = dataStore((state) => state.allData.podsStatuses);
-const cpuUsageOneValue = dataStore((state) => state.allData.cpuUsageOneValue);
-const memoryUsageOneValue = dataStore(
-  (state) => state.allData.memoryUsageOneValue,
-);
-const latencyAppRequestOneValue = dataStore(
-  (state) => state.allData.latencyAppRequestOneValue,
-);
-const requestLimits = dataStore((state) => state.allData.requestLimits);
-
-interface ParamTypes {
-  podStatuses: typeof podStatuses;
-  cpuUsageOneValue: typeof cpuUsageOneValue;
-  memoryUsageOneValue: typeof memoryUsageOneValue;
-  latencyAppRequestOneValue: typeof latencyAppRequestOneValue;
-  requestLimits: typeof requestLimits;
-  selectedMetric: typeof selectedMetric;
-  filterConfig: typeof filterConfig;
-  metricToSort: typeof metricToSort;
-  defaultView: typeof defaultView;
-}
-
 type podObj = {
   podName: string;
   namespace: string;
@@ -38,7 +14,7 @@ type podObj = {
   readiness: boolean;
   containers: any[];
   service: string;
-  deployment: string;
+  deploymentName: string;
   selectedMetric: "cpu" | "memory" | "latency";
   cpuDataRelative?: number;
   cpuDataAbsolute?: number;
@@ -49,20 +25,28 @@ type podObj = {
   memoryRequest?: number | null;
   memoryLimit?: number | null;
   latencyData?: number;
-  [key: string]: string | number | boolean | any[] | Record<string, unknown> | null | undefined;
+  [key: string]:
+    | string
+    | number
+    | boolean
+    | any[]
+    | Record<string, unknown>
+    | null
+    | undefined;
 };
 
-const usePodListProcessor = ({
-  podStatuses,
-  cpuUsageOneValue,
-  memoryUsageOneValue,
-  latencyAppRequestOneValue,
-  requestLimits,
-  selectedMetric,
-  filterConfig,
-  metricToSort,
-  defaultView,
-}: ParamTypes) => {
+const usePodListProcessor = () => {
+  const { filterConfig, metricToSort } = dataStore();
+  const { selectedMetric, defaultView } = mainStore();
+  const podStatuses = dataStore((state) => state.allData.podsStatuses);
+  const cpuUsageOneValue = dataStore((state) => state.allData.cpuUsageOneValue);
+  const memoryUsageOneValue = dataStore(
+    (state) => state.allData.memoryUsageOneValue,
+  );
+  const latencyAppRequestOneValue = dataStore(
+    (state) => state.allData.latencyAppRequestOneValue,
+  );
+  const requestLimits = dataStore((state) => state.allData.requestLimits);
   // useMemo is used to optimize performance by memoizing the result of a function so that the function does not have to recompute the result every time it is called with the same inputs.
   // In this case, the usePodListProcessor hook is memoized so that the result of the hook is cached and returned when the hook is called with the same inputs.
   // This can help improve performance by avoiding unnecessary re-renders when the inputs to the hook have not changed.
@@ -81,7 +65,7 @@ const usePodListProcessor = ({
         readiness: pod.readiness,
         containers: pod.containers,
         service: pod.service,
-        deployment: pod.deployment,
+        deploymentName: pod.deploymentName,
         selectedMetric,
       };
 
@@ -171,7 +155,8 @@ const usePodListProcessor = ({
       processedPods.sort((a, b) => {
         if (metricToSort === "podName") {
           // when sorting by pod name, use localeCompare method for string comparison
-          return typeof a[metricToSort] === 'string' && typeof b[metricToSort] === 'string'
+          return typeof a[metricToSort] === "string" &&
+            typeof b[metricToSort] === "string"
             ? a[metricToSort].localeCompare(b[metricToSort])
             : 0;
         }

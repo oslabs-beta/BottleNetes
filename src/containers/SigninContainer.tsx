@@ -72,10 +72,10 @@ const SigninContainer = () => {
         color="rgb(8 145 178)"
         strokeWidth={1}
       />
-      <img src="/src/assets/logo.png" className="mt-2 size-60" />
+      <img src="/src/assets/logo.png" className="size-64" />
       <div
         id="login-display"
-        className="relative my-10 w-1/5 rounded-2xl border-2 border-slate-800 bg-slate-950 p-5 shadow-2xl shadow-slate-950"
+        className="relative my-10 rounded-2xl border-2 border-slate-800 bg-slate-950 p-5 shadow-2xl shadow-slate-950 sm:w-3/4 md:w-2/3 md-lg:w-2/3 lg:w-1/2 2xl:w-2/5 3xl:w-1/5"
       >
         <h2 className="pb-5 text-3xl text-slate-300">Log In</h2>
         <form className="mx-5 flex flex-col gap-y-2">

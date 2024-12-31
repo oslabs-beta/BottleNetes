@@ -8,24 +8,6 @@ import mainStore from "../stores/mainStore.ts";
 import dataStore from "../stores/dataStore.ts";
 import { allData } from "../stores/dataStore.ts";
 
-const backendUrl = dataStore((state) => state.backendUrl);
-
-const {
-  refreshFrequency,
-  queryTimeWindow,
-  podRestartCount,
-  manualRefreshCount,
-} = mainStore();
-
-// Types for useFetchData params
-interface FetchDataParams {
-  backendUrl: typeof backendUrl;
-  refreshFrequency: typeof refreshFrequency;
-  queryTimeWindow: typeof queryTimeWindow;
-  podRestartCount: typeof podRestartCount;
-  manualRefreshCount: typeof manualRefreshCount;
-}
-
 // Type for fetchData params
 type Request = {
   method: string;
@@ -41,13 +23,14 @@ type BodyObj = {
   [key: string]: Body;
 };
 
-const useFetchData = ({
-  backendUrl,
-  refreshFrequency,
-  queryTimeWindow,
-  podRestartCount,
-  manualRefreshCount,
-}: FetchDataParams) => {
+const useFetchData = () => {
+  const backendUrl = dataStore((state) => state.backendUrl);
+  const {
+    refreshFrequency,
+    queryTimeWindow,
+    podRestartCount,
+    manualRefreshCount,
+  } = mainStore();
   const { isFetchingData, setIsFetchingData, allData, setAllData } =
     dataStore();
 

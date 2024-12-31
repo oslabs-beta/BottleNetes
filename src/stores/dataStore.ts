@@ -11,7 +11,7 @@ export type allPodsStatusObj = {
   containerCount: number;
   containers: any[];
   readiness: boolean;
-  deployment: string;
+  deploymentName: string;
   // [key: string]: string | number | boolean | any[] | Record<string, unknown>;
 };
 
@@ -122,7 +122,7 @@ type Action = {
   setMetricToSort: (metricToSort: State["metricToSort"]) => void;
   setFilterConfig: (filterConfig: State["filterConfig"]) => void;
   setSortType: (sortType: State["sortType"]) => void;
-  setSelectedLabel: (selectedLabeled: State["selectedLabeled"]) => void;
+  setSelectedLabel: (selectedLabeled: State["selectedLabel"]) => void;
 };
 
 const dataStore = create<State & Action>()((set) => ({
@@ -157,7 +157,7 @@ const dataStore = create<State & Action>()((set) => ({
   setSortType: (sortType) => set({ sortType }),
 
   selectedLabel: "Sort by...",
-  setSelectedLabel: (selectedLabeled) => set({ selectedLabeled }),
+  setSelectedLabel: (selectedLabel) => set({ selectedLabel }),
 }));
 
 export default dataStore;
