@@ -1,0 +1,23 @@
+# Stage 1: Build the backend
+
+FROM node:20.18.0 AS build
+
+WORKDIR /app
+
+# Copy package and lock files
+COPY package.json package-lock.json* tsconfig.json ./
+RUN npm install
+
+# Copy all source code
+COPY ./src/server ./src/server
+
+# Compile the server code (TypeScript) -> dist/server
+RUN npx tsc
+# This will print the contents of the dist directory during the Docker build.
+RUN npx tsc && ls -R dist
+
+# Expose the backend port
+EXPOSE 4000
+
+# Start the Node server
+CMD ["node", "dist/server.js"]
