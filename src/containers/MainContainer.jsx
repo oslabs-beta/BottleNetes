@@ -25,6 +25,7 @@ import MenuContainer from "./MenuContainer";
 import Overview from "../components/Overview";
 import Latency from "../components/LatencyComponents/Latency";
 import Metrics from "../components/HistoricalMetricsComponents/Metrics";
+import TimeWindowSelector from "../components/HistoricalMetricsComponents/TimeWindowSelector";
 import RequestLimit from "../components/RequestLimitComponents/RequestLimit";
 import Chatbot from "../components/Chatbot";
 import DarkMode from "../components/DarkMode";
