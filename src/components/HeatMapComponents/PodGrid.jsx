@@ -109,7 +109,7 @@ const PodGrid = ({
 
   // Dynamic Grid Style for the heatmap
   const gridStyle =
-    "grid gap-[2px] grid-cols-5 overflow-visible md:grid-cols-7 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 3xl:grid-cols-9 relative z-20";
+    "grid gap-[2px] grid-cols-5 overflow-visible md:grid-cols-7 lg:grid-cols-8 xl:grid-cols-5 2xl:grid-cols-7 3xl:grid-cols-9 relative z-20";
 
   return (
     <div className="flex h-full flex-col overflow-visible">

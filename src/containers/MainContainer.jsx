@@ -198,7 +198,7 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
           id="graph-container"
           className="mt-2 flex min-h-screen flex-col gap-4 p-6 text-slate-100"
         >
-          <div className="grid grid-cols-1 gap-10 lg:grid-cols-2 xl:grid-cols-4">
+          <div className="grid grid-cols-1 gap-10 lg-xl:grid-cols-2 xl:grid-cols-4">
             {/* Pod Grid */}
             <div
               id="pod-grid"
