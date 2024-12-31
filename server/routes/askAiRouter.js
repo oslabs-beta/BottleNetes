@@ -15,25 +15,3 @@ router.post("/askAi", check, askAiController.queryOpenAI, (req, res) => {
 });
 
 export default router;
-
-// import express from "express";
-
-// const router = express.Router();
-
-// router.post("/askAi", (req, res) => {
-//   const { userMessage } = req.body; // Extract user message from the request body
-
-//   // Mock response generation for demonstration
-//   const analysis = `You said: ${userMessage}`;
-
-//   res.json({ analysis });
-//   /*
-//     Why this change?
-//     - Simplified implementation to provide a mock response for testing frontend functionality.
-//     - Ensures the backend correctly processes requests from the Chatbot component.
-//     - Returns an "analysis" field in the response, matching the structure expected by the Chatbot.
-//     - This allows the frontend Chatbot to seamlessly display AI responses during initial development.
-//   */
-// });
-
-// export default router;
