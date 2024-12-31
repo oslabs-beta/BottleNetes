@@ -149,14 +149,7 @@ const dataStore = create<State & Action>()((set) => ({
     type: "",
     value: "",
   },
-  setFilterConfig: (filterConfig) =>
-    set((state) => ({
-      filterConfig: {
-        ...state.filterConfig,
-        type: filterConfig.type,
-        value: filterConfig.value,
-      },
-    })),
+  setFilterConfig: (filterConfig) => set(() => ({ filterConfig })),
 
   sortType: "",
   setSortType: (sortType) => set({ sortType }),

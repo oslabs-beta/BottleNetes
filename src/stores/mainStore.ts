@@ -3,7 +3,7 @@ import { create } from "zustand";
 export type ClickedPod = {
   podName: string;
   namespace: string;
-  containers: [];
+  containers: any[];
   deployment: string;
   [key: string]: any;
 };
