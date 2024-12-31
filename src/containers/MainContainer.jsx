@@ -249,6 +249,8 @@ const MainContainer = ({ username, backendUrl, resetView }) => {
                 clickedPod={clickedPod}
                 cpuUsageHistorical={allData.cpuUsageHistorical || []}
                 memoryUsageHistorical={allData.memoryUsageHistorical || []}
+                historicalTimeWindow={historicalTimeWindow}
+                setHistoricalTimeWindow={setHistoricalTimeWindow}
               />
             </div>
 
