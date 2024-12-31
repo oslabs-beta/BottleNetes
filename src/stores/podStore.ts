@@ -6,37 +6,51 @@ type NewResources = {
 };
 
 type State = {
+  // PodRestart
   showRestartPopup: boolean;
   restartStatus: "confirm" | "loading" | "error" | "success";
+  // PodLogDisplay
   showPodLog: boolean;
   showContainerSelect: boolean;
   podLog: string;
+  // PodReplicas
   showReplicasPopup: boolean;
   newReplicas: number;
+  // PodAdjustRequestsLimits
   showRequestsLimitsPopup: boolean;
   newRequests: NewResources;
   newLimits: NewResources;
   selectedOption: string;
+  // PodSelector
   selectedValue: string;
+  // PodSorter
+  selectedLabel: string;
 };
 
 type Action = {
+  // PodRestart
   setShowRestartPopup: (showRestartPopup: State["showRestartPopup"]) => void;
   setRestartStatus: (restartStatus: State["restartStatus"]) => void;
+  // PodLogDisplay
   setShowPodLog: (showPodLog: State["showPodLog"]) => void;
   setShowContainerSelect: (
     showContainerSelect: State["showContainerSelect"],
   ) => void;
   setPodLog: (podLog: State["podLog"]) => void;
+  // PodReplicas
   setShowReplicasPopup: (showReplicasPopup: State["showReplicasPopup"]) => void;
   setNewReplicas: (newReplicas: State["newReplicas"]) => void;
+  // PodAdjustRequestsLimits
   setShowRequestsLimitsPopup: (
     showRequestsLimitsPopup: State["showRequestsLimitsPopup"],
   ) => void;
   setNewRequests: (newRequests: State["newRequests"]) => void;
   setNewLimits: (newLimits: State["newLimits"]) => void;
   setSelectedOption: (selectedOption: State["selectedOption"]) => void;
+  // PodSelector
   setSelectedValue: (selectedValue: State["selectedValue"]) => void;
+  // PodSorter
+  setSelectedLabel: (selectedLabel: State["selectedLabel"]) => void;
 };
 
 const podStore = create<State & Action>((set) => ({
@@ -96,6 +110,9 @@ const podStore = create<State & Action>((set) => ({
 
   selectedValue: "",
   setSelectedValue: (selectedValue) => set({ selectedValue }),
+
+  selectedLabel: "Sort by...",
+  setSelectedLabel: (selectedLabel) => set({ selectedLabel }),
 }));
 
 export default podStore;
