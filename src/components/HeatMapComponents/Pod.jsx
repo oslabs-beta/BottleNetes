@@ -6,9 +6,10 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 
 const Pod = ({ podInfo, selectedMetric, onClick, isClicked }) => {
-  // console.log("podInfo", podInfo);
+  // State to determine the visibility of the tooltip when the mouse is hovering on a pod in the heat map
   const [isShowing, setIsShowing] = useState(false);
 
+  // Determine the color for each pod based on the value of selected metric
   const color = (value, minVal = 0, maxVal = 100) => {
     const normalizedValue = 1 - (value - minVal) / (maxVal - minVal);
     const r = 238 - Math.floor(normalizedValue * 204);
@@ -34,16 +35,16 @@ const Pod = ({ podInfo, selectedMetric, onClick, isClicked }) => {
     }
   }
 
-  const buttonStyle =
-    // "relative m-0.5 aspect-square rounded-xl border-blue-600 brightness-90 transition hover:border-[5px] hover:filter"
-    `m-[0.5px] relative aspect-square rounded-xl brightness-90 transition ${isShowing ? "z-[9999]" : "z-0"} ${isClicked ? "shadow-custom-lg border-[5px] border-blue-600" : "border-blue-600"} hover:border-[5px] hover:filter`;
+  // Style for each pod in the heat map
+  const buttonStyle = `m-[0.5px] relative aspect-square rounded-xl brightness-90 transition ${isShowing ? "z-[9999]" : "z-0"} ${isClicked ? "shadow-custom-lg border-[5px] border-blue-600" : "border-blue-600"} hover:border-[5px] hover:filter`;
 
-  const hoverStyle =
-    // "pointer-events-none absolute z-[99999] left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white/80 p-2 text-sm text-slate-900/90 opacity-0 transition-opacity duration-700 ease-in-out group-hover:opacity-100 shadow-xl";
-    `pointer-events-none absolute z-[99999] rounded-lg bg-slate-100/95 text-slate-900/90 shadow-xl w-[350px] p-3 space-y-1 transition-opacity duration-500 ${isShowing ? "opacity-100" : "opacity-0"}`;
+  // Style for the tooltip
+  const hoverStyle = `pointer-events-none absolute z-[99999] rounded-lg bg-slate-100/95 text-slate-900/90 shadow-xl w-[350px] p-3 space-y-1 transition-opacity duration-300 ${isShowing ? "opacity-100" : "opacity-0"}`;
 
-  if (podInfo.readiness == true) {
+  // If readiness is true then render this
+  if (podInfo.readiness) {
     return (
+      // Individual Pod
       <button
         className={buttonStyle}
         onMouseEnter={() => setIsShowing(true)}
@@ -53,7 +54,8 @@ const Pod = ({ podInfo, selectedMetric, onClick, isClicked }) => {
           backgroundColor: podInfo.color,
         }}
       >
-        <div id="pod-info-popup" className={`${hoverStyle}`}>
+        {/* Tooltip is contained inside each pod. Renders when hovering the mouse over each pod */}
+        <div id="pod-info-ready" className={`${hoverStyle}`}>
           <p className="text-left font-semibold">
             Pod Name: <span className="font-normal">{podInfo.podName}</span>
           </p>
@@ -138,6 +140,7 @@ const Pod = ({ podInfo, selectedMetric, onClick, isClicked }) => {
         </div>
       </button>
     );
+    // Otherwise render the pod with the red color
   } else if (podInfo.readiness == false) {
     return (
       <button
@@ -145,15 +148,13 @@ const Pod = ({ podInfo, selectedMetric, onClick, isClicked }) => {
         onMouseEnter={() => setIsShowing(true)}
         onMouseLeave={() => setIsShowing(false)}
       >
-        {isShowing && (
-          <pod-info-popup id="pod-info">
-            <p>Pod Name: {podInfo.podName}</p>
-            <p>Pod Status: {podInfo.status}</p>
-            <p>Container in Pod: {podInfo.containers}</p>
-            <p>Service in Pod: {podInfo.service}</p>
-            <p>Active/Inactive: {podInfo.readiness}</p>
-          </pod-info-popup>
-        )}
+        <div id="pod-info-not-ready" className={`${hoverStyle}`}>
+          <p>Pod Name: {podInfo.podName}</p>
+          <p>Pod Status: {podInfo.status}</p>
+          <p>Container in Pod: {podInfo.containers}</p>
+          <p>Service in Pod: {podInfo.service}</p>
+          <p>Active/Inactive: {podInfo.readiness}</p>
+        </div>
       </button>
     );
   }

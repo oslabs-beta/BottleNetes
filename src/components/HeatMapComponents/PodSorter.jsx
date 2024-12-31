@@ -1,7 +1,12 @@
+/**
+ * This component renders the 'Sort by...' dropdown
+ */
+
 import PropTypes from "prop-types";
 import { useState } from "react";
 
 const PodSorter = ({ setMetricToSort, defaultView, setDefaultView }) => {
+  // State to set the selected label in the dropdown
   const [selectedLabel, setSelectedLabel] = useState("Sort by...");
 
   const sortOptions = [

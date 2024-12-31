@@ -13,10 +13,10 @@ const PodRestart = ({
   setDefaultView,
   backendUrl,
 }) => {
+  // State to determine the visibility of the popup when clicking the button
   const [showRestartPopup, setShowRestartPopup] = useState(false);
   const [restartStatus, setRestartStatus] = useState("confirm"); // other state: 'loading', 'error', 'success'
 
-  // console.log("clicked pod containers: ", clickedPod.containers);
   const handleRestartPod = () => {
     if (!clickedPod.podName || !clickedPod.namespace) {
       alert("Please select a pod first");

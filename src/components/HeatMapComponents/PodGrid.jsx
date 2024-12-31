@@ -5,11 +5,16 @@
  * PodLogDisplay.jsx: Render 'View Pod Log' button
  * PodRestart.jsx: Render 'Restart Pod' button
  * QueryTimeWindowConfiguration.jsx: Render 'Time Window' button
+ * PodSelector.jsx: Render 'Select a Pod...' dropdown and show the list of current pods
+ * PodSorter.jsx: Render 'Sort by...' dropdown
+ * PodFilter.jsx: Render 'Filter by...' dropdown
+ * usePodListProcessor.jsx: A hook to extract and memoize data for pods
  */
 
 import PropTypes from "prop-types";
 import { useState } from "react";
 
+// Components from 'HeatMapComponents' folder
 import Pod from "./Pod";
 import PodAdjustRequestsLimits from "./PodAdjustRequestsLimits";
 import PodGridMetricSelection from "./PodGridMetricSelection";
@@ -22,25 +27,39 @@ import PodSorter from "./PodSorter";
 import PodFilter from "./PodFilter";
 import usePodListProcessor from "../../hooks/usePodListProcessor";
 
+// Component from 'containers' folder
+import LoadingContainer from '../../containers/LoadingContainer';
+
 const PodGrid = ({
+  // Props from MainContainer.jsx
   defaultView,
   setDefaultView,
+  queryTimeWindow,
+  setQueryTimeWindow,
   clickedPod,
   setClickedPod,
   selectedMetric,
   setSelectedMetric,
   podRestartCount,
   setPodRestartCount,
+  // Data from useFetchData hook
   podStatuses,
   cpuUsageOneValue,
   memoryUsageOneValue,
   requestLimits,
   latencyAppRequestOneValue,
-  queryTimeWindow,
-  setQueryTimeWindow,
+  // Props from App.jsx
   backendUrl,
 }) => {
+  /**
+   * State to render sorted Pods by selected metric
+   * Available metrics: CPU Usage (%), Memory Usage (%), Latency
+   **/
   const [metricToSort, setMetricToSort] = useState("");
+  /**
+   * State to render filtered Pod by selected type
+   * Available types: Namespace, Service, Deployment
+   **/
   const [filterConfig, setFilterConfig] = useState({
     type: "",
     value: "",
@@ -59,10 +78,12 @@ const PodGrid = ({
     defaultView,
   });
 
+  // If Pod Statuses are still being fetched, return the Loading Screen
   if (!podStatuses.allPodsStatus) {
-    return <div className="font-semibold text-slate-800 dark:text-slate-200">Loading...</div>;
+    return <LoadingContainer />;
   }
 
+  // Extract data from processedPodList for each Pod
   const buttonArray = processedPodList.map((podObj) => (
     <Pod
       podInfo={podObj}
@@ -92,7 +113,8 @@ const PodGrid = ({
 
   return (
     <div className="flex h-full flex-col overflow-visible">
-      {/* Configuring buttons */}
+
+      {/* Configuring buttons on top of the heat map */}
       <div
         id="control-buttons-row"
         className="grid grid-cols-4 gap-x-4 gap-y-2 px-4 py-2"
@@ -131,7 +153,7 @@ const PodGrid = ({
         />
       </div>
 
-      {/* Bottom Container */}
+      {/* Bottom Container: Contains buttons to render graphs based on select metric and the heat map*/}
       <div className="flex flex-1">
         {/* Left Column - Selection Buttons */}
         <div className="flex w-1/4 min-w-[207px] flex-col justify-start gap-2 p-4 mr-2">

@@ -9,8 +9,14 @@ const QueryTimeWindowConfiguration = ({
   queryTimeWindow,
   setQueryTimeWindow,
 }) => {
+  // State to determine the visibility of the popup when clicking the button
   const [showTimeWindow, setShowTimeWindow] = useState(false);
-  const [timeInput, setTimeInput] = useState("");
+  // State to set the inputted time in the popup
+  const [timeInput, setTimeInput] = useState("1");
+  /**
+   * State to set the selected time unit in the popup
+   * Available unit: Seconds, Minutes, Hours
+   **/
   const [timeUnit, setTimeUnit] = useState("m");
 
   const handleTimeWindowSubmit = (e) => {
@@ -25,10 +31,7 @@ const QueryTimeWindowConfiguration = ({
 
   return (
     <Fragment>
-      <div
-        id="time-window-config-button"
-        className="flex items-center mb-4"
-      >
+      <div id="time-window-config-button" className="flex items-center">
         <button
           onClick={() => setShowTimeWindow(true)}
           className="transition-color rounded-2xl border-2 border-transparent bg-slate-200 border-2 px-4 py-2 text-lg font-semibold text-slate-500 duration-300 hover:brightness-90 w-full dark:text-slate-300 dark:bg-slate-800"
@@ -57,7 +60,7 @@ const QueryTimeWindowConfiguration = ({
       {/* Time Window Popup */}
       <div
         id="time-window-popup"
-        className={`fixed inset-0 z-50 flex items-center justify-center bg-black/50 transition-opacity duration-300 ${
+        className={`fixed inset-0 z-50 flex items-center justify-center text-center bg-black/50 transition-opacity duration-300 ${
           showTimeWindow
             ? "pointer-events-auto opacity-100"
             : "pointer-events-none opacity-0"
@@ -65,42 +68,50 @@ const QueryTimeWindowConfiguration = ({
       >
         <div
           id="time-window-popup-content"
-          className="rounded-lg bg-slate-200 p-6"
+          className="flex size-1/6 flex-col items-center justify-center rounded-lg bg-slate-200 p-6 text-slate-700"
         >
+          <p>Select a Time Window that best suited your monitoring need</p>
+          <br />
           <form
             onSubmit={handleTimeWindowSubmit}
             className="flex flex-col gap-4"
           >
-            <div id="time-window-input" className="flex gap-2">
+            <div id="time-window-input" className="flex w-full gap-2">
               <input
                 type="number"
                 min={1}
                 value={timeInput}
                 onChange={(e) => setTimeInput(e.target.value)}
-                className="w-20 rounded border bg-slate-300 p-2 text-slate-800"
+                className="w-20 rounded-md border border-slate-300 bg-slate-300 p-2 text-slate-800 hover:brightness-105 focus:brightness-90 transition duration-300"
                 placeholder="Value"
               />
               <select
                 value={timeUnit}
                 onChange={(e) => setTimeUnit(e.target.value)}
-                className="rounded border bg-slate-300 p-2 text-slate-800"
+                className="rounded-md border border-slate-300 bg-slate-300 p-3 text-slate-800 w-28 hover:brightness-105 focus:brightness-90 transition duration-300"
               >
-                <option value="s">Seconds</option>
-                <option value="m">Minutes</option>
-                <option value="h">Hours</option>
+                <option value="s">
+                  {parseInt(timeInput) <= 1 ? "Second" : "Seconds"}
+                </option>
+                <option value="m">
+                  {parseInt(timeInput) <= 1 ? "Minute" : "Minutes"}
+                </option>
+                <option value="h">
+                  {parseInt(timeInput) <= 1 ? "Hour" : "Hours"}
+                </option>
               </select>
             </div>
-            <div id="time-window-confirmation-buttons" className="flex gap-2">
+            <div id="time-window-confirmation-buttons" className="flex gap-2 justify-evenly w-full">
               <button
                 type="submit"
-                className="rounded bg-blue-600 px-4 py-2 text-slate-100 hover:bg-blue-700"
+                className="rounded bg-blue-600 px-4 py-2 text-slate-100 hover:brightness-110 active:brightness-90 transition duration-300 w-full"
               >
                 Apply
               </button>
               <button
                 type="button"
                 onClick={() => setShowTimeWindow(false)}
-                className="rounded bg-slate-600 px-4 py-2 text-slate-100 hover:bg-slate-700"
+                className="rounded bg-slate-600 px-4 py-2 text-slate-100 hover:brightness-110 active:brightness-90 transition duration-300 w-full"
               >
                 Cancel
               </button>

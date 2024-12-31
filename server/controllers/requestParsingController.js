@@ -1,3 +1,13 @@
+/**
+ * Controller contains these middlewares to check the requests if they have the correct formats
+ * parseRequestAllPodsStatus
+ * parseRequestAllPodsRequestLimit
+ * parseRequestResourceUsageOneValue
+ * parseRequestResourceUsageHistorical
+ * parseRequestLatencyAppRequestOneValue
+ * parseRequestLatencyAppRequestHistorical
+ */
+
 const isValidLevel = (str) => {
   const allowedLevels = ["pod", "namespace", "node", "cluster"];
   if (!allowedLevels.includes(str)) {
