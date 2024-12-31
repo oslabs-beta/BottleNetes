@@ -35,22 +35,14 @@ import useFetchData from "../hooks/useFetchData.ts";
 // Stores Folder
 import mainStore from "../stores/mainStore.ts";
 import userStore from "../stores/userStore.ts";
-import dataStore from "../stores/dataStore.ts";
 
 const MainContainer = () => {
   const {
     // Determines if the graphs display node data or pod specific data
     setDefaultView,
-    // State hook for time window in PodGrid
-    queryTimeWindow,
     // state hooks for clicked pod and selected metric in PodGrid (will also be passed down to other components)
     clickedPod,
     setClickedPod,
-    // State hook for pod restarts in PodGrid
-    podRestartCount,
-    // State hooks for refresh control in MenuContainer
-    manualRefreshCount,
-    refreshFrequency,
     // State hook for set the menu sidebar's visibility
     isMenuOpen,
     setIsMenuOpen,
@@ -60,18 +52,11 @@ const MainContainer = () => {
   } = mainStore();
 
   const username = userStore((state) => state.username);
-  const backendUrl = dataStore((state) => state.backendUrl);
 
   const menuRef = useRef<HTMLDivElement | null>(null);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
-  const { isFetchingData, allData } = useFetchData({
-    backendUrl,
-    refreshFrequency,
-    queryTimeWindow,
-    podRestartCount,
-    manualRefreshCount,
-  });
+  const { isFetchingData, allData } = useFetchData();
 
   // ensure the clickedPod state stays valid after each refresh
   useEffect(() => {

@@ -5,8 +5,8 @@
 import React, { useEffect } from "react";
 
 import mainStore from "../../stores/mainStore.ts";
-import { podObj } from "src/hooks/usePodListProcessor.ts";
-import podStore from "src/stores/podStore.ts";
+import { podObj } from "../../hooks/usePodListProcessor.ts";
+import podStore from "../../stores/podStore.ts";
 
 const PodSelector = (props: { podList: podObj[]; }) => {
   const { podList } = props;

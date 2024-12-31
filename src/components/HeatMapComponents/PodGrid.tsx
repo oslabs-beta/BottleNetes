@@ -14,16 +14,16 @@
 import React from "react";
 
 // Components from 'HeatMapComponents' folder
-import Pod from "./Pod.jsx";
-import PodAdjustRequestsLimits from "./PodAdjustRequestsLimits.jsx";
-import PodGridMetricSelection from "./PodGridMetricSelection.jsx";
-import PodLogDisplay from "./PodLogDisplay.jsx";
-import PodReplicas from "./PodReplicas.jsx";
-import PodRestart from "./PodRestart.jsx";
-import QueryTimeWindowConfiguration from "./QueryTimeWindowConfiguration.jsx";
-import PodSelector from "./PodSelector.jsx";
-import PodSorter from "./PodSorter.jsx";
-import PodFilter from "./PodFilter.jsx";
+import Pod from "./Pod.tsx";
+import PodAdjustRequestsLimits from "./PodAdjustRequestsLimits.tsx";
+import PodGridMetricSelection from "./PodGridMetricSelection.tsx";
+import PodLogDisplay from "./PodLogDisplay.tsx";
+import PodReplicas from "./PodReplicas.tsx";
+import PodRestart from "./PodRestart.tsx";
+import QueryTimeWindowConfiguration from "./QueryTimeWindowConfiguration.tsx";
+import PodSelector from "./PodSelector.tsx";
+import PodSorter from "./PodSorter.tsx";
+import PodFilter from "./PodFilter.tsx";
 import usePodListProcessor from "../../hooks/usePodListProcessor.ts";
 
 // Component from 'containers' folder
