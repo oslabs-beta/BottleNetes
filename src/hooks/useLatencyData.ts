@@ -1,36 +1,51 @@
+import { State } from "../stores/dataStore.ts";
+import { State as mainState } from "../stores/mainStore.ts";
+
 export const useLatencyData = (
-  defaultView,
-  clickedPod,
-  cpuUsageHistorical,
-  latencyAppRequestHistorical,
+  defaultView: mainState["defaultView"],
+  clickedPod: mainState["clickedPod"],
+  cpuUsageHistorical: State["allData"]["cpuUsageHistorical"],
+  latencyAppRequestHistorical: State["allData"]["latencyAppRequestHistorical"],
 ) => {
   // First check if we have at least the CPU historical data for timestamps
-  if (!cpuUsageHistorical?.resourceUsageHistorical?.[0]) {
+  if (
+    !Array.isArray(cpuUsageHistorical) &&
+    !cpuUsageHistorical?.resourceUsageHistorical?.[0]
+  ) {
     return { isLoading: true };
   }
 
-  let timeStamps = [];
-  let avgLatencyInboundAtEachTimestamp = [];
-  let avgLatencyOutboundAtEachTimestamp = [];
-  let peakLatencyOutboundAtEachTimestamp = [];
-  let peakLatencyInboundAtEachTimestamp = [];
+  let timeStamps: string[] = [];
+  let avgLatencyInboundAtEachTimestamp: number[] = [];
+  let avgLatencyOutboundAtEachTimestamp: number[] = [];
+  let peakLatencyOutboundAtEachTimestamp: number[] = [];
+  let peakLatencyInboundAtEachTimestamp: number[] = [];
 
   // Use latency data if available, otherwise fall back to CPU data for timestamps
-  const hasLatencyData =
-    latencyAppRequestHistorical?.latencyAppRequestHistorical?.length > 0;
-  const timeStampsDataToUse = hasLatencyData
-    ? latencyAppRequestHistorical.latencyAppRequestHistorical[0]
-    : cpuUsageHistorical.resourceUsageHistorical[0];
+  const hasLatencyData = Array.isArray(latencyAppRequestHistorical)
+    ? false
+    : (latencyAppRequestHistorical?.latencyAppRequestHistorical?.length ??
+      0 > 0);
 
-  timeStamps = timeStampsDataToUse.timestampsReadable.map((timestamp) => {
-    const date = new Date(timestamp);
-    return date.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false,
-    });
-  });
+  const timeStampsDataToUse = hasLatencyData
+    ? Array.isArray(latencyAppRequestHistorical)
+      ? undefined
+      : latencyAppRequestHistorical?.latencyAppRequestHistorical[0]
+    : Array.isArray(cpuUsageHistorical)
+      ? undefined
+      : cpuUsageHistorical.resourceUsageHistorical[0];
+
+  timeStamps = (timeStampsDataToUse?.timestampsReadable ?? []).map(
+    (timestamp) => {
+      const date = new Date(timestamp);
+      return date.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      });
+    },
+  );
 
   // If no latency data, use undefined as default values for all latencies
   if (!hasLatencyData) {
@@ -40,8 +55,9 @@ export const useLatencyData = (
     peakLatencyOutboundAtEachTimestamp = defaultData;
     peakLatencyInboundAtEachTimestamp = defaultData;
   } else if (defaultView) {
-    const PodCount =
-      latencyAppRequestHistorical.latencyAppRequestHistorical.length;
+    const PodCount = Array.isArray(latencyAppRequestHistorical)
+      ? 0
+      : latencyAppRequestHistorical?.latencyAppRequestHistorical.length;
 
     // Calculate average for each timestamp
     for (let i = 0; i < timeStamps.length; i++) {
@@ -50,37 +66,42 @@ export const useLatencyData = (
       let totalPeakLatencyOutboundAtEachTimestamp = 0;
       let totalPeakLatencyInboundAtEachTimestamp = 0;
 
-      latencyAppRequestHistorical.latencyAppRequestHistorical.forEach((pod) => {
-        totalAvgLatencyInboundAtEachTimestamp +=
-          Number(pod.avgInboundLatency[i]) || 0;
-        totalAvgLatencyOutboundAtEachTimestamp +=
-          Number(pod.avgOutboundLatency[i]) || 0;
-        totalPeakLatencyOutboundAtEachTimestamp +=
-          Number(pod.peakOutboundLatency[i]) || 0;
-        totalPeakLatencyInboundAtEachTimestamp +=
-          Number(pod.peakInboundLatency[i]) || 0;
-      });
+      Array.isArray(latencyAppRequestHistorical)
+        ? undefined
+        : latencyAppRequestHistorical?.latencyAppRequestHistorical.forEach(
+            (pod) => {
+              totalAvgLatencyInboundAtEachTimestamp +=
+                pod.avgInboundLatency[i] || 0;
+              totalAvgLatencyOutboundAtEachTimestamp +=
+                pod.avgOutboundLatency[i] || 0;
+              totalPeakLatencyOutboundAtEachTimestamp +=
+                pod.peakOutboundLatency[i] || 0;
+              totalPeakLatencyInboundAtEachTimestamp +=
+                pod.peakInboundLatency[i] || 0;
+            },
+          );
 
       // Calculate averages
       avgLatencyInboundAtEachTimestamp.push(
-        totalAvgLatencyInboundAtEachTimestamp / PodCount,
+        PodCount ? totalAvgLatencyInboundAtEachTimestamp / PodCount : 0,
       );
       avgLatencyOutboundAtEachTimestamp.push(
-        totalAvgLatencyOutboundAtEachTimestamp / PodCount,
+        PodCount ? totalAvgLatencyOutboundAtEachTimestamp / PodCount : 0,
       );
       peakLatencyOutboundAtEachTimestamp.push(
-        totalPeakLatencyOutboundAtEachTimestamp / PodCount,
+        PodCount ? totalPeakLatencyOutboundAtEachTimestamp / PodCount : 0,
       );
       peakLatencyInboundAtEachTimestamp.push(
-        totalPeakLatencyInboundAtEachTimestamp / PodCount,
+        PodCount ? totalPeakLatencyInboundAtEachTimestamp / PodCount : 0,
       );
     }
   } else if (clickedPod.podName) {
     // Find the clicked pod
-    const clickedLatencyPod =
-      latencyAppRequestHistorical.latencyAppRequestHistorical.find(
-        (pod) => pod.name === clickedPod.podName,
-      );
+    const clickedLatencyPod = Array.isArray(latencyAppRequestHistorical)
+      ? undefined
+      : latencyAppRequestHistorical?.latencyAppRequestHistorical.find(
+          (pod) => pod.name === clickedPod.podName,
+        );
 
     // Clear existing arrays and push new data
     avgLatencyInboundAtEachTimestamp = [];
