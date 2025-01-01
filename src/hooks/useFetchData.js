@@ -2,29 +2,10 @@
  * Hooks run when fetching data to display in the Main Page
  */
 
-import { useEffect } from "react";
-
-import mainStore from "../stores/mainStore";
-import dataStore from "../stores/dataStore";
-import { allData } from "../stores/dataStore";
-
-// Type for fetchData params
-type Request = {
-  method: string;
-  headers: Record<string, string>;
-  body?: string;
-};
-
-type Body = {
-  [key: string]: string;
-};
-
-type BodyObj = {
-  [key: string]: Body;
-};
+import { useState, useEffect } from "react";
 
 // For metrics graph: get time window from user query (dropdown)
-function getWindowInSeconds(selectedTimeWindow: string) {
+function getWindowInSeconds(selectedTimeWindow) {
   switch (selectedTimeWindow) {
     case "5m":
       return 300;
@@ -36,40 +17,43 @@ function getWindowInSeconds(selectedTimeWindow: string) {
   }
 }
 // Get time step corresponding to selected time window
-// NOT IN USE
-// function getTimeStep(selectedTimeWindow: string) {
-//   switch (selectedTimeWindow) {
-//     case "5m":
-//       return "10";
-//     case "1h":
-//       return "60";
-//     case "24h":
-//     default:
-//       return "600";
-//   }
-// }
+function getTimeStep(selectedTimeWindow) {
+  switch (selectedTimeWindow) {
+    case "5m":
+      return "10";
+    case "1h":
+      return "60";
+    case "24h":
+    default:
+      return "600";
+  }
+}
 
-const useFetchData = () => {
-  const backendUrl = dataStore((state) => state.backendUrl);
-  const {
-    refreshFrequency,
-    queryTimeWindow,
-    podRestartCount,
-    manualRefreshCount,
-    historicalTimeWindow,
-  } = mainStore();
-  const { isFetchingData, setIsFetchingData, allData, setAllData } =
-    dataStore();
+const useFetchData = ({
+  backendUrl,
+  refreshFrequency,
+  queryTimeWindow,
+  podRestartCount,
+  manualRefreshCount,
+  historicalTimeWindow,
+}) => {
+  const [isLoading, setIsLoading] = useState(true);
+  const [allData, setAllData] = useState({
+    podsStatuses: { podsStatuses: [] },
+    requestLimits: { allPodsRequestLimit: [] },
+    allNodes: { allNodes: [] },
+    cpuUsageOneValue: { resourceUsageOneValue: [] },
+    memoryUsageOneValue: { resourceUsageOneValue: [] },
+    cpuUsageHistorical: null,
+    memoryUsageHistorical: null,
+    latencyAppRequestOneValue: { latencyAppRequestOneValue: [] },
+  });
 
   useEffect(
     () => {
-      const fetchData = async <T>(
-        method: string,
-        endpoint: string,
-        body?: Body,
-      ): Promise<T | null> => {
+      const fetchData = async (method, endpoint, body = null) => {
         try {
-          const request: Request = {
+          const request = {
             method: method,
             headers: { "Content-Type": "application/json" },
           };
@@ -83,7 +67,7 @@ const useFetchData = () => {
       };
 
       const bigFetch = async () => {
-        setIsFetchingData(true);
+        setIsLoading(true);
         console.log(
           `Data fetch initiated at ${new Date().toLocaleTimeString()} - Frequency: ${refreshFrequency / 1000}s`,
         );
@@ -91,13 +75,14 @@ const useFetchData = () => {
         // do not allow refresh frequency that's too fast
         if (refreshFrequency < 1000) {
           console.warn("Refresh frequency cannot be less than 1 sec!");
-          setIsFetchingData(false);
+          setIsLoading(false);
           return;
         }
 
         const metricsTimeWindow = getWindowInSeconds(historicalTimeWindow);
+        const timeStep = getTimeStep(historicalTimeWindow);
 
-        const metricsConfig: BodyObj = {
+        const metricsConfig = {
           bodyResourceUsageOnevalueCPU: {
             type: "cpu",
             time: queryTimeWindow,
@@ -110,10 +95,8 @@ const useFetchData = () => {
           },
           bodyResourceUsageHistorical: {
             timeEnd: Math.floor(Date.now() / 1000).toString(),
-            timeStart: (
-              Math.floor(Date.now() / 1000) - metricsTimeWindow
-            ).toString(),
-            timeStep: "60",
+            timeStart: (Math.floor(Date.now() / 1000) - metricsTimeWindow).toString(),
+            timeStep,
             level: "pod",
           },
           bodyLatencyAppRequestOneValue: {
@@ -133,43 +116,32 @@ const useFetchData = () => {
             latencyAppRequestOneValue,
             latencyAppRequestHistorical,
           ] = await Promise.all([
-            fetchData<allData["podsStatuses"]>("GET", "api/all-pods-status"),
-            fetchData<allData["requestLimits"]>(
-              "GET",
-              "api/all-pods-request-limit",
-            ),
-            fetchData<allData["cpuUsageOneValue"]>(
+            fetchData("GET", "api/all-pods-status"),
+            fetchData("GET", "api/all-pods-request-limit"),
+            fetchData(
               "POST",
               "api/resource-usage-onevalue",
               metricsConfig.bodyResourceUsageOnevalueCPU,
             ),
-            fetchData<allData["memoryUsageOneValue"]>(
+            fetchData(
               "POST",
               "api/resource-usage-onevalue",
               metricsConfig.bodyResourceUsageOnevalueMemory,
             ),
-            fetchData<allData["cpuUsageHistorical"]>(
-              "POST",
-              "api/resource-usage-historical",
-              {
-                ...metricsConfig.bodyResourceUsageHistorical,
-                type: "cpu",
-              },
-            ),
-            fetchData<allData["memoryUsageHistorical"]>(
-              "POST",
-              "api/resource-usage-historical",
-              {
-                ...metricsConfig.bodyResourceUsageHistorical,
-                type: "memory",
-              },
-            ),
-            fetchData<allData["latencyAppRequestOneValue"]>(
+            fetchData("POST", "api/resource-usage-historical", {
+              ...metricsConfig.bodyResourceUsageHistorical,
+              type: "cpu",
+            }),
+            fetchData("POST", "api/resource-usage-historical", {
+              ...metricsConfig.bodyResourceUsageHistorical,
+              type: "memory",
+            }),
+            fetchData(
               "POST",
               "api/latency-app-request-onevalue",
               metricsConfig.bodyLatencyAppRequestOneValue,
             ),
-            fetchData<allData["latencyAppRequestHistorical"]>(
+            fetchData(
               "POST",
               "api/latency-app-request-historical",
               metricsConfig.bodyResourceUsageHistorical,
@@ -179,22 +151,19 @@ const useFetchData = () => {
           setAllData({
             podsStatuses:
               // preserve the pod state during data refresh by merging existing pod data with new data
-              (status &&
-                !Array.isArray(status) && {
-                  allPodsStatus: status.allPodsStatus.map((pod) => {
-                    // check if pod is found in existing data
-                    const existingPod = Array.isArray(allData.podsStatuses)
-                      ? []
-                      : allData.podsStatuses?.allPodsStatus?.find(
-                          (existing) =>
-                            existing.podName === pod.podName &&
-                            existing.namespace === pod.namespace,
-                        );
-                    // if pod is found in existing data, update it with new data (if any)
-                    // if pod is not found in existing data, add it
-                    return existingPod ? { ...pod, ...existingPod } : pod;
-                  }),
-                }) ||
+              (status && {
+                allPodsStatus: status.allPodsStatus?.map((pod) => {
+                  // check if pod is found in existing data
+                  const existingPod = allData.podsStatuses?.allPodsStatus?.find(
+                    (existing) =>
+                      existing.podName === pod.podName &&
+                      existing.namespace === pod.namespace,
+                  );
+                  // if pod is found in existing data, update it with new data (if any)
+                  // if pod is not found in existing data, add it
+                  return existingPod ? { ...pod, ...existingPod } : pod;
+                }),
+              }) ||
               [], // if status is null, set to empty array
             requestLimits: requestLimits || [],
             allNodes: {
@@ -210,7 +179,7 @@ const useFetchData = () => {
         } catch (error) {
           console.error("Error fetching initial data:", error);
         } finally {
-          setIsFetchingData(false); //
+          setIsLoading(false); //
         }
       };
 
@@ -232,10 +201,11 @@ const useFetchData = () => {
       podRestartCount,
       backendUrl,
       historicalTimeWindow,
+      // note: Do not include allData.podsStatuses.allPodsStatus from dependencies! (will cause crazy fast refresh)
     ],
   );
 
-  return { isFetchingData, allData };
+  return { isLoading, allData };
 };
 
 export default useFetchData;

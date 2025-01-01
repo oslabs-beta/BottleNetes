@@ -6,6 +6,7 @@ export default {
     extend: {
       screens: {
         "md-lg": "900px",
+        "lg-xl": "1200px",
         "xl-2xl": "1400px",
         "3xl": "1750px",
       },

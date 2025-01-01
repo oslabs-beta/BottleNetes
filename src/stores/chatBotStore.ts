@@ -2,14 +2,14 @@ import { create } from "zustand";
 
 export type historicalUserInput = {
   text: string;
-  timestamp: Date;
+  timestamp: number;
 };
 
 type State = {
   userInput: string;
   historicalUserInput: historicalUserInput[];
-  timestamps: Date[];
-  aiContent: { text: string; timestamp: Date }[];
+  timestamps: number[];
+  aiContent: { text: string; timestamp: number }[];
 };
 
 type Action = {
@@ -24,7 +24,7 @@ type Action = {
 const chatBotStore = create<State & Action>((set) => ({
   userInput: "",
   setUserInput: (userInput) => set({ userInput }),
-  historicalUserInput: [{ text: "", timestamp: new Date(Date.now()) }],
+  historicalUserInput: [{ text: "", timestamp: Date.now() }],
   setHistoricalUserInput: (historicalUserInput) =>
     set((state) => ({
       historicalUserInput: [
@@ -35,7 +35,7 @@ const chatBotStore = create<State & Action>((set) => ({
   timestamps: [],
   setTimestamps: (timestamps) =>
     set((state) => ({ timestamps: [...state.timestamps, ...timestamps] })),
-  aiContent: [{ text: "How can I help you?", timestamp: new Date(Date.now()) }],
+  aiContent: [{ text: "How can I help you?", timestamp: Date.now() }],
   setAiContent: (aiContent) =>
     set((state) => ({ aiContent: [...state.aiContent, ...aiContent] })),
 }));
