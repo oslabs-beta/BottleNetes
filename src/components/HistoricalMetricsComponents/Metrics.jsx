@@ -56,7 +56,14 @@ const Metrics = ({
       </div>
     );
   }
-
+  // console.log(
+  //   "cpuUsageHistorical:",
+  //   cpuUsageHistorical.resourceUsageHistorical,
+  // );
+  // console.log(
+  //   "memoryUsageHistorical:",
+  //   memoryUsageHistorical.resourceUsageHistorical,
+  // );
   const datasets = [];
 
   if (cpu.length > 0) {
