@@ -28,7 +28,7 @@ import PodFilter from "./PodFilter";
 import usePodListProcessor from "../../hooks/usePodListProcessor";
 
 // Component from 'containers' folder
-import LoadingContainer from '../../containers/LoadingContainer';
+import LoadingContainer from "../../containers/LoadingContainer";
 
 const PodGrid = ({
   // Props from MainContainer.jsx
@@ -80,7 +80,11 @@ const PodGrid = ({
 
   // If Pod Statuses are still being fetched, return the Loading Screen
   if (!podStatuses.allPodsStatus) {
-    return <div className="text-slate-800 dark:text-slate-300 font-semibold">Loading...</div>;
+    return (
+      <div className="font-semibold text-slate-800 dark:text-slate-300">
+        Loading...
+      </div>
+    );
   }
 
   // Extract data from processedPodList for each Pod
@@ -113,7 +117,6 @@ const PodGrid = ({
 
   return (
     <div className="flex h-full flex-col overflow-visible">
-
       {/* Configuring buttons on top of the heat map */}
       <div
         id="control-buttons-row"
@@ -156,7 +159,7 @@ const PodGrid = ({
       {/* Bottom Container: Contains buttons to render graphs based on select metric and the heat map*/}
       <div className="flex flex-1">
         {/* Left Column - Selection Buttons */}
-        <div className="flex w-1/4 min-w-[207px] flex-col justify-start gap-2 p-4 mr-2">
+        <div className="mr-2 flex w-1/4 min-w-[207px] flex-col justify-start gap-2 p-4">
           <QueryTimeWindowConfiguration
             queryTimeWindow={queryTimeWindow}
             setQueryTimeWindow={setQueryTimeWindow}
@@ -185,7 +188,7 @@ const PodGrid = ({
               });
               setMetricToSort("");
             }}
-            className="rounded-2xl border-4 border-blue-600 bg-slate-100 px-4 py-[15px] py-5 text-lg font-semibold text-blue-600 transition transition-colors duration-200 hover:brightness-90 dark:bg-transparent dark:border-2 dark:border-slate-300 dark:text-slate-300"
+            className="rounded-2xl border-4 border-blue-600 bg-slate-100 px-4 py-5 py-[15px] text-lg font-semibold text-blue-600 transition transition-colors duration-200 hover:brightness-90 dark:border-2 dark:border-slate-300 dark:bg-transparent dark:text-slate-300"
           >
             Reset
           </button>
