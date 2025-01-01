@@ -23,13 +23,10 @@ const formatRelativeTime = (timestamp: number) => {
 //   return `${date.getHours()}:${date.getMinutes().toString().padStart(2, "0")}`;
 // };
 
-type Body = {
-  [key: string]: string | number | Record<string, unknown>;
-};
-
 const Chatbot = () => {
   const backendUrl = dataStore((state) => state.backendUrl);
   const username = userStore((state) => state.username);
+  const allData = dataStore((state) => state.allData);
   const {
     // State to hold user input text
     userInput,
@@ -44,29 +41,7 @@ const Chatbot = () => {
     aiContent,
     setAiContent,
   } = chatBotStore();
-  
-  const fetchData = async (method: string, endpoint: string, body: Body) => {
-    console.log(`Sending ${method} request to ${backendUrl}${endpoint}...`);
-    
-    try {
-      const response = await fetch(`${backendUrl}${endpoint}`, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      
-      return await response.json();
-    } catch (error) {
-      console.error("😵 Error:", error);
-    }
-  };
-  
+
   // Scrollbar reference for auto-scrolling
   const chatRef = useRef<HTMLDivElement>(null);
 
@@ -84,32 +59,116 @@ const Chatbot = () => {
   };
 
   // Handle form submission to send user input and fetch AI response
-  const handleSubmit = async (event: React.MouseEvent<HTMLButtonElement> | React.KeyboardEvent<HTMLInputElement>) => {
+  const handleSubmit = async (
+    event:
+      | React.MouseEvent<HTMLButtonElement>
+      | React.KeyboardEvent<HTMLInputElement>,
+  ) => {
     event.preventDefault();
 
-    if (!userInput.trim()) return; // Prevent empty submissions
+    // Prevent empty submissions
+    if (!userInput.trim()) return;
 
-    const timestamp = new Date(Date.now()); // Record the current timestamp
+    // Record the current timestamp
+    const timestamp = Date.now();
 
     // Update historical user input and timestamps states
-    setHistoricalUserInput([{...historicalUserInput, text: userInput, timestamp }]);
+    setHistoricalUserInput([
+      { ...historicalUserInput, text: userInput, timestamp },
+    ]);
     setTimestamps([...timestamps, timestamp]);
 
-    setUserInput(""); // Clear the input field after submission
+    // Clear the input field after submission
+    setUserInput("");
+
+    // Prune helper function
+    function pruneArray(arr: object[], targetLength: number) {
+      const originalLength = arr.length;
+      if (originalLength <= targetLength) return arr;
+      const step = Math.floor(originalLength / targetLength);
+      const prunedArray = [];
+      for (let i = 0; i < originalLength; i += step) {
+        prunedArray.push(arr[i]);
+        if (prunedArray.length === targetLength) break;
+      }
+      // }
+      return prunedArray;
+    }
+
+    // Loop through nested structures and prune
+    function loopedPrune(arrOfArrs: object[]| undefined) {
+      const prunedArray: object[] = [];
+      arrOfArrs?.forEach((node) => {
+        const prunedNode: { [key: string]: object[] } = {};
+        for (const key in node as Record<string, object[]>) {
+          // HARD CODE ALERT
+          prunedNode[key] = pruneArray(
+            (node as Record<string, object[]>)[key] as object[],
+            // HARD CODE ALERT
+            Math.floor((node as Record<string, object[]>)[key].length / 50),
+          );
+        }
+        prunedArray.push(prunedNode);
+      });
+      return prunedArray;
+    }
+
+    // Prune data
+    const prunedCpuUsageHistorical = Array.isArray(allData.cpuUsageHistorical)
+      ? []
+      : loopedPrune(allData.cpuUsageHistorical?.resourceUsageHistorical);
+    const prunedLatencyAppRequestHistorical = Array.isArray(
+      allData.latencyAppRequestHistorical,
+    )
+      ? []
+      : loopedPrune(
+          allData.latencyAppRequestHistorical?.latencyAppRequestHistorical,
+        );
+    const prunedMemoryUsageHistorical = Array.isArray(
+      allData.memoryUsageHistorical,
+    )
+      ? []
+      : loopedPrune(allData.memoryUsageHistorical?.resourceUsageHistorical);
+
+    // Format data to send back with pruned data
+    const dataToSendBack = {
+      prunedCpuUsageHistorical: prunedCpuUsageHistorical,
+      prunedLatencyAppRequestHistorical: prunedLatencyAppRequestHistorical,
+      prunedMemoryUsageHistorical: prunedMemoryUsageHistorical,
+      rawAllPodsStatus: Array.isArray(allData.podsStatuses)
+        ? undefined
+        : allData.podsStatuses.allPodsStatus,
+      rawAllPodsRequestLimit: Array.isArray(allData.requestLimits)
+        ? undefined
+        : allData.requestLimits.allPodsRequestLimit,
+    };
 
     // Format request body
     const body = {
-      // allData: allData,
+      data: dataToSendBack,
       userMessage: userInput,
     };
 
     // Send data to backend and update AI response state
-    try {
-      const response = await fetchData("POST", "ai/askAi", body);
-      const { analysis } = await response.json();
 
+    try {
+      const response = await fetch(backendUrl + "ai/askAi", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
       // Append the AI response and its timestamp to aiContent state
-      setAiContent([...aiContent, { text: analysis || "❌ No response received", timestamp }]);
+      setAiContent([
+        ...aiContent,
+        { text: data.analysis || "❌ No response received", timestamp },
+      ]);
     } catch (error) {
       console.error("😵 Error:", error);
     }
@@ -132,44 +191,46 @@ const Chatbot = () => {
     const userMessage = historicalUserInput[i];
     const aiMessage = aiContent[i];
 
-    // Render user messages
     conversationArr.push(
-      // Render AI messages
-      aiMessage && (
-        <div className="mt-1 flex w-full max-w-xs space-x-3">
-          <div className="h-10 w-10 flex-shrink-0">
-            <img
-              src={logo}
-              alt="AI Logo"
-              className="h-full w-full rounded-full object-cover"
-            />
-          </div>
-          <div>
-            <div className="rounded-r-lg rounded-bl-lg bg-gradient-to-br from-gray-400 to-gray-200 p-2">
-              <p className="text-sm">{aiMessage.text}</p>
+      <div key={i}>
+        {/* Render user messages */}
+        {aiMessage && (
+          <div className="mt-1 flex w-full max-w-xs space-x-3">
+            <div className="h-10 w-10 flex-shrink-0">
+              <img
+                src={logo}
+                alt="AI Logo"
+                className="h-full w-full rounded-full object-cover"
+              />
             </div>
-            <span className="text-xs font-bold leading-none text-gray-500">
-              {formatRelativeTime(aiMessage.timestamp.getTime())}
-            </span>
-          </div>
-        </div>
-      ),
-      userMessage && (
-        <div className="ml-auto mt-2 flex w-full max-w-xs justify-end space-x-3">
-          <div>
-            <div className="rounded-l-lg rounded-br-lg bg-gradient-to-br from-[#6699e1] to-[#2229f4] p-2 text-white">
-              <p className="text-sm">{userMessage.text}</p>
+            <div>
+              <div className="rounded-r-lg rounded-bl-lg bg-gradient-to-br from-gray-400 to-gray-200 p-2">
+                <p className="text-sm">{aiMessage.text}</p>
+              </div>
+              <span className="text-xs font-bold leading-none text-gray-500">
+                {formatRelativeTime(aiMessage.timestamp)}
+              </span>
             </div>
-            <span className="text-xs leading-none text-gray-500">
-              {formatRelativeTime(userMessage.timestamp.getTime())}
-            </span>
           </div>
-          <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-800 to-indigo-600 font-bold text-white">
-            {username[0].toUpperCase()}{" "}
-            {/* Display the first letter of the username */}
+        )}
+        {/* Render ai messages */}
+        {userMessage && (
+          <div className="ml-auto mt-2 flex w-full max-w-xs justify-end space-x-3">
+            <div>
+              <div className="rounded-l-lg rounded-br-lg bg-gradient-to-br from-[#6699e1] to-[#2229f4] p-2 text-white">
+                <p className="text-sm">{userMessage.text}</p>
+              </div>
+              <span className="text-xs leading-none text-gray-500">
+                {formatRelativeTime(userMessage.timestamp)}
+              </span>
+            </div>
+            <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-800 to-indigo-600 font-bold text-white">
+              {username[0].toUpperCase()}{" "}
+              {/* Display the first letter of the username */}
+            </div>
           </div>
-        </div>
-      ),
+        )}
+      </div>,
     );
   }
 
@@ -194,23 +255,6 @@ const Chatbot = () => {
           className="flex h-0 flex-grow flex-col overflow-auto p-3"
           ref={chatRef}
         >
-          {/* <div className="flex w-full max-w-xs space-x-3">
-            <div className="h-20 w-20 flex-shrink-0">
-              <img
-                src={logo}
-                alt="AI Logo"
-                className="h-full w-full rounded-full object-cover"
-              />
-            </div>
-            <div>
-              <div className="rounded-r-lg rounded-bl-lg bg-gray-300 p-3">
-                <p className="text-sm">How can I help you?</p>
-              </div>
-              <span className="text-xs leading-none text-gray-500">
-                {formatRelativeTime(Date.now())}
-              </span>
-            </div>
-          </div> */}
           {conversationArr}
         </div>
         <span className="bg flex w-full items-center justify-between">

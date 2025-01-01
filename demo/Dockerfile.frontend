@@ -1,0 +1,32 @@
+# -----------------------------
+# 1) Build Stage
+# -----------------------------
+FROM node:20.18.0 AS build
+WORKDIR /app
+
+# Copy package and lock files
+COPY package.json package-lock.json* ./
+# Install all dependencies
+RUN npm install
+
+# Copy the rest of the code
+COPY ./src/client ./src/client
+COPY ./webpack.config.js ./webpack.config.js
+COPY ./tsconfig.json ./tsconfig.json
+
+# Build the React app
+RUN npm run build
+# This should give us a static build in dist/client
+
+# -----------------------------
+# 2) Production Stage
+# -----------------------------
+FROM nginx:mainline
+# Copy the compiled frontend from the build stage
+COPY --from=build /app/dist/client /usr/share/nginx/html
+
+# Expose port 80
+EXPOSE 80
+
+# Start Nginx server
+CMD ["nginx", "-g", "daemon off;"]

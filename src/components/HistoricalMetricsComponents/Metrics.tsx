@@ -1,6 +1,8 @@
 /**
  * This component renders the line graph representing historical CPU and Memory Usage data
  */
+
+import TimeWindowSelector from "./TimeWindowSelector"
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -32,9 +34,10 @@ ChartJS.register(
 );
 
 const Metrics = () => {
-  const { defaultView, clickedPod } = mainStore();
+  const { defaultView, clickedPod, setHistoricalTimeWindow } = mainStore();
   const cpuUsageHistorical = dataStore((state) => state.allData.cpuUsageHistorical);
   const memoryUsageHistorical = dataStore((state) => state.allData.memoryUsageHistorical);
+
 
 
   const { timeStamps, cpu, memory } = useMetricsData(
@@ -79,8 +82,17 @@ const Metrics = () => {
   };
 
   return (
-    <div className="relative max-h-fit min-h-[600px] w-full p-4">
-      <Line options={historicalMetricsChartOptions} data={data} />
+    <div>
+      <div className="p-4">
+        <div className="flex justify-end">
+          <TimeWindowSelector
+            onTimeWindowChange={(val) => setHistoricalTimeWindow(val)}
+          />
+        </div>
+      </div>
+      <div className="relative max-h-fit min-h-[600px] w-full p-4">
+        <Line options={historicalMetricsChartOptions} data={data} />
+      </div>
     </div>
   );
 };

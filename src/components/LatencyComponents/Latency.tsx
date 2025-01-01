@@ -45,7 +45,7 @@ const Latency = () => {
   }
 
   return (
-    <div className="min-h-[400px] w-full rounded p-4 text-center">
+    <div className="min-h-[450px] w-full rounded p-4 text-center">
       {chartData ? (
         <Line options={latencyChartOptions} data={chartData} />
       ) : (

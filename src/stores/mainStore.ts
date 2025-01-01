@@ -21,6 +21,7 @@ export type State = {
   refreshInput: string;
   isMenuOpen: boolean;
   aiVisibility: boolean;
+  historicalTimeWindow: string;
 };
 
 type Action = {
@@ -37,6 +38,7 @@ type Action = {
   setRefreshInput: (refreshInput: State["refreshInput"]) => void;
   setIsMenuOpen: (boolean: State["isMenuOpen"]) => void;
   setAiVisibility: (boolean: State["aiVisibility"]) => void;
+  setHistoricalTimeWindow: (historicalTimeWindow: State["historicalTimeWindow"]) => void;
 };
 
 const mainStore = create<State & Action>()((set) => ({
@@ -77,6 +79,9 @@ const mainStore = create<State & Action>()((set) => ({
 
   aiVisibility: false,
   setAiVisibility: (aiVisibility) => set({ aiVisibility }),
+
+  historicalTimeWindow: "24h",
+  setHistoricalTimeWindow: (historicalTimeWindow) => set({ historicalTimeWindow }),
 }));
 
 export default mainStore;

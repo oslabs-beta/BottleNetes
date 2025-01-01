@@ -13,7 +13,7 @@
 
 
 // Components from 'HeatMapComponents' folder
-import Pod from "./Pod.tsx";
+import Pod from "./Pod";
 import PodAdjustRequestsLimits from "./PodAdjustRequestsLimits";
 import PodGridMetricSelection from "./PodGridMetricSelection";
 import PodLogDisplay from "./PodLogDisplay";
@@ -24,9 +24,6 @@ import PodSelector from "./PodSelector";
 import PodSorter from "./PodSorter";
 import PodFilter from "./PodFilter";
 import usePodListProcessor from "../../hooks/usePodListProcessor";
-
-// Component from 'containers' folder
-import LoadingContainer from "../../containers/LoadingContainer";
 
 import dataStore from "../../stores/dataStore";
 import mainStore from "../../stores/mainStore";
@@ -51,7 +48,11 @@ const PodGrid = () => {
 
   // If Pod Statuses are still being fetched, return the Loading Screen
   if (!Array.isArray(podStatuses) && !podStatuses.allPodsStatus) {
-    return <LoadingContainer />;
+    return (
+      <div className="font-semibold text-slate-800 dark:text-slate-300">
+        Loading...
+      </div>
+    );
   }
 
   // Extract data from processedPodList for each Pod
@@ -78,14 +79,14 @@ const PodGrid = () => {
 
   // Dynamic Grid Style for the heatmap
   const gridStyle =
-    "grid gap-[2px] grid-cols-5 overflow-visible md:grid-cols-7 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-7 3xl:grid-cols-9 relative z-20";
+    "grid gap-[2px] grid-cols-5 overflow-visible md:grid-cols-7 lg:grid-cols-8 xl:grid-cols-5 2xl:grid-cols-7 3xl:grid-cols-9 relative z-20";
 
   return (
     <div className="flex h-full flex-col overflow-visible">
       {/* Configuring buttons on top of the heat map */}
       <div
         id="control-buttons-row"
-        className="grid grid-cols-4 gap-x-4 gap-y-2 px-4 py-2"
+        className="grid grid-cols-4 gap-x-2 gap-y-2 px-4 py-2"
       >
         <PodRestart />
         <PodLogDisplay />

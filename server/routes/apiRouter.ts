@@ -1,11 +1,4 @@
-import express, { Request, Response, NextFunction } from "express";
-// import fs from "fs";
-// import path from "path";
-// import { fileURLToPath } from "node:url";
-
-// Config path for usability in ES Module
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
+import express, { Request, Response } from "express";
 
 import {
   parseRequestAllPodsStatus,
@@ -39,44 +32,13 @@ import {
 
 const apiRouter = express.Router();
 
-// const cacheDataToFile = (location: string) => {
-//   return async (_req: Request, res: Response, next: NextFunction) => {
-//     try {
-//       const dataToStore = res.locals.parsedData || {};
-//       // Configure path to data file
-//       const dataFilePath = path.join(__dirname, "..", "data", `${location}.json`);
-
-//       // Format data
-//       const dataToWrite = JSON.stringify(dataToStore, null, 2);
-//       // Write to file
-//       await fs.promises.writeFile(dataFilePath, dataToWrite, "utf8");
-//       return next();
-//     } catch (error) {
-//       return next({
-//         log: error,
-//         status: 500,
-//         message: {
-//           err: error,
-//         },
-//       });
-//     }
-//   };
-// };
-
-const check = (_req: Request, _res: Response, next: NextFunction) => {
-  console.log("DONE DONE DONE DONE");
-  return next();
-};
-
 apiRouter.get(
   "/all-pods-status",
   parseRequestAllPodsStatus,
   generateQueryAllPodsStatus,
   runMultiplePromQLQueries,
   parseResponseAllPodsStatus,
-  // cacheDataToFile("allPodsStatus"),
-  check,
-  (_req, res) => {
+  (_req: Request, res: Response) => {
     res.status(200).json(res.locals.parsedData);
   },
 );
@@ -87,9 +49,7 @@ apiRouter.get(
   generateQueryAllPodsRequestLimit,
   runMultiplePromQLQueries,
   parseResponseAllPodsRequestLimit,
-  // cacheDataToFile("allPodsRequestLimit"),
-
-  (_req, res) => {
+  (_req: Request, res: Response) => {
     res.status(200).json(res.locals.parsedData);
   },
 );
@@ -100,7 +60,7 @@ apiRouter.post(
   generateQueryResourceUsage,
   runMultiplePromQLQueries,
   parseResponseResourceUsageOneValue,
-  (_req, res) => {
+  (_req: Request, res: Response) => {
     res.status(200).json(res.locals.parsedData);
   },
 );
@@ -111,8 +71,7 @@ apiRouter.post(
   generateQueryResourceUsage,
   runMultiplePromQLQueries,
   parseResponseResourceUsageHistorical,
-  // cacheDataToFile("resourceUsageHistorical"),
-  (_req, res) => {
+  (_req: Request, res: Response) => {
     res.status(200).json(res.locals.parsedData);
   },
 );
@@ -123,7 +82,7 @@ apiRouter.post(
   generateQueryLatencyAppRequest,
   runMultiplePromQLQueries,
   parseResponseLatencyAppRequestOneValue,
-  (_req, res) => {
+  (_req: Request, res: Response) => {
     res.status(200).json(res.locals.parsedData);
   },
 );
@@ -134,9 +93,7 @@ apiRouter.post(
   generateQueryLatencyAppRequest,
   runMultiplePromQLQueries,
   parseResponseLatencyAppRequestHistorical,
-  // cacheDataToFile("latencyAppRequestHistorical"),
-
-  (_req, res) => {
+  (_req: Request, res: Response) => {
     res.status(200).json(res.locals.parsedData);
   },
 );

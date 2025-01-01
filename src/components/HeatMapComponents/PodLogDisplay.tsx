@@ -5,6 +5,7 @@
 import mainStore from "../../stores/mainStore";
 import dataStore from "../../stores/dataStore";
 import podStore from "../../stores/podStore";
+import { useState, useRef, useEffect } from "react";
 
 const PodLogDisplay = () => {
   const clickedPod = mainStore((state) => state.clickedPod);
@@ -17,6 +18,15 @@ const PodLogDisplay = () => {
     podLog,
     setPodLog,
   } = podStore();
+  const [selectedContainer, setSelectedContainer] = useState("");
+  const logContentRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to bottom when log content updates
+  useEffect(() => {
+    if (logContentRef.current && showPodLog) {
+      logContentRef.current.scrollTop = logContentRef.current.scrollHeight;
+    }
+  }, [podLog, showPodLog]);
 
   const handleViewPodLog = async () => {
     if (
@@ -36,7 +46,7 @@ const PodLogDisplay = () => {
     setShowContainerSelect(true);
   };
 
-  const fetchContainerLogs = async (selectedContainer: string) => {
+  const fetchContainerLogs = async (containerName: string) => {
     console.log(`Sending request to '${backendUrl}k8s/viewPodLogs'...`);
 
     try {
@@ -49,11 +59,12 @@ const PodLogDisplay = () => {
           podName: clickedPod.podName,
           namespace: clickedPod.namespace,
           containers: clickedPod.containers,
-          selectedContainer: selectedContainer,
+          selectedContainer: containerName,
         }),
       });
       const podLogs = await response.json();
       setPodLog(podLogs.logs);
+      setSelectedContainer(containerName);
       setShowContainerSelect(false);
       setShowPodLog(true);
     } catch (error) {
@@ -63,6 +74,12 @@ const PodLogDisplay = () => {
       } else {
         alert("Failed to fetch pod logs: An unknown error occurred");
       }
+    }
+  };
+
+  const handleRefreshLogs = () => {
+    if (selectedContainer) {
+      fetchContainerLogs(selectedContainer);
     }
   };
 
@@ -119,9 +136,18 @@ const PodLogDisplay = () => {
       >
         <div
           id="pod-log-content"
+          ref={logContentRef}
           className="relative h-4/5 w-4/5 overflow-auto rounded-lg bg-slate-200 p-6"
         >
           <div className="sticky top-0 z-10 flex justify-end">
+            <div className="inline-block rounded-lg bg-slate-200 px-2">
+              <button
+                onClick={handleRefreshLogs}
+                className="mr-2 rounded-lg bg-blue-500 px-4 py-2 text-slate-200 transition duration-200 hover:brightness-110 active:brightness-90"
+              >
+                Refresh Log
+              </button>
+            </div>
             <div className="inline-block rounded-lg bg-slate-200 px-2">
               <button
                 onClick={() => setShowPodLog(false)}

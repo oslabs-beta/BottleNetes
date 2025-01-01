@@ -19,7 +19,8 @@ import askAiRouter from "./routes/askAiRouter.js";
 import apiRouter from "./routes/apiRouter.js";
 import k8sRouter from "./routes/k8sRouter.js";
 import oAuthRouter from "./routes/oAuthRouter.js";
-import userRouter from "./routes/userRouter.js";
+import userRouter from './routes/userRouter.js';
+
 // Allow the use of process.env
 const envFile =
   process.env.NODE_ENV === "production" ? ".env.production" : ".env";
@@ -27,28 +28,18 @@ dotenv.config({ path: envFile });
 
 const app = express();
 
-// Request Logging Middleware
-app.use((req, _res, next) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-  next();
-});
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
-// increase limits
-app.use(express.json({ limit: "750mb" }));
-app.use(express.urlencoded({ extended: true, limit: "750mb" }));
 
 // CORS stuffs
 app.use(
   cors({
     origin: [
-      "http://localhost:5173",
-      "http://localhost:3000",
-      "http://localhost:4173",
-    ], //Front-end PORT
+      "http://localhost:5173", // Front-end PORT for Development
+      "http://localhost:3000", // Back-end PORT
+      "http://localhost:4173", // Front-end PORT for Production
+    ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true, // Important for cookies/session
   }),

@@ -26,7 +26,7 @@ const QueryTimeWindowConfiguration = () => {
       <div id="time-window-config-button" className="flex items-center">
         <button
           onClick={() => setShowTimeWindow(true)}
-          className="transition-color rounded-2xl border-2 border-transparent bg-slate-200 px-4 py-2 text-lg font-semibold text-slate-500 duration-300 hover:brightness-90 w-full dark:text-slate-300 dark:bg-slate-800"
+          className="transition-color rounded-2xl border-transparent bg-transparent border-2 px-4 py-2 text-lg font-semibold text-slate-500 underline duration-100 hover:brightness-50 w-full dark:text-slate-300"
         >
           Time Window: {queryTimeWindow}
         </button>
@@ -60,9 +60,9 @@ const QueryTimeWindowConfiguration = () => {
       >
         <div
           id="time-window-popup-content"
-          className="flex size-1/6 flex-col items-center justify-center rounded-lg bg-slate-200 p-6 text-slate-700"
+          className="flex size-1/6 flex-col items-center justify-center rounded-lg bg-slate-200 p-6 h-[250px] text-slate-700"
         >
-          <p>Select a Time Window that best suited your monitoring need</p>
+          <p>Select a Monitoring Time Window</p>
           <br />
           <form
             onSubmit={handleTimeWindowSubmit}
