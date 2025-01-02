@@ -94,6 +94,7 @@ const askAiController = {
         When sending back your analysis, make sure that is is well-formatted with line breaks and indentations.\n
         Make sure sections are clearly separated and labeled. Make your replies concise and to the point.\n
         Make sure to include statitics and numbers when relevant.\n
+        At the end of your response, remember to include a actionable recommendation (with bumbers if possible) based on the analysis.\n
         You do not have to greet the user everytime you respond.\n
 
         For example: This is an acceptable format when asked about the data that you have access to:\n
@@ -108,6 +109,8 @@ const askAiController = {
         Please let me know if there's anything specific you would like to analyze or if you have questions about optimizing your Kubernetes cluster.\n
 
         If the user asks about a specific pod, you can provide a detailed analysis based on the available data.\n
+
+
       `;
 
       const prompt =
