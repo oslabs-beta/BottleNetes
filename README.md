@@ -163,7 +163,7 @@ git clone https://github.com/oslabs-beta/BottleNetes.git
 cd bottlenetes
 ```
 
-2. **Create .env.prod in the root directory**
+2. **Create .env.production in the root directory**
 
 ```
 # Example fields (please update with your real values for each one)
@@ -220,7 +220,7 @@ If your browser doesn’t open automatically, navigate to http://localhost:4173/
 
 ### 🌐 Environment Variables 🌐
 
-A quick overview of the fields in your .env.prod file:
+A quick overview of the fields in your .env.production file:
 
 - OPENAI_API_KEY
   For GPT-based services, if you leverage AI integrations.

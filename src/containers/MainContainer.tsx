@@ -242,18 +242,9 @@ const MainContainer = () => {
         <div className="relative mx-6">
           {/* AI Chatbot */}
           <div
-            className={`absolute bottom-[100%] right-0 mb-3 w-96 rounded-2xl transition-opacity duration-300 ${aiVisibility ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
+            className={`absolute top-[100%] right-0 mb-3 w-96 rounded-2xl transition-opacity duration-300 ${aiVisibility ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
           >
             <Chatbot setAiVisibility={setAiVisibility} />
-          </div>
-          {/* Reset and Ask AI buttons */}
-          <div className="flex justify-between pb-5">
-            <button
-              onClick={() => setAiVisibility(!aiVisibility)}
-              className="rounded-2xl bg-gradient-to-r from-blue-500 to-blue-600 px-4 py-2 text-lg font-semibold text-slate-200 hover:brightness-90"
-            >
-              Ask AI
-            </button>
           </div>
         </div>
       </div>
