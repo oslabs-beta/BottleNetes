@@ -236,7 +236,7 @@ const MainContainer = () => {
           <div
             className={`absolute bottom-[100%] right-0 mb-3 w-96 rounded-2xl transition-opacity duration-300 ${aiVisibility ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
           >
-            <Chatbot />
+            <Chatbot setAiVisibility={setAiVisibility} />
           </div>
           {/* Reset and Ask AI buttons */}
           <div className="flex justify-between pb-5">
