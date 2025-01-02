@@ -241,27 +241,6 @@ const MainContainer = () => {
         {/* Bottom row of buttons */}
         <div className="relative mx-6">
           {/* AI Chatbot */}
-<<<<<<< HEAD:src/containers/MainContainer.jsx
-            <div className={`absolute bottom-[100%] right-0 mb-3 w-96 rounded-2xl transition duration-100 ${aiVisibility ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}>
-              <Chatbot
-                allData={allData}
-                username={username}
-                className="text-gradient font-poppins text-2xl font-bold shadow-lg"
-                logoStyle={{
-                  width: "70px",
-                  height: "70px",
-                  borderRadius: "50%",
-                  boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-                  backgroundImage:
-                    "linear-gradient(to right, #1e90ff, #87ceeb)",
-                  color: "#fff",
-                  fontSize: "18px",
-                  fontWeight: "bold",
-                  textTransform: "uppercase",
-                }}
-              />
-            </div>
-=======
           <div
             className={`absolute bottom-[100%] right-0 mb-3 w-96 rounded-2xl transition-opacity duration-300 ${aiVisibility ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
           >
@@ -276,7 +255,6 @@ const MainContainer = () => {
               Ask AI
             </button>
           </div>
->>>>>>> dev:src/containers/MainContainer.tsx
         </div>
       </div>
     </div>
