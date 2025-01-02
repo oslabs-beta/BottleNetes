@@ -147,11 +147,16 @@ gif link template:
 
 2.  **Node.js**
 
-- Install the latest LTS version of Node.js.
+- Install the [latest LTS version](https://nodejs.org/en/download) of Node.js.
 
-### Project Setup
+3. **Homebrew (for macOS)**
+
+- Install [Homebrew](https://brew.sh/)
+
+### 🛠️ Project Setup 🛠️
 
 1.  **Clone this repository**
+    In your terminal, run:
 
 ```bash
 git clone https://github.com/oslabs-beta/BottleNetes.git
@@ -184,15 +189,15 @@ FRONTEND_URL=http://localhost:4173/
 
 3. **Run the Quickstart script**
 
-A quickstart script is provided for your convenience, automating much of the setup process:
+A quickstart script is provided for your convenience, automating much of the setup process (you can also follow the manual setup instructions [here](markdown/manual-setup-instruction.md)).
 
-- Make the script executable:
+- Make the quickstart script executable by running in your terminal:
 
 ```bash
 chmod +x QUICKSTART.sh
 ```
 
-- Execute the script:
+- Execute the script by running:
 
 ```bash
 ./QUICKSTART.sh
