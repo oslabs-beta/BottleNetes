@@ -1,43 +1,53 @@
 import { create } from "zustand";
 
-export type historicalUserInput = {
+export type Message = {
   text: string;
   timestamp: number;
 };
 
 type State = {
   userInput: string;
-  historicalUserInput: historicalUserInput[];
+  historicalUserInput: Message[];
   timestamps: number[];
-  aiContent: { text: string; timestamp: number }[];
+  aiContent: Message[];
 };
 
 type Action = {
   setUserInput: (userInput: State["userInput"]) => void;
-  setHistoricalUserInput: (
-    historicalUserInput: State["historicalUserInput"],
-  ) => void;
-  setTimestamps: (timestamps: State["timestamps"]) => void;
-  setAiContent: (aiContent: State["aiContent"]) => void;
+  setHistoricalUserInput: (historicalUserInput: Message) => void;
+  setTimestamps: (timestamp: number) => void;
+  setAiContent: (aiContent: Message) => void;
+  resetChat: () => void;
 };
 
 const chatBotStore = create<State & Action>((set) => ({
   userInput: "",
   setUserInput: (userInput) => set({ userInput }),
-  historicalUserInput: [{ text: "", timestamp: Date.now() }],
-  setHistoricalUserInput: (historicalUserInput) =>
+
+  historicalUserInput: [],
+  setHistoricalUserInput: (message) =>
     set((state) => ({
-      historicalUserInput: [
-        ...state.historicalUserInput,
-        ...historicalUserInput,
-      ],
+      historicalUserInput: [...state.historicalUserInput, message],
     })),
+
   timestamps: [],
-  setTimestamps: (timestamps) =>
-    set((state) => ({ timestamps: [...state.timestamps, ...timestamps] })),
+  setTimestamps: (timestamp) =>
+    set((state) => ({
+      timestamps: [...state.timestamps, timestamp],
+    })),
+
   aiContent: [{ text: "How can I help you?", timestamp: Date.now() }],
-  setAiContent: (aiContent) =>
-    set((state) => ({ aiContent: [...state.aiContent, ...aiContent] })),
+  setAiContent: (message) =>
+    set((state) => ({
+      aiContent: [...state.aiContent, message],
+    })),
+
+  resetChat: () =>
+    set({
+      historicalUserInput: [],
+      timestamps: [],
+      aiContent: [{ text: "How can I help you?", timestamp: Date.now() }],
+    }),
 }));
 
 export default chatBotStore;

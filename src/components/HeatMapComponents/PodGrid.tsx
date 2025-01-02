@@ -11,7 +11,6 @@
  * usePodListProcessor.jsx: A hook to extract and memoize data for pods
  */
 
-
 // Components from 'HeatMapComponents' folder
 import Pod from "./Pod";
 import PodAdjustRequestsLimits from "./PodAdjustRequestsLimits";
@@ -79,7 +78,7 @@ const PodGrid = () => {
 
   // Dynamic Grid Style for the heatmap
   const gridStyle =
-    "grid gap-[2px] grid-cols-5 overflow-visible md:grid-cols-7 lg:grid-cols-8 xl:grid-cols-5 2xl:grid-cols-7 3xl:grid-cols-9 relative z-20";
+    "grid gap-[2px] grid-cols-5 overflow-visible md:grid-cols-7 lg:grid-cols-8 xl:grid-cols-5 2xl:grid-cols-7 3xl:grid-cols-9 relative z-10";
 
   return (
     <div className="flex h-full flex-col overflow-visible">
@@ -100,7 +99,7 @@ const PodGrid = () => {
       {/* Bottom Container: Contains buttons to render graphs based on select metric and the heat map*/}
       <div className="flex flex-1">
         {/* Left Column - Selection Buttons */}
-        <div className="flex w-1/4 min-w-[207px] flex-col justify-start gap-2 p-4 mr-2">
+        <div className="mr-2 flex w-1/4 min-w-[207px] flex-col justify-start gap-2 p-4">
           <QueryTimeWindowConfiguration />
           <PodGridMetricSelection />
           {/* Left Side Buttons */}
@@ -122,7 +121,7 @@ const PodGrid = () => {
               });
               setMetricToSort("");
             }}
-            className="rounded-2xl border-4 border-blue-600 bg-slate-100 px-4 py-5 text-lg font-semibold text-blue-600 transition duration-200 hover:brightness-90 dark:bg-transparent dark:border-2 dark:border-slate-300 dark:text-slate-300"
+            className="rounded-2xl border-4 border-blue-600 bg-slate-100 px-4 py-5 text-lg font-semibold text-blue-600 transition duration-200 hover:brightness-90 dark:border-2 dark:border-slate-300 dark:bg-transparent dark:text-slate-300"
           >
             Reset
           </button>
