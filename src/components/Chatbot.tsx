@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React from "react";
+import React, { useState } from "react";
 import { useEffect, useRef } from "react";
 import Draggable from "react-draggable";
 
 import logo from "../assets/logo.png";
 import dataStore from "../stores/dataStore";
 import userStore from "../stores/userStore";
-import chatBotStore from "../stores/chatBotStore";
+import chatBotStore, { Message } from "../stores/chatBotStore";
 
 // Helper function to calculate relative time
 // This version calculates a human-readable timestamp format like "5 min ago"
@@ -29,6 +29,7 @@ const Chatbot = ({
 }: {
   setAiVisibility: (visible: boolean) => void;
 }) => {
+  const [isWaitingForResponse, setIsWaitingForResponse] = useState(false);
   const backendUrl = dataStore((state) => state.backendUrl);
   const username = userStore((state) => state.username);
   const allData = dataStore((state) => state.allData);
@@ -45,6 +46,7 @@ const Chatbot = ({
     // State to hold AI responses
     aiContent,
     setAiContent,
+    resetChat,
   } = chatBotStore();
 
   // Scrollbar reference for auto-scrolling
@@ -148,8 +150,9 @@ const Chatbot = ({
       userMessage: userInput,
     };
 
-    // Send data to backend and update AI response state
+    setIsWaitingForResponse(true);
 
+    // Send data to backend and update AI response state
     try {
       const response = await fetch(backendUrl + "ai/askAi", {
         method: "POST",
@@ -168,9 +171,17 @@ const Chatbot = ({
         text: data.analysis || "❌ No response received",
         timestamp,
       });
+      setIsWaitingForResponse(false);
     } catch (error) {
       console.error("😵 Error:", error);
+      setIsWaitingForResponse(false);
     }
+  };
+
+  const handleNewConversation = () => {
+    resetChat(); // This will clear all conversation history and reset to initial state
+    setUserInput(""); // Clear current input field
+    setIsWaitingForResponse(false); // Reset loading state if active
   };
 
   // Auto-scroll to the bottom when new messages are added
@@ -184,11 +195,8 @@ const Chatbot = ({
   useEffect(() => {
     if (aiContent.length === 0) {
       setAiContent([
-        {
-          text: "How can I help you?",
-          timestamp: Date.now(),
-        },
-      ]);
+        { text: "How can I help you?", timestamp: Date.now() },
+      ] as Message[]);
     }
   }, []);
 
@@ -266,6 +274,44 @@ const Chatbot = ({
     }
   }
 
+  // Add loading message if waiting for response
+  if (isWaitingForResponse) {
+    conversationArr.push(
+      <div key="loading" className="mt-1 flex w-full max-w-xs space-x-3">
+        <div className="h-10 w-10 flex-shrink-0">
+          <img
+            src={logo}
+            alt="AI Logo"
+            className="h-full w-full rounded-full object-cover"
+          />
+        </div>
+        <div>
+          <div className="rounded-r-lg rounded-bl-lg bg-gradient-to-br from-gray-400 to-gray-200 p-2">
+            <p className="flex items-center text-sm">
+              Thinking
+              <svg className="ml-2 h-4 w-4 animate-spin" viewBox="0 0 24 24">
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                  fill="none"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                />
+              </svg>
+            </p>
+          </div>
+        </div>
+      </div>,
+    );
+  }
+
   // Render the chatbot component
   return (
     <Draggable handle=".drag-handle">
@@ -275,12 +321,20 @@ const Chatbot = ({
       >
         <div className="drag-handle flex w-full cursor-move items-center justify-between rounded-t-lg bg-gradient-to-r from-blue-500 to-blue-600 p-2">
           <span className="text-sm text-white">BottleNetes AI Assistant</span>
-          <button
-            onClick={() => setAiVisibility(false)}
-            className="text-white hover:text-gray-200"
-          >
-            &#10005;
-          </button>
+          <div className="mr-2 flex items-center gap-3">
+            <button
+              onClick={handleNewConversation}
+              className="rounded border border-white/30 px-2 py-1 text-sm text-white hover:text-gray-200"
+            >
+              New Conversation
+            </button>
+            <button
+              onClick={() => setAiVisibility(false)}
+              className="text-white hover:text-gray-200"
+            >
+              &#10005;
+            </button>
+          </div>
         </div>
         <div className="flex w-full max-w-xl flex-grow flex-col overflow-hidden rounded-lg bg-white shadow-xl">
           <div
