@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="./src/assets/logo.png" alt="bottlenetes logo" width="200"/>
+<img src="./src/assets/logo.png" alt="bottlenetes logo" height="150"/>
 
 <h1>Bottlenetes</h1>
 
@@ -21,28 +21,18 @@
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 ![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![MUI](https://img.shields.io/badge/MUI-007FFF?style=for-the-badge&logo=mui&logoColor=white)
+![Zustand](https://img.shields.io/badge/Zustand-2F3C70?style=for-the-badge&logoColor=white)
 
 #### Backend 🖥️
 
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)
 ![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
-![JWT](https://img.shields.io/badge/JWT-FFAA33?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
-![OAuth](https://img.shields.io/badge/OAuth-0088CC?style=for-the-badge&logo=oauth&logoColor=white)
-
-#### DevOps & Infrastructure ⚙️
-
-![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
-![AWS](https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white)
-![AWS EKS](https://img.shields.io/badge/AWS_EKS-FF9900?style=for-the-badge&logo=amazon-eks&logoColor=white)
-![Minikube](https://img.shields.io/badge/Minikube-F7931E?style=for-the-badge&logo=kubernetes&logoColor=white)
-
-#### Monitoring 📊
-
-![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=prometheus&logoColor=white)
-![PromQL](https://img.shields.io/badge/PromQL-F57600?style=for-the-badge&logo=prometheus&logoColor=white)
+![Axios](https://img.shields.io/badge/Axios-671DDF?style=for-the-badge&logoColor=white)
+![CORS](https://img.shields.io/badge/CORS-000000?style=for-the-badge&logoColor=white)
 
 #### Database 🛢️
 
@@ -50,17 +40,39 @@
 ![Sequelize](https://img.shields.io/badge/Sequelize-52B0E7?style=for-the-badge&logo=sequelize&logoColor=white)
 ![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
 
+#### DevOps & Infrastructure ⚙️
+
+![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![AWS EKS](https://img.shields.io/badge/AWS_EKS-FF9900?style=for-the-badge&logo=amazon-eks&logoColor=white)
+![Minikube](https://img.shields.io/badge/Minikube-F7931E?style=for-the-badge&logo=kubernetes&logoColor=white)
+
+#### Monitoring 📊
+
+![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=prometheus&logoColor=white)
+![PromQL](https://img.shields.io/badge/PromQL-F57600?style=for-the-badge&logo=prometheus&logoColor=white)
+![Chart.js](https://img.shields.io/badge/Chart.js-FF6384?style=for-the-badge&logo=chartdotjs&logoColor=white)
+
+#### Auth & Security 🔒
+
+![JWT](https://img.shields.io/badge/JWT-FFAA33?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
+![Passport](https://img.shields.io/badge/Passport-34E27A?style=for-the-badge&logo=passport&logoColor=white)
+![GitHub OAuth](https://img.shields.io/badge/GitHub_OAuth-181717?style=for-the-badge&logo=github&logoColor=white)
+![Google OAuth](https://img.shields.io/badge/Google_OAuth-4285F4?style=for-the-badge&logo=google&logoColor=white)
+![bcrypt](https://img.shields.io/badge/bcrypt-003A70?style=for-the-badge&logoColor=white)
+
 #### Tools & CI/CD 🛠️
 
 ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)
 ![Shell Script](https://img.shields.io/badge/Shell_Script-121011?style=for-the-badge&logo=gnu-bash&logoColor=white)
 ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
 ![Trello](https://img.shields.io/badge/Trello-0079BF?style=for-the-badge&logo=trello&logoColor=white)
-![VSCode](https://img.shields.io/badge/VSCode-0078D4?style=for-the-badge&logo=visual-studio-code&logoColor=white)
+![Nodemon](https://img.shields.io/badge/Nodemon-76D04B?style=for-the-badge&logo=nodemon&logoColor=white)
+![ESLint](https://img.shields.io/badge/ESLint-4B32C3?style=for-the-badge&logo=eslint&logoColor=white)
 
-#### AI & Integrations 🤖
+#### AI 🤖
 
-![OpenAI GPT API](https://img.shields.io/badge/OpenAI_GPT_API-412991?style=for-the-badge&logo=openai&logoColor=white)
+![OpenAI API](https://img.shields.io/badge/OpenAI_API-412991?style=for-the-badge&logo=openai&logoColor=white)
 
 </div>
 
@@ -73,11 +85,11 @@
 - [✨ Features](#-features-)
 - [🚀 Getting Started](#-getting-started-)
 - [📦 Prerequisites](#-prerequisites-)
-- [⚙️ Project Setup](#%EF%B8%8F-project-setup)
+- [⚙️ Project Setup](#-project-setup)
 - [🌐 Environment Variables](#-environment-variables-)
-- [🛠️ Manual Setup](#️-manual-setup-)
-- [☁️ AWS Integration](#-aws-integration-)
-- [🌟 Roadmap Ahead](#-roadmap-ahead-)
+- [🛠️ Manual Setup](#️-Manual-Setup-)
+- [☁️ AWS Integration](#-AWS-Integration-)
+- [🌟 Roadmap Ahead](#-Roadmap-Ahead-)
 - [📝 Contribution Guidelines](#-contribution-guidelines-)
 - [🎉 Contributors](#-contributors-)
 - [📄 License](#-license-)
@@ -242,12 +254,12 @@ A quick overview of the fields in your .env.prod file:
 
 If you prefer a manual setup or want to customize each step, please follow:
 
-- [this page](readme/manual-setup-instruction.md) for the initial manual setup.
-- and [this page](readme/latency-prerequisite.md) for installing service mesh for latency tracking.
+- [this page](markdown/manual-setup-instruction.md) for the initial manual setup.
+- and [this page](markdown/latency-prerequisite.md) for installing service mesh for latency tracking.
 
-## AWS integration ☁️
+## ☁️ AWS Integration ☁️
 
-If you want to make Bottlenetes work with your AWS EKS cluster, please follow the instructions in [this page](readme/aws-integration-instruction.md).
+If you want to make Bottlenetes work with your AWS EKS cluster, please follow the instructions in [this page](markdown/aws-integration-instruction.md).
 
 ## 🌟 Roadmap Ahead 🌟
 
@@ -271,10 +283,9 @@ We ❤️ contributions from the community! Here’s how to get involved:
 1. Fork the Repo
    Click the "Fork" button at the top-right corner of this page.
 2. Create a Feature Branch
-   bash ```
-   git checkout -b feature/yourNewFeatureName
 
-   ```
+   ```bash
+   git checkout -b feature/yourNewFeatureName
 
    ```
 
