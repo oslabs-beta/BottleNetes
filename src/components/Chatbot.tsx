@@ -220,7 +220,7 @@ const Chatbot = ({
           />
         </div>
         <div>
-          <div className="rounded-r-lg rounded-bl-lg bg-gradient-to-br from-gray-400 to-gray-200 p-2">
+          <div className="rounded-r-lg rounded-bl-lg bg-gray-300 text-slate-800 p-2">
             <p className="text-sm">{aiContent[0].text}</p>
           </div>
           <span className="text-xs font-bold leading-none text-gray-500">
@@ -242,7 +242,7 @@ const Chatbot = ({
           {/* User message */}
           <div className="ml-auto mt-2 flex w-full max-w-xs justify-end space-x-3">
             <div>
-              <div className="rounded-l-lg rounded-br-lg bg-gradient-to-br from-[#6699e1] to-[#2229f4] p-2 text-white">
+              <div className="rounded-l-lg rounded-br-lg bg-blue-500 p-2 text-white">
                 <p className="text-sm">{userMessage.text}</p>
               </div>
               <span className="text-xs leading-none text-gray-500">
@@ -265,8 +265,8 @@ const Chatbot = ({
                 />
               </div>
               <div>
-                <div className="rounded-r-lg rounded-bl-lg bg-gradient-to-br from-gray-400 to-gray-200 p-2">
-                  <ReactMarkdown className="prose prose-sm max-w-none text-sm">
+                <div className="rounded-r-lg rounded-bl-lg bg-gray-300 p-2">
+                  <ReactMarkdown className="prose prose-sm max-w-none text-sm text-slate-800">
                     {aiMessage.text}
                   </ReactMarkdown>
                 </div>
@@ -293,7 +293,7 @@ const Chatbot = ({
           />
         </div>
         <div>
-          <div className="rounded-r-lg rounded-bl-lg bg-gradient-to-br from-gray-400 to-gray-200 p-2">
+          <div className="rounded-r-lg rounded-bl-lg bg-gray-300 p-2">
             <p className="flex items-center text-sm">
               Thinking
               <svg className="ml-2 h-4 w-4 animate-spin" viewBox="0 0 24 24">
@@ -327,11 +327,11 @@ const Chatbot = ({
         style={{ zIndex: 9999 }}
       >
         <div className="drag-handle flex w-full cursor-move items-center justify-between rounded-t-lg bg-gradient-to-r from-blue-500 to-blue-600 p-2">
-          <span className="text-sm text-white">BottleNetes AI Assistant</span>
+          <span className="text-sm text-slate-100 my-2">BottleNetes AI Assistant</span>
           <div className="mr-2 flex items-center gap-3">
             <button
               onClick={handleNewConversation}
-              className="rounded border border-white/30 px-2 py-1 text-sm text-white hover:text-gray-200"
+              className="rounded border border-white/30 px-2 py-1 bg-slate-200 text-sm text-blue-600 hover:brightness-90"
             >
               New Conversation
             </button>
@@ -343,7 +343,7 @@ const Chatbot = ({
             </button>
           </div>
         </div>
-        <div className="flex w-full max-w-xl flex-grow flex-col overflow-hidden rounded-lg bg-white shadow-xl">
+        <div className="flex w-full max-w-xl flex-grow flex-col overflow-hidden rounded-b-lg bg-white shadow-xl">
           <div
             className="scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 flex h-[400px] flex-col overflow-y-auto p-3"
             ref={chatRef}
@@ -353,7 +353,7 @@ const Chatbot = ({
           <span className="bg flex w-full items-center justify-between p-2">
             <div className="flex-grow rounded-l-lg rounded-br-lg">
               <input
-                className="flex h-10 w-full items-center rounded-xl bg-blue-200 px-5 text-sm"
+                className="flex h-10 w-full items-center rounded-xl bg-blue-100 px-5 text-sm"
                 type="text"
                 placeholder="Type your message…"
                 onChange={handleInputChange}
@@ -361,7 +361,7 @@ const Chatbot = ({
                 onKeyDown={handleKeyDown}
               />
             </div>
-            <div className="text-m mx-1 rounded-xl bg-blue-500 px-3 py-1.5 text-slate-200 hover:brightness-90">
+            <div className="text-sm mx-1 rounded-xl bg-blue-500 px-3 py-2.5 text-slate-100 hover:brightness-90">
               <button onClick={handleSubmit}>Send</button>
             </div>
           </span>

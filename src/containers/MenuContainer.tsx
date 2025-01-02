@@ -72,7 +72,7 @@ const MenuContainer = () => {
           <div id="manual-refresh-button" className="mb-4">
             <button
               onClick={() => setManualRefreshCount(manualRefreshCount + 1)}
-              className="w-full rounded-lg bg-blue-600 px-4 py-2 text-sm transition duration-300 hover:brightness-110 active:brightness-90"
+              className="w-full rounded-lg bg-blue-600 px-4 py-2 font-semibold text-sm transition duration-300 hover:brightness-110 active:brightness-90"
             >
               Force Refresh
             </button>
@@ -85,8 +85,8 @@ const MenuContainer = () => {
               onClick={() => setShowRefreshPopup(true)}
               className="flex cursor-pointer items-center justify-between rounded-lg bg-slate-800 px-4 py-2 transition duration-300 hover:brightness-110 active:brightness-90"
             >
-              <span className="text-sm">Set Refresh Frequency:</span>
-              <span className="text-blue-400">{refreshFrequency / 1000}s</span>
+              <span className="text-sm font-semibold">Set Refresh Frequency:</span>
+              <span className="text-blue-400 font-semibold">{refreshFrequency / 1000}s</span>
             </div>
           </div>
         </div>
