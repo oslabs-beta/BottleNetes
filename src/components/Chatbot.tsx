@@ -242,7 +242,7 @@ const Chatbot = ({
           {/* User message */}
           <div className="ml-auto mt-2 flex w-full max-w-xs justify-end space-x-3">
             <div>
-              <div className="rounded-l-lg rounded-br-lg bg-blue-300 p-2 text-white">
+              <div className="rounded-l-lg rounded-br-lg bg-blue-500 p-2 text-white">
                 <p className="text-sm">{userMessage.text}</p>
               </div>
               <span className="text-xs leading-none text-gray-500">
@@ -343,7 +343,7 @@ const Chatbot = ({
             </button>
           </div>
         </div>
-        <div className="flex w-full max-w-xl flex-grow flex-col overflow-hidden rounded-lg bg-white shadow-xl">
+        <div className="flex w-full max-w-xl flex-grow flex-col overflow-hidden rounded-b-lg bg-white shadow-xl">
           <div
             className="scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 flex h-[400px] flex-col overflow-y-auto p-3"
             ref={chatRef}
@@ -361,7 +361,7 @@ const Chatbot = ({
                 onKeyDown={handleKeyDown}
               />
             </div>
-            <div className="text-sm mx-1 rounded-xl bg-blue-500 px-3 py-2 text-slate-100 hover:brightness-90">
+            <div className="text-sm mx-1 rounded-xl bg-blue-500 px-3 py-2.5 text-slate-100 hover:brightness-90">
               <button onClick={handleSubmit}>Send</button>
             </div>
           </span>
