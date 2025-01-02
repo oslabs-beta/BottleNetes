@@ -16,7 +16,7 @@ type Action = {
   setUserInput: (userInput: State["userInput"]) => void;
   setHistoricalUserInput: (historicalUserInput: Message) => void;
   setTimestamps: (timestamp: number) => void;
-  setAiContent: (aiContent: Message) => void;
+  setAiContent: (aiContent: Message | Message[]) => void;
   resetChat: () => void;
 };
 
@@ -39,7 +39,9 @@ const chatBotStore = create<State & Action>((set) => ({
   aiContent: [{ text: "How can I help you?", timestamp: Date.now() }],
   setAiContent: (message) =>
     set((state) => ({
-      aiContent: [...state.aiContent, message],
+      aiContent: Array.isArray(message)
+        ? message
+        : [...state.aiContent, message],
     })),
 
   resetChat: () =>
