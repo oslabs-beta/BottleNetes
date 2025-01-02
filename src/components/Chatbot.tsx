@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import React from "react";
 import { useEffect, useRef } from "react";
+import Draggable from "react-draggable";
 
 import logo from "../assets/logo.png";
 import dataStore from "../stores/dataStore";
@@ -69,20 +70,14 @@ const Chatbot = ({
       | React.KeyboardEvent<HTMLInputElement>,
   ) => {
     event.preventDefault();
-
-    // Prevent empty submissions
     if (!userInput.trim()) return;
 
-    // Record the current timestamp
     const timestamp = Date.now();
+    const currentUserInput = userInput;
 
-    // Update historical user input and timestamps states
-    setHistoricalUserInput([
-      { ...historicalUserInput, text: userInput, timestamp },
-    ]);
-    setTimestamps([...timestamps, timestamp]);
-
-    // Clear the input field after submission
+    // Fixed typing issues
+    setHistoricalUserInput({ text: currentUserInput, timestamp });
+    setTimestamps(timestamp);
     setUserInput("");
 
     // Prune helper function
@@ -168,11 +163,11 @@ const Chatbot = ({
       }
 
       const data = await response.json();
-      // Append the AI response and its timestamp to aiContent state
-      setAiContent([
-        ...aiContent,
-        { text: data.analysis || "❌ No response received", timestamp },
-      ]);
+      // Fixed typing issue
+      setAiContent({
+        text: data.analysis || "❌ No response received",
+        timestamp,
+      });
     } catch (error) {
       console.error("😵 Error:", error);
     }
@@ -185,40 +180,53 @@ const Chatbot = ({
     }
   }, [aiContent, historicalUserInput]);
 
-  // Construct the conversation array dynamically
-  const conversationArr: JSX.Element[] = [];
-  for (
-    let i = 0;
-    i < Math.max(aiContent.length, historicalUserInput.length);
-    i++
-  ) {
-    const userMessage = historicalUserInput[i];
-    const aiMessage = aiContent[i];
+  // Initialize with welcome message
+  useEffect(() => {
+    if (aiContent.length === 0) {
+      setAiContent([
+        {
+          text: "How can I help you?",
+          timestamp: Date.now(),
+        },
+      ]);
+    }
+  }, []);
 
+  // Render conversation messages
+  const conversationArr: JSX.Element[] = [];
+
+  // Add initial AI greeting
+  if (aiContent[0]) {
     conversationArr.push(
-      <div key={i}>
-        {/* Render user messages */}
-        {aiMessage && (
-          <div className="mt-1 flex w-full max-w-xs space-x-3">
-            <div className="h-10 w-10 flex-shrink-0">
-              <img
-                src={logo}
-                alt="AI Logo"
-                className="h-full w-full rounded-full object-cover"
-              />
-            </div>
-            <div>
-              <div className="rounded-r-lg rounded-bl-lg bg-gradient-to-br from-gray-400 to-gray-200 p-2">
-                <p className="text-sm">{aiMessage.text}</p>
-              </div>
-              <span className="text-xs font-bold leading-none text-gray-500">
-                {formatRelativeTime(aiMessage.timestamp)}
-              </span>
-            </div>
+      <div key="greeting" className="mt-1 flex w-full max-w-xs space-x-3">
+        <div className="h-10 w-10 flex-shrink-0">
+          <img
+            src={logo}
+            alt="AI Logo"
+            className="h-full w-full rounded-full object-cover"
+          />
+        </div>
+        <div>
+          <div className="rounded-r-lg rounded-bl-lg bg-gradient-to-br from-gray-400 to-gray-200 p-2">
+            <p className="text-sm">{aiContent[0].text}</p>
           </div>
-        )}
-        {/* Render ai messages */}
-        {userMessage && (
+          <span className="text-xs font-bold leading-none text-gray-500">
+            {formatRelativeTime(aiContent[0].timestamp)}
+          </span>
+        </div>
+      </div>,
+    );
+  }
+
+  // Add conversation history
+  for (let i = 0; i < historicalUserInput.length; i++) {
+    const userMessage = historicalUserInput[i];
+    const aiMessage = aiContent[i + 1];
+
+    if (userMessage) {
+      conversationArr.push(
+        <div key={`message-${i}`}>
+          {/* User message */}
           <div className="ml-auto mt-2 flex w-full max-w-xs justify-end space-x-3">
             <div>
               <div className="rounded-l-lg rounded-br-lg bg-gradient-to-br from-[#6699e1] to-[#2229f4] p-2 text-white">
@@ -229,48 +237,76 @@ const Chatbot = ({
               </span>
             </div>
             <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-800 to-indigo-600 font-bold text-white">
-              {username[0].toUpperCase()}{" "}
-              {/* Display the first letter of the username */}
+              {username[0].toUpperCase()}
             </div>
           </div>
-        )}
-      </div>,
-    );
+
+          {/* AI response */}
+          {aiMessage && (
+            <div className="mt-1 flex w-full max-w-xs space-x-3">
+              <div className="h-10 w-10 flex-shrink-0">
+                <img
+                  src={logo}
+                  alt="AI Logo"
+                  className="h-full w-full rounded-full object-cover"
+                />
+              </div>
+              <div>
+                <div className="rounded-r-lg rounded-bl-lg bg-gradient-to-br from-gray-400 to-gray-200 p-2">
+                  <p className="text-sm">{aiMessage.text}</p>
+                </div>
+                <span className="text-xs font-bold leading-none text-gray-500">
+                  {formatRelativeTime(aiMessage.timestamp)}
+                </span>
+              </div>
+            </div>
+          )}
+        </div>,
+      );
+    }
   }
 
   // Render the chatbot component
   return (
-    <div className="text-gradient font-poppins relative flex min-h-[500px] flex-col items-center text-2xl font-bold shadow-lg">
-      <button
-        onClick={() => setAiVisibility(false)}
-        className="absolute right-4 top-2 text-gray-500 hover:text-gray-700"
+    <Draggable handle=".drag-handle">
+      <div
+        className="text-gradient font-poppins relative flex min-h-[500px] flex-col items-center text-2xl font-bold shadow-lg"
+        style={{ zIndex: 9999 }}
       >
-        &#10005;
-      </button>
-      <div className="flex w-full max-w-xl flex-grow flex-col overflow-hidden rounded-lg bg-white p-1.5 shadow-xl">
-        <div
-          className="flex h-0 flex-grow flex-col overflow-auto p-3"
-          ref={chatRef}
-        >
-          {conversationArr}
+        <div className="drag-handle flex w-full cursor-move items-center justify-between rounded-t-lg bg-gradient-to-r from-blue-500 to-blue-600 p-2">
+          <span className="text-sm text-white">BottleNetes AI Assistant</span>
+          <button
+            onClick={() => setAiVisibility(false)}
+            className="text-white hover:text-gray-200"
+          >
+            &#10005;
+          </button>
         </div>
-        <span className="bg flex w-full items-center justify-between">
-          <div className="flex-grow rounded-l-lg rounded-br-lg p-2">
-            <input
-              className="flex h-10 w-full items-center rounded-xl bg-blue-200 px-5 text-sm"
-              type="text"
-              placeholder="Type your message…"
-              onChange={handleInputChange}
-              value={userInput}
-              onKeyDown={handleKeyDown}
-            />
+        <div className="flex w-full max-w-xl flex-grow flex-col overflow-hidden rounded-lg bg-white shadow-xl">
+          <div
+            className="scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-gray-100 flex h-[400px] flex-col overflow-y-auto p-3"
+            ref={chatRef}
+          >
+            {conversationArr}
           </div>
-          <div className="text-m mx-1 rounded-xl bg-blue-500 px-3 py-1.5 text-slate-200 hover:brightness-90">
-            <button onClick={handleSubmit}>Send</button>
-          </div>
-        </span>
+          <span className="bg flex w-full items-center justify-between p-2">
+            <div className="flex-grow rounded-l-lg rounded-br-lg">
+              <input
+                className="flex h-10 w-full items-center rounded-xl bg-blue-200 px-5 text-sm"
+                type="text"
+                placeholder="Type your message…"
+                onChange={handleInputChange}
+                value={userInput}
+                onKeyDown={handleKeyDown}
+              />
+            </div>
+            <div className="text-m mx-1 rounded-xl bg-blue-500 px-3 py-1.5 text-slate-200 hover:brightness-90">
+              <button onClick={handleSubmit}>Send</button>
+            </div>
+          </span>
+        </div>
       </div>
-    </div>
+    </Draggable>
   );
 };
 
