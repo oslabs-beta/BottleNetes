@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import React, { useState } from "react";
 import { useEffect, useRef } from "react";
 import Draggable from "react-draggable";
@@ -41,8 +40,7 @@ const Chatbot = ({
     // State to store user message history
     historicalUserInput,
     setHistoricalUserInput,
-    // State to track timestamps for messages
-    timestamps,
+    // To track timestamps for messages
     setTimestamps,
     // State to hold AI responses
     aiContent,
@@ -83,36 +81,41 @@ const Chatbot = ({
     setTimestamps(timestamp);
     setUserInput("");
 
-    // Helper function for pruning data
-    function pruneArray(arr: object[], targetLength: number) {
-      const originalLength = arr.length;
-      if (originalLength <= targetLength) return arr;
+    // Helper function for pruning array data while preserving indices
+    function pruneArrays(
+      arrays: { [key: string]: string[] },
+      targetLength: number,
+    ) {
+      if (!arrays || Object.keys(arrays).length === 0) return arrays;
+
+      // Get length of first array (they should all be same length)
+      const originalLength = arrays[Object.keys(arrays)[0]].length;
+      if (originalLength <= targetLength) return arrays;
+
       const step = Math.floor(originalLength / targetLength);
-      const prunedArray = [];
-      for (let i = 0; i < originalLength; i += step) {
-        prunedArray.push(arr[i]);
-        if (prunedArray.length === targetLength) break;
+      const result: { [key: string]: string[] } = {};
+
+      // For each key in the arrays object
+      for (const key in arrays) {
+        result[key] = [];
+        // Sample at consistent indices across all arrays
+        for (let i = 0; i < originalLength; i += step) {
+          result[key].push(arrays[key][i]);
+          if (result[key].length === targetLength) break;
+        }
       }
-      // }
-      return prunedArray;
+      return result;
     }
 
-    // Loop through nested structures and prune
-    function loopedPrune(arrOfArrs: object[] | undefined) {
-      const prunedArray: object[] = [];
-      arrOfArrs?.forEach((node) => {
-        const prunedNode: { [key: string]: object[] } = {};
-        for (const key in node as Record<string, object[]>) {
-          // HARD CODE ALERT
-          prunedNode[key] = pruneArray(
-            (node as Record<string, object[]>)[key] as object[],
-            // HARD CODE ALERT
-            Math.floor((node as Record<string, object[]>)[key].length / 50),
-          );
-        }
-        prunedArray.push(prunedNode);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function loopedPrune(outerArr: any[] | undefined) {
+      if (!outerArr) return [];
+
+      return outerArr.map((podObj) => {
+        const { name, ...arrayFields } = podObj;
+        const prunedArrays = pruneArrays(arrayFields, 50);
+        return { name, ...prunedArrays };
       });
-      return prunedArray;
     }
 
     // Prune data
@@ -199,6 +202,7 @@ const Chatbot = ({
         { text: "How can I help you?", timestamp: Date.now() },
       ] as Message[]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Render conversation messages
