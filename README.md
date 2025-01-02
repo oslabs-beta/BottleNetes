@@ -1,76 +1,66 @@
-<div  align="center">
+<div align="center">
 
-<img  src="./src/assets/logo.png"  alt="bottlenetes logo"  width="200"/>
+<img src="./src/assets/logo.png" alt="bottlenetes logo" width="200"/>
 
 <h1>Bottlenetes</h1>
 
 <p>
-
-<strong>A user friendly platform to monitor, identify bottlenecks, and interact with your Kubernetes clusters.</strong>
-
+<strong>A user-friendly platform to monitor, identify bottlenecks, and interact with your Kubernetes clusters.</strong>
 </p>
 
 </div>
 
 ---
 
-<div  align="center">
+<div align="center">
 
 ### ✨🛠️✨ Tech Stack ✨🛠️✨
 
-<!-- Tech Stack Logos -->
+#### Frontend 🎨
 
-![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=for-the-badge&logo=javascript&logoColor=%23F7DF1E)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 
-![TypeScript](https://img.shields.io/badge/typescript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
+#### Backend 🖥️
 
-![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-FFAA33?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
+![OAuth](https://img.shields.io/badge/OAuth-0088CC?style=for-the-badge&logo=oauth&logoColor=white)
 
-![Vite](https://img.shields.io/badge/vite-646CFF.svg?style=for-the-badge&logo=vite&logoColor=white)
+#### DevOps & Infrastructure ⚙️
 
-![Tailwind CSS](https://img.shields.io/badge/tailwind_css-38B2AC.svg?style=for-the-badge&logo=tailwind-css&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
+![AWS](https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white)
+![AWS EKS](https://img.shields.io/badge/AWS_EKS-FF9900?style=for-the-badge&logo=amazon-eks&logoColor=white)
+![Minikube](https://img.shields.io/badge/Minikube-F7931E?style=for-the-badge&logo=kubernetes&logoColor=white)
 
-![Kubernetes](https://img.shields.io/badge/kubernetes-326CE5?style=for-the-badge&logo=kubernetes&logoColor=white)
+#### Monitoring 📊
 
-![Docker](https://img.shields.io/badge/docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=for-the-badge&logo=prometheus&logoColor=white)
+![PromQL](https://img.shields.io/badge/PromQL-F57600?style=for-the-badge&logo=prometheus&logoColor=white)
 
-![Minikube](https://img.shields.io/badge/minikube-F7931E?style=for-the-badge&logo=kubernetes&logoColor=white)
+#### Database 🛢️
 
-![Istio](https://img.shields.io/badge/istio-466BB0?style=for-the-badge&logo=istio&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)
+![Sequelize](https://img.shields.io/badge/Sequelize-52B0E7?style=for-the-badge&logo=sequelize&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
 
-![AWS EKS](https://img.shields.io/badge/aws_eks-FF9900?style=for-the-badge&logo=amazon-aws&logoColor=white)
+#### Tools & CI/CD 🛠️
 
-![Prometheus](https://img.shields.io/badge/prometheus-E6522C?style=for-the-badge&logo=prometheus&logoColor=white)
-
-![PromQL](https://img.shields.io/badge/promql-F57600?style=for-the-badge&logo=prometheus&logoColor=white)
-
-![Express.js](https://img.shields.io/badge/express.js-000000?style=for-the-badge&logo=express&logoColor=white)
-
-![Node.js](https://img.shields.io/badge/node.js-339933?style=for-the-badge&logo=node-dot-js&logoColor=white)
-
-![Jest](https://img.shields.io/badge/jest-C21325?style=for-the-badge&logo=jest&logoColor=white)
-
-![PostgreSQL](https://img.shields.io/badge/postgresql-316192?style=for-the-badge&logo=postgresql&logoColor=white)
-
-![Sequelize](https://img.shields.io/badge/sequelize-52B0E7?style=for-the-badge&logo=sequelize&logoColor=white)
-
-![Supabase](https://img.shields.io/badge/supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
-
-![Shell Script](https://img.shields.io/badge/shell_script-121011?style=for-the-badge&logo=gnu-bash&logoColor=white)
-
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)
+![Shell Script](https://img.shields.io/badge/Shell_Script-121011?style=for-the-badge&logo=gnu-bash&logoColor=white)
 ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
+![Trello](https://img.shields.io/badge/Trello-0079BF?style=for-the-badge&logo=trello&logoColor=white)
+![VSCode](https://img.shields.io/badge/VSCode-0078D4?style=for-the-badge&logo=visual-studio-code&logoColor=white)
 
-![GitHubActions](https://img.shields.io/badge/github_actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)
-
-![JWT](https://img.shields.io/badge/jwt-000000?style=for-the-badge&logo=JSON%20web%20tokens&logoColor=white)
+#### AI & Integrations 🤖
 
 ![OpenAI GPT API](https://img.shields.io/badge/OpenAI_GPT_API-412991?style=for-the-badge&logo=openai&logoColor=white)
-
-![OAuth (GitHub & Google)](https://img.shields.io/badge/OAuth-GitHub%20%26%20Google-black?style=for-the-badge&logo=github&logoColor=white)
-
-![Trello](https://img.shields.io/badge/trello-0079BF?style=for-the-badge&logo=trello&logoColor=white)
-
-![VSCode](https://img.shields.io/badge/vscode-0078D4?style=for-the-badge&logo=visual-studio-code&logoColor=white)
 
 </div>
 
@@ -78,20 +68,20 @@
 
 # 📚 Table of Contents 📚
 
-- [About the Project](#about-the-project)
-- [Demo](#demo)
-- [Features](#features)
-- [Getting Started 🚀](#getting-started-)
-- [Prerequisites](#prerequisites)
-- [Project Setup](#project-setup)
-- [Environment Variables 🌐](#environment-variables-)
-- [Manual Setup 🛠️](#manual-setup-️)
-- [AWS integration ☁️](#aws-integration-️)
-- [Roadmap Ahead 🌟](#roadmap-ahead-)
-- [Contribution Guidelines 📝](#contribution-guidelines-)
-- [Contributors 🎉](#contributors-)
-- [License 📄](#license-)
-- [Connect with Us 🤝](#connect-with-us-)
+- [📖 About this Project](#-about-this-project-)
+- [🎥 Demo](#-demo-)
+- [✨ Features](#-features-)
+- [🚀 Getting Started](#-getting-started-)
+- [📦 Prerequisites](#-prerequisites-)
+- [⚙️ Project Setup](#%EF%B8%8F-project-setup)
+- [🌐 Environment Variables](#-environment-variables-)
+- [🛠️ Manual Setup](#️-manual-setup-)
+- [☁️ AWS Integration](#-aws-integration-)
+- [🌟 Roadmap Ahead](#-roadmap-ahead-)
+- [📝 Contribution Guidelines](#-contribution-guidelines-)
+- [🎉 Contributors](#-contributors-)
+- [📄 License](#-license-)
+- [🤝 Connect with Us](#-connect-with-us-)
 
 ---
 
@@ -123,7 +113,7 @@ gif link template:
 
 ---
 
-## Features
+## ✨ Features ✨
 
 - **Real-time Metrics** ⏱️: Monitor the CPU and memory usage of each pod in real time.
 - **K8s Resource Management** 🤖: Debug, manage, scale, and remove workloads from a convenient UI.
@@ -263,15 +253,15 @@ If you want to make Bottlenetes work with your AWS EKS cluster, please follow th
 
 We’re continuously evolving Bottlenetes. Some upcoming items on our to-do list include:
 
-- **AI-Driven Auto-scaling**:
+- **AI-Driven Auto-scaling 🤖**:
   Leverage historical resource usage to scale clusters automatically.
-- **AI Agent Automation**:
+- **AI Agent Automation 🤖**:
   AI agent to implement customized recommendations for resource allocation.
-- **Deeper EKS & Istio Integration**:
+- **Deeper EKS & Istio Integration ☁️**:
   Enhance multi-cloud and service mesh functionalities.
-- **Ephemeral Pods**:
+- **Ephemeral Pods 🛠️**:
   Create and inspect ephemeral pods on-the-fly for enhanced debugging.
-- **UI/UX Refresh**:
+- **UI/UX Refresh 🎨**:
   Redesign dashboards for better clarity and aesthetics.
 
 ## 📝 Contribution Guidelines 📝
@@ -301,7 +291,7 @@ We ❤️ contributions from the community! Here’s how to get involved:
 6. Create a Pull Request
    Open a PR to the dev branch (unless otherwise specified). Our team will review and, once approved, merge it in!
 
-## 🤝 Contributors 🤝
+## 🌱 Contributors 🌱
 
 - Funan Wang: [GitHub](https://github.com/random-letter-generator/) | [LinkedIn](https://www.linkedin.com/in/funan-wang/)
 - Julie Hoagland-Sorensen: [GitHub](https://github.com/JulieHoaglandSorensen/) | [LinkedIn](https://www.linkedin.com/in/juliehoaglandsorensen/)
@@ -309,10 +299,24 @@ We ❤️ contributions from the community! Here’s how to get involved:
 - Quin Kirsten: [GitHub](http://github.com/quinkirsten) | [LinkedIn](https://www.linkedin.com/in/quin-kirsten-081b66132/)
 - Zoe Xu: [GitHub](https://github.com/zx-999) | [LinkedIn](https://www.linkedin.com/in/zxu3756/)
 
-A huge thank you to all our contributors—past, present, and future! 🌻
+A huge 🎉 thank you 🎉 to all our contributors — past, present, and future! 🌻
 
 ## 📄 License 📄
 
 Distributed under the MIT License. Please see `LICENSE` for more information.
 
 If you enjoy Bottlenetes, please drop us a ⭐ on GitHub, share with your dev circle, and help our community grow! 🙌
+
+## 🤝 Connect with Us 🤝
+
+<div align="center">
+
+<!-- link to linkedIN -->
+
+<a href="https://www.linkedin.com/company/bottlenetes">![LinkedIn](https://img.shields.io/badge/LinkedIn-B9D9EB)</a>
+
+<!-- link to productHunt -->
+
+<a href="https://www.producthunt.com/products/bottlenetes">![ProductHunt](https://img.shields.io/badge/productHunt-B9D9EB)</a>
+
+</div>
