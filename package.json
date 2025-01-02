@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "dev:front": "vite",
-    "dev:back": "NODE_ENV=development ts-node server/server.ts",
+    "dev:back": "NODE_ENV=development node --no-warnings --loader ts-node/esm server/server.ts",
     "build:front": "vite build",
     "build:back": "npx tsc -b tsconfig.node.json",
     "prod:front": "vite preview",

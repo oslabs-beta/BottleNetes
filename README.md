@@ -29,7 +29,7 @@ OPENAI_API_KEY=sk-proj-123456789-abcedfg-abcdefg-123456789
 
 SECRET_SESSION_KEY=abcdefg123456789
 
-NODE_ENV=development
+NODE_ENV=production
 
 GITHUB_CLIENT_ID=abcdefg123456789
 GITHUB_CLIENT_SECRET=abcdefg123456789
@@ -39,7 +39,7 @@ GOOGLE_CLIENT_ID=abcdefg123456789.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=abcdefg123456789
 GOOGLE_REDIRECT_URI=http://localhost:3000/oauth/google/callback
 
-FRONTEND_URL=http://localhost:5173/
+FRONTEND_URL=http://localhost:4173/
 ```
 
 4. There is a script "QUICKSTART.sh" in the root directory of the project. Give it execute permission by running the following command in the terminal.

@@ -16,7 +16,6 @@ import { useRef, useEffect } from "react";
 
 // Container Folder
 import MenuContainer from "./MenuContainer";
-import LoadingContainer from "./LoadingContainer";
 
 // Component Folder
 import Overview from "../components/Overview";
@@ -100,7 +99,8 @@ const MainContainer = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [setIsMenuOpen]);
 
-  if (isFetchingData) return <LoadingContainer />;
+  // The loading container is now handled in the Overview component
+  // if (isFetchingData) return <LoadingContainer />;
 
   return (
     <div id="main-container">
@@ -171,7 +171,7 @@ const MainContainer = () => {
       <div className="dark:bg-custom-gradient-dark bg-custom-gradient">
         <div className="border-b-2 border-slate-300 p-6 dark:border-slate-600">
           {/* Overview Display */}
-          <Overview />
+          <Overview isFetchingData={isFetchingData} />
         </div>
 
         {/* Pod Name Display */}
