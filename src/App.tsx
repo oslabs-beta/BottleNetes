@@ -88,7 +88,7 @@ const App = () => {
     return () => controller.abort();
   }, [setSignedIn, setLoading, setUsername, backendUrl]);
 
-  if (loading) return <LoadingContainer />;
+  // if (loading) return <LoadingContainer />;
 
   // Router for Client-side Rendering (CSR)
   const router = createBrowserRouter([
