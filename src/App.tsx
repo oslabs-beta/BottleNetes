@@ -94,19 +94,7 @@ const App = () => {
   const router = createBrowserRouter([
     {
       path: "/dashboard",
-<<<<<<< HEAD:src/App.jsx
-      element: isSignedIn ? (
-        <MainContainer
-          username={username}
-          backendUrl={backendUrl}
-          resetView={resetView}
-        />
-      ) : (
-        <Navigate to={"/"} />
-      ),
-=======
       element: signedIn ? <MainContainer /> : <Navigate to={"/"} />,
->>>>>>> dev:src/App.tsx
     },
     {
       path: "/user/signup",
@@ -114,11 +102,7 @@ const App = () => {
     },
     {
       path: "/",
-      element: signedIn ? (
-        <Navigate to={"/dashboard"} />
-      ) : (
-        <SigninContainer />
-      ),
+      element: signedIn ? <Navigate to={"/dashboard"} /> : <SigninContainer />,
     },
   ]);
 
