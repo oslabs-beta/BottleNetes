@@ -242,7 +242,7 @@ const Chatbot = ({
           {/* User message */}
           <div className="ml-auto mt-2 flex w-full max-w-xs justify-end space-x-3">
             <div>
-              <div className="rounded-l-lg rounded-br-lg bg-[#6699e1] p-2 text-white">
+              <div className="rounded-l-lg rounded-br-lg bg-blue-300 p-2 text-white">
                 <p className="text-sm">{userMessage.text}</p>
               </div>
               <span className="text-xs leading-none text-gray-500">
