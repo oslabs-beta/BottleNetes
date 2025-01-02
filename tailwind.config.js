@@ -61,7 +61,7 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [require("@tailwindcss/typography")],
 };
 
 //"linear-gradient(45deg, #0f172a 30%, #082f49 55%, #172554 77%, #0f172a 100%)",
