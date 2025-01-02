@@ -23,7 +23,11 @@ const formatRelativeTime = (timestamp: number) => {
 //   return `${date.getHours()}:${date.getMinutes().toString().padStart(2, "0")}`;
 // };
 
-const Chatbot = () => {
+const Chatbot = ({
+  setAiVisibility,
+}: {
+  setAiVisibility: (visible: boolean) => void;
+}) => {
   const backendUrl = dataStore((state) => state.backendUrl);
   const username = userStore((state) => state.username);
   const allData = dataStore((state) => state.allData);
@@ -96,7 +100,7 @@ const Chatbot = () => {
     }
 
     // Loop through nested structures and prune
-    function loopedPrune(arrOfArrs: object[]| undefined) {
+    function loopedPrune(arrOfArrs: object[] | undefined) {
       const prunedArray: object[] = [];
       arrOfArrs?.forEach((node) => {
         const prunedNode: { [key: string]: object[] } = {};
@@ -236,20 +240,13 @@ const Chatbot = () => {
 
   // Render the chatbot component
   return (
-    <div
-      // logoStyle={{
-      //   width: "70px",
-      //   height: "70px",
-      //   borderRadius: "50%",
-      //   boxShadow: "0 4px 8px rgba(0, 0, 0, 0.2)",
-      //   backgroundImage: "linear-gradient(to right, #1e90ff, #87ceeb)",
-      //   color: "#fff",
-      //   fontSize: "18px",
-      //   fontWeight: "bold",
-      //   textTransform: "uppercase",
-      // }}
-      className="text-gradient font-poppins flex min-h-[500px] flex-col items-center text-2xl font-bold shadow-lg"
-    >
+    <div className="text-gradient font-poppins relative flex min-h-[500px] flex-col items-center text-2xl font-bold shadow-lg">
+      <button
+        onClick={() => setAiVisibility(false)}
+        className="absolute right-4 top-2 text-gray-500 hover:text-gray-700"
+      >
+        &#10005;
+      </button>
       <div className="flex w-full max-w-xl flex-grow flex-col overflow-hidden rounded-lg bg-white p-1.5 shadow-xl">
         <div
           className="flex h-0 flex-grow flex-col overflow-auto p-3"
