@@ -220,7 +220,7 @@ const Chatbot = ({
           />
         </div>
         <div>
-          <div className="rounded-r-lg rounded-bl-lg bg-gray-300 p-2">
+          <div className="rounded-r-lg rounded-bl-lg bg-gray-300 text-slate-800 p-2">
             <p className="text-sm">{aiContent[0].text}</p>
           </div>
           <span className="text-xs font-bold leading-none text-gray-500">
@@ -327,11 +327,11 @@ const Chatbot = ({
         style={{ zIndex: 9999 }}
       >
         <div className="drag-handle flex w-full cursor-move items-center justify-between rounded-t-lg bg-gradient-to-r from-blue-500 to-blue-600 p-2">
-          <span className="text-md text-slate-100">BottleNetes AI Assistant</span>
+          <span className="text-sm text-slate-100 my-2">BottleNetes AI Assistant</span>
           <div className="mr-2 flex items-center gap-3">
             <button
               onClick={handleNewConversation}
-              className="rounded border border-white/30 px-2 py-1 bg-slate-100 text-sm text-blue-600 hover:brightness-90"
+              className="rounded border border-white/30 px-2 py-1 bg-slate-200 text-sm text-blue-600 hover:brightness-90"
             >
               New Conversation
             </button>
