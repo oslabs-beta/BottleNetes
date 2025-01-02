@@ -327,7 +327,7 @@ const Chatbot = ({
         style={{ zIndex: 9999 }}
       >
         <div className="drag-handle flex w-full cursor-move items-center justify-between rounded-t-lg bg-gradient-to-r from-blue-500 to-blue-600 p-2">
-          <span className="text-sm text-white">BottleNetes AI Assistant</span>
+          <span className="text-sm text-slate-100">BottleNetes AI Assistant</span>
           <div className="mr-2 flex items-center gap-3">
             <button
               onClick={handleNewConversation}
