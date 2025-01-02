@@ -242,7 +242,7 @@ const MainContainer = () => {
         <div className="relative mx-6">
           {/* AI Chatbot */}
           <div
-            className={`fixed top-16 right-6 w-96 rounded-2xl transition-opacity duration-300 ${aiVisibility ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
+            className={`fixed top-20 right-6 w-96 rounded-2xl transition-opacity duration-300 ${aiVisibility ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
           >
             <Chatbot setAiVisibility={setAiVisibility} />
           </div>

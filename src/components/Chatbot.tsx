@@ -220,7 +220,7 @@ const Chatbot = ({
           />
         </div>
         <div>
-          <div className="rounded-r-lg rounded-bl-lg bg-gradient-to-br from-gray-400 to-gray-200 p-2">
+          <div className="rounded-r-lg rounded-bl-lg bg-gray-300 p-2">
             <p className="text-sm">{aiContent[0].text}</p>
           </div>
           <span className="text-xs font-bold leading-none text-gray-500">
@@ -293,7 +293,7 @@ const Chatbot = ({
           />
         </div>
         <div>
-          <div className="rounded-r-lg rounded-bl-lg bg-gradient-to-br from-gray-400 to-gray-200 p-2">
+          <div className="rounded-r-lg rounded-bl-lg bg-gray-300 p-2">
             <p className="flex items-center text-sm">
               Thinking
               <svg className="ml-2 h-4 w-4 animate-spin" viewBox="0 0 24 24">
@@ -353,7 +353,7 @@ const Chatbot = ({
           <span className="bg flex w-full items-center justify-between p-2">
             <div className="flex-grow rounded-l-lg rounded-br-lg">
               <input
-                className="flex h-10 w-full items-center rounded-xl bg-blue-200 px-5 text-sm"
+                className="flex h-10 w-full items-center rounded-xl bg-blue-100 px-5 text-sm"
                 type="text"
                 placeholder="Type your message…"
                 onChange={handleInputChange}
@@ -361,7 +361,7 @@ const Chatbot = ({
                 onKeyDown={handleKeyDown}
               />
             </div>
-            <div className="text-md mx-1 rounded-xl bg-blue-500 px-3 py-1.5 text-slate-100 hover:brightness-90">
+            <div className="text-sm mx-1 rounded-xl bg-blue-500 px-3 py-2 text-slate-100 hover:brightness-90">
               <button onClick={handleSubmit}>Send</button>
             </div>
           </span>
