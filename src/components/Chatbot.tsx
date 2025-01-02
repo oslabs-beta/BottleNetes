@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { useEffect, useRef } from "react";
 import Draggable from "react-draggable";
+import ReactMarkdown from "react-markdown";
 
 import logo from "../assets/logo.png";
 import dataStore from "../stores/dataStore";
@@ -82,7 +83,7 @@ const Chatbot = ({
     setTimestamps(timestamp);
     setUserInput("");
 
-    // Prune helper function
+    // Helper function for pruning data
     function pruneArray(arr: object[], targetLength: number) {
       const originalLength = arr.length;
       if (originalLength <= targetLength) return arr;
@@ -261,7 +262,9 @@ const Chatbot = ({
               </div>
               <div>
                 <div className="rounded-r-lg rounded-bl-lg bg-gradient-to-br from-gray-400 to-gray-200 p-2">
-                  <p className="text-sm">{aiMessage.text}</p>
+                  <ReactMarkdown className="prose prose-sm max-w-none text-sm">
+                    {aiMessage.text}
+                  </ReactMarkdown>
                 </div>
                 <span className="text-xs font-bold leading-none text-gray-500">
                   {formatRelativeTime(aiMessage.timestamp)}
