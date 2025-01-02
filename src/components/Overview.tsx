@@ -2,12 +2,16 @@
  * This component renders the overview such as Cluster Name, number of Nodes, Pods and Containers in that cluster
  */
 import { useMemo } from "react";
-
+import LoadingContainer from "../containers/LoadingContainer";
 import "../Overview.css";
 
 import dataStore from "../stores/dataStore";
 
-const Overview = () => {
+interface OverviewProps {
+  isFetchingData: boolean;
+}
+
+const Overview = ({ isFetchingData }: OverviewProps) => {
   const podsStatuses = dataStore((state) => state.allData.podsStatuses);
   const allNodes = dataStore((state) => state.allData.allNodes);
 
@@ -40,28 +44,38 @@ const Overview = () => {
   }, [podsStatuses, allNodes]);
 
   return (
-    <div className="overview-container fade-in">
-      <div className="overview-cluster cluster-name dark:cluster-name-dark">
-        <h2 style={{ fontWeight: 600 }}>Cluster Name</h2>
-        <p className="overview-value dynamic-text dark:dynamic-text-dark">{overview.clusterName}</p>
+    <div className="relative w-full">
+      <div className="overview-container fade-in w-full">
+        <div className="overview-cluster cluster-name dark:cluster-name-dark">
+          <h2 style={{ fontWeight: 600 }}>Cluster Name</h2>
+          <p className="overview-value dynamic-text dark:dynamic-text-dark">
+            {overview.clusterName}
+          </p>
+        </div>
+
+        <div className="overview-metrics-row">
+          <div className="overview-card overview-nodes">
+            <h2>No. of Nodes</h2>
+            <p className="overview-value">{overview.nodes}</p>
+          </div>
+
+          <div className="overview-card overview-pods">
+            <h2>No. of Pods</h2>
+            <p className="overview-value">{overview.pods}</p>
+          </div>
+
+          <div className="overview-card overview-containers">
+            <h2>No. of Containers</h2>
+            <p className="overview-value">{overview.containers}</p>
+          </div>
+        </div>
       </div>
 
-      <div className="overview-metrics-row">
-        <div className="overview-card overview-nodes">
-          <h2>No. of Nodes</h2>
-          <p className="overview-value">{overview.nodes}</p>
+      {isFetchingData && (
+        <div className="absolute right-0 top-1/2 w-48 -translate-y-1/2 scale-50">
+          <LoadingContainer />
         </div>
-
-        <div className="overview-card overview-pods">
-          <h2>No. of Pods</h2>
-          <p className="overview-value">{overview.pods}</p>
-        </div>
-
-        <div className="overview-card overview-containers">
-          <h2>No. of Containers</h2>
-          <p className="overview-value">{overview.containers}</p>
-        </div>
-      </div>
+      )}
     </div>
   );
 };

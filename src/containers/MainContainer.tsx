@@ -16,7 +16,6 @@ import { useRef, useEffect } from "react";
 
 // Container Folder
 import MenuContainer from "./MenuContainer";
-import LoadingContainer from "./LoadingContainer";
 
 // Component Folder
 import Overview from "../components/Overview";
@@ -100,7 +99,8 @@ const MainContainer = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [setIsMenuOpen]);
 
-  if (isFetchingData) return <LoadingContainer />;
+  // The loading container is now handled in the Overview component
+  // if (isFetchingData) return <LoadingContainer />;
 
   return (
     <div id="main-container">
@@ -168,10 +168,10 @@ const MainContainer = () => {
           <h1 className="mr-5 px-5 text-2xl font-semibold text-slate-300">{`Welcome, ${username}`}</h1>
         </div>
       </header>
-      <div className="bg-custom-gradient dark:bg-custom-gradient-dark">
+      <div className="dark:bg-custom-gradient-dark bg-custom-gradient">
         <div className="border-b-2 border-slate-300 p-6 dark:border-slate-600">
           {/* Overview Display */}
-          <Overview />
+          <Overview isFetchingData={isFetchingData} />
         </div>
 
         {/* Pod Name Display */}
@@ -184,7 +184,7 @@ const MainContainer = () => {
           id="graph-container"
           className="mt-2 flex min-h-screen flex-col gap-4 p-6 text-slate-100"
         >
-          <div className="grid grid-cols-1 gap-10 lg-xl:grid-cols-2 xl:grid-cols-4">
+          <div className="lg-xl:grid-cols-2 grid grid-cols-1 gap-10 xl:grid-cols-4">
             {/* Pod Grid */}
             <div
               id="pod-grid"
@@ -236,7 +236,7 @@ const MainContainer = () => {
           <div
             className={`absolute bottom-[100%] right-0 mb-3 w-96 rounded-2xl transition-opacity duration-300 ${aiVisibility ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
           >
-            <Chatbot />
+            <Chatbot setAiVisibility={setAiVisibility} />
           </div>
           {/* Reset and Ask AI buttons */}
           <div className="flex justify-between pb-5">

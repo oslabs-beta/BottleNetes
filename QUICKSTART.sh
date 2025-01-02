@@ -242,15 +242,55 @@ fi
 echo "-----------------------------------------"
 echo "Step 15 🎉🎉🎉 All set up completed. Let's run the bottlenetes!"
 
-kill_port_processes 3000
-kill_port_processes 5173
+echo " 🚀Installing npm packages..."
 npm install
+echo "✅ npm packages installed."
 
-echo "🌐👀 Opening the frontend service in the default browser..."
-osascript -e 'tell application "Terminal" to do script "open http://localhost:8080"'
+echo "-----------------------------------------"
+
+echo "🔪 Killing processes on ports 3000 and 4173 ..."
+kill_port_processes 3000 # prepare the port for the backend service
+kill_port_processes 4173 # prepare the port for the frontend service
+echo "✅ Processes killed."
+
+echo "-----------------------------------------"
+
+echo "🏗️ Building the frontend..."
+npm run build:front # build the frontend
+echo "✅ Frontend built."
+
+echo "-----------------------------------------"
+
+echo "🏗️ Building the backend..."
+npm run build:back # build the backend
+echo "✅ Backend built."
+
+echo "-----------------------------------------"
+
+echo "🌐👀 Opening the demo app to run on kubernetes cluster in the default browser..."
+osascript -e 'tell application "Terminal" to do script "open http://localhost:8080 && exit"'
 echo "✅ Browser opened. You can now interact with the demo app."
 
-npm start
-echo "✅ Browser opened. You can now log in and view the bottlenetes dashboard."
+echo "-----------------------------------------"
+
+echo "🌐👀 Running the backend service in the default browser..."
+PROJECT_DIR=$(pwd)
+osascript -e "tell application \"Terminal\" to do script \"cd $PROJECT_DIR; npm run prod:back\""
+echo "✅ backend service running."
+
+echo "-----------------------------------------"
+
+echo "🌐👀 Running the front service in the default browser..."
+npm run prod:front &  # Run frontend in the background
+
+echo "⏳ Waiting for frontend service to start on localhost:4173..."
+npx wait-on http://localhost:4173 --timeout 20000  # Wait for up to 20 seconds
+
+if [ $? -eq 0 ]; then
+    echo "✅ Frontend service started. Opening browser..."
+    osascript -e 'tell application "Terminal" to do script "open http://localhost:4173 && exit"'
+else
+    echo "❌ Timed out waiting for frontend service. Please check for issues."
+fi
 
 echo "🎉 Script execution finished."

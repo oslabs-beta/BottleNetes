@@ -2,7 +2,7 @@
  * This component renders the line graph representing historical CPU and Memory Usage data
  */
 
-import TimeWindowSelector from "./TimeWindowSelector"
+import TimeWindowSelector from "./TimeWindowSelector";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -35,10 +35,12 @@ ChartJS.register(
 
 const Metrics = () => {
   const { defaultView, clickedPod, setHistoricalTimeWindow } = mainStore();
-  const cpuUsageHistorical = dataStore((state) => state.allData.cpuUsageHistorical);
-  const memoryUsageHistorical = dataStore((state) => state.allData.memoryUsageHistorical);
-
-
+  const cpuUsageHistorical = dataStore(
+    (state) => state.allData.cpuUsageHistorical,
+  );
+  const memoryUsageHistorical = dataStore(
+    (state) => state.allData.memoryUsageHistorical,
+  );
 
   const { timeStamps, cpu, memory } = useMetricsData(
     defaultView,
@@ -48,10 +50,16 @@ const Metrics = () => {
   );
 
   if (
-    (!Array.isArray(cpuUsageHistorical) && !cpuUsageHistorical?.resourceUsageHistorical) &&
-    (!Array.isArray(memoryUsageHistorical) && !memoryUsageHistorical?.resourceUsageHistorical)
+    !Array.isArray(cpuUsageHistorical) &&
+    !cpuUsageHistorical?.resourceUsageHistorical &&
+    !Array.isArray(memoryUsageHistorical) &&
+    !memoryUsageHistorical?.resourceUsageHistorical
   ) {
-    return <div className="font-semibold text-slate-800 dark:text-slate-200">Loading...</div>;
+    return (
+      <div className="font-semibold text-slate-800 dark:text-slate-200">
+        Loading...
+      </div>
+    );
   }
 
   const datasets = [];
