@@ -13,7 +13,8 @@ dist
 */dist
 dist-ssr
 *.local
-*.env
+.env
+.env.production
 istio*/
 
 # Editor directories and files
