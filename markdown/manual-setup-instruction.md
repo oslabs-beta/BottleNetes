@@ -20,9 +20,9 @@ brew install helm
 
 1. Under the root directory of the project folder, create 1 Dockerfile each for Frontend and Backend
 
-__The following format is based on a project using Vite and React__
+**The following format is based on a project using Vite and React**
 
-_CMD can vary depend on your __package.json__ file_
+_CMD can vary depend on your **package.json** file_
 
 ```Dockerfile
 // frontend.dockerfile
@@ -86,7 +86,7 @@ docker tag frontend:latest <your-registry>/frontend:latest
 docker push <your-registry>/frontend:latest
 ```
 
-## Create a k8s cluster using *minikube* and contain an Application
+## Create a k8s cluster using _minikube_ and contain an Application
 
 1. Start the minikube by running the following command in the terminal:
 
@@ -94,10 +94,10 @@ docker push <your-registry>/frontend:latest
 minikube start
 ```
 
-2.  Create a Secret using *.env* file:
+2.  Create a Secret using _.env_ file:
 
 ```
-kubectl create secret generic <secret-name> --from-env-file=.env 
+kubectl create secret generic <secret-name> --from-env-file=.env
 ```
 
 3.  Under the root directory of the project folder, create a YAML file for your Backend Deployment and Services with the following format:
@@ -122,7 +122,7 @@ spec:
       containers:
       - name: backend
         image: <your-registry>/backend
-        resources: 
+        resources:
           limits:
             memory: "128Mi"
             cpu: "500m"
@@ -144,12 +144,13 @@ spec:
     port: 3000
     targetPort: 3000
 ```
-- Make sure *selector > app* in Service matches *template > metadata > labels > app*
+
+- Make sure _selector > app_ in Service matches _template > metadata > labels > app_
 - Make sure the image matches the image in the DockerHub
-- Make sure *targetPort* in Service matches with *containerPort* in Deployment and *EXPOSE* in *backend.dockerfile*
+- Make sure _targetPort_ in Service matches with _containerPort_ in Deployment and _EXPOSE_ in _backend.dockerfile_
 - Number of replicas can be adjusted, it represents the number of pods running the app. Some of these pods are used for load balancing and failover. All of these pods are the same size and have the same configuration.
-- Adjust resources if pods fail to run with the *OOMKilled* status
-- *ENV* is used by referred to the secret name. In this case it is *app-secret*
+- Adjust resources if pods fail to run with the _OOMKilled_ status
+- _ENV_ is used by referred to the secret name. In this case it is _app-secret_
 
 4.  Do the same with Frontend, using the following format:
 
@@ -196,7 +197,8 @@ spec:
     port: 80
     targetPort: 80
 ```
-- Frontend is connected to Backend using *ENV* and referred to the *PORT* that Backend is running.
+
+- Frontend is connected to Backend using _ENV_ and referred to the _PORT_ that Backend is running.
 
 5.  Run the deployment by running the following command in the terminal:
 
@@ -225,24 +227,26 @@ kubectl get svc
 ```
 
 8.  Make sure your frontend Service has endpoint IP address:
+
 ```
 kubectl describe <frontend-service>
 ```
 
 9.  Make sure frontend pods has the same IP address as the frontend Service endpoint:
+
 ```
 kubectl get pod -o wide
 ```
 
-10.  Open the app by running the following command in the terminal:
+10. Open the app by running the following command in the terminal:
 
 ```
 minikube service <frontend-service>
 ```
 
-11.  If the app is full stack and properly configured, you should be able to see the app running in the browser.  
-     You can also check the cluster's status in the docker desktop app.  
-     All of the contents previously displayed in the terminal (such as backend console logs) now will be displayed in the "Logs" tab of the docker desktop app.
+11. If the app is full stack and properly configured, you should be able to see the app running in the browser.
+    You can also check the cluster's status in the docker desktop app.
+    All of the contents previously displayed in the terminal (such as backend console logs) now will be displayed in the "Logs" tab of the docker desktop app.
 
 ## Fetch the metrics of the k8s cluster
 
@@ -262,9 +266,33 @@ kubectl port-forward prometheus-prometheus-kube-prometheus-prometheus-0 9090
 ```
 
 3.  Open the browser and go to "localhost:9090" to access the Prometheus dashboard.
-4.  Now you can run the PromQL queries in the Prometheus dashboard to fetch the metrics of the k8s cluster.  
-    Please refer to:  
-    - https://promlabs.com/promql-cheat-sheet/  
-    - https://github.com/ruanbekker/cheatsheets/blob/master/prometheus/README.md  
-    - https://signoz.io/guides/promql-cheat-sheet/  
-    - https://last9.io/blog/promql-cheat-sheet/  
+4.  Now you can run the PromQL queries in the Prometheus dashboard to fetch the metrics of the k8s cluster.
+    Please refer to:
+    - https://promlabs.com/promql-cheat-sheet/
+    - https://github.com/ruanbekker/cheatsheets/blob/master/prometheus/README.md
+    - https://signoz.io/guides/promql-cheat-sheet/
+    - https://last9.io/blog/promql-cheat-sheet/
+
+## Running bottlenetes
+
+1. Install the dependencies by running the following command in the terminal:
+
+```
+npm install
+```
+
+2. Build the frontend and backend of the app by running the following command in the terminal:
+
+```
+npm run build:front
+npm run build:back
+```
+
+3. Run the frontend and backend of the app by running the following command in two spearate terminals:
+
+```
+npm run prod:back
+npm run prod:front
+```
+
+4. Open the app's frontend by going to "[localhost:4173](http://localhost:4173)" in the browser.
