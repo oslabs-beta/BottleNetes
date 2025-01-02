@@ -14,8 +14,8 @@ import {
 import { useLatencyData } from "../../hooks/useLatencyData";
 import { latencyChartOptions } from "../../config/latencyChartOptions";
 
-import mainStore from "../../stores/mainStore"
-import dataStore from "../../stores/dataStore"
+import mainStore from "../../stores/mainStore";
+import dataStore from "../../stores/dataStore";
 
 ChartJS.register(
   CategoryScale,
@@ -30,8 +30,12 @@ ChartJS.register(
 
 const Latency = () => {
   const { defaultView, clickedPod } = mainStore();
-  const cpuUsageHistorical = dataStore((state) => state.allData.cpuUsageHistorical);
-  const latencyAppRequestHistorical = dataStore((state) => state.allData.latencyAppRequestHistorical);
+  const cpuUsageHistorical = dataStore(
+    (state) => state.allData.cpuUsageHistorical,
+  );
+  const latencyAppRequestHistorical = dataStore(
+    (state) => state.allData.latencyAppRequestHistorical,
+  );
 
   const { isLoading, chartData } = useLatencyData(
     defaultView,
@@ -41,7 +45,11 @@ const Latency = () => {
   );
 
   if (isLoading) {
-    return <div className="font-semibold text-slate-800 dark:text-slate-200">Loading...</div>;
+    return (
+      <div className="font-semibold text-slate-800 dark:text-slate-200">
+        Loading...
+      </div>
+    );
   }
 
   return (
