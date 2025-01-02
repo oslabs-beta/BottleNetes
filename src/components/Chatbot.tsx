@@ -331,7 +331,7 @@ const Chatbot = ({
           <div className="mr-2 flex items-center gap-3">
             <button
               onClick={handleNewConversation}
-              className="rounded border border-white/30 px-2 py-1 text-sm text-white hover:text-gray-200"
+              className="rounded border border-white/30 px-2 py-1 bg-slate-100 text-sm text-blue-600 hover:brightness-90"
             >
               New Conversation
             </button>
