@@ -8,6 +8,10 @@
 <strong>A user-friendly platform to monitor, identify bottlenecks, and interact with your Kubernetes clusters.</strong>
 </p>
 
+<p>
+    <em>Uncorking Kubernetes Bottlenecks and Insights, One Pod at a Time</em>
+</p>
+
 </div>
 
 ---
