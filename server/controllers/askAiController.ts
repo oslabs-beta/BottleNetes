@@ -139,7 +139,7 @@ const askAiController = {
       next();
     } catch (error) {
       return next({
-        log: `Error occurred in askAiController.queryOpenAI: ${error}`,
+        log: `🥲 Error occurred in askAiController.queryOpenAI: ${error}`,
         status: 500,
         message: "An error occurred. Please try again.",
       });

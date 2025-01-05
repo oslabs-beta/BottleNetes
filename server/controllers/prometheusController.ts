@@ -5,49 +5,11 @@
  */
 
 import fetch from "node-fetch";
-import { Request, Response, NextFunction } from "express";
+import { PrometheusController } from "controller-types";
 
-export const runSinglePromQLQuery = async (
-  _req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const queryStr = res.locals.query;
-  let queryUrl;
-  if (res.locals.isHistorical) {
-    queryUrl = `http://localhost:9090/api/v1/query_range?query=${encodeURIComponent(
-      queryStr,
-    )}&start=${res.locals.timeStart}&end=${res.locals.timeEnd}&step=${res.locals.timeStep}`;
-  } else {
-    queryUrl = `http://localhost:9090/api/v1/query?query=${encodeURIComponent(
-      queryStr,
-    )}`;
-  }
-
-  try {
-    const response = await fetch(queryUrl);
-    const data = await response.json();
-    res.locals.data = data.data.result;
-    // console.log("queryUrl", queryUrl);
-    return next();
-  } catch (error) {
-    return next({
-      log: "Error in runPromQLQuery middleware" + error,
-      status: 500,
-      message: { err: "An error occurred" },
-    });
-  }
-};
-
-export const runMultiplePromQLQueries = async (
-  _req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  const queryStrArr = res.locals.queries;
-  const queryUrlArr: string[] = [];
-
-  for (const queryStr of queryStrArr) {
+const prometheusController: PrometheusController = {
+  runSinglePromQLQuery: async (_req, res, next) => {
+    const queryStr = res.locals.query;
     let queryUrl;
     if (res.locals.isHistorical) {
       queryUrl = `http://localhost:9090/api/v1/query_range?query=${encodeURIComponent(
@@ -58,27 +20,61 @@ export const runMultiplePromQLQueries = async (
         queryStr,
       )}`;
     }
-    queryUrlArr.push(queryUrl);
-  }
-  // console.log("queryUrlArr: ", queryUrlArr);
 
-  res.locals.data = [];
-  for (const queryUrl of queryUrlArr) {
     try {
       const response = await fetch(queryUrl);
       const data = await response.json();
-      res.locals.data.push(data.data.result);
-      // console.log("\nfetched data from query url: ", queryUrl);
+      res.locals.data = data.data.result;
+      // console.log("queryUrl", queryUrl);
+      return next();
     } catch (error) {
       return next({
-        log: "Error in runMultiplePromQLQueries middleware" + error,
+        log: "Error in runPromQLQuery middleware" + error,
         status: 500,
         message: { err: "An error occurred" },
       });
     }
-  }
-  return next();
+  },
+
+  runMultiplePromQLQueries: async (_req, res, next) => {
+    const queryStrArr = res.locals.queries;
+    const queryUrlArr: string[] = [];
+
+    for (const queryStr of queryStrArr) {
+      let queryUrl;
+      if (res.locals.isHistorical) {
+        queryUrl = `http://localhost:9090/api/v1/query_range?query=${encodeURIComponent(
+          queryStr,
+        )}&start=${res.locals.timeStart}&end=${res.locals.timeEnd}&step=${res.locals.timeStep}`;
+      } else {
+        queryUrl = `http://localhost:9090/api/v1/query?query=${encodeURIComponent(
+          queryStr,
+        )}`;
+      }
+      queryUrlArr.push(queryUrl);
+    }
+    // console.log("queryUrlArr: ", queryUrlArr);
+
+    res.locals.data = [];
+    for (const queryUrl of queryUrlArr) {
+      try {
+        const response = await fetch(queryUrl);
+        const data = await response.json();
+        res.locals.data.push(data.data.result);
+        // console.log("\nfetched data from query url: ", queryUrl);
+      } catch (error) {
+        return next({
+          log: "Error in runMultiplePromQLQueries middleware" + error,
+          status: 500,
+          message: { err: "An error occurred" },
+        });
+      }
+    }
+    return next();
+  },
 };
+
+export default prometheusController;
 
 // historical data (use query_range)
 // GET /api/v1/query_range?

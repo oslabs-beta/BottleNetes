@@ -13,7 +13,7 @@
  */
 
 import * as k8s from "@kubernetes/client-node";
-import { Request, Response, NextFunction } from "express";
+import { K8sController } from "controller-types";
 
 // object used to load Kubernetes configuration.
 const kubeConfigObj = new k8s.KubeConfig();
@@ -28,49 +28,6 @@ kubeConfigObj.loadFromDefault();
 // such as Pods, Services, and ConfigMaps.
 const k8sCoreApiClient = kubeConfigObj.makeApiClient(k8s.CoreV1Api);
 const k8sAppsApiClient = kubeConfigObj.makeApiClient(k8s.AppsV1Api);
-
-interface K8sController {
-  checkClickedPod: (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => Promise<void>;
-  softDeletePod: (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => Promise<void>;
-  fetchPodLogs: (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => Promise<void>;
-  formatLogs: (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => Promise<void>;
-  getDeployment: (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => Promise<void>;
-  readDeployment: (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => Promise<void>;
-  scaleReplicas: (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => Promise<void>;
-  adjustRequestLimit: (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => Promise<void>;
-}
 
 const k8sController: K8sController = {
   checkClickedPod: async (req, res, next) => {

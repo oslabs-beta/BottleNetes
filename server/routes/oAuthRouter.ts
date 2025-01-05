@@ -8,11 +8,13 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Strategy as GitHubStrategy } from "passport-github2";
 
 import cookieController from "../controllers/cookieController.js";
+import userController from "../controllers/userController.js";
+
+import { GitHubProfile, GitHubDone } from "github-oauth-types";
 
 const envFile =
   process.env.NODE_ENV === "production" ? ".env.production" : ".env";
 dotenv.config({ path: envFile });
-
 
 const oAuthRouter = express.Router();
 
@@ -32,6 +34,7 @@ passport.use(
 oAuthRouter.get(
   "/google/callback",
   passport.authenticate("google", { session: false }),
+  userController.createNewUser,
   cookieController.createCookie,
   (_req: Request, res: Response) => {
     res.redirect(`${process.env.FRONTEND_URL}`);
@@ -43,19 +46,6 @@ oAuthRouter.get(
   passport.authenticate("google", { scope: ["profile"] }),
 );
 
-interface GitHubProfile {
-  id: string;
-  displayName: string;
-  username: string;
-  profileUrl: string;
-  emails: { value: string }[];
-  photos: { value: string }[];
-}
-
-interface GitHubDone {
-  (error: any, user?: { profile: GitHubProfile; accessToken: string }): void;
-}
-
 passport.use(
   new GitHubStrategy(
     {
@@ -63,7 +53,12 @@ passport.use(
       clientSecret: process.env.GITHUB_CLIENT_SECRET || "",
       callbackURL: process.env.GITHUB_REDIRECT_URI || "",
     },
-    (accessToken: string, _refreshToken: string, profile: GitHubProfile, done: GitHubDone) => {
+    (
+      accessToken: string,
+      _refreshToken: string,
+      profile: GitHubProfile,
+      done: GitHubDone,
+    ) => {
       done(null, { profile, accessToken });
     },
   ),

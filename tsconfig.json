@@ -4,7 +4,8 @@
     "module": "ESNext",
     "moduleResolution": "node",
     "target": "ESNext",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "typeRoots": ["./node_modules/@types", "./types"]
   },
   "ts-node": {
     "esm": true

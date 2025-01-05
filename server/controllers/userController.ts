@@ -5,14 +5,9 @@
  */
 
 import bcrypt from "bcrypt";
-import { Request, Response, NextFunction } from "express";
+import { UserController } from "controller-types";
 
 import Users from "../models/UserModel.js";
-
-interface UserController {
-  createNewUser: (req: Request, res: Response, next: NextFunction) => Promise<void>;
-  verifyUser: (req: Request, res: Response, next: NextFunction) => Promise<void>;
-}
 
 const userController: UserController = {
   // Middleware for when creating a new user
@@ -20,35 +15,40 @@ const userController: UserController = {
     console.log("👥 Running createNewUser middleware...");
 
     try {
-      const { username, password, email, firstName, lastName } = await req.body;
-      // Check if any required field is missing
-      if (!username || !password || !email || !firstName || !lastName) {
-        return next({
-          log: "Required credentials are not provided",
-          status: 500,
-          message: "One or more required fields are missing.",
-        });
-      }
+      if (req.user) {
+        // const { profile } = req.user;
+      } else {
+        const { username, password, email, firstName, lastName } =
+          await req.body;
+        // Check if any required field is missing
+        if (!username || !password || !email || !firstName || !lastName) {
+          return next({
+            log: "Required credentials are not provided",
+            status: 500,
+            message: "One or more required fields are missing.",
+          });
+        }
 
-      // Check if username contains any non-word using Regex
-      if (/\W/.test(username)) {
-        return next({
-          log: `🤯 What kind of username is this?`,
-          status: 400,
-          message: "Username cannot contain special characters",
-        });
-      }
+        // Check if username contains any non-word using Regex
+        if (/\W/.test(username)) {
+          return next({
+            log: `🤯 What kind of username is this?`,
+            status: 400,
+            message: "Username cannot contain special characters",
+          });
+        }
 
-      // Create new rows for users table
-      const newUser = await Users.create({
-        username,
-        password_hash: password,
-        email,
-        first_name: firstName,
-        last_name: lastName,
-      });
-      console.log("✅ User created: ", newUser.toJSON());
-      res.locals.newUser = newUser.toJSON();
+        // Create new rows for users table
+        const newUser = await Users.create({
+          username,
+          password_hash: password,
+          email,
+          first_name: firstName,
+          last_name: lastName,
+        });
+        console.log("✅ User created: ", newUser.toJSON());
+        res.locals.newUser = newUser.toJSON();
+      }
       return next();
     } catch (error) {
       return next({

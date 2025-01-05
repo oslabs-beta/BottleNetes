@@ -21,6 +21,13 @@ import k8sRouter from "./routes/k8sRouter.js";
 import oAuthRouter from "./routes/oAuthRouter.js";
 import userRouter from './routes/userRouter.js';
 
+import { User } from "custom-types";
+declare module "express-serve-static-core" {
+  interface Request {
+    user?: User;
+  }
+}
+
 // Allow the use of process.env
 const envFile =
   process.env.NODE_ENV === "production" ? ".env.production" : ".env";
