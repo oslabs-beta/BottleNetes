@@ -8,7 +8,7 @@
 <strong>A user-friendly platform to monitor, identify bottlenecks, and interact with your Kubernetes clusters.</strong>
 </p>
 
-*Uncorking Kubernetes Bottlenecks & Insights, One Pod at a Time*
+_Uncorking Kubernetes Bottlenecks & Insights, One Pod at a Time_
 
 </div>
 
@@ -227,6 +227,8 @@ Once the script finishes, it will:
 
 If your browser doesn’t open automatically, navigate to http://localhost:4173/ to begin using Bottlenetes!
 
+***Note: We Recommended NOT using Safari for BottleNetes as secure cookies will NOT be created on HTTP by default*** 
+
 ### 🌐 Environment Variables 🌐
 
 A quick overview of the fields in your .env.production file:
@@ -300,7 +302,6 @@ We ❤️ contributions from the community! Here’s how to get involved:
 
    ```bash
    git checkout -b feature/yourNewFeatureName
-
    ```
 
 3. Implement Your Feature
@@ -336,12 +337,7 @@ If you enjoy Bottlenetes, please drop us a ⭐ on GitHub, share with your dev ci
 
 <div align="center">
 
-<!-- link to linkedIN -->
-
-<a href="https://www.linkedin.com/company/bottlenetes">![LinkedIn](https://img.shields.io/badge/LinkedIn-B9D9EB)</a>
-
-<!-- link to productHunt -->
-
-<a href="https://www.producthunt.com/products/bottlenetes">![ProductHunt](https://img.shields.io/badge/productHunt-B9D9EB)</a>
+<a href="https://www.linkedin.com/company/bottlenetes" title="BottleNetes LinkedIn">![LinkedIn](https://img.shields.io/badge/LinkedIn-blue?style=flat)</a>
+<a href="https://www.producthunt.com/products/bottlenetes">![Product Hunt](https://img.shields.io/badge/Product_Hunt-white?style=flat&logo=producthunt)</a>
 
 </div>
