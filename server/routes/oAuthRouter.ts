@@ -10,10 +10,15 @@ import { Strategy as GitHubStrategy } from "passport-github2";
 import cookieController from "../controllers/cookieController.js";
 import userController from "../controllers/userController.js";
 
-import { GitHubProfile, GitHubDone } from "github-oauth-types";
+import { GitHubProfile, GitHubDone, User } from "oauth-types";
+declare module "express-serve-static-core" {
+  interface Request {
+    user?: User;
+  }
+}
 
 const envFile =
-  process.env.NODE_ENV === "production" ? ".env.production" : ".env";
+process.env.NODE_ENV === "production" ? ".env.production" : ".env";
 dotenv.config({ path: envFile });
 
 const oAuthRouter = express.Router();
@@ -46,6 +51,7 @@ oAuthRouter.get(
   passport.authenticate("google", { scope: ["profile"] }),
 );
 
+
 passport.use(
   new GitHubStrategy(
     {
@@ -55,7 +61,7 @@ passport.use(
     },
     (
       accessToken: string,
-      _refreshToken: string,
+      _refreshToken: string | undefined,
       profile: GitHubProfile,
       done: GitHubDone,
     ) => {
@@ -67,6 +73,7 @@ passport.use(
 oAuthRouter.get(
   "/github/callback",
   passport.authenticate("github", { session: false }),
+  userController.createNewUser,
   cookieController.createCookie,
   (_req: Request, res: Response) => {
     res.redirect(`${process.env.FRONTEND_URL}`);

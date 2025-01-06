@@ -16,7 +16,6 @@ interface UsersGoogleModel
   id: CreationOptional<string>;
   display_name: string;
   access_token: string;
-  refresh_token: string;
   created_at: CreationOptional<Date>;
   updated_at: CreationOptional<Date>;
 }
@@ -41,12 +40,6 @@ const UsersGoogle = sequelize.define<UsersGoogleModel>(
       allowNull: false,
     },
 
-    refresh_token: {
-      type: DataTypes.TEXT,
-      unique: true,
-      allowNull: false,
-    },
-
     created_at: {
       type: DataTypes.DATE,
       defaultValue: DataTypes.NOW,
@@ -58,7 +51,7 @@ const UsersGoogle = sequelize.define<UsersGoogleModel>(
     },
   },
   {
-    tableName: "users_github",
+    tableName: "users_google",
     timestamps: true,
     createdAt: "created_at",
     updatedAt: "updated_at",

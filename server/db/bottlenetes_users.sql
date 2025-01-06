@@ -15,7 +15,6 @@ CREATE TABLE public.users_github (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   display_name VARCHAR(30) NOT NULL,
   access_token TEXT NOT NULL UNIQUE,
-  refresh_token TEXT NOT NULL UNIQUE,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
 );
@@ -24,7 +23,6 @@ CREATE TABLE public.users_google (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   display_name VARCHAR(30) NOT NULL,
   access_token TEXT NOT NULL UNIQUE,
-  refresh_token TEXT NOT NULL UNIQUE,
   created_at TIMESTAMP DEFAULT NOW(),
   updated_at TIMESTAMP DEFAULT NOW()
 );

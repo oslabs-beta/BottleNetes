@@ -1,6 +1,6 @@
 // This file stores all custom types and interfaces
 
-declare module "github-oauth-types" {
+declare module "oauth-types" {
   // Interfaces for GitHub OAuth Profile and Done params
   export interface GitHubProfile {
     id: string;
@@ -15,13 +15,16 @@ declare module "github-oauth-types" {
     (error: any, user?: { profile: GitHubProfile; accessToken: string }): void;
   }
 
+  export interface Profile {
+    id: string;
+    displayName: string;
+    provider: string;
+  }
+
   // Interface for extending Request in express
   export interface User {
-    profile: {
-      id: string;
-      displayName: string;
-      provider: string;
-    };
+    profile: Profile
+    accessToken: string;
   }
 }
 

@@ -16,7 +16,6 @@ interface UsersGitHubModel
   id: CreationOptional<string>;
   display_name: string;
   access_token: string;
-  refresh_token: string;
   created_at: CreationOptional<Date>;
   updated_at: CreationOptional<Date>;
 }
@@ -36,12 +35,6 @@ const UsersGitHub = sequelize.define<UsersGitHubModel>(
     },
 
     access_token: {
-      type: DataTypes.TEXT,
-      unique: true,
-      allowNull: false,
-    },
-
-    refresh_token: {
       type: DataTypes.TEXT,
       unique: true,
       allowNull: false,
