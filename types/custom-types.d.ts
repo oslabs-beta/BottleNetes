@@ -27,6 +27,16 @@ declare module "github-oauth-types" {
 
 declare module "controller-types" {
   import { Request, Response, NextFunction } from "express";
+
+  // Interface for askAiController
+  export interface AskAIController {
+    queryOpenAI: (
+      req: Request,
+      res: Response,
+      next: NextFunction,
+    ) => Promise<void>;
+  }
+
   // Interface for cookieController
   export interface CookieController {
     createCookie: (

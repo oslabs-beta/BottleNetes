@@ -2,7 +2,7 @@
 import axios from "axios";
 import dotenv from "dotenv";
 import process from "process";
-import { Request, Response, NextFunction } from "express";
+import { AskAIController } from "controller-types";
 
 const envFile =
   process.env.NODE_ENV === "production" ? ".env.production" : ".env";
@@ -11,12 +11,8 @@ dotenv.config({ path: envFile });
 const openAiApiKey = process.env.OPENAI_API_KEY || "";
 const openAiEndpoint = "https://api.openai.com/v1/chat/completions" as const;
 
-const askAiController = {
-  queryOpenAI: async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ): Promise<void> => {
+const askAiController: AskAIController = {
+  queryOpenAI: async (req, res, next) => {
     // console.log("in queryOpenAI controller");
     const { userMessage } = req.body;
     const {
