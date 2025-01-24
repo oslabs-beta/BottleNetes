@@ -4,10 +4,13 @@
     "module": "ESNext",
     "moduleResolution": "node",
     "target": "ESNext",
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "typeRoots": ["./node_modules/@types", "./types"]
   },
   "ts-node": {
-    "esm": true
+    "esm": true,
+    "experimentalSpecifierResolution": "node",
+    "transpileOnly": true,
   },
   "references": [
     { "path": "./tsconfig.app.json" },

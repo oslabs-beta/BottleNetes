@@ -8,7 +8,7 @@
 <strong>A user-friendly platform to monitor, identify bottlenecks, and interact with your Kubernetes clusters.</strong>
 </p>
 
-*Uncorking Kubernetes Bottlenecks & Insights, One Pod at a Time*
+_Uncorking Kubernetes Bottlenecks & Insights, One Pod at a Time_
 
 </div>
 
@@ -39,7 +39,7 @@
 
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)
 ![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
-![Axios](https://img.shields.io/badge/Axios-671DDF?style=for-the-badge&logoColor=white)
+![Axios](https://img.shields.io/badge/Axios-%235A29E4?style=for-the-badge&logo=axios)
 ![CORS](https://img.shields.io/badge/CORS-000000?style=for-the-badge&logoColor=white)
 
 #### Database 🛢️
@@ -72,7 +72,7 @@
 #### Tools & CI/CD 🛠️
 
 ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=for-the-badge&logo=github-actions&logoColor=white)
-![Shell Script](https://img.shields.io/badge/Shell_Script-121011?style=for-the-badge&logo=gnu-bash&logoColor=white)
+![ZSH](https://img.shields.io/badge/ZSH-121011?style=for-the-badge&logo=gnu-bash&logoColor=white)
 ![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
 ![Trello](https://img.shields.io/badge/Trello-0079BF?style=for-the-badge&logo=trello&logoColor=white)
 ![TS-Node](https://img.shields.io/badge/TSNode-blue?style=for-the-badge&logo=ts-node&logoColor=white)
@@ -81,7 +81,7 @@
 
 #### AI 🤖
 
-![OpenAI API](https://img.shields.io/badge/OpenAI_API-412991?style=for-the-badge&logo=openai&logoColor=white)
+![OpenAI](https://img.shields.io/badge/OpenAI-412991?style=for-the-badge&logo=openai&logoColor=white)
 
 </div>
 
@@ -136,7 +136,7 @@ gif link template:
 
 ## ✨ Features ✨
 
-- **Real-time Metrics** ⏱️: Monitor the CPU and memory usage of each pod in real time.
+- **Real-time Metrics** ⏱️: Monitor the CPU and memory usage of each pod in real-time.
 - **K8s Resource Management** 🤖: Debug, manage, scale, and remove workloads from a convenient UI.
 - **Bottlenecks Identification** ⚠️: Track latency and service mesh metrics to quickly detect inefficiencies.
 - **Security & Permissions** 🔒: Manage user access for your dashboard.
@@ -200,7 +200,7 @@ FRONTEND_URL=http://localhost:4173/
 
 A quickstart script is provided for your convenience, automating much of the setup process (you can also follow the manual setup instructions [here](markdown/manual-setup-instruction.md)).
 
-- Make the quickstart script executable by running in your terminal:
+- Make the quickstart script executable by running it in your terminal:
 
 ```bash
 chmod +x QUICKSTART.sh
@@ -227,53 +227,34 @@ Once the script finishes, it will:
 
 If your browser doesn’t open automatically, navigate to http://localhost:4173/ to begin using Bottlenetes!
 
+***Note: We Recommended NOT using Safari for BottleNetes as secure cookies will NOT be created on HTTP by default*** 
+
 ### 🌐 Environment Variables 🌐
 
 A quick overview of the fields in your .env.production file:
 
-- OPENAI_API_KEY
-  For GPT-based services, if you leverage AI integrations.
-
-- SUPABASE_URI
-  A PostgreSQL connection string provided by Supabase.
-
-- SUPABASE_PASSWORD
-  The database password for your Supabase PostgreSQL instance.
-
-- SUPABASE_ANON_KEY
-  The anon/public key from Supabase for client-side APIs.
-
-- SECRET_SESSION_KEY
-  A secret key used to secure session data, cookies, tokens, etc.
-
-- NODE_ENV
-  Typically set to "production" for a deployed environment.
-
-- GITHUB_CLIENT_ID / GITHUB_CLIENT_SECRET
-  OAuth credentials for GitHub login and callbacks.
-
-- GITHUB_REDIRECT_URI
-  URL to redirect to after successful GitHub authentication.
-
-- GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET
-  OAuth credentials for Google login.
-
-- GOOGLE_REDIRECT_URI
-  URL to redirect to after successful Google authentication.
-
-- FRONTEND_URL
-  The URL hosting your frontend, e.g., http://localhost:4173/.
+- OPENAI_API_KEY - For GPT-based services, if you leverage AI integrations.
+- SUPABASE_URI - A PostgreSQL connection string provided by Supabase.
+- SUPABASE_PASSWORD - The database password for your Supabase PostgreSQL instance.
+- SUPABASE_ANON_KEY - The anon/public key from Supabase for client-side APIs.
+- SECRET_SESSION_KEY - A secret key used to secure session data, cookies, tokens, etc. This can be a string of your own choice.
+- NODE_ENV - Typically set to "production" for a deployed environment.
+- GITHUB_CLIENT_ID / GITHUB_CLIENT_SECRET - OAuth credentials for GitHub login and callbacks.
+- GITHUB_REDIRECT_URI - URL to redirect to after successful GitHub authentication.
+- GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET - OAuth credentials for Google login.
+- GOOGLE_REDIRECT_URI - URL to redirect to after successful Google authentication.
+- FRONTEND_URL - The URL hosting your frontend, e.g., http://localhost:4173/.
 
 ## 🛠️Manual Setup🛠️
 
 If you prefer a manual setup or want to customize each step, please follow:
 
-- [this page](markdown/manual-setup-instruction.md) for the initial manual setup.
-- and [this page](markdown/latency-prerequisite.md) for installing service mesh for latency tracking.
+- [setup-instruction.md](markdown/manual-setup-instruction.md) for the initial manual setup.
+- and [latency-prerequisite.md](markdown/latency-prerequisite.md) for installing service mesh for latency tracking.
 
 ## ☁️ AWS Integration ☁️
 
-If you want to make Bottlenetes work with your AWS EKS cluster, please follow the instructions in [this page](markdown/aws-integration-instruction.md).
+If you want to make Bottlenetes work with your AWS EKS cluster, please follow the instructions in [aws-integration-instruction.md](markdown/aws-integration-instruction.md).
 
 ## 🌟 Roadmap Ahead 🌟
 
@@ -286,7 +267,7 @@ We’re continuously evolving Bottlenetes. Some upcoming items on our to-do list
 - **Deeper EKS & Istio Integration ☁️**:
   Enhance multi-cloud and service mesh functionalities.
 - **Ephemeral Pods 🛠️**:
-  Create and inspect ephemeral pods on-the-fly for enhanced debugging.
+  Create and inspect ephemeral pods on the fly for enhanced debugging.
 - **UI/UX Refresh 🎨**:
   Redesign dashboards for better clarity and aesthetics.
 
@@ -300,7 +281,6 @@ We ❤️ contributions from the community! Here’s how to get involved:
 
    ```bash
    git checkout -b feature/yourNewFeatureName
-
    ```
 
 3. Implement Your Feature
@@ -336,12 +316,6 @@ If you enjoy Bottlenetes, please drop us a ⭐ on GitHub, share with your dev ci
 
 <div align="center">
 
-<!-- link to linkedIN -->
-
-<a href="https://www.linkedin.com/company/bottlenetes">![LinkedIn](https://img.shields.io/badge/LinkedIn-B9D9EB)</a>
-
-<!-- link to productHunt -->
-
-<a href="https://www.producthunt.com/products/bottlenetes">![ProductHunt](https://img.shields.io/badge/productHunt-B9D9EB)</a>
-
+<a href="https://www.linkedin.com/company/bottlenetes" title="BottleNetes LinkedIn">![LinkedIn](https://img.shields.io/badge/LinkedIn-blue?style=flat)</a>
+<a href="https://www.producthunt.com/products/bottlenetes">![Product Hunt](https://img.shields.io/badge/Product_Hunt-white?style=flat&logo=producthunt)</a>
 </div>

@@ -1,43 +1,18 @@
 import express, { Request, Response } from "express";
 
-import {
-  parseRequestAllPodsStatus,
-  parseRequestAllPodsRequestLimit,
-  parseRequestResourceUsageOneValue,
-  parseRequestResourceUsageHistorical,
-  parseRequestLatencyAppRequestOneValue,
-  parseRequestLatencyAppRequestHistorical,
-} from "../controllers/requestParsingController.js";
-
-import {
-  generateQueryAllPodsStatus,
-  generateQueryAllPodsRequestLimit,
-  generateQueryResourceUsage,
-  generateQueryLatencyAppRequest,
-} from "../controllers/promqlController.js";
-
-import {
-  //   runSinglePromQLQuery,
-  runMultiplePromQLQueries,
-} from "../controllers/prometheusController.js";
-
-import {
-  parseResponseAllPodsStatus,
-  parseResponseAllPodsRequestLimit,
-  parseResponseResourceUsageOneValue,
-  parseResponseResourceUsageHistorical,
-  parseResponseLatencyAppRequestOneValue,
-  parseResponseLatencyAppRequestHistorical,
-} from "../controllers/responseParsingController.js";
+import requestParsingController from "../controllers/requestParsingController.js";
+import promQLController from "../controllers/promqlController.js";
+import prometheusController from "../controllers/prometheusController.js";
+import responseParsingController from "../controllers/responseParsingController.js";
 
 const apiRouter = express.Router();
 
 apiRouter.get(
   "/all-pods-status",
-  parseRequestAllPodsStatus,
-  generateQueryAllPodsStatus,
-  runMultiplePromQLQueries,
-  parseResponseAllPodsStatus,
+  requestParsingController.parseRequestAllPodsStatus,
+  promQLController.generateQueryAllPodsStatus,
+  prometheusController.runMultiplePromQLQueries,
+  responseParsingController.parseResponseAllPodsStatus,
   (_req: Request, res: Response) => {
     res.status(200).json(res.locals.parsedData);
   },
@@ -45,10 +20,10 @@ apiRouter.get(
 
 apiRouter.get(
   "/all-pods-request-limit",
-  parseRequestAllPodsRequestLimit,
-  generateQueryAllPodsRequestLimit,
-  runMultiplePromQLQueries,
-  parseResponseAllPodsRequestLimit,
+  requestParsingController.parseRequestAllPodsRequestLimit,
+  promQLController.generateQueryAllPodsRequestLimit,
+  prometheusController.runMultiplePromQLQueries,
+  responseParsingController.parseResponseAllPodsRequestLimit,
   (_req: Request, res: Response) => {
     res.status(200).json(res.locals.parsedData);
   },
@@ -56,10 +31,10 @@ apiRouter.get(
 
 apiRouter.post(
   "/resource-usage-onevalue",
-  parseRequestResourceUsageOneValue,
-  generateQueryResourceUsage,
-  runMultiplePromQLQueries,
-  parseResponseResourceUsageOneValue,
+  requestParsingController.parseRequestResourceUsageOneValue,
+  promQLController.generateQueryResourceUsage,
+  prometheusController.runMultiplePromQLQueries,
+  responseParsingController.parseResponseResourceUsageOneValue,
   (_req: Request, res: Response) => {
     res.status(200).json(res.locals.parsedData);
   },
@@ -67,10 +42,10 @@ apiRouter.post(
 
 apiRouter.post(
   "/resource-usage-historical",
-  parseRequestResourceUsageHistorical,
-  generateQueryResourceUsage,
-  runMultiplePromQLQueries,
-  parseResponseResourceUsageHistorical,
+  requestParsingController.parseRequestResourceUsageHistorical,
+  promQLController.generateQueryResourceUsage,
+  prometheusController.runMultiplePromQLQueries,
+  responseParsingController.parseResponseResourceUsageHistorical,
   (_req: Request, res: Response) => {
     res.status(200).json(res.locals.parsedData);
   },
@@ -78,10 +53,10 @@ apiRouter.post(
 
 apiRouter.post(
   "/latency-app-request-onevalue",
-  parseRequestLatencyAppRequestOneValue,
-  generateQueryLatencyAppRequest,
-  runMultiplePromQLQueries,
-  parseResponseLatencyAppRequestOneValue,
+  requestParsingController.parseRequestLatencyAppRequestOneValue,
+  promQLController.generateQueryLatencyAppRequest,
+  prometheusController.runMultiplePromQLQueries,
+  responseParsingController.parseResponseLatencyAppRequestOneValue,
   (_req: Request, res: Response) => {
     res.status(200).json(res.locals.parsedData);
   },
@@ -89,10 +64,10 @@ apiRouter.post(
 
 apiRouter.post(
   "/latency-app-request-historical",
-  parseRequestLatencyAppRequestHistorical,
-  generateQueryLatencyAppRequest,
-  runMultiplePromQLQueries,
-  parseResponseLatencyAppRequestHistorical,
+  requestParsingController.parseRequestLatencyAppRequestHistorical,
+  promQLController.generateQueryLatencyAppRequest,
+  prometheusController.runMultiplePromQLQueries,
+  responseParsingController.parseResponseLatencyAppRequestHistorical,
   (_req: Request, res: Response) => {
     res.status(200).json(res.locals.parsedData);
   },
