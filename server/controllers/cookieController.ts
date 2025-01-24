@@ -2,57 +2,21 @@
  * Contains middlewares:
  * createCookie: Create Cookie when user sign in
  * verifyCookie: Check if the user has already signed in
+ * deleteCookie: Clear cookies when signing out
  */
 
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import process from "node:process";
-import { Request, Response, NextFunction } from "express";
-
-interface UserProfile {
-  id: string;
-  displayName: string;
-  provider: string;
-}
-
-interface User {
-  profile: UserProfile;
-}
-
-declare module "express-serve-static-core" {
-  interface Request {
-    user?: User;
-  }
-}
+import { CookieController } from 'controller-types'
 
 import { SECRET_KEY } from "../jwtUtils.js";
 import genToken from "../jwtUtils.js";
 import Users from "../models/UserModel.js";
-// import UsersGitHub from "../models/UsersGitHubModel";
-// import UsersGoogle from "../models/UsersGoogleModel";
 
 const envFile =
   process.env.NODE_ENV === "production" ? ".env.production" : ".env";
 dotenv.config({ path: envFile });
-
-
-interface CookieController {
-  createCookie: (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => Promise<void>;
-  verifyCookie: (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => Promise<void>;
-  deleteCookie: (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-  ) => Promise<void>;
-}
 
 const cookieController: CookieController = {
   // Create the cookie with their id for their session when the user signed in
@@ -131,7 +95,7 @@ const cookieController: CookieController = {
     console.log(`🍪🤔 Running verifyCookie middleware...`);
 
     try {
-      const token = await req.cookies.jwt;
+      const token: string = await req.cookies.jwt;
 
       if (!token) {
         res.locals.signedIn = false;
